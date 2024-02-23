@@ -1,0 +1,16 @@
+<csp:class SUPER="i2.base.tpl"><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+	<csp:if condition=(data("NODEMAIN"))>
+		<ipac:tpl version="main" />
+	<csp:else>
+{
+<csp:if condition=(data("ERRORS")="")>
+    "cspchd": "#(%session.CSPSessionCookie)#",    
+    "size": #(data("SIZE"))#,
+    "url": "#($zcvt(##class(content.csg2).getLink(data("REPO"),data("KEY")),"I","HTML"))#", 
+    "finished": #(data("FINISHED"))#
+<csp:else>    
+    "error": "#(data("ERRORS"))#"
+</csp:if>
+}
+	</csp:if>

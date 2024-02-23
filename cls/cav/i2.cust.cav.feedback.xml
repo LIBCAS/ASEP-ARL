@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 865U)" ts="2020-10-06 14:54:09">
+<Class name="i2.cust.cav.feedback">
+<Super>i2.ui.feedback</Super>
+<TimeChanged>65658,53640.329909</TimeChanged>
+<TimeCreated>62787,64180.987543</TimeCreated>
+
+<Parameter name="Ictx">
+<Description><![CDATA[
+<pre>
+06.10.20 tt; provedeny uprave ve tride, aby se nezobrazovalo spravne - upraveny data pro sablonu
+09.10.19 jk; zmenena trida pro praci s emaily
+27.06.18 jk; uprava parametru getReqBranchList
+27.11.12 tt; zalozena stranka
+ictx instituce  "feedback"
+</pre>]]></Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="userData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  
+  ; pole s vyberem adresatu je vyber pobocky
+  if '$$$I2isOp("NOBRANCH") {
+    ; 27.06.18 jk; uprava parametru getReqBranchList
+    s data("ADDRESSEE")=##class(i2.basketInt).getReqBranchList(,0)
+  } else {
+   s data("ADDRESSEE")="0"
+  }
+  s data("BRANCH_BOOL")=1
+  s data("ADDRESSEE")="0"
+  s data("FIRSTNAME") = ##class(i2.html.base).escape($zstrip($$$GETREQVAR("firstname"),"<>W"))
+  s data("SURNAME") = ##class(i2.html.base).escape($zstrip($$$GETREQVAR("surname"),"<>W"))
+  s data("WORKPLACE") = ##class(i2.html.base).escape($zstrip($$$GETREQVAR("workplace"),"<>W"))
+]]></Implementation>
+</Method>
+
+<Method name="sendMail">
+<Description><![CDATA[
+<pre>
+Cela metoda podedena pouze z duvodu chyby pri odesilani emailu
+a procisteni uzivatelskych polozek:
+ data("FIRSTNAME")
+ data("SURNAME")
+ data("WORKPLACE")
+05.08.14 jk; pouziti email sablon
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; predmet zpravy je povinny
+  if (data("SUBJECT")="") { 
+    s data("ERRORS")=data("ERRORS")_" "_..tx("SUBJECTFILLERR")
+    q
+  }
+  
+  ; telo zpravy je povinne
+  if (data("MESSAGE")="") { 
+    s data("ERRORS")=data("ERRORS")_" "_..tx("BODYFILLERR")
+    q
+  }
+  
+  ; kontrola captcha pro neprihlasene
+  if 'data("LOGGED") && '##class(i2.base.forms).checkCaptcha($$$GETREQVAR("ccode")) {
+    s data("ERRORS")=data("ERRORS")_" "_..txg("FORM_CAPTCHA_ERR")
+  }  
+  q:data("ERRORS")'=""
+    
+  ; pobocka, "*" nebo prazdne
+  s to=$$$GETREQVAR("addressee")
+  if $g(data("BRANCH_BOOL")) && (to'="") { 
+    ; a ted email pobocky z IctxUntables IS_BRANCH
+    ; pro nepobockove nebo spolecny jeden email se pocita s vyplnenim podpole $$c v IctxUnTablesd EMAILS 200$aipac_feedback
+    ; 27.06.18 jk; uprava parametru getReqBranchList
+    s to=##class(i2.basketInt).getReqBranchList(to,0) 
+  }
+
+  ; emailova adresa uzivatele pro odpoved knihovny, nemusi ji zadat
+  s replyTo=$$$GETREQVAR("sender")
+  s:replyTo="@" replyTo=""
+  
+  s subject=..tx("EMAIL_SUBJECT")_" "_data("SUBJECT")
+  
+  s data("MAIL_FROM")=$lb(..tx("FROM"),replyTo)
+  d ..userMail(.data)
+  
+  d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailhtml")
+  s bodyHtml=data("stream").Read()
+  s data("stream")=##class(%GlobalCharacterStream).%New()
+  d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailtxt")
+  s bodyTxt=data("stream").Read()
+  d ##class(util.emailgw).send($$$IPREF,bodyHtml,bodyTxt,.ret,"ipac_feedback",subject,$$$GETLANGUAGE,,to,,,replyTo)
+
+  if (ret="") {
+    s data("REPORTS")=data("REPORTS")_..tx("SENDEMAILOK")
+    s data("REPLY")="@"
+    s data("SUBJECT")=""
+    s data("MESSAGE")=""
+    s data("FIRSTNAME")=""
+    s data("WORKPLACE")=""
+    s data("SURNAME")=""
+    
+  } else {
+    s data("ERRORS")=data("ERRORS")_..tx("SENDEMAILERROR")_"("_ret_")"
+  }
+]]></Implementation>
+</Method>
+
+<Method name="userMail">
+<Description><![CDATA[
+<pre>
+Pro CAV ziskame data z uzivatelskych polozek jmeno, prijmeni a instituce
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("EMAIL_DATA",1)=$lb(..tx("FIRSTNAME"),data("FIRSTNAME"))
+  s data("EMAIL_DATA",2)=$lb(..tx("SURNAME"),data("SURNAME"))
+  s data("EMAIL_DATA",3)=$lb(..tx("WORKPLACE"),data("WORKPLACE"))
+]]></Implementation>
+</Method>
+</Class>
+</Export>

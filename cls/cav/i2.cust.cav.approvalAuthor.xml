@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1 (Build 209U)" ts="2023-03-13 09:41:36">
+<Class name="i2.cust.cav.approvalAuthor">
+<Description>
+Zajistuje schvaleni autoru po rozeslani emailu
+
+13.03.23 tt; přidána definice OBJECT_URL na začátek data
+28.01.20 tt; genC52: provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n + zmena ulozeni
+09.10.19 jk; zmenena trida pro praci s emaily
+06.07.19 kp; Prevod do sablon
+01.03.19 tt; genC52: pridan priznak pro smlouvu - specialni typ
+03.01.16 tt; genC52: odstranen zapis s chronologii pri nahrani fulltextu k zaznamu
+30.11.16 tt; zmena adresy
+16.03.15 tt; genC52: drobne upravy
+13.03.15 tt; genC52: pridano generovani C52m 
+17.12.14 tt; genC52: pridany priznak pro pregenerovani
+10.12.14 tt; genC52: upravena logika
+06.12.14 tt; genC52: doplneni generovani tagu C52 - chod, crec
+02.09.14 jk; odeslani emailu pres tridu util.email.cls
+15.06.14 tt; pridan text do emailu "English version below"
+24.05.14 tt; MailBody: pridana anglicka verze souhlasu se zverejnenim
+06.02.14 jk; zruseny globalni promenne ictx a lang
+21.10.13 tt; nahrazena base url za basePure
+23.08.13 tt; template: opraveno volani url
+22.08.13 tt; pridany parametr pretty
+30.06.13 tt; MailBody: oprava dotahování handle linku
+20.06.13 tt; MailBody: dan handle link jako link
+20.06.13 tt; MailBody: upraven text o diakritiku
+06.10.12 tt; pridano jako parametr cele pole, pro dalsi mozne vyuziti pri volani genC52
+26.09.12 tt; pridani zapsani zmeny stavu do statistik
+19.07.12 tt; drobne zmeny ve tride
+01.07.12 tt; zakomentovani volani generovaci metody pro 856 NUSL
+25.06.12 tt; drobna uprava logiky, aby se splnila rozsirena podminka
+20.06.12 tt; sendMailBatch: pridan export metadat
+24.02.12 tt; data: osetreni na , na zacatku seznamu emailu
+21.02.12 tt; opravena drobna chyba sT200a
+20.02.12 tt; upraveny texty pro vypis autoru
+19.01.11 tt; zmena textu emailuf</Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66546,34787.90759896</TimeChanged>
+<TimeCreated>62419,34291.587026</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID} "approvalauthor"]]></Description>
+<Default>approvalauthor</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>souhlas-se-zpristupnenim#souhlas-se-zpristupnenim#consent-to-disclosure</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("idx,iset,disprec,pg")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+24.02.12 tt; osetreni na , na zacatku seznamu emailu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("IDX")=""
+  s data("ODREC")=""
+  s data("AUTHOR")=""
+  s data("OBJECT_URL")=""
+  s data("ACTION") = $$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID)
+  s repo=$$$GETREQVAR("repo")
+  s key=$$$GETREQVAR("key")
+  s token=$$$GETREQVAR("token")
+  s data("REPO")=repo
+  s data("KEY")=key
+  s data("TOKEN")=token
+  
+  if ($$$GETREQVAR("testmail")'="") {
+    d ..testMail(.data,$$$GETREQVAR("testmail"))
+    q
+  }
+  
+  if (repo="") || (key="") || (token="") || '##class(content.api).get(.array,repo,key) {
+    s data("ERRORS")=..tx("E_PARAMS")
+    q
+  }
+  s sT001=array("t001")   ; nacteme si pomocne informace
+  s SCLASS=array("class")
+  s data("FNAME")=array("origname")
+  s data("FTYPE")=$p(array("origname"),".",2)
+  s data("FTYPEISIMG")=1
+  if ((data("FTYPE")'="jpg")&&(data("FTYPE")'="ico")&&(data("FTYPE")'="gif")&&(data("FTYPE")'="png")&&(data("FTYPE")'="bmp")&&(data("FTYPE")'="jpeg"))
+  {
+      s data("FTYPEISIMG")=0
+  }    
+  s data("RECTITLE_Z")=""
+  /*w !,"<pre>"
+  zw array
+  w !,"</pre>"*/
+  
+  if ##class(User.MARC).readX(.handle,SCLASS,sT001,"T") 
+  { ; pokud se nam podarilo otevit zaznam, nacteme si informace
+    s data("RECTITLE_Z")=$$$getTagX(.handle,"Tbca")
+    s data("RECTITLE_Z")=##class(User.Util).HTMLfixup($p(data("RECTITLE_Z"),"\n",1))
+    s data("ODREC")=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_sT001,..tx("RECORD"))
+    s data("IDX")="cav_un_epca*"_sT001
+  }
+
+  s author=$g(array("mails",token))
+  if author="" {
+    s data("ERRORS")=..tx("E_OPAK")
+    q
+  }
+  
+  if ($$$GETREQVAR("approval")'="") || ($$$GETREQVAR("refuse")'="") {
+    ; pokud jiz odpoved byla zadana, zkontroluji se data, jestli neni 
+    ; soubor jiz zamitnut nebo schvalen. Uzivateli se vypise hlaska s podekovanim
+    s data("AUTHOR")=author
+    ;s data("AUTHOR")=$p(author,$c(10),1)
+    ;s data("DATE")=$p(author,$c(10),2)    
+    d ..process(.data,.array)
+  } else {
+    ; uzivatel se jeste nevyjadril. Je potreba mu nabidnout moznost souhlasit nebo nesouhlasit
+    ; s vystavenim fulltextu
+    s baseUrl=##class(i2.html.tpl).getBaseURL(2)
+    s basePure = ##class(i2.common).getServerBaseURL()
+    ; 21.10.13 tt; nahrazena base url za basePure
+    s urlparams="repo="_repo_"&key="_key_"&token="_token
+    s data("AUTHOR")=author
+    s data("OBJECT_URL")=basePure_"content.csg.cls?"_urlparams    
+    s data("YES_URL")=baseUrl_##class(i2.html.tpl).getLinkURL(..#PageID,urlparams_"&approval=1")
+    s data("NO_URL")=baseUrl_##class(i2.html.tpl).getLinkURL(..#PageID,urlparams_"&refuse=1")
+    
+  }
+]]></Implementation>
+</Method>
+
+<Method name="testMail">
+<Description>
+Testovací zobrazení e-mailu</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,template:%String]]></FormalSpec>
+<Implementation><![CDATA[
+
+    s data("sZf")="sZf"
+    s data("sTC60a")="sTC60a"
+    s data("VALIDSEND")=1
+    s data("FORM")="0"
+    s data("POSTED")=1
+    
+    d ##class(i2.html.tpl).callTpl(.data,..#PageID,template)
+    #dim stream As %CharacterStream
+    s stream=$g(data("stream"))
+    s sablona=stream.Read()
+    w sablona
+]]></Implementation>
+</Method>
+
+<Method name="process">
+<Description>
+Metoda, ktera pri vyjadreni souhlasu/nesouhlasu uzivatele zkotroluje, jestli jiz nema
+byt soubor ulozen nebo ulozen se zamitnutim. Tedy jestli uz posledni uzivatel se vyjadril.
+pri vyjadreni posledniho uzivatele se generuji C52 podle nastaveni. 856 se jiz negeneruje.
+
+20.02.12 tt; upraveny texty pro vypis autoru</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  s token=data("TOKEN")
+  s author=data("AUTHOR")
+    
+  s state=array("status")
+  k array("mails",token)
+  
+  s baseUrl=##class(i2.html.tpl).getBaseURL(2)
+  ; podle uvazeni sem pridat token
+  s link=baseUrl_"content.csg.cls?repo="_data("REPO")_"&key="_data("KEY")     
+  
+  if $$$GETREQVAR("refuse")="" {      
+    s array("approvals",author)=$zd($h,8)
+    ; zmenu stavu provede az planovana uloha
+    if (state="3") && '$d(array("mails")) {
+      ; vsichni souhlasi
+      s array("status")="4"
+      ; 26.09.12 tt; pridani zapsani zmeny stavu do statistik
+      d ##class(content.stat).addStatus(.array,1)
+      
+      s node="", mails=""
+      f { s node=$o(array("approvals",node)) q:node=""
+        s mails=mails_","_node      
+      }
+      ; vygenerovani tagu C52 pro indexovani
+      ; 06.10.12 tt; pridano jako parametr cele pole, pro dalsi mozne vyuziti pri volani genC52
+      d ..genC52(.array,array("t001"),"4",array("accession")) 
+      
+      ; 01.07.12 tt; zakomentovani volani generovaci metody pro 856 NUSL
+      ;d:(array("nusl")="true") ..genNusl856(array("t001"),link) 
+      d ..sendMail(mails,link,array("t001"))
+      ;s data("REPORTS")="approvals: "_mails_"<br/>"
+      s:($e(mails,1)=",") $e(mails,1)=""   ; 24.02.12 tt; osetreni na , na zacatku seznamu emailu
+      s data("REPORTS")=mails_"<br/>"
+    }
+  } else {
+    s array("refuse",author)=$zd($h,8)
+    
+    if (state="3")
+    { ; jeden sesouhlasi
+      s array("status")="5"
+      s array("accession")="R"
+      ; 26.09.12 tt; pridani zapsani zmeny stavu do statistik
+      d ##class(content.stat).addStatus(.array,1)     
+    }
+    
+    s node="", mails=""
+    f { s node=$o(array("mails",node),1,val) q:node=""
+      s mails=mails_","_val     
+    }
+    s mails=mails_","_author
+    d ..sendMail(mails,link,array("t001"),"refuse")
+    ;s data("REPORTS")="refuse"_mails_"<br/>"
+    s:($e(mails,1)=",") $e(mails,1)=""   ; 24.02.12 tt; osetreni na , na zacatku seznamu emailu
+    s data("REPORTS")=mails_"<br/>"
+  }  
+  
+  /*
+  w !,"<pre>"
+  zw array
+  w !,"</pre>"
+  */
+  
+  ; zmenit jen metadata tykajici se souhlasu autoru
+  ; stranka je autorizovana pouze klicen, nikoli identitou
+  ; neda se zjistit, kdo na odkaz klik
+  if '##class(content.api).update(.array) {
+    s data("ERRORS")=..tx("FALSE_URL")
+  } else {  
+    s data("REPORTS")=$g(data("REPORTS"))_..tx("OK_URL")
+  }
+]]></Implementation>
+</Method>
+
+<Method name="sendMailBatch">
+<Description><![CDATA[
+<pre> Davkova zmena stavu souboru s proslou lhutou autorsekno souhlasu
+soucasne rozeslani informacnich mailu
+
+06.02.14 jk; zruseny globalni promenne ictx a lang
+20.06.12 tt; pridan export metadat
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  w !,"Planovana uloha spustena i2.cust.cav.approvalAuthor.sendMailBatch()"
+  ; aby se spravne rozeslaly emaily, musi se nasimulovat prostredi ipacu
+  s ictx="cav"
+  s ipref=$zcvt(ictx,"W")
+  s lang=+##class(User.Util).getServerLanguage(ipref)
+  d ##class(i2.init).batchinit(ictx,lang)
+   
+  
+  ; seskladani zakladnich linku
+  s link=##class(i2.html.tpl).getBaseURL()_"content.csg.cls?"
+  s date=$zd($h-31,8) ; datum poravnavany s datem odsouhlaseni licence - za 31 dni
+  ;s date=$zd($h+3,8) ; pro testy vracene datum do minulosti
+  s state="3",sRet="" ; stav
+   
+  ; seskladani dotazu co cache 
+  s rset = ##class(%ResultSet).%New()              ; sekladani
+  s rset.ClassName = "content.metadata"
+  s rset.QueryName = "DateStatus"
+  d rset.Execute("CavUnEpca",date,state)   
+  d ##class(content.engine).loop(rset,.output)     ; vysledek vracen v promenne output
+   
+  s item="", seq=0                                 ; inicializace cyklu
+  f { s item=$o(output(item)) q:item=""
+    w !,"Byly nalezeny soubory, ktere jiz maji byt dostupne" 
+    s key=$g(output(item,"key"))
+    s repo=$g(output(item,"repository"))
+    d ##class(content.api).getBatch(.array,repo,key)
+    s t001=array("t001")
+  
+    s urlparams="repo="_repo_"&amp;key="_key
+    
+    s node="", mails=""
+    f { s node=$o(array("approvals",node)) q:node=""
+        s mails=mails_","_node      
+    }
+    
+    s node=""
+    f { s node=$o(array("mails",node),1,val) q:node=""
+      s mails=mails_","_val     
+    }    
+    
+    w !,"ID:"_t001_"  URL:"_link_urlparams 
+    w !,"Seznam emailu pro rozeslani: "_mails
+    ; dogenerovani 856 pro zaznamy NUSL
+    
+    ; vygenerovani tagu C52 pro indexovani
+    ; 06.10.12 tt; pridano jako parametr cele pole, pro dalsi mozne vyuziti pri volani genC52
+    d ..genC52(.array,array("t001"),"4",array("accession")) 
+    
+    ; 01.07.12 tt; zakomentovani volani generovaci metody pro 856 NUSL
+    ; 25.06.12 tt; drobna uprava logiky, aby se splnila rozsirena podminka
+    ;s:((repo="nusl")||(array("nusl")="true")) sRet=sRet_..genNusl856(t001, link_urlparams) 
+    ; d ##class(i2.cust.cav.approvalAuthor).sendMailT(",tom.t@email.cz,,teplik@cosmotron.cz,,","muj jakykoli link","0362918","cav")
+    s sRet=sRet_..sendMail(mails,link_urlparams,t001)
+    w !,"Odeslani: "_sRet
+    w !,"Konec odeslani na jednu adresu"
+    s array("status")="4"
+    ; 26.09.12 tt; pridani zapsani zmeny stavu do statistik
+    d ##class(content.stat).addStatus(.array,1)   
+    w !,##class(content.api).update(.array)
+  }
+  
+  ; 20.06.12 tt; pridan export metadat
+  w !,"Export metadat"
+  d ##class(content.metadata).exportAll("crepo1","\\192.168.1.102\storage\contentserver\cav\repository1\metadata.xml")
+  
+  w !,"Konec planovane ulohy"
+]]></Implementation>
+</Method>
+
+<Method name="sendMail">
+<Description><![CDATA[
+<pre> Metoda pro rozeslání emailu uživatelům jako informaci o
+ulozeni souboru do repozitare
+Parametry: pEmails  - seznam emailu oddeleni ,
+           pLink    - link na soubor 
+           pT001    - 001 katalogoveho zaznamu
+           version  - "" - odsouhlaseno
+                      "refuse" - zamitnuto uzivatelem
+Navratova hodnota: "" - vse ok
+                   chyba
+
+02.09.14 jk; odeslani emailu pres tridu util.email.cls
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pEmails,pLink,pT001,version=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    ; definice pomocnych promennych
+    s sRet="", sEmails=""
+        
+    ; 02.09.14 jk; odeslani emailu pres tridu util.email.cls
+    s bHtml=1 ; nastaveno napevno, puvodne to bylo v konfiguraci I2_EMAILS
+    s sSEP=$s(bHtml:"<br/>",1:$$$CRLF)
+    s sMailBody=""
+        
+    for i=1:1:$l(pEmails,",")
+    { ; po jednotlivem emailu budeme odesilat
+      s sEmail1=$p(pEmails,",",i)                       ; ziskame jeden email
+      continue:(sEmail1="")                             ; pokud prazdny pokracujeme
+      s sRet=..MailBody(.sMailBody,sEmail1,sSEP,pLink,pT001)  ; ziskame telo emailu
+      
+      s err=""
+      d:(sRet="") ##class(util.emailgw).send($$$IPREF,sMailBody,,.err,"repozitar","Informace o uložení plného textu",$$$GETLANGUAGE,,sEmail1,,,,,"cp1250")
+      s:(err'="") sRet=sRet_..tx("MAIL_ERR")_"<!-- "_err_" -->"  
+    }   
+    q sRet
+]]></Implementation>
+</Method>
+
+<Method name="MailBody">
+<Description>
+Metoda pro vyskladani tela emailu pro kazdeho uzivatele zvlast s linkem
+na souhlas a nesouhlas uzivatele
+Parametry: pMailBody - samotne telo emailu
+           pEmail    - email dotycneho cloveka
+           pSEP      - separator emailu
+           pLink    - link na soubor 
+           pT001    - 001 katalogoveho zaznamu
+Navratova hodnota: "" - vse ok
+                   chyba
+
+24.05.14 tt; pridana anglicka verze souhlasu se zverejnenim
+30.06.13 tt; oprava dotahování handle linku
+21.02.12 tt; opravena drobna chyba sT200a</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pMailBody,pEmail,pSEP,pLink,pT001]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s data("sTC60a") =""
+  s data("sZf") =""
+  s sBaseURL = ##class(i2.html.tpl).getBaseURL()  ; www adresa do rootu stránek IPCu
+  s sRet = "",sZf="",sT200a=pT001,sTC60a="Nepodařilo se otevřít zdrojový dokument pro získání linku."
+  
+  if ##class(User.MARC).readX(.handle,"CavUnEpca",pT001,"T") 
+  { ; uspesne se podarilo otevrit
+    s sZf=##class(User.Util).HTMLfixup($$$getTagX(.handle,"Tbca"))
+    s sT200a=$$$getTagX(.handle,"200a")
+    s sTC60a=$$$getTagX(.handle,"C60a")    ; pridany handle
+    s data("sTC60a") = sTC60a
+    s data("sZf") = sZf
+  }
+  else
+  { ; vypis chyby
+    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).MailBody"
+  } 
+  s data("IDX")="cav_un_epca*"_pT001
+  s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_pT001,sT200a)
+
+  /// 20.06.13 tt; MailBody: dan handle link jako link
+  /// 15.06.14 tt; pridan text do emailu "English version below"
+  s pMailBody="English version below"_pSEP_pSEP_"Vážená paní/ vážený pane,"_pSEP_pSEP_
+  "do Institucionálního repozitáře ASEP AV ČR, který je spravován Knihovnou AV ČR, v. v. i. byl uložen plný text práce, jejímž jste (spolu)autorem/autorkou."_pSEP_pSEP
+  s pMailBody=pMailBody_sZf_pSEP_pSEP
+  ;s pMailBody=pMailBody_"Plný text práce bude dostupný permanentně z URL: <a href="""_pLink_""">"_pLink_"</a>"_pSEP_sLinkRec_pSEP
+  ;s pMailBody=pMailBody_"Plný text práce bude dostupný u záznamu: " _sLinkRec_pSEP
+  ;s pMailBody=pMailBody_"Prosím, používejte tento odkaz při citování."_pSEP
+  s pMailBody=pMailBody_"Trvalý odkaz: <a href=""" _sTC60a_""">"_sTC60a_"</a>"_pSEP
+  s pMailBody=pMailBody_pSEP_"S pozdravem"_pSEP_pSEP
+  s pMailBody=pMailBody_"Správa repozitáře: arl@lib.cas.cz"_pSEP
+  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx=cav"">https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx=cav</a>"_pSEP
+ 
+  ; 24.05.14 tt; pridana anglicka verze souhlasu se zverejnenim
+  s pMailBody=pMailBody_pSEP_pSEP_pSEP_pSEP
+  s pMailBody=pMailBody_"Dear Sir or Madam,"_pSEP_pSEP_
+  "the fulltext of the bellow mentioned work of which you are the (co-)author has been archived in the Institutional Repository of AS CR"_pSEP_pSEP
+  s pMailBody=pMailBody_sZf_pSEP_pSEP
+  s pMailBody=pMailBody_"Permanent link: <a href=""" _sTC60a_""">"_sTC60a_"</a>"_pSEP
+  s pMailBody=pMailBody_pSEP_"Yours faithfully"_pSEP_pSEP
+  s pMailBody=pMailBody_"The administration of The Institutional Repository: arl@lib.cas.cz"_pSEP
+  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/arl-cav/en/expanded-search/"">https:/asep.lib.cas.cz/arl-cav/en/expanded-search/</a>"_pSEP
+
+
+  ; 20.06.13 tt; upraven text o diakritiku
+  s pMailBody=$tr(pMailBody,"ÁÉÍÓÚÝČĎĚŇŘŠŤŽŮÅŠŽÕÄÖÜÀÂÇÉÈÊËÎÏÔÙÛÜŽŠČĆĐĀĒĪŪČŠŽĻĶŅĢÖÜŐŰÄÖÜËÏĄĆĘŁŃÓŚŹŻĂÂÎȘȚÁÄČĎÉÍĹĽŇÓÔŔŠŤÚÝŽÑÅÄÖÇŞĞĂÂĐÊÔƠƯ"
+                           ,"AEIOUYCDENRSTZUASZOAOUAACEEEEIIOUUUZSCCDAEIUCSZLKNGOUOUAOUEIACELNOSZZAAISTAACDEILLNOORSTUYZNAAOCSGAADEOOU")
+  s pMailBody=##class(User.Util).diaTR(pMailBody)
+
+  
+  q sRet
+]]></Implementation>
+</Method>
+
+<Method name="genNusl856">
+<Description><![CDATA[
+<pre> Metoda pro vygenerovani noveho tagu 856 s overenim, ze jiz neexistuje.
+Parametry: pT001    - 001 katalogoveho zaznamu
+           pLink    - link na soubor 
+Navratova hodnota: "" - vse ok
+                   chyba
+
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pT001,pLink=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet="", bFind=0    ; navratova hodnota
+  if ##class(User.MARC).readX(.handle,"CavUnEpca",pT001) 
+  { ; uspesne se podarilo otevrit
+    s c=0
+    d { ; prohledame vsechny 856
+      s sT856=$$$getTagXC(.handle,"856",.c) ; vsetky citacie
+      continue:((sT856="")&&(c'=0))
+      if (sT856'="")
+      { ; pokud mame vyplnene data, muzeme provadet akce 
+        s sT856u=$$$getSubTagStr(sT856,"u") ; ziskame subtag 
+        ; https:/asep.lib.cas.cz/i2/content.csg.cls?repo=crepo1&key=27772635561
+        s:($f(sT856u,pLink)) bFind=1        
+      }
+    } while (c'=0)
+    
+    if (bFind=0)
+    { ; pokud nebyla 856 nalezena, ulozim si data do handlu 
+      ; pridame pole 856 s priznakem, ze ma jit pro Nusl
+      d ##class(User.MARC).appendLineX(.handle,"856    "_$c(31)_"u"_pLink_$c(31)_"xN") 
+      s st=##class(User.MARC).writeX(.handle)     ; ulozim handle
+      ; zkontroluji spravnost
+      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genNusl856"
+    }    
+  }
+  else
+  { ; vypis chyby
+    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genNusl856"
+  } 
+  
+  q sRet
+]]></Implementation>
+</Method>
+
+<Method name="genC52">
+<Description><![CDATA[
+<pre> Metoda pro vygenerovani tagu C52 s overenim.
+C52 $a - stav v zaznamu
+    $b - omezeni
+    $c - pridana poznamka - hodnota NUSL
+Parametry: array         - cele pole content serveru
+           pT001         - 001 katalogoveho zaznamu\
+           pState        - stav, defaultni hodnota je 4
+           pAccession    - typ pristupu 
+Navratova hodnota: "" - vse ok
+                   chyba
+!!! zmeny i do ##class(User.CavS).generateC52(.handle)
+
+28.01.20 tt; generateC52: provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n
+01.03.19 tt; pridan priznak pro smlouvu - specialni typ
+03.01.16 tt; odstranen zapis s chronologii pri nahrani fulltextu k zaznamu
+13.03.15 tt; pridano generovani C52m 
+17.12.14 tt; pridany priznak pro pregenerovani
+10.12.14 tt; upravena logika
+06.12.14 tt; doplneni generovani tagu C52 - chod, crec
+06.10.12 tt; pridano jako parametr cele pole, pro dalsi mozne vyuziti pri volani genC52
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,pT001,pState="4",pAccession=""]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet="", bCH=0,sPozn="",sRec="",sHod="",sSml="",sSTm=""   ; navratova hodnota
+  ; pokud mame fulltext do nuslu, pridame poznamku
+  s:($g(array("nusl"))="true") sPozn="nusl" 
+  s:($g(array("recenze"))="true") sRec="rec"
+  s:($g(array("hodnoceni"))="true") sHod="hod"
+  s:($g(array("version"),"")="SML") sSml="sml"
+  s sLokKey=$g(array("key"),"")
+  
+  if ##class(User.MARC).readX(.handle,"CavUnEpca",pT001) 
+  { ; uspesne se podarilo otevrit
+    s sTC52=$$$getTagX(.handle,"C52") ; vsetky citacie
+    if (sTC52'="")
+    { ; pokud mame vyplnene data, muzeme provadet akce 
+      if ('$f(sTC52,$c(31)_"a"_pState))
+      { ; pokud nemam stav v subtagu a, pridam ho do tagu
+        s sTC52=sTC52_$c(31)_"a"_pState       ; pridame stav na konec
+        s sSTm=sSTm_pState 
+        s bCH=1                               ; nastavime priznak zmeny
+      }
+      if ('$f(sTC52,$c(31)_"b"_pAccession))
+      { ; pokud nemam stav v subtagu a, pridam ho do tagu
+        s sTC52=sTC52_$c(31)_"b"_pAccession   ; pridame omezeni na konec
+        s sSTm=sSTm_pAccession 
+        s bCH=1                               ; nastavime priznak zmeny
+      }
+      if (('$f(sTC52,$c(31)_"c"_sPozn))&&(sPozn'=""))
+      { ; pokud nemame v zaznamu poznamku, pridame
+        s sTC52=sTC52_$c(31)_"c"_sPozn        ; pridame omezeni na konec
+        s sSTm=sSTm_"n" 
+        s bCH=1                               ; nastavime priznak zmeny
+      }
+      if (('$f(sTC52,$c(31)_"c"_sRec))&&(sRec'=""))
+      { ; pokud nemame v zaznamu recenze
+        s sTC52=sTC52_$c(31)_"c"_sRec         ; pridame omezeni na konec
+        s sSTm=sSTm_"r" 
+        s bCH=1                               ; nastavime priznak zmeny
+      }
+      if (('$f(sTC52,$c(31)_"c"_sHod))&&(sHod'=""))
+      { ; pokud nemame v hodnoceni, pridame
+        s sTC52=sTC52_$c(31)_"c"_sHod         ; pridame omezeni na konec
+        s sSTm=sSTm_"h" 
+        s bCH=1                               ; nastavime priznak zmeny
+      }
+       if (('$f(sTC52,$c(31)_"c"_sSml))&&(sSml'=""))
+      { /// 01.03.19 tt; pridan priznak pro smlouvu - specialni typ
+        s sTC52=sTC52_$c(31)_"c"_sSml         ; pridame omezeni na konec
+        s sSTm=sSTm_"s" 
+        s bCH=1                               ; nastavime priznak zmeny
+      }
+      
+      if (sSTm'="")
+      { ; 13.03.15 tt; pridano generovani C52m 
+        s sSTmAll=$c(31)_"m"_##class(User.CavS).generateC52m(pT001,"CavUnEpca",$g(array("key"),""),sSTm)
+        if (('$f(sTC52_$c(31),sSTmAll_$c(31))))
+        { ; zpracovani subtagu m
+          s sTC52=##class(User.MARC).setSubTagStr(sTC52,sSTmAll)
+          s bCH=1                               ; nastavime priznak zmeny
+        }
+      }
+      ; 17.12.14 tt; pridany priznak pro pregenerovani
+      s bCH=1
+    }
+    else
+    { ; zalozime novou C52 - pokud mame hodnoty vyplnene      
+      if ((pState'="")&&(pAccession'="")) 
+      { ; zalozime novou C52
+        s bCH=1                     ; pridame priznak zmeny
+        s sTC52="C52    "_$c(31)_"a"_pState_$c(31)_"b"_pAccession
+        ; pridame poznamku, pokud neni prazdna
+        s:(sPozn'="") sTC52=sTC52_$c(31)_"c"_sPozn
+        s:(sHod'="") sTC52=sTC52_$c(31)_"c"_sHod
+        s:(sRec'="") sTC52=sTC52_$c(31)_"c"_sRec
+        s:(sSml'="") sTC52=sTC52_$c(31)_"c"_sSml   
+        
+        ; 13.03.15 tt; pridano generovani C52m 
+        s sSTm=sSTm_pState_pAccession
+        s:(sPozn'="") sSTm=sSTm_"n"
+        s:(sHod'="") sSTm=sSTm_"h"
+        s:(sRec'="") sSTm=sSTm_"r"
+        s:(sSml'="") sSTm=sSTm_"s"
+        
+        s sSTmAll=$c(31)_"m"_##class(User.CavS).generateC52m(pT001,"CavUnEpca",$g(array("key"),""),sSTm)
+        if (('$f((sTC52_$c(31)),(sSTmAll_$c(31)))))
+        { ; zpracovani subtagu m
+          s sTC52=##class(User.MARC).setSubTagStr(sTC52,sSTmAll)
+          s bCH=1                               ; nastavime priznak zmeny
+        }
+      }
+    }
+        
+    if ($l(sTC52)>9)
+    { ; 28.01.20 tt; provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n
+      s sTC52=sTC52_$c(31)_"n"_##class(User.MARC).genT005(0)    
+      s bCH=1                               ; nastavime priznak zmeny - protoze datum se meni vzdy
+    }
+    
+    if (bCH=1)
+    { ; pokud mam zmenu, ulozim si handle
+      d $$$setTagX(.handle,sTC52)                 ; ulozime si zmenene tag C52
+      /// 03.01.16 tt; odstranen zapis s chronologii pri nahrani fulltextu k zaznamu
+      s st=##class(User.MARC).writeX(.handle,1,1,,1_$c(10)_"arl_content"_$c(10)_"127.0.0.1")     ; ulozim handle
+      //s st=##class(User.MARC).writeX(.handle,1,1,,0)     ; ulozim handle
+      ; zkontroluji spravnost
+      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genC52"
+    }
+  }
+  else
+  { ; vypis chyby
+    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genC52"
+  } 
+  
+  q sRet
+]]></Implementation>
+</Method>
+</Class>
+</Export>

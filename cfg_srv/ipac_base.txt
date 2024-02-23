@@ -1,0 +1,2691 @@
+# @id UnTablesd BASE_IPAC2_CHANGELOG
+002    Tento subor obsahuje zakladne nastavenia IPAC - spolocne
+002    pre vsetky instalacie.
+002    ---
+002    15.08.23 jk; do BASE_IPAC2_SERVER_THOMSON a BASE_IPAC2_SERVER_THOMSON_AUTH pridana autentizace username password, vypnut curl
+002    03.08.23 jk; Clarivate WOS
+002    14.06.23 jk; do BASE_IPAC2_WS_COMMANDS pridan getShibboleth
+002    23.01.23 jk; do BASE_IPAC2_WS_COMMANDS pridan xnotifysim
+002    03.08.22 lp; oprava https: v hlavickach BASE_IPAC2_EXPORT zpatky na http:
+002    27.04.22 jk; pridan xexport BASE_IPAC2_WS_COMMANDS
+002    19.08.21 ln; pridan um BASE_IPAC2_WS_COMMANDS
+002    12.08.21 ln; do BASE_IPAC2_FLD pridano pole A150
+002    02.06.21 jk; pridan ximport BASE_IPAC2_WS_COMMANDS
+002    21.01.21 jk; pridan xnotify BASE_IPAC2_WS_COMMANDS
+002    ...
+002    ---pisat zvrchu
+###
+# @id UnTablesd BASE_IPAC2_MAIN
+290    asloaczeaengager
+400    a60b10c1
+###
+# @id UnTablesd BASE_IPAC2_EXPORT
+002    Formaty exportov - exporty spolocne pre vsetky instalacie.
+002    03.08.22 lp; oprava https: v hlavickach zpatky na http:
+002    16.01.19 js; doplnene UN_WEBFORM_ZDROJ_C82
+002    05.03.18 jk; pridan HTML_ISU_GDPR
+002    18.03.16 js; doplneny zobrazovaci format M21_GEO_AUTH na dotahovanie geoautorit v TAGMAP
+002    08.03.16 js; doplnený LINEMARCZ39.50 pre filtrovanie obsahu záznamu pre Z39.50 server
+002    24.07.15 js; opraveny preklep v nastavenie TF_EXT_X1_US
+002    13.04.15 jk; pridan ZF_EXT_X1_US
+002    05.01.15 jk; doplnen US_BASIC_EXT
+002    11.09.14 jk; ohlasy TF_EXT_X1, ZF_EXT_X1, UN_BASIC_EXT
+002    04.09.13 tt; odstranena duplicita v UNA_BASIC 200a
+002    19.02.13 on; doplneny UN_BASIC
+002    19.01.10 on; doplneny US_BASIC
+002    06.01.10 ln; I2_ZF zrusen, obsah preveden do I2_EXPORT
+002    08.10.09 lp; pridana kopie MARCXML pro OAI - NKP pozaduje pevny nazev formatu "marc21" a potlaceni prefixu "marc:"
+002    03.07.09 lp; pridane formaty pro OAI server
+002    25.06.09 rs; pridany USA_BASIC
+002    04.06.09 jr; pridane stand.ZF pro klienta
+002    06.11.07 rs; uprava TF formatu; doplnenie ISO690, doplnenie ukazky TF_UN_U_NQ
+002    15.02.07 rs; zakladny tvar; uzivatelske exporty patria do i2_user_....txt
+002    --
+002    POPIS viz. blizsie dokumentacia
+002      $c je callback funkcia - viz. priklady v i2.export (moze byt umiestnena v lubvolnej triede)
+002      $d je koncovka mena suboru, kt. sa ponukne v browseri pri SaveAs (iny ucel nema)
+002      $e parametre ZF (individualne pre kazdy typ exportu)
+002      $f 0/1 ci nacitat Txx
+002      $h napoveda
+002      $n interna poznamka
+002    -
+002    zakladne formaty
+200    aLINEMARCbRiadkový MARC#Řádkový MARC#Line MARCc##class(i2.export).exportLineMARCdtxth<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> v riadkovom formáte.#<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> v řádkovém formátu.#<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> line format.
+200    aLINEMARCZ3950bRiadkový MARC#Řádkový MARC#Line MARCc##class(i2.export).exportLineMARCdtxth<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> v riadkovom formáte.#<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> v řádkovém formátu.#<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> line format.
+200    aISO2709bISO2709c##class(i2.export).exportISO2709disoh<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> vo formáte <a rel="external" href="http://en.wikipedia.org/wiki/ISO_2709">ISO2709</a>.#<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> ve formátu <a rel="external" href="http://en.wikipedia.org/wiki/ISO_2709">ISO2709</a>.#<a rel="external" href="http://www.loc.gov/marc/umb/"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></a> in <a rel="external" href="http://en.wikipedia.org/wiki/ISO_2709">ISO2709</a>.
+200    aM21_787_245bMriežka#Mřížka#Gridc##class(i2.export).exportTF2TXTdtxteUnTablesd*ZF_M21_787_245
+200    aXMLbXMLc##class(i2.export).exportXMLLOCdxmlh<a rel="external" href="http://www.loc.gov/marc/marcxml.html"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr> v XML</a> podľa Library of Congress.#<a rel="external" href="http://www.loc.gov/marc/marcxml.html"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr> v XML</a> dle Library of Congress.#<a rel="external" href="http://www.loc.gov/marc/marcxml.html"><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr> in XML</a> by Library of Congress.
+002    -
+002    MARCXML podle LOC pro OAI
+200    aOAI_MARCXMLbMARC in XML by LOCc##class(i2.export).exportXMLLOCdxmlemarc:g.ghttp://www.loc.gov/standards/marcxml/schema/MARC21slim.xsdghttp://www.loc.gov/MARC21/slimh<a rel="external" href="http://www.loc.gov/marc/marcxml.html">MARC v XML</a> podľa Library of Congress.#<a rel="external" href="http://www.loc.gov/marc/marcxml.html">MARC v XML</a> dle Library of Congress.#<a rel="external" href="http://www.loc.gov/marc/marcxml.html">MARC in XML</a> by Library of Congress.j##class(rep.zf.ExpIso).symKatNK(.handle,1)
+002    kopie MARCXML - NKP pozaduje pevny nazev formatu "marc21" a potlaceni prefixu "marc:"
+200    aMARC21bMARC21 in XML by LOC (NK version)c##class(i2.export).exportXMLLOCdxmlg.ghttp://www.loc.gov/standards/marcxml/schema/MARC21slim.xsdghttp://www.loc.gov/MARC21/slimh<a rel="external" href="http://www.loc.gov/marc/marcxml.html">MARC v XML</a> podľa Library of Congress.#<a rel="external" href="http://www.loc.gov/marc/marcxml.html">MARC v XML</a> dle Library of Congress.#<a rel="external" href="http://www.loc.gov/marc/marcxml.html">MARC in XML</a> by Library of Congress.j##class(rep.zf.ExpIso).symKatNK(.handle,1)
+002    XML DublinCore pro OAI
+200    aOAI_DCbDUBLINCOREc##class(i2.export).exportDublinCoredxmlg.ghttp://www.openarchives.org/OAI/2.0/oai_dc.xsdghttp://www.openarchives.org/OAI/2.0/oai_dch<a rel="external" href="http://dublincore.org/">Dublin Core Metadata Initiative</a>j##class(rep.zf.ExpIso).symKatNK(.handle,1)
+002    -
+002    volitelne spolocne exportne formaty
+002    ukazkovy CSV format
+200    aCSV1bCSV ukážka##CSV examplec##class(i2.export).exportCSVdtxt
+002    defaultny ukazkovy ISBD do TXT 
+200    aISBDbISBDc##class(i2.export).exportISBDTXTdtxteUnTablesd*I2_ISBD_DEFAULTh<a href="http://www.ifla.org/VII/s13/pubs/isbd.htm">ISBD</a> formát v TXT (len pre bibliografické záznamy).#<a href="http://www.ifla.org/VII/s13/pubs/isbd.htm">ISBD</a> formát v TXT (jen pro bibliografické záznamy).#<a href="http://www.ifla.org/VII/s13/pubs/isbd.htm">ISBD</a> format in text file (only for bibliographic records).
+002    -
+200    aM21_GEO_AUTHbPomocný zobrazovací formát pre dotiahnutie geoautority#Pomocný zobrazovací formát pro dotažení geoautorityc##class(i2.export).exportTF2TXTdtxteUnTablesd*M21_GEO_AUTH
+002    zakladny ZF pre bazu citatelov
+002    zapojenia symboliku ako ZF cez univerzalny "plugin" exportTextBasic
+002    POZN: tu je to na ukazku moznosti ako zapojit uzivatelsky ZF napisany v metode triedy
+002    ako ZF v I2_EXPORT bez nutnosti pisat specialnu obalku - pouzije sa univerzalna obalka
+002    exportTextBasic.
+002    POZN2: ak by bolo treba lepsi ZF z bazy citatelov - je potreba premenovat ISBD ZF na "TEXT"
+200    aUSER_BASIC  bUser basicc##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic(.result,.handle,"100a,100k",". ")
+002    a potom v "TEXT" ZF umoznit pouzitie bloku "ub" z TF.
+200    aUSER_BASIC2 bUser basicc##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic2(.handle,"100a,100k",". ")
+002    trivialny fmt pre autority - fakt len na ukazku a velmi jednoduche pouzitia 18.06.08 rs
+002    02.04.09 rs; pokusne pridana aj podpora pre M21
+200    aUNA_BASIC   bAuthority basicc##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic2(.handle,"2**a,2**b,2**c,2**d"," ")
+200    aUSA_BASIC   bAuthority basicc##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic2(.handle,"1**a,1**b,1**c,1**d,1**t,1**v"," ")
+002    19.01.10 on; ZF potrebny pro webovou katalogizaci, jeho format neni podle zadneho standardu, muze se menit
+200    aUS_BASIC    bBib basicc##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic2(.handle,"245a,245b,245p,100a,260c,915a,915b,915c"," ")
+200    aUN_BASIC    bBib basicc##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic2(.handle,"200a,200e,200i,200h,700a,700b,210d,915a,915b,915c"," ")
+200    aUN_BASIC_EXTbBib basic ohlasy unimarcc##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic2(.handle,"200a,700a,700b"," ")
+200    aUS_BASIC_EXTbBib basic ohlasy m21c##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic2(.handle,"245a,100a,700a"," ")
+200    aUN_WEBFORM_ZDROJ_C82bPomocný zobrazovací formát pre webové formuláre s údajmi o zdrojovom dokumente s poľom C82#Pomocný zobrazovací formát pro webové formuláře s údaji o zdrojovém dokumentu s polem C82c##class(i2.export).exportTF2TXTdtxteUnTablesd*UN_WEBFORM_ZDROJ_C82
+002    -
+002    trivialny fmt pre holdingy - fakt len na ukazku a velmi jednoduche pouzitia (18.06.08 rs)
+002    22.07.08 rs;
+200    aHOLD_BASIC  bUser basicc##class(i2.export).exportTextBasicdtxte##class(i2.export).textUserBasic(.result,.handle,"T03a,100s,100t,100b",", ")
+002    -
+002    22.08.11 tt; oprava definice standardního zf TF_UN_U
+200    aTF_UN_UbTágovaný podrobný#Tagovaný podrobnýc##class(i2.export).exportTFdhtmleUnTablesd*I2_TFDEF_UNIMARC_UFipfmt-h
+002    -bez prekladu qlinkov
+200    aTF_UN_U_NQbTágovaný podrobný#Tagovaný podrobnýc##class(i2.export).exportTF2TXTdtxteUnTablesd*I2_TFDEF_UNIMARC_UF,-
+002    -
+002    ISO format moze byt v roznych variantach (H/HS/HX/HSO.... data format rtf/txt/html/..)
+200    aISO690_HSbISO690c##class(i2.export).exportISO690dtxteHS,1f1
+200    aISO690_HS_RTFbISO690c##class(i2.export).exportISO690dtxteHS,0f1
+002    ----
+002    04.06.09 jr; zapojeni vsech standardnich ZF (CAT a AUT pouze pro US)
+200    aTF_US_AUTH_UF_CbTágovaný podrobný AUT#Tagovaný podrobný AUTc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_US_AUTH_UF_Cipfmt-h
+200    aTF_US_AUTH_SF_CbTágovaný skrátený AUT#Tagovaný zkrácený AUTc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_US_AUTH_SF_Cipfmt-h
+200    aTF_US_CAT_UF_CbTágovaný podrobný CAT#Tagovaný podrobný CATc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_US_CAT_UF_Cipfmt-h
+200    aTF_US_CAT_SF_CbTágovaný skrátený AUT#Tagovaný zkrácený AUTc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_US_CAT_SF_Cipfmt-h
+200    aTF_HOLD_CbTágovaný porobný HOLD#Tagovaný podrobný HOLDc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_HOLD_Cipfmt-h
+200    aTF_US_CATH_UF_CbTágovaný podrobný HIST#Tagovaný podrobný HISTc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_US_CATH_UF_Cipfmt-h
+200    aTF_US_CATH_SF_CbTágovaný skrátený HIST#Tagovaný zkrácený HISTc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_US_CATH_SF_Cipfmt-h
+200    aTF_ACQI_CbTágovaný ACQI#Tagovaný ACQIc##class(i2.export).exportTF2TXTdtxteUnTablesd*I2_TF_ACQI_C
+200    aTF_ACQO_CbTágovaný ACQO#Tagovaný ACQOc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_ACQO_Cipfmt-h
+200    aTF_SUBS_CbTágovaný SUBSCR#Tagovaný SUBSCRc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_SUBS_Cipfmt-h
+200    aTF_USER_CbTágovaný USER#Tagovaný USERc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_USER_Cipfmt-h
+200    aTF_TRX_CbTágovaný TRX#Tagovaný TRXc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_TRX_Cipfmt-h
+002    ----
+002    06.01.10 ln; I2_ZF zrusen, obsah preveden do I2_EXPORT
+002    zobrazovacie formaty (ZF) - viz IS_SERVER_* 
+200    aSHORTbSkrátený#Zkrácený#Shortc##class(i2.export).exportTFdtxteUnTablesd*I2_TF_SHORTihlstr-<em class="hl">,</em>
+200    aDATAbMARC#MARC#MARCc##class(i2.export).exportLineMARCipfmt-h
+200    aISBDHbISBDc##class(i2.export).exportISBDTXTdtxteUnTablesd*I2_ISBD_DEFAULTipfmt-h
+200    aTF_M21SbTágovaný stručný#Tagovaný stručný#Tagged shortc##class(i2.export).exportTFdhtmleUnTablesd*I2_TFDEF_MARC21_SFipfmt-h
+200    aTF_M21UbTágovaný podrobný#Tagovaný podrobný#Tagged detailedc##class(i2.export).exportTFdhtmleUnTablesd*I2_TFDEF_MARC21_UFipfmt-h
+002    -
+200    aTF_UN_UHbTágovaný podrobný#Tagovaný podrobnýc##class(i2.export).exportTFdhtmleUnTablesd*I2_TFDEF_UNIMARC_UFipfmt-h
+200    aABSTRACTbAbstrakt##Abstractc##class(i2.export).exportTFdtxteUnTablesd*I2_TF_SHORT_Fihlstr-<em class="hl">,</em>
+002    - toto je specialny ZF - volany u EBSCO baz z vnutra ZF
+002    - pouziva sa na zobrazenie fulltextu z vnutra tagu 900 - nemal by byt
+002    - medzi beznymi ZF
+200    aEB_FULLTXbEBSCO Fulltextc##class(i2.export).exportTFdtxteUnTablesd*I2_TF_SHORT_Tihlstr-<em class="hl">,</em>
+200    aTF_ISUbTágovaný konto#Tagovaný kontoc##class(i2.export).exportTFdhtmleUnTablesd*I2_TF_USER_DEFAULTipfmt-h#tf_table_class-zfTFAccount
+200    aHTML_ISU_GDPRbTágovaný formát GDPRc##class(i2.export).exportTFdhtmleUnTablesd*TF_ISU_GDPRipfmt-h
+200    aTF_UNA_UbTágovaný podrobný#Tagovaný podrobnýc##class(i2.export).exportTFdhtmleUnTablesd*I2_TFDEF_UNIMARC_A_UFipfmt-h
+200    aTF_EXT_X1bOhlasy - detail#Ohlasy - detail#Citations - detailedc##class(i2.export).exportTFdhtmleUnTablesd*TF_EXT_X1_UN_CATipfmt-h
+200    aTF_EXT_X1_USbOhlasy - detail#Ohlasy - detail#Citations - detailedc##class(i2.export).exportTFdhtmleUnTablesd*TF_EXT_X1_US_CATipfmt-h
+002    - chronologie mrizka
+200    aTF_CHRON_GRIDbMriežka#Mřížkac##class(i2.export).exportTF2TXTdtxteUnTablesd*TF_CHRON_GRID
+002    -
+210    aZF1bSHORTbISBDHbTF_UN_UH
+210    aZF1DbSHORTbISBDHbTF_UN_UHbDATA
+210    aZF2bSHORTbABSTRACTbTF_M21SbTF_M21UbDATA
+210    aZF3bTF_M21SbTF_M21UbDATAbSHORT
+210    aZF_EXT_X1bTF_EXT_X1bISBDbDATA
+210    aZF_EXT_X1_USbTF_EXT_X1_USbISBDbDATA
+002    -
+###
+# @id UnTablesd BASE_IPAC2_LOGINCHECKS
+002    Obmedzenia na IP adresy + kody pre login urovne z T04$a symboliku v XxxIsUser 
+002    atd.
+002    --
+002    "1" je logged in; "0" not logged-in; vtedy ak nemame symbolik T04$a
+200    a0cneprihlásený používateľ#nepřihlášený uživatel#unauthorized
+200    a1cprihlásený používateľ#přihlášený uživatel#authorized user
+200    aI2EXPIREDcPlatnosť preukazu vypršala: obmedzený prístup#Platnost průkazu vypršela: omezený přístup#ID card expired: restricted access
+200    aIPAC_ADMbmethodcIPAC Administrátor#IPAC Administrátor#IPAC Admin
+###
+# @id UnTablesd BASE_IPAC2_SORT
+002    triediace sekvencie - viz IS_SERVER_*
+002    03.08.23 jk; Clarivate WOS
+002    22.11.18 ln; pridano trideni NEW a SCORE
+002    24.07.14 jk; upravy Elsevier, Ebsco a Thomson
+002    10.12.10 ja; doplnenie indexu AUT 
+002    25.06.08 jt; pridane sort-polia pre Thomson-Web of Science
+002    03.04.08 jt; pridane podpole $e pre nazvy sort-poli vo federativnom vyhladavani + pridane polia pre Elsevier, jednotlive zdroje su oddelene # 
+002                 (zatial Scopus#ScienceDirect)
+200    aDATEbDátum vydania (zostupne)#Datum vydání (sestupně)#Publication Year (descending)c1=30c i>escopus-date,sd-date,wos-Date,clwos-PY+D,clccc-PY+D
+200    aTITLEbNázov#Název#Titlec1=4c i<escopus-sourceTitle
+200    aAUTbAutor#Autor#Authorc1=1c i<eclwos-AU+A
+200    aDK_TITLEbDruh dokumentu, názov#Druh dokumentu, název#Document Type, Titlec1=1031c i< 1=4c i<
+200    aDT1bDátum vytvorenia záznamu#Datum vytvoření záznamu#Entry Datec1=2485c i>
+200    aSRC_TITbNázov zdroj.dokumentu#Název zdroj.dokumentu#Source Titlec1=2464c i< 1=4c i<
+200    aNONEbNetriedené#Nesetříděno#UnsortednToto je fiktivne pole kvoli popisne - nezakladat do subsetov ale odtialto nemazat1
+200    aNEWbNajnovšie najskôr#Nejnovější navrch#Newest first
+200    aSCOREbPodľa relevancie#Podle relevance#Relevant first
+200    aAUP_TITLEbAutor, názov#Autor, název#Author, Titlec1=2466c i< 1=4c i<
+200    aDATE_AUP_TITLEbDátum vydania (zostupne), autor, názov#Datum vydání (sestupně), autor, název#Publication Year (descending), Author, Titlec1=30c i> 1=2466c i< 1=4c i<
+200    aDEFAULTbOd najnovšieho#Od nejnovějšího#Newest firstc1=2524c i>nDefaultné triedenie podľa dátumu zverejnenia#Defaultní třídění podle data zveřejnění#Default sorting by date of publication
+002     ---------------------PROQUEST SORT---------------------
+200    aPQCHRONObNajnovšie najskôr#Nejnovější navrch#Newest firstcPQCHRONO
+200    aPQRELEVbPodľa relevancie#Podle relevance#Relevant firstcPQRELEV
+210    aSORTXMLPQbNONEbPQCHRONObPQRELEV
+002     ---------------------PROQUEST SORT---------------------  
+002     --------------------- ELSEVIER, EBSCO, THOMSON -----------------------
+200    aCOVERDATEb##Cover dateescopus-coverDate,sd-coverDate
+200    aPUBNAMEbNázov publikácie#Název publikace#Publication nameescopus-publicationName,sd-publicationName
+200    aCITEDbPočet citácií#Počet citací#Number of times the article is citedescopus-citedby-count,clwos-TC+A,clccc-TC+A
+200    aRELbRelevancia#Relevance#Relevanceeescopus-relevancy,sd-relevancy,wos-Relevance,ebscosearch-relevance,clwos-RS+D,clccc-RS+D
+200    aDATE2bDátum vydania (vzostupne)#Datum vydání (vzestupně)#Publication Year (ascending)eebscosearch-date2,clwos-PY+D,clccc-PY+D
+002     --------------------- ELSEVIER ------------------------
+210    aSORTSCObDATEbTITLEbCITEDbPUBNAMEbRELbCOVERDATE
+210    aSORTSDIbDATEbPUBNAMEbRELbCOVERDATE
+002     --------------------- THOMSON ------------------------
+200    aCITEDWOSbPočet citácií vo WOS#Počet citací ve WOS#Number of times the article is cited in WOSewos-Times Cited
+210    aSORTWOSbDATEbRELbCITEDWOS
+002     --------------------- EBSCO ------------------------
+210    aSORTEBSCOSEARCHbDATEbDATE2bREL
+002     --------------------- CLARIVATE WOS ------------------------
+200    aCLWOSCFbNázov konferencie#Název konference#Conference Titleeclwos-CF+A,clccc-CF+A
+200    aCLWOSCYbCitovaní - rok#Citovaní - rok#Cited Yeareclwos-CY+A,clccc-CY+A
+210    aSORTCLWOSbDATEbDATE2bAUTbCLWOSCFbCLWOSCYbCITEDbREL
+002     ---
+002    sablony (subsety)
+210    aSORT1bDATEbTITLEbDK_TITLEbDT1bSRC_TITbNONE
+210    aSORT2bDATEbTITLEbDK_TITLEbDT1bNONE
+002    -
+210    aSORTA1bTITLE
+###
+# @id UnTablesd BASE_IPAC2_SORTBS
+002    triediace sekvencie - viz IS_SERVER_* 
+200    aDATEbDátum vydania (zostupne)#Datum vydání (sestupně)#Publication year (descending)c'+DT
+200    aTITLEbNázov#Název#TitlecTI
+200    aAUTHORbAutor#Autor#AuthorcAU
+002                                                                            -
+210    aBS_SORT_UNbTITLEbAUTHORbDATE
+210    aBS_SORT_UNAbTITLE
+###
+# @id UnTablesd BASE_IPAC2_WS_COMMANDS
+002    Sluzby WS definovane pre vsetky servery ("builtin" prikazy)
+002    viz. tiez: https://cosmo2/wiki/index.php?title=arlint:I2:ws_internal
+002    14.06.23 jk; pridan getShibboleth
+002    23.01.23 jk; pridan xnotifysim
+002    21.01.21 jk; pridan xnotify
+002    19.09.18 jk; pridan filterrechandle
+002    09.04.18 on; zmena opravneni joinrecords
+002    07.03.18 mj; pridan saveAnyRecordCREPC
+002    07.03.18 mj; pridan setSesParams
+002    31.01.18 jk; pridan joinrecords
+002    23.01.18 mj; pridan setSesParams
+002    11.12.17 jk; pridan filterrec
+002    18.04.17 jk; pridan getindexes
+002    06.04.17 jk; pridan xltc
+002    03.04.17 on; opravneni k webformsread
+002    24.10.16 on; pridan basket
+002    15.03.16 jk; pridan getbasetype
+002    26.10.15 jk; doplene prikaz zenreport
+002    24.07.15 js; doplnene prikazy pre automaticky katalogizaciu
+002    10.11.14 jk; pridan ncip
+002    19.12.12 jk; pridan getReports
+002    11.05.11 tt; novy prikaz changeRecUpNk
+002    18.03.11 jk; prepsano na getFieldsNames
+002    16.03.11 jk; novy prikaz getfieldsnames
+002    16.04.10 rs; novy prikaz sendemail
+002    01.07.09 rs; novy prikaz downloadExtRec
+002    28.05.09 ln; novy prikaz getclconfig
+002    04.05.09 jk; nove prikazy lock a unlock
+002    20.01.09 rs; novy prikaz logininfo
+002    16.12.08 rs; novy prikaz captcha
+002    08.07.08 rs; novy prikaz list2ch
+002    21.05.08 rs; konsolidacia s povodnym WS_COMMANDS a jeho presun do i2_konfig_base.txt
+002    --
+002    --std prikazy
+200    atest          b##class(i2.ws.cmd).cmdTest              ndummy debug command
+200    agetlist       b##class(i2.ws.cmd).cmdGetlist           ngetlist  - nacitanie ^X savelistu do CFS result setu
+200    asavelist      b##class(i2.ws.cmd).cmdSavelist          nsavelist - ulozenie CFS result setu do ^X savelistu
+200    alist2ch       b##class(i2.ws.cmd).cmdList2CH           nkonverzia ^X savelistu z holdingu na katalog a naopak
+200    alogininfo     b##class(i2.ws.cmd).cmdGetLoginInfo      naktualne login info (ma zmysel len, ak bol login do WS via ucet citatela)
+200    alock          b##class(i2.ws.cmd).cmdLock              nlock/refresh ARL zamku
+200    aunlock        b##class(i2.ws.cmd).cmdUnlock            nunlock ARL zamku
+200    agetclconfig   b##class(i2.ws.cmd).cmdGetClConfig       nziskani konfiguracnich zaznamu klienta ze serveru
+200    asetSesParams  b##class(i2.ws.cmd).cmdSetSesParams      nnastaveni session parametru na serveru
+002    --std prikazy z39.50 (hlavne interacia s NK CR resp. NA CR)
+002    - downloadExtRec stiahnutie zaznamu z externeho zdroja do lokalneho katalogu
+002    - interne sa exte pozaduje "w" pravo na CMD_WS_DN_%TARGETTABLEN%; viz. viac v description metody
+200    adownloadExtRecb##class(i2.ws.cmdNK).cmdDownloadExtRecord nstiahnutie zaznamu z externej bazy (zatial hlavne z39.50; napr. NA NK CR) do lokalneho katalogu
+200    auploadExtRec  b##class(i2.ws.cmdNK).cmdUploadExtRecord   nupload zaznamu do externej bazy (zatial hlavne z39.50; bandaska)
+200    aconfirmRec    b##class(i2.ws.cmdNK).cmdConfirmRecord     noperacia schvalenia zaznamu z navrhov do ostrej databazy - specificky pre muz, ale moze sa pouzit aj pre ine implementacie
+002    joinRec sa zatial realne nepouziva
+200    ajoinRec       b##class(i2.ws.cmdNK).cmdJoinRecord        noperacia vymazu zaznamu z ostrej bazy (presnejsie ide o nahradu jedneho zaznamu druhym-kvazi;orig zaznam sa fyzicky nezmaze ale ponecha sa mu link na povodnu verziu) - specificky pre muz, ale moze sa pouzit aj pre ine implementacie
+200    achangeRecUpNk b##class(i2.ws.cmdNK).cmdChangeRecUpNk    nuprava zaznamu z klienta, ktery jde do NK pres bandasku. Zatim jen nahrazeni C99a v 5xx 
+200    agetReports    b##class(i2.ws.cmd).cmdGetReports        nreporty v okne Vystupy klienta
+200    ajoinrecords   b##class(i2.ws.cmd).cmdJoinRecords       cCMD_JOINnspojeni zaznamu
+002    --
+002    vypozickove prikazy (pozn. pre nove prikazy by sa mal pouzit univerzalnejsi sposob
+002                         vychadzajuci zo sposobu volania z klienta)
+002    prava v $c pre getcredit a createpayment by sa mali prehodnotit - asi by bolo mozne
+002    pouzit prava z modulu vypoziciek
+200    agetcredit     b##class(i2.ws.cmd).cmdGetCredit         cCMD_$ICTX_WS_GETCREDIT
+200    agetShibboleth b##class(i2.ws.cmd).cmdGetShibboleth     cCMD_$ICTX_WS_GETCREDIT
+200    acreatepayment b##class(i2.ws.cmd).cmdCreatePayment     cCMD_$ICTX_WS_CREATEPAYMENT
+200    asaveAnyRecordCREPC b##class(i2.ws.cmd).cmdsaveAnyRecordCREPC     cCMD_$ICTX_WS_SAVERECORDCREPCnNactení a ulození jednoho zaznamu z CREPC
+002    statistiky cez WS
+200    areptitread    b##class(i2.ws.cmd).cmdReportTitRead     cCMD_WS_STAT
+200    areptitnews    b##class(i2.ws.cmd).cmdReportTitNews     cCMD_WS_STAT
+200    agetchanges    b##class(i2.ws.cmd).cmdGetChanges        cCMD_WS_GET_CHANGES
+200    agetcount      b##class(i2.ws.cmd).cmdGetCount          cCMD_WS_GET_COUNT
+002    podporne prikazy pre komunikaciu s rezervaciou zariadeni
+200    acomputer2user b##class(User.SPEquip).cmdComputer2User  cCMD_$ICTX_WS_EQUIP
+002    send email
+200    asendemail     b##class(rep.tools.email).sendemail      ndummy debug command
+200    asendEmail2Userb##class(i2.ws.cmd).cmdSendEmail2User    nodeslání emailu čtenáři na všechny jeho emailové adresy
+200    asendMsg2Userb##class(i2.ws.cmd).cmdSendMsg2User  nodeslání notifikace čtenáři
+200    aerrCode2Textb##class(i2.ws.cmd).cmdErrCode2Textnpreklad error code na text podle IS_RETURN_CODE
+002    popisky z tagmaps
+200    agetFieldsNamesb##class(i2.ws.cmd).cmdGetFieldsNamesnvraci popisky (200$b) z tagmap podle jazykove verze
+002    X prikazy
+200    axexport       b##class(i2.ws.cmdX).xex                 cCMD_WS_X n
+200    aximport       b##class(i2.ws.cmdX).xim                 cCMD_WS_X n
+200    axselect       b##class(i2.ws.cmdX).xselect             cCMD_WS_X n
+200    axsort         b##class(i2.ws.cmdX).xsort               cCMD_WS_X n
+200    axlist         b##class(i2.ws.cmdX).xlist               cCMD_WS_X n
+200    axlistsymb     b##class(i2.ws.cmdX).xlistsymb           cCMD_WS_X n
+200    axltv          b##class(i2.ws.cmdX).xltv                cCMD_WS_X n
+200    axltc          b##class(i2.ws.cmdX).xltc                cCMD_WS_X n
+200    axg            b##class(i2.ws.cmdX).xg                  cCMD_WS_X n
+200    axsl           b##class(i2.ws.cmdX).xsl                 cCMD_WS_X n
+200    axgl           b##class(i2.ws.cmdX).xgl                 cCMD_WS_X n
+200    axdl           b##class(i2.ws.cmdX).xdl                 cCMD_WS_X n
+200    axli           b##class(i2.ws.cmdX).xli                 cCMD_WS_X n
+200    axliv          b##class(i2.ws.cmdX).xliv                cCMD_WS_X n
+200    axrefresh      b##class(i2.ws.cmdX).xrefresh            cCMD_WS_X n
+200    axnotify       b##class(i2.ws.cmdX).xnotify             cCMD_WS_X n
+200    axnotifysim    b##class(i2.ws.cmdX).xnotifysim          cCMD_WS_X ntest odeslani notifikace
+200    agetbasetype   b##class(i2.ws.cmdX).getbasetype         cCMD_WS_X nziskani base type tridy
+200    agetindexes    b##class(i2.ws.cmdX).getindexes          cCMD_WS_X nseznam naplnenych indexu tridy
+002    dalsi
+200    ancip          b##class(i2.ws.cmdNcip).ncip             cCMD_WS_NCIPnws pro arl ncip implementovan jako tomcat servlet xcncip2toolkit
+200    agetAKserver   b##class(i2.ws.cmdAutKat).getAKserver    cCMD_$ICTX_AUTKATnprava na automatickou katalogizaci
+200    agetAKData     b##class(i2.ws.cmdAutKat).getAKData      cCMD_$ICTX_AUTKATnprava na automatickou katalogizaci
+200    agenAKHolding  b##class(i2.ws.cmdAutKat).genAKHolding   cCMD_$ICTX_AUTKATnprava na automatickou katalogizaci
+200    azenreport     b##class(i2.ws.cmd).cmdZenReport         cCMD_WS_ZENREPORTnprovolani zen reportu
+200    abasket        b##class(i2.ws.cmdBasket).cmdBasket      cCMD_WS_BASKETnkosik pouzity ve webove katalogizaci
+200    awebformsread  b##class(i2.ws.forms).commandRead        cCMD_$ICTX_WEBEPCAENTRYncteni formularu vytvorenych editorem webovych formularu
+200    awebformswrite b##class(i2.ws.forms).commandWrite       cCMD_$ICTX_WS_FORMSnzapis formularu vytvorenych editorem webovych formularu
+200    aupload        b##class(i2.ws.cmd).upload               cCMD_UPLOADnupload souboru na server do adresare ARLDIR IN
+200    afilterrec     b##class(i2.ws.cmd).filterRec            cCMD_FILTERRECnprovolani filtru nA serveru
+200    afilterrechandle     b##class(i2.ws.cmd).filterRecHandle     cCMD_FILTERRECnprovolání filtru an serveru s předaným záznamem
+200    atransfercontent     b##class(content.ws).cmdTransferContent cCMD_TRANSCONTntransfer souboru z jednoho zaznamu k druhemu
+200    aum            b##class(i2.ws.cmdUM).entry              cCMD_USER_MANAGERnsluzba i3 aplikace pro spravu uzivatelu a jejich pristupovych prav
+###
+# @id UnTablesd BASE_IPAC2_EMAILS
+002    konfigurace emailu pro jednotlive sluzby ipac (aRL)
+200    aDEFAULT
+       barl@library.sk
+       gKnižnično informačný systém ARL ::#Knihovní informačný systém ARL ::#Library information system ARL ::
+       hUTF8
+200    aSDIgaRL SDI -iZF-SHORT,SORT-AUTHOR,Src-1,Number-1,Link-1
+200    aPREREGg<empty>
+200    aFEEDBFgNapíšte nám ::#Napište nám ::#Feedback form ::iToConcat-1
+200    aMVSgŽiadanka MVS ::#Žádanka MVS ::#ILL Request ::
+200    aDDS
+       gaRL IPAC2 DDS požiadavka#aRL IPAC2 DDS požadavek#aRL IPAC2 DDS request
+       iZF-SHORT,ZFDisplay-TF_UN_UH
+200    aBASKETgaRL - záznamy##aRL - recordsiZF-SHORT,SORT-TITLE
+200    aFPWD
+       gZabudnuté heslo :: Knižnično informačný systém ARL#Zapomenuté heslo :: Knihovní informačný systém ARL#Forgotten password :: Library information system ARL
+200    aCONTDg<empty>iStoreInfo-1
+200    aCHNGEMAIL
+       gZmena e-mailu :: Knižnično informačný systém ARL#Změna e-mailu :: Knihovní informačný systém ARL#Email change :: Library information system ARL
+###
+# @id UnTablesd BASE_IPAC2_STATISTICS
+200    adetailUsebVstup do IPAC2c120
+200    adetailLoginbPrihlaseni do kontac120
+200    adetailSearchbVyhledavanic120
+200    asumSearchHourbSumární statistika vyhledáváníd50
+###
+# @id UnTablesd BASE_IPAC2_FLD
+002    03.08.23 jk; Clarivate WOS
+002    18.07.18 jk; pridan index AUKH
+002    08.02.16 jk; uprava a doplneni indexu wos
+002    10.06.15 jk; uprava ebscoretrieve
+002    05.12.14 ln; limity z BASE_IPAC2_FLD 210 presunuty do 220
+002    15.10.14 jk; doplnena limita DEXT
+002    24.07.14 jk; upravy Elsevier, Ebsco a Thomson
+002    23.10.13 js; doplnene UPS
+002    14.11.12 mk; doplnene pole LGT jazyk textu
+002    09.11.12 ln; podpora fazet
+002    25.10.12 jk; SUBJECT doplnene ccc-TS
+002    04.04.12 js; doplnene indexy KSK, KSPK
+002    04.03.10 jk; uprava nazvu indexu ANY pro Elsevier SD
+002    04.09.08 jt; preradene nazvy indexov pre externe zdroje z nespravneho AU na spravny AUTHOR
+002    11.08.08 jk; zmeny vyhledavacich poli Scopus,Thomson, Science Direct, do ANY pridan wos-TI
+002    25.06.08 jt; pridane indexy pre federativne vyhladavanie Thomson/WOS
+002    03.05.08 jt; pridane podpole $e pre nazvy indexov vo federativnom vyhladavani + pridane indexy pre Elsevier, jednotlive zdroje su oddelene # 
+002					(zatial Scopus#ScienceDirect)
+002    26.03.07 rs; nove indexy AUP,AU
+002    16.08.06 rs; TITLE pridane pomocne pole $d (na test - zatial bez 
+002                 zmysluplneho obsahu)
+200    aANYbVšetky polia#Všechna pole#All Fields#c1016escopus-ALL,sd-ALL,wos-TS,ccc-TS,ebscosearch-TX,clwos-ALL,clccc-ALL
+200    aTITLEbNázov#Název#Titlec4escopus-TITLE,sd-TITLE,wos-TI,ccc-TI,ebscosearch-TI,clwos-TI,clccc-TI
+200    aTIc@TITLE
+200    aGc@ANY
+200    aBath.titlec@TITLE
+200    adc.titlec@TITLE
+002    -
+200    aAUbAutor#Autor#Authorc1003nindex "au"
+200    aAUTHORbAutor#Autor#Authorc1003nindex "au" - totozne z "AU" - pozor 30.03.07 zmena z "aup" na "au"escopus-AUTH,sd-AUT,wos-AU,ccc-AU,ebscosearch-AU,clwos-AU,clccc-AU
+200    aAUPbAutor osobné meno#Autor osobní jméno#Author c1
+200    aAUPDbOsobné meno#Osobní jméno#Author c2409
+200    aAUAbAkcia/Konferencia#Akce/Konference#Conferencec3
+002    -
+200    aAUKbAutor-kód záznamu##Author Sysnoc1013escopus-AUTH,sd-AUTHORS,ebscosearch-AU
+200    aAUK1bAutor-kód záznamu + druh.dok##Author Sysno/Doc.kindc2479
+200    aAUKHbFaktúra, objednávka, predplatné exemplára#Faktura, objednávka, předplatné exempláře#Invoice, order, subscription of holdingc2480
+002    -
+200    aSUBJECTbPredmet (kľúč.slová)#Předmět (klíč.slova)#Subject h. and keywords#Thema(Schlüsselwörter)c21eescopus-KEY,sd-KEYWORDS,wos-TS,ccc-TS,ebscosearch-SU
+200    aUDCbMDT#MDT#UDC#UDKc14
+200    aEDITIONbEdícia#Edice#Series#Reihec5
+200    aPLACEPbMiesto vydania#Místo vydání#Publication Place#Verlagsortc59
+200    aPUBLbVydavateľ#Nakladatel#Publisher#Verlegerc1018escopus-PUBLISHER,clwos-PUBL,clccc-PUBL
+200    aISBNbISBNc7escopus-ISBN,ebscosearch-IB
+200    aISSNbISSNc8escopus-ISSN,ebscosearch-IS
+200    aISBNISSNbISBN, ISSN##ISBN, ISSNc2480eclwos-IS,clccc-IS
+200    aSOURCEbZdrojový dokument#Zdrojový dokument#Source Title#Quellendok.(Artikel)c2499ewos-SO,ccc-SO,ebscosearch-SO
+200    aSIGbSignatúry#Signatury#Call numberc2481
+200    aTRbPrírastkové číslo#Přírůskové číslo#Track No.c2482
+002    -
+200    aTISZbSer./soub.záz./titul#Ser./soub.záz./titul#Ser./soub.záz./titulc2444
+200    aS600bHeslá osobné meno#Hesla osobní jméno#Personal name entryc2469
+200    aS601bHesla akce/korporace#Hesla akce/korporace#Event/Festival/Corporationc2471
+200    aS605bHeslá názov filmu#Hesla název filmu#Film titlesc2473
+200    aS607bHeslá gografické#Hesla gografickéc2468
+200    aS608bHesla form. deskriptor#Hesla form. deskriptor#Formal descriptorsc2474
+200    aS610bPredmet (kľúč.slová)#Předmět (klíč.slova)#Keywordsc2475
+200    aT001bKód záznamu##Sysnoc12,NC#NP
+200    aSRCAbAutor zdroj.dok.#Autor zdroj.dok.#Author of source documentc2496
+200    aSRCDbDátum zdrojového dokumentu#Zdroj.dok.datum#Publication date (YYYYMMDD)c2495
+200    aKATObKategória ohlasu##Response Categoryc2458
+200    aKAKbKategória podľa AK##Category by AKc2437
+200    aKPCbKategória publ.činnosti#Kategorie publikační činnosti#Publication Categoryc2461
+200    aMRAbMiesto konania akcie#Místo konání akce#Conference Placec2488
+200    aSMRAbHeslo - miesto konania akcie#Heslo - místo konání akce#Keyword - Conference Placec2489
+200    aPRACd@PRAnpole "PRAC" je synonymom "PRA" (03.08.07 rs)
+200    aRECDNbRecenzovaný dok.#Recenzovaný dok.#Reviewed documentc2498
+200    aRECDAbAutor recenzov.dok.##Author of reviewed documentc2497
+200    aTI1bHlavný názov#Hlavní název#Titlec2412
+200    aTIASbČasopisy/názvové údaje##Serial titlesc2425
+200    aTIASZbČasopisy(súb.záznamy)/názv. údaje#Časopisy(soub.záznamy)/názv. údaje#Serial (Complete)c2424
+200    aTIASRbČasopisy(zviaz.ročníky)/názvové údaje#Časopisy(sváz.ročníky)/názvové údaje#Serial (Volume)c2423
+200    aAVAILbPrístupnosť##Availabilityc2435,NC#NP
+200    aAVAILPbPrístupnosť podľa pobočiek#Dostupnost podle poboček#Availability by branchesc2513,NC#NPnindex availp
+200    aTICLbČasopisy(jednotlivé čísla)/titul#Časopisy(jednotlivá čísla)/titul#Serial (Number)c2442
+200    aKSKbKonspekt - skupina konspektu#Konspekt - skupina konspektu#Conspectus - categoryc2378
+200    aKSPKbKonspekt - predmetová kategória#Konspekt - předmětová kategorie#Conspectus - divisionc2379
+002    -  ~IPVZ
+200    aS606bHeslá MeSH#Hesla MeSH#MeSH Keywordsc2472
+200    aIFbImpakt faktor##Impact factorc2455,NC#NP
+002     -- exemplare--
+200    aUNH_SI0bSignatura##Call number c2005
+002    -
+200    aXXbXxxxxc2050,NS
+002    --odtialto idu limity
+200    aSUBBASEbBáza dát#Báze dat#Basec2432nToto je specialna limita - 3 uroven stromu.
+200    aBRANCHbPobočka#Pobočka#Branchc2514nindex brch pobocky podle T04a holdingu
+002    -
+200    aDKbDruh dokumentu##Document Type#Kategoriec1031,NC#NP
+200    aDOCDKbDruh dokumentu##Document Type#Kategoriec1032,NC#NP
+200    aTOCbfulltext obsahu##fulltext tocc2376,NC#NP
+200    aSECUREbfulltext dokumentu##fulltext of documentc2600
+200    aZNPQbŽáner dokumentu#Žánr dokumentu#Document genrec1031,NC#NP
+200    aDKPQbDruh publikácie#Druh publikácie#Document typec1031,NC#NP
+200    aDATEbRok vydania#Rok vydání#Publication Yearc31,NC#NPescopus-PUBYEAR,sd-PUB-DATE,wos-PY,ccc-PY,clwos-PY,clccc-PY
+200    aCOUNTRYbKrajina vydania#Země vydání#Countryc55,NC#NPeclwos-CU,clccc-CU
+200    aCOUNTRY21bKrajina vydania#Země vydání#Countryc55,NC#NP
+200    aLANGUAGEbJazyk dokumentu##Languagec54,NC#NPescopus-LANGUAGE
+200    aLGTbJazyk textu##Text Languagec2415,NC#NPescopus-LANGUAGE
+200    aCONTDbDokumenty pre doručovanie obsahu##Languagec2492,NC#NP
+200    aDSbĎalšie spracovanie##c2492,NC#NP
+200    aYEVbRok vykazovania##c2456,NC#NP
+200    aDEXTbŠpecifikácia zdrojov#Specifikace zdrojů#Sources specificationsc2539,NC#NPndata z externich zdroju, hodnota "sdtoc" pro dorucovani obsahu periodiku
+002    -
+200    aUPSbInformácie o súboroch z Content Servera##Informace o souborech z Content Servera#Information about files in Content Serverc2350,NC#NP
+002    -
+002    FLDSET1 je pre externe zdroje z limit je tam len JAZYK
+210    aFLDSET1cANYcTITLEcAUTHORcSUBJECTcDATEcUDCcPLACEPcEDITION
+220    aFLDSET1dLANGUAGE
+002    bez UDC (limity len jazyk)
+210    aFLDSET2cANYcTITLEcAUTHORcSUBJECTcDATEcPLACEPcEDITION
+220    aFLDSET2dLANGUAGE
+210    aFLDSETXMLPQcANYcTITLEcAUTHOR
+220    aFLDSETXMLPQdZNPQdDKPQdDATE
+210    aFS_ZBASEcTITLEcAUTHORcSUBJECTcDATEcUDC
+220    aFS_ZBASEdLANGUAGE
+210    aFS_WBASEcG
+002                                                                               -
+002    ---autority -- POZOR: vsetky prefixu UNA by sa mali zrusit !! (03.08.07 rs)
+200    aUNA_AUPbAutorita osobné meno#Autorita osobní jméno#Personal name entry c1
+200    aUNA_AUP2bAutorita osobné meno bez odkazov#Autorita osobní jméno bez odkazů#Personal name entryc2486
+200    aAUCbAutorita korporácie#Autorita korporace#Corporation name entry c2
+200    aUNA_A215bGeografické meno#Geografické jméno#Name geographicc58
+200    aUNA_AUbAutorita vstupný prvok#Autorita vstupní prvek#Entry element c1003
+200    aUNA_CITbMiesto akcie/konferencie#Místo akce/konference#Conference placec2014
+200    aMPbMiesto pôsobenia#Oblast působeníc2425
+200    aMUbMiesto úmrtia#Místo úmrtí#Place of deathc2427
+200    aRE100bRegionálne autority - osoby a rody (rodiny)#Regionální autority - jména osob a rodin (rodů)#Subject headings in Englishc2457
+200    aUNA_A250UbMdt-slovný popis#Mdt-slovný popis#Mdt-termc2466
+200    aUNA_A230EbEdícia#Edice#Editionc2466
+200    aUNA_DTKAbRok konania akcie#Rok konání akce#Year of conferencec2468,NC#NP
+200    aUNA_AUMbMiesto akcie/konferencie#Místo akce/konference#Conference placec2471
+002    POZOR: index PRA sa moze pouzit aj pre autority aj pre katalog
+002           ale pre autority sa musi doplnit v infovete/konfigoch pre CFS
+002           novy atribut 2462 ukazujuci na index "pra" (v starsej verzii
+002           sa pre autority pouzivalo cislo 2472) - 03.08.07 rs
+200    aPRAbPracovisko autora##Author´s wokplacec2462
+200    aMNbMiesto narodenia#Místo narození#Place of birthc2473
+200    aUNA_DTUMbRok úmrtia#Rok úmrtí#Year of deathc2477,NC#NP
+200    aUNA_DTNAbRok narodenia#Rok narození#Year of birthdayc2478,NC#NP
+200    aUNA_A250bVecná téma#Věcné téma#Subject headingsc2480
+200    aUNA_A230bAutorita film názvové údaje##Film title entryc2484
+200    aUNA_DT1bDátum vytvorenia záznamu#Datum vytvoření záznamu#Record creation datec31,NC#NP
+200    aUNA_960bHeslo anglicky##Subject headings in Englishc2494
+200    aAUCRbPracovisko (názov alebo kód)#Pracoviště (název, zkratka)#Workplace (name or code)c2498
+200    aUNA_DTVYbVýročie##c2475,NC#NP
+200    aUNA_DTUDbRok udalosti##c2476,NC#NP
+200    aUNA_DKbDruh autorityc1031,NC#NP
+210    aFLDSETA1cANYcTITLE
+200    aA150bKľúčové slová#Klíčová slova#Keywordsc2480eclwos-KP,clccc-KP
+002    ---
+002    ------------------- ELSEVIER A EBSCO-------------------
+002    ---
+200    aABSbAbstrakt#Abstrakt#AbstractcABSescopus-ABS,sd-ABSTRACT,ebscosearch-AB,clwos-AB,clccc-AB
+200    aDZSCObDruh zdroja#Druh zdroje#Source typec1031escopus-SRCTYPE
+200    aAFFILbAfilácia na mesto, krajinu a organizáciu autora#Afilace na město, zemi a organizaci autora#AffiliationcAFFILescopus-AFFIL,sd-AFFIL
+200    aAFIDbIdentifikátor afilácie názvu organizácie#Identifikátor afilace názvu organizace#Affiliation ID of organizationcAFIDescopus-AF-ID
+200    aAUIDbIdentifikátor autora#Identifikátor autora#Author Identifier NumbercAUIDescopus-AU-ID
+200    aCONFbKonference#Konference#Conference InformationcCONFescopus-CONF,clwos-CF,clccc-CF
+200    aDOIbDigital Object Identifier (DOI)cDOIescopus-DOI,sd-DOI,wos-DO,clwos-DO,clccc-DO
+200    aEIDbElectronic Identifier (EID)cEIDescopus-EID,sd-EID
+200    aEISSNbEISSNcEISSNescopus-EISSN
+200    aPIIbPublication Item Identifier (PII)cPIIescopus-PII,sd-PII
+200    aPMIDbPubMed identifikátor#PubMed identifikátor#PubMed IdentifiercPMIDescopus-PMID,clwos-PMID,clccc-PMID
+200    aSRCTITLEbNázov zdrojového dokumentu#Název zdrojového dokumentu#Source TitlecSRCTITLEescopus-SRCTITLE
+200    aREFbReferencie#Reference#ReferencescREFescopus-REF,sd-REF
+200    aDZSDIbDruh zdroja#Druh zdroje#Source typec1031esd-SRCTYPE
+200    aEBSCORETRIEVEANbIDcEBSCOANeebscoretrieve-an
+200    aEBSCORETRIEVEDBIDbDB IDcEBSCODBIDeebscoretrieve-dbid
+210    aFLDSETEBSCORETRIEVEcEBSCORETRIEVEANcEBSCORETRIEVEDBID
+002    ------------------- ELSEVIER-------------------
+210    aFLDSETSCOcGcTITLEcAUTHORcSUBJECTcPUBLcLANGUAGEcABScAFFILcAFIDcAUIDcCONFcDOIcEIDcEISSNcISSNcISBNcPIIcPMIDcSRCTITLEcREF
+220    aFLDSETSCOdDATEdDZSCO
+210    aFLDSETSDIcGcTITLEcAUTHORcSUBJECTcABScAFFILcDOIcEIDcPIIcREF
+220    aFLDSETSDIdDATEdDZSDI
+002    ------------------- EBSCO-------------------
+210    aFLDSETEBSCOSEARCHcGcTITLEcAUTHORcSUBJECTcABScISSNcISBNcSOURCE
+220    aFLDSETEBSCOSEARCHdEBSCOLIMFTe,combomultidEBSCOLIMRVe,combomultidEBSCOLIMFT1e,combomultidDATEEBSCOLIMDT1e,dateinputdEBSCOLIMLA99e,combomulti
+002    ------------------- EBSCO LIMITY-------------------
+200    aEBSCOLIMFTbPlný text#Plný text#Full TextcEBSCOFTeebscosearch-FT
+200    aEBSCOLIMRVbPosudok#Posudek#Peer ReviewedcEBSCORVeebscosearch-RV
+200    aEBSCOLIMSObNázov časopisu#Název časopisu#Journal NamecEBSCOSOeebscosearch-SO
+200    aEBSCOLIMDT1bDátum zdrojového dokumentu YYYY-MM#Zdroj.dok.datum YYYY-MM#Date published YYYY-MMcEBSCODT1eebscosearch-DT1
+200    aEBSCOLIMAUbAutor#Autor#AuthorcEBSCOAUeebscosearch-AU
+200    aEBSCOLIMTIbNázov#Název#TitlecEBSCOTIeebscosearch-TI
+200    aEBSCOLIMFT1bDostupné v Library Collection#Dostupné v Library Collection#Available in Library CollectioncEBSCOFT1eebscosearch-FT1
+200    aEBSCOLIMLA99bJazyk#Jazyk#Languageeebscosearch-LA99
+002    ---
+002    --------------------- THOMSON ------------------
+002    ---
+002    ----------------- WEB OF SCIENCE ---------------
+200    aDDWOSbDruh dokumentu#Druh dokumentu#Document typec1031,NCewos-DT
+200    aLANGWOSbJazyk dokumentu#Jazyk dokumentu#Languagec54,NCewos-LA
+200    aRIDWOSbID výskumníka#ID výzkumníka#Researcher IDcRIDWOSewos-RID
+200    aADWOSbAdresa#Adresa#AddresscADWOSewos-AD,clwos-AD,clccc-AD
+200    aOGWOSbNázov organizácie - rozšírené#Název organizace - rozšířené#Organization - EnhancedcOGWOSewos-OG,clwos-OG,clccc-OG
+200    aOOWOSbNázov organizácie#Název organizace#OrganizationcOOWOSewos-OO,clwos-OO,clccc-OO
+200    aUTWOSbUTWOS(AN)#UTWOS(AN)#UTWOS(Accession Number)cUTWOS#NPewos-UT,woscit-UT,wokid-UT,clwos-UT,clccc-UT
+210    aFLDSETWOScTITLEcAUTHORcSOURCEcGcRIDWOScADWOScOGWOScOOWOScDOIcUTWOS
+220    aFLDSETWOSdDATEdDDWOSdLANGWOS
+210    aFLDSETWOKIDcUTWOS
+002    ---------------- CURRENT CONTENTS --------------
+200    aDDCCCbDruh dokumentu#Druh dokumentu#Document typec1031,NCeccc-DT
+200    aLANGCCCbJazyk dokumentu#Jazyk dokumentu#Languagec54,NCeccc-LA
+210    aFLDSETCCCcTITLEcAUTHORcSUBJECTcSOURCEcG
+220    aFLDSETCCCdDATEdDDCCCdLANGCCC
+002    --------------------- CLARIVATE WOS ------------------
+200    aCLWOSAIbAutor WoS ResearcherID alebo ORCID#Autor WoS ResearcherID nebo ORCID#Author Identifiers (WoS ResearcherID or ORCID)eclwos-AI,clccc-AI
+200    aCLWOSCIbMesto#Město#Cityeclwos-CI,clccc-CI
+200    aCLWOSDOPbDátum zverejnenia RRRR-MM-DD#Datum zveřejnění RRRR-MM-DD#Date of Publication YYYY-MM-DDeclwos-DOP,clccc-DOP
+200    aCLWOSEDbMeno editora#Jméno editora#Editor Nameeclwos-ED,clccc-ED
+200    aCLWOSFDbPodrobnosti o financovaní (granty)#Podrobnosti o financování (granty)#Funding Details (grants)eclwos-FD,clccc-FD
+200    aCLWOSGNBČíslo grantu#Číslo grantu#Grant Numbereclwos-GN,clccc-GN
+200    aCLWOSFObFinanční agentura#Finančná agentúra#Funding Agencyeclwos-FO,clccc-FO
+200    aCLWOSFTbFinancovanie - text#Financování - text#Funding Texteclwos-FT,clccc-FT
+200    aCLWOSFPYbFinálny rok vydania#Finální rok vydání#Final publication yeareclwos-FPY,clccc-FPY
+200    aCLWOSGPbAutor - skupina#Autor - skupina#Group Authoreclwos-GP,clccc-GP
+200    aCLWOSPSbProvincia / Štát#Provincie / Stát#Province / Stateeclwos-PS,clccc-PS
+200    aCLWOSSObNázov publikácie#Název publikace#Publication Nameeclwos-SO,clccc-SO
+200    aCLWOSSUbVýskumná oblasť#Oblast výzkumu#Research Areaeclwos-SU,clccc-SU
+200    aCLWOSTSbTéma#Téma#Topiceclwos-TS,clccc-TS
+200    aCLWOSWCbKategória WoS#Kategorie WoS#WoS Categoryeclwos-WC,clccc-WC
+210    aFLDSETCLWOScTITLEcABcADWOScANYcCLWOSAIcAUTHORcCONFcCLWOSCIcCOUNTRYcDOIcCLWOSDOPcCLWOSEDcCLWOSFDcCLWOSGNcCLWOSFOcCLWOSFTcCLWOSFPYcCLWOSGPcISBNISSNcA150cOGWOScOOWOScPMIDcCLWOSPScPUBLcDATEcCLWOSSOcCLWOSSUcCLWOSTScUTWOScCLWOSWC
+210    aFLDSETCLWOSCITcUTWOS
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DATE
+002    25.08.16 ln; aktualizace BASE_IPAC2_FLDDATA_DATE
+002    26.04.13 tt; do I2_FLDDATA_DATE pridan rok 2013 a 2014
+002    14.01.11 tt; do I2_FLDDATA_DATE pridan rok 2012
+002    14.01.11 tt; do I2_FLDDATA_DATE pridan rok 2012
+002    04.01.11 tt; do I2_FLDDATA_DATE pridan rok 2011
+002    04.01.10 tt; do I2_FLDDATA_DATE pridan rok 2010
+002    11.03.09 tt; pridan do SEL1 rok 2009
+002    04.02.08 rs; presun CAV_SEL1 z i2_konfig_base.txt
+200    a2016
+200    a2015
+200    a2014
+200    a2013
+200    a2012
+200    a2011
+200    a2010
+200    a2009
+200    a2008
+200    a2007
+200    a2006
+200    a2005
+200    a2004
+200    a2003
+200    a2002
+200    a2001
+200    a2000
+200    a1999
+200    a1998
+200    a1997
+200    a1996
+200    a1995
+200    a1994
+200    a1993
+200    a1992
+200    a1991
+200    a1990
+200    aL1bDo roku 2000##Before 2000d@attr 2=1 '2000'nPOZOR funkcnost $d je len v stadiu konceptu
+002    subsety:
+210    aSEL1b2014b2013b2012b2011b2010b2009b2008b2007b2006b2005b2004b2003b2002b2001b2000b1999b1998b1997b1996b1995b1996b1995b1995b1994b1993b1992b1991b1990
+210    aREVERSEDb1995b1996b1997b1998b1999b2000b2001b2002b2003b2004b2005b2006b2007b2008b2009b2010b2011b2012
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_COUNTRY
+200    aSKbSlovenská republika#Slovenská republika#Slovak Republic#Slowakische Republik
+200    aCZbČeská republika#Česká republika#Czechia#Tschechische Republik
+200    aCSbČeskoslovensko##Czechoslovakia#Tschechoslowakei
+200    a--b--
+200    aAFbAfganistan#Afganistan#Afghanistan
+200    aALbAlbánsko#Albánie#Albania#Albanien
+200    aDZbAlžírsko#Alžírsko#Algeria
+200    aASbAmerická Samoa#Americká Samoa#American Samoa
+200    aADbAndorra#Andorra#Andorra
+200    aAObAngola#Angola#Angola
+200    aAIbAnguilla#Anguilla#Anguilla
+200    aAQbAntarktída#Antarktída#Antarctica
+200    aAGbAntigua a Barbuda#Antigua a Barbuda#Antigua and Barbuda
+200    aAMbArménsko##Armenia
+200    aARbArgentína##Argentina
+200    aAWbAruba#Aruba#Aruba
+200    aAZbAzerbajdžan#Azerbajdžan#Azerbaijan
+200    aATbRakúsko#Rakousko#Austria#Österreich
+200    aAUbAustrália#Austrálie#Australia#Australien
+200    aBSbBahamy#Bahamy#Bahamas
+200    aBDbBangladéš#Bangladéš#Bangladesh
+200    aBHbBahrajn#Bahrajn#Bahrain
+200    aBJbBenin#Benin#Benin
+200    aBBbBarbados#Barbados#Barbados
+200    aBEbBelgicko#Belgie#Belgium#Belgien
+200    aBZbBelize#Belize#Belize
+200    aBMbBermuda#Bermuda#Bermuda
+200    aBRbBrazília#Brazílie#Brazil#Brasilien
+200    aBGbBulharsko##Bulgaria#Bulgarien
+200    aBIbBurundi##Burundi
+200    aBTbBhután#Bhután#Bhutan
+200    aBYbBielorusko##Belarusia
+200    aBObBolívia#Bolívie#Bolivia
+200    aBAbBosna a Hercegovina#Bosna a Hercegovina#Bosnia and Herzegovina
+200    aBWbBotswana#Botswana#Botswana
+200    aBVbBouvet, ostrov#Bouvet, ostrov#Bouvet Island
+200    aIObBritské územie v Indickom oceáne#Britské území v Indickém oceáne#British Indian Ocean Territory
+200    aBNbBrunejský sultanát#Brunejský sultanát#Brunei Darussalam
+200    aBFbBurkina Faso#Burkina Faso#Burkina Faso
+200    aCAbKanada##Canada#Kanada
+200    aCIbPobrežie Slonoviny##Cote d'Ivoire
+200    aCLbChile##Chile
+200    aCCbCocos (keeling), ostrovy#Cocos (keeling), ostrovy#Cocos (keeling) Islands
+200    aCKbCookove ostrovy#Cookove ostrovy#Cook Islands
+200    aTDbČad#Čad#Chad
+200    aCNbČína##China
+200    aCObKolumbia##Colombia
+200    aCYbCyprus##Cyprus
+200    aCUb#Kuba#Cuba
+200    aDKbDánsko##Denmark#Dänemark
+200    aDMbDominika#Dominika#Dominica
+200    aDObDominikánska republika#Dominikánska republika#Dominican Republic
+200    aDJbDžibutsko#Džibutsko#Djibouti
+200    aDEbNemecko#Německo#Germany#Deutschland
+200    aDBbSRN (od r. 1990)#SRN (od r. 1990)#Federal Republic of Germany (from 1990)#BRD  (von 1990)
+200    aDDbNDR (do r. 1990)#NDR (do r. 1990)#East Germany (until 1990)#Deutschland
+200    aEEbEstónsko#Estonsko#Estonia#Estland
+200    aECbEkvádor##Ecuador
+200    aEGbEgypt#Egypt#Egypt
+200    aERbEritrea#Eritrea#Eritrea
+200    aEUbEurópska únia#Európska únia#EU
+200    aETbEtiópia#Etiopie#Ethiopia
+200    aFObFaerské ostrovy#Faerské ostrovy#Faroe Islands
+200    aFKbFalklandské ostrovy (Malvíny)#Falklandské ostrovy (Malvíny)#Falkland Islands (Malvinas)
+200    aPHbFilipíny#Filipíny#Philippines
+200    aFIbFínsko#Finsko#Finland#Finnland
+200    aFJbFidži##Fiji
+200    aFRbFrancúzsko#Francie#France#Frankreich
+200    aGFbFrancúzska Guyana#Francouzská Guyana#French Guiana
+200    aPFbFrancúzska Polynézia#Francouzská Polynézie#French Polynesia
+200    aFXbFrancúzsko, Metropolitan#Francie, Metropolitan#France, Metropolitan
+200    aTFbFrancúzske južné územia#Francouzské južní území#French Southern Territories
+200    aGAbGabon#Gabon#Gabon
+200    aGMbGambia#Gambia#Gambia
+200    aGHbGhana#Ghana#Ghana
+200    aGIbGibraltár#Gibraltar#Gibraltar
+200    aGRbGrécko#Řecko#Greece#Griechenland
+200    aGDbGrenada#Grenada#Grenada
+200    aGLbGrónsko#Gronsko#Greenland
+200    aGEbGruzínsko##Georgia
+200    aGPbGuadeloupe#Guadeloupe#Guadeloupe
+200    aGUbGuam#Guam#Guam
+200    aGTbGuatemala#Guatemala#Guatemala
+200    aGNbGuinea#Guinea#Guinea
+200    aGWbGuinea-Bissau#Guinea-Bissau#Guinea-Bissau
+200    aGYbGuyana#Guyana#Guyana
+200    aGBbVeľká Británia#Velká Británie#Great Britain#Grossbritannien
+200    aHUbMaďarsko##Hungary#Ungarn
+200    aHTbHaiti#Haiti#Haiti
+200    aHMbHeard a ostrovy McDonald#Heard a ostrovy McDonald#Heard and McDonald Islands
+200    aANbHolandské Antily#Nizozemské Antily#Netherlands Antilles
+200    aHNbHonduras#Honduras#Honduras
+200    aHKbHong Kong##Hong Kong
+200    aHRbChorvátsko##Croatia
+200    aINbIndia#Indie#India#Indien
+200    aIDbIndonézia#Indonézie#Indonesia
+200    aIQbIrak#Irak#Iraq
+200    aIRbIrán#Írán#Iran#Iran
+200    aIEbÍrska republika#Irská republika#Ireland#Irland
+200    aICbIsland#Island#Iceland
+200    aISbIzrael##Israel#Israel
+200    aITbTaliansko#Itálie#Italy#Italien
+200    aJMbJamajka#Jamajka#Jamaica
+200    aJPbJaponsko##Japan
+200    aYEbJemen#Jemen#Yemen
+200    aJObJordánsko#Jordansko#Jordan
+200    aYUbJugoslávia#Jugoslávie#Yugoslavia#Jugoslawien
+200    aZAbJužná Afrika#Jižní Afrika#South Africa
+200    aGSbJužná Georgia a Južné ostrovy Sandwich#Jižní Georgia a Jižní ostrovy Sandwich#South Georgia and South Sandwich Islands
+200    aKYbKajmanie ostrovy#Kajmaní ostrovy#Cayman Islands
+200    aKHbKamerun#Kamerun#Cameroon
+200    aCVbKapverdy#Kapverdy#Cape Verde
+200    aQAbKatar#Katar#Qatar
+200    aKZbKazachstan##Kazakhstan
+200    aKEbKeňa#Keňa#Kenya
+200    aKGbKirgizstan##Kyrgystan
+200    aKIbKiribati#Kiribati#Kiribati
+200    aKPbKĽDR##Democratic People's Republic Of Korea
+200    aKMbKomory#Komory#Comoros
+200    aCGbKongo#Kongo#Congo
+200    aKRbKórejská republika##Republic of Korea
+200    aCRbKostarika#Kostarika#Costa Rica
+200    aKWbKuvajt, Kuvajtský štát#Kuvajt#Kuwait
+200    aLAbLaos (Laoská ľudovodemokratická republika)#Laos (Laoská lidovodemokratická republika)#Lao People's Democratic Republic
+200    aLSbLesotho#Lesotho#Lesotho
+200    aLBbLibanon#Libanon#Lebanon
+200    aLRbLibéria#Libérie#Liberia
+200    aLYbLíbya (Líbyjská arabská džamahírija)#Líbya (Líbyjská arabská džamahírija)#Libya (Libyan Arab Jamahiriya)
+200    aLIbLichtenštajnsko, Lichtenštajnské kniežatstvo#Lichtenštejnsko#Liechtenstein
+200    aLTbLitva##Lithuania#Litauen
+200    aLVbLotyšsko#Lotyšsko#Latvia#Lettland
+200    aLUbLuxembursko, Luxemburské veľkovojvodstvo#Lucembursko#Luxembourg
+200    aMObMacao#Macao#Macau
+200    aMKbMacedónia#Macedónia#Macedonia
+200    aMGbMadagaskar##Madagascar
+200    aMYbMalajzia#Malajsie#Malaysia
+200    aMWbMalawi#Malawi#Malawi
+200    aMVbMaledivy#Maledivy#Maldives
+200    aUMbMalé vzdialené ostrovy Spojených Štátov#Malé vzdálené ostrovy Spojených Štátú#United States Minor Outlying Islands
+200    aMLbMali#Mali#Mali
+200    aMTbMalta#Malta#Malta
+200    aMAbMaroko#Maroko#Morocco
+200    aMHbMarshallove ostrovy#Marshallove ostrovy#Marshall Islands
+200    aMQbMartinique#Martinique#Department of Martinique
+200    aMRbMauritánia#Mauritanie#Mauritania
+200    aMUbMaurítius#Maurítius#Mautitius
+200    aYTbMayotte#Mayotte#Mayotte
+200    aMXbMexiko#Mexiko#Mexico
+200    aFMbMikronézia (federálne štáty)#Mikronézie (federální státy)#Micronesi (Federal States of)
+200    aMDbMoldavsko, Moldavská republika#Moldavsko#Moldova
+200    aMNbMongolsko#Mongolsko#Mongolia
+200    aMCbMonako#Monako#Monaco
+200    aMSbMontserrat#Montserrat#Montserrat
+200    aMZbMozambik#Mozambik#Mozambique
+200    aMMbMyanmar#Myanmar#Myanmar
+200    aNEbNiger##Niger
+200    aNIbNikaragua##Nicaragua
+200    aNAbNamíbia#Namíbia#Namibia
+200    aNRbNauru#Nauru#Nauru
+200    aNPbNepál#Nepál#Nepal
+200    aNGbNigéria#Nigérie#Nigeria
+200    aNUbNiue#Niue#Niue
+200    aNFbNorfolk#Norfolk#Norfolk Island
+200    aNLbHolansko#Nizozemí#Netherlands#Niederlande
+200    aNObNórsko#Norsko#Norway#Norwegen
+200    aNCbNová Kaledónia#Nová Kaledonia#New Caledonia
+200    aNZbNový Zéland##New Zealand
+200    aOMbOmán#Omán#Oman
+200    aMPbOstrovy Severnej Mariány#Ostrovy Severní Mariány#Northern Mariana Islands
+200    aTCbOstrovy Turks a Caicos#Ostrovy Turks a Caicos#Turks and Caicos Islands
+200    aPKbPakistan#Pakistan#Pakistan
+200    aPWbPalau#Palau#Palau
+200    aPAbPanama#Panama#Panama
+200    aVGbPanenské ostrovy (Britské)#Panenské ostrovy (Britské)#Virgin Islands (British
+200    aVIbPanenské ostrovy (Spojené Štáty)#Panenské ostrovy (Spojené Státy)#Virgin Islands (U.S.)
+200    aPGbPapua-Nová Guinea#Papua-Nová Guinea#Papua New Guinea
+200    aPYbParaguaj#Paraguaj#Paraguay
+200    aPEbPeru#Peru#Peru
+200    aPNbPitcairn#Pitcairn#Pitcairn
+200    aPLbPoľsko#Polsko#Poland#Polen
+200    aPRbPortoriko#Portoriko#Porto Rico
+200    aPTbPortugalsko, Portugalská republika#Portugalsko#Portugal
+200    aREbRéunion#Réunion#Réunion
+200    aGQbRovníková Guinea#Rovníková Guinea#Equatorial Guinea
+200    aRObRumunsko##Romania#Rumänien
+200    aRUbRusko##Russia#Russland
+200    aRWbRwanda#Rwanda#Rwanda
+200    aSVbSalvádor (El Salvador)#Salvádor (El Salvádor)#El Salvador
+200    aWSbSamoa##Samoa
+200    aSMbSan Marino#San Marino#San Marino
+200    aSAbSaudská Arábia##Saudi Arabia
+200    aSNbSenegal#Senegal#Senegal
+200    aSCbSeychely#Seychely#Seychelles
+200    aSLbSierra Leone#Sierra Leone#Sierra Leone
+200    aSGbSingapur#Singapur#Singapore
+200    aSIbSlovinsko##Slovenia#Slowenien
+200    aSObSomálsko#Somálsko#Somalia
+200    aAEbSpojené Arabské Emiráty#Spojené Arabské Emiráty#United Arab Emirates
+200    aLKbSrílanka#Srílanka#Sri Lanka
+200    aSUbSSSR##Soviet Union#Soviet Union
+200    aCFbStredoafrická republika#Stredoafrická republika#Central African Republic
+200    aSDbSudán#Sudán#Sudan
+200    aSJbSvalbard a Jan Mayen#Svalbard a Jan Mayen#Svalbard and Jan Mayen
+200    aSHbSvätá Helena#Svatá Helena#Saint Helena
+200    aKNbSvätý Krištof a Nevis#Svatý Krištof a Nevis#Saint Kitts and Nevis
+200    aPMbSvätý Peter a Miquelon#Svatý Petr a Miquelon#Saint Pierre and Miquelon
+200    aSTbSvätý Tomáš a Princov ostrov#Svatý Tomáš a Princúv ostrov#Sao Tome and Principe
+200    aVCbSvätý Vincent a Grenadíny#Svatý Vincent a Grenadíny#Saint Vincent and The Grenadines
+200    aSZbSvazijsko#Svazijsko#Swaziland
+200    aSRbSuriname##Suriname
+200    aSYbSýria (Sýrska arabská republika)#Sýria (Sýrska arabská republika)#Syrian Arab Republic
+200    aSBbŠalamúnove ostrovy#Šalamounovy ostrovy#Solomon Islands
+200    aESbŠpanielsko#Španělsko#Spain#Spanien
+200    aCHbŠvajčiarsko#Švýcarsko#Switzerland#Schweiz
+200    aSEbŠvédsko#Švédsko#Sweden#Schweden
+200    aTJbTadžikistan##Tajikistan
+200    aTWbTaiwan (Čínska provincia)#Taiwan (Činská province)#Taiwan, Province of China
+200    aTZbTanzánia (Tanzánijská zjednotená republika)#Tanzánie (Tanznijská zjednotená republika)#Tanzania, United Republic of
+200    aTHbThailand#Thailand#Thailand
+200    aTTbTrinidad a Tobago##Trinidad and Tobago
+200    aTGbTogo#Togo#Togo
+200    aTKbTokealu#Tokelau#Tokelau
+200    aTObTonga#Tonga#Tonga
+200    aTNbTunisko#Tunisko#Tunisia
+200    aTRbTurecko##Turkey
+200    aTMbTurkmenistan##Turkmenistan
+200    aTVbTuvalu#Tuvalu#Tuvalu
+200    aUGbUganda#Uganda#Uganda
+200    aUYbUruguay##Uruguay
+200    aVUbVanuatu#Vanuatu#Vanuatu
+200    aVAbVatikánsky mestský štát (Svätá Stolica)_#Vatikánsky mestský stát (Svatá Stolica#Vatican City State (Holy See)
+200    aVEbVenezuela##Venezuela
+200    aCXbVianočné ostrovy#Vánoční ostrovy#Christmas Island
+200    aVNbVietnam#Vietnam#Viet Nam
+200    aUSbSpojené štáty americké#Spojené státy americké#USA#USA
+200    aUZbUzbekistan##Uzbekistan
+200    aUAbUkrajina##Ukraine#Ukraine
+200    aTPbVýchodný Timor (Dočasný názov)#Východní Timor#East Timor
+200    aZRbZair#Zair#Zaire
+200    aZMbZambia#Zambia#Zambia
+200    aEHbZápadná Sahara (Dočasný názov)#Západní Sahara#Western Sahara
+200    aZWbZimbabwe#Zimbabwe#Zimbabwe
+002    --
+200    aXZAHRbZahraniční#Zahraničné#Foreignd%NOT% 'SK'nPOZOR experimentalne(!)
+200    aXINEbIné#Jiné#Another
+002    --
+002    BASE: zakladna zostava jazykov (bez dalsich kt. mozu byt pridane v extensions)
+210    aBASEbSKbCZbCSbALbAUbBEbBRbBGbDKbEEbFIbFRbGRbINbIRbIEbISbYUbCAbLTbLVbHUbDEbDBbDDbNLbNObPLbATbRObRUbSUbSIbUSbESbSEbCHbITbTRbUAbGB
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_COUNTRY21
+200    aAAbAlbánsko, Albánska republika#Albánie#Albania
+200    aAGbArgentína, Argentínska republika#Argentina#Argentina
+200    aAIbArménsko, Arménska republika#Arménie#Armenia (Republic)
+200    aAJbAzerbajdžan, Azerbajdžanská republika#Ázerbajdžán#Azerbaijan
+200    aANbAndora, Andorrské kniežactvo#Andorra#Andorra
+200    aATbAustrália#Austrálie#Australia
+200    aAUbRakúsko, Rakúska republika#Rakousko#Austria
+200    aBEbBelgicko, Belgické kráľovstvo#Belgie#Belgium
+200    aBGbBangladéš, Bangladéšska ľudová republika#Bangladéš#Bangladesh
+200    aBLbBrazília, Brazílska federatívna republika#Brazílie#Brazil
+200    aBUbBulharsko, Bulharská republika#Bulharsko#Bulgaria
+200    aBWbBielorusko, Bieloruská republika#Bělorusko#Belarus
+200    aCCbČína#Čína#China
+200    aCIbChorvátsko, Chorvátska republika#Chorvatsko#Croatia
+200    aCLbČile, Čílska republika#Chile#Chile
+200    aCUb#Kuba#Cuba
+200    aDKbDánsko, Dánske kráľovstvo#Dánsko#Denmark
+200    aERbEstónsko, Estónska republika#Estonsko#Estonia
+200    aFIbFínsko, Fínska republika#Finsko#Finland
+200    aFRbFrancúzsko, Francúzska republika#Francie#France
+200    aGHbGhana, Ghanská republika#Ghana#Ghana
+200    aGRbGrécko, Helénska republika#Řecko#Greece
+200    aGSbGruzínsko#Gruzie#Georgia (Republic)
+200    aGWbNemecko, Spolková republika#Německo#Germany
+200    aHUbMaďarsko, Maďarská republika#Maďarsko#Hungary
+200    aCHbČína, Čínska ľudová republika#Čína (republika : 1945- )#China (Republic : 1949- )
+200    aIEbÍrsko#Irsko#Ireland
+200    aIIbIndia, Indická republika#Indie#India
+200    aIRbIrán, islamská republika, Iránska islamská republika#Írán#Iran
+200    aISbIzrael, Izraelský štát#Izrael#Israel
+200    aITbTaliansko, Talianska republika#Itálie#Italy
+200    aJAbJaponsko#Japonsko#Japan
+200    aKGbKirgizsko, Kirgizská republika#Kyrgizstán#Kyrgyzstan
+200    aKObKórea (Južná), Kórejská republika#Korea jižní#Korea (South)
+200    aKUbKuvajt, Kuvajtský štát#Kuvajt#Kuwait
+200    aKZbKazachstan, Kazašská republika#Kazachstán#Kazakhstan
+200    aLEbLibanon, Libanonská republika#Libanon#Lebanon
+200    aLHbLichtenštajnsko, Lichtenštajnské kniežatstvo#Lichtenštejnsko#Liechtenstein
+200    aLIbLitva, Litovská republika#Litva#Lithuania
+200    aLUbLuxembursko, Luxemburské veľkovojvodstvo#Lucembursko#Luxembourg
+200    aLVbLotyšsko, Lotyšská republika#Lotyšsko#Latvia
+200    aMCbMonako#Monako#Monaco
+200    aMPbMongolsko#Mongolsko#Mongolia
+200    aMVbMoldavsko, Moldavská republika#Moldavsko#Moldova
+200    aMXbMexiko Spojené štáty americké#Mexiko#Mexico
+200    aMYbMalajzia#Malajsie#Malaysia
+200    aNEbHolandsko, Holandské kráľovstvo#Nizozemsko#Netherlands
+200    aNObNórsko, Nórske kráľovstvo#Norsko#Norway
+200    aNZbNový Zéland#Nový Zéland#New Zealand
+200    aPLbPoľsko, Poľská republika#Polsko#Poland
+200    aPObPortugalsko, Portugalská republika#Portugalsko#Portugal
+200    aRMbRumunsko#Rumunsko#Romania
+200    aRUbRuská federácia#Rusko#Russia (Federation)
+200    aSAbJužná Afrika, Juhoafrická republika#Jižní Afrika#South Africa
+200    aSIbSingapur, Singapurská republika#Singapur#Singapore
+200    aSPbŠpanielsko, Španielske kráľovstvo#Španělsko#Spain
+200    aSZbŠvajčiarsko, Švajčiarska konfederácia#Švýcarsko#Switzerland
+200    aRBbSrbsko#Srbsko#Serbian
+200    aTHbThajsko, Thajské kráľovstvo#Thajsko#Thailand
+200    aTKbTurkménsko#Turkmenistán#Turkmenistan
+200    aTSbSpojené arabské emiráty#Spojené arabské emiráty#United Arab Emirates
+200    aTUbTurecko, Turecká republika#Turecko#Turkey
+200    aUAbEgypt, Egyptská arabská republika#Egypt#Egypt
+200    aUNbUkrajina#Ukrajina#Ukraine
+200    aUYbUruguaj, Uruguajská východná republika#Uruguay#Uruguay
+200    aUZbUzbekistan, Uzbecká republika#Uzbekistán#Uzbekistan
+200    aVCbSvätá stolica Vatikán #Vatikán#Vatican City
+200    aVMbVietnam, Vietnamská socialistická republika#Vietnam#Vietnam
+200    aXObSlovensko, Slovenská republika#Slovensko#Slovakia
+200    aXRbČesko, Česká republika#Česko#Czech Republic
+200    aXVbSlovinsko, Slovinská republika#Slovinsko#Slovenia
+200    aXXbBez určenia miesta, neznáme alebo neurčené#Bez místa, neznámé nebo neurčené místo#No place, unknown, or undetermined
+200    aXXCbKanada#Kanada#Canada
+200    aXXKbSpojené kráľovstvo, Spojené kráľovstvo Veľkej Británie a Severného Írska#Velká Británie#United Kingdom
+200    aXXUbSpojené štáty, Spojené štáty americké#Spojené státy americké#United States
+200    aYUbSerbia a Montenegro#Jugoslávie#Serbia and Montenegro
+002    --
+210    aBASE21bXRbXObAAbANbAGbAIbATbAJbBGbBEbBWbXXbBLbBUbCCbCHbDKbUAbERbFIbFRbGHbGSbCLbCIbIIbIRbIEbITbISbJAbSAbYUbXXCbKZbKObCUbKUbKGbLEbLHbLIbLVbLUbHUbMYbMXbMVbMCbMPbGWbNEbNObNZbPLbPObAUbRMbRUbGRbSIbXVbTSbXXUbSPbSZbRBbTHbTUbTKbUNbUYbUZbVCbXXKbVM
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_LANGUAGE
+100    ajs 04.12.08; doplnene zastarale kody scc a scr pre srbochorvatcinu
+100    ajs 24.10.08; aktualizovane podla materialu NK CR (200809) - http://www.nkp.cz/pages/files/fond_Priloha_Y.doc
+200    aaarbAfarčina#Afar#Afar
+200    aabkbAbcházčina#Abchazština#Abkhaz
+200    aacebAcehčina#Aceh(ština)#Achinese
+200    aachbAčoli#Ačoli#Acoli
+200    aadabAdangme#Adangme#Adangme
+200    aadybAdygčina#Adygei#Adygei
+200    aafabAfroázijské jazyky (iné)#Afroasijské jazyky, ostatní#Afroasiatic (Other)
+200    aafhbAfrihikli (umelý jazyk)#Afrihili (umělý jazyk)#Afrihili (Artificial language)
+200    aafrbAfrikánčina#Afrikánština#Afrikaans
+200    aainbAinu#Ainu#Ainu
+200    aakabAkan#Akan#Akan
+200    aakkbAkkadčina#Akkadština#Akkadian
+200    aalbbAlbánčina#Albánština#Albanian
+200    aalebAleutčina#Aleutština#Aleut
+200    aalgbAlgongkinské jazyky #Algonkinské jazyky#Algonquian (Other)
+200    aaltbAltajčina, severná#Altajština, severní#Altai, north
+200    aamhbAmharčina#Amharština#Amharic
+200    aangbAngličtina, stará (cca. 450 - 1100)#Anglosaština, stará (cca 450-1100)#English, Old (ca. 450-1100)
+200    aanpbAngika#Angika#Angika
+200    aapabApačské jazyky#Apačské jazyky#Apache languages
+200    aarabArabčina#Arabština#Arabic
+200    aarcbAramejčina#Aramejština#Aramaic
+200    aargbAragónská španielčina#Aragonská španělština#Aragonese Spanish
+200    aarmbArménčina#Arménština#Armenian
+200    aarnbAraukánčina#Mapuche (araukánština)#Mapuche
+200    aarpbArapaho#Arapaho#Arapaho
+200    aartbUmelé jazyky (iné)#Umělé jazyky, ostatní#Artificial (Other)
+200    aarwbArawačtina#Arawacké jazyky#Arawak
+200    aasmbAsámčina#Asámština#Assamese
+200    aastbBable#Bable#Bable
+200    aathbAthabaské jazyky (iné)#Athapaskánské jazyky#Athapascan (Other)
+200    aausbAustrálske jazyky#Australské jazyky#Australian languages
+200    aavabAvarčina#Avarština#Avaric
+200    aavebAvestský jazyk (avesta)#Avestský jazyk#Avestan
+200    aawabAwadhi#Avadhština (avadhí)#Awadhi
+200    aaymbAymarčina#Ajmarština#Aymara
+200    aazebAzerbajdžančina#Ázerbájdžánština#Azerbaijani
+200    abadbBanda#Banda#Banda
+200    abaibBamileke#Bamileke#Bamileke languages
+200    abakbBaškirčina#Baškirština#Bashkir
+200    abalbBalúdžtina#Balúčština#Baluchi
+200    abambBambara#Bambarština#Bambara
+200    abanbBalijčina#Balijština#Balinese
+200    abaqbBaskilčtina#Baskičtina#Basque
+200    abasbBasa#Basa#Basa
+200    abatbBaltské jazyky #Baltské jazyky, ostatní#Baltic (Other)
+200    abejbBedža#Bedža#Beja
+200    abelbBieloruština#Běloruština#Belarusian
+200    abembBemba#Bembština#Bemba
+200    abenbBengálčina#Bengálština#Bengali
+200    aberbBerberské jazyky (iné) #Berberské jazyky, ostatní#Berber (Other)
+200    abhobBhódžpurčina#Bhódžpurí (bhódžpurština)#Bhojpuri
+200    abihbBiharčina#Bihárština#Bihari
+200    abikbBikolčina#Bikolština#Bikol
+200    abinbBini#Bini#Edo
+200    abisbBislama#Bislama#Bislama
+200    ablabSiksika#Siksika#Siksika
+200    abntbBantuské jazyky (iné)#Bantuské jazyky, ostatní#Bantu (Other)
+200    abosbBosniačtina#Bosenština#Bosnian
+200    abrabBradžčina#Bradžština#Braj
+200    abrebBretónčina#Bretonština#Breton
+200    abtkbBatačtina (Indonézia)#Batačtina#Batak
+200    abuabBuriatčina#Burjatština#Buriat
+200    abugbBuginčina#Bugiština#Bugis
+200    abulbBulharčina#Bulharština#Bulgarian
+200    aburbBarmčina#Barmština#Burmese
+200    abynbBlin, bilin#Blin, bilin#Bilin
+200    acadbKaddo#Caddo#Caddo
+200    acaibIndiánske jazyky Strednej Ameriky#Indiánské jazyky střední Ameriky, ostatní#Central American Indian (Other)
+200    acarbKaribčina#Karibština#Carib
+200    acatbKatalánčina#Katalánština#Catalan
+200    acaubKaukazké jazyky (iné)#Kavkazské jazyky, ostatní#Caucasian (Other)
+200    acebbCebuánčina#Cebuánština#Cebuano
+200    acelbKeltské jazyky (iné)#Keltské jazyky, ostatní#Celtic (Other)
+200    achabČamorčina#Čamoro#Chamorro
+200    achbbČibča#Čibča#Chibcha
+200    achebČečenčina#Čečenština#Chechen
+200    achgbČagatajčina#Čagatajština#Chagatai
+200    achibČínština#Čínština#Chinese
+200    achkbTruk#Čukčtina#Truk
+200    achmbMaríjčina#Marijština#Mari
+200    achnbČinucký žargón#Chinook (činuk) pidžin#Chinook jargon
+200    achobChoctaw#Choctawština#Choctaw
+200    achpbČipewjančina#Chipewyan#Chipewyan
+200    achrbČerokí#Cherokee#Cherokee
+200    achubCirkevnoslovanské jazyky#Církevní slověnština#Church Slavic
+200    achvbČuvaština#Čuvaština#Chuvash
+200    achybČejenčina#Čejenština#Cheyenne
+200    acmcbČamaské jazyky#Čamské jazyky#Chamic languages
+200    acopbKoptčina#Koptština#Coptic
+200    acorbKornčina#Kornština#Cornish
+200    acosbKorzičtina#Korsičtina#Corsican
+200    acpebKreolské jazyky a pidžiny, na báze angličtiny (iné)#Kreolština a jiné pidginy na základě angličtiny#Creoles and Pidgins, English-based (Other)
+200    acpfbKreolské jazyky a pidžiny, na báze francúzštiny (iné)#Kreolština a jiné pidginy na základě francouzštiny#Creoles and Pidgins, French-based (Other)
+200    acppbKreolské jazyky a pidžiny, na báze portugalčiny (iné)#Kreolština a jiné pidginy na základě portugalštiny#Creoles and Pidgins, Portuguese-based (Other)
+200    acrebKrí#Cree#Cree
+200    acrhbKrimská tatárčina#Krymská tatarština#Crimean Tatar
+200    acrpbKreolské jazyky a pidžiny (iné) #Kreolština a jiné pidginy, ostatní#Creoles and Pidgins (Other)
+200    acsbbKašubčina#Kašubština#Kashubian
+200    acusbKušitské jazyky (iné)#Kušitské jazyky, ostatní#Cushitic (Other)
+200    aczebČeština#Čeština#Czech
+200    adakbDakota#Dakota#Dakota
+200    adanbDánčina#Dánština#Danish
+200    adarbDarginčina#Dargwa#Dargwa
+200    adaybDajačtina#Dajáčtina#Dayak
+200    adelbDelaware#Delaware#Delaware
+200    adenbSlave (slejv)#Slave#Slave
+200    adgrbDogrib#Dogrib#Dogrib
+200    adinbDinka#Dinkština#Dinka
+200    adivbDivehi (maledivčina)#Divehi#Divehi
+200    adoibDogri#Dógrí#Dogri
+200    adrabDrávidské jazyky (iné)#Drávidské jazyky, ostatní#Dravidian (Other)
+200    adsbbSorbčina, nižšia#Sorbština, nižší#Lower Sorbian
+200    aduabDuala#Dualština#Duala
+200    adumbHolandčina, stredná (cca 1050 – 1350)#Nizozemština, střední doba (cca 1050-1350)#Dutch, Middle (ca. 1050-1350)
+200    adutbHolandčina#Nizozemština#Dutch
+200    adyubDjula#Djula#Dyula
+200    adzobDzongkä#Dzongkä#Dzongkha
+200    aefibEfik#Efik#Efik
+200    aegybEgyptčina#Egyptština#Egyptian
+200    aekabEkadžuk#Ekajuk#Ekajuk
+200    aelxbElamčina#Elamština#Elamite
+200    aengbAngličtina#Angličtina#English
+200    aenmbAngličtina, stredná (1100 – 1500)#Angličtina, střední doba (1100-1500)#English, Middle (1100-1500)
+200    aepobEsperanto#Esperanto#Esperanto
+200    aestbEstónčina#Estonština#Estonian
+200    aewebEwe#Eweština#Ewe
+200    aewobEwondo#Ewondo#Ewondo
+200    afanbFang#Fang#Fang
+200    afaobFaerčina#Faerština#Faroese
+200    afatbFanti#Fantiština#Fanti
+200    afijbFidžijčina#Fidžijština#Fijian
+200    afilbFilipiko; pilipino#Filipiko; pilipino#Filipino
+200    afinbFínčina#Finština#Finnish
+200    afiubUgrofínske jazyky (iné)#Ugrofinské jazyky, ostatní#Finno-Ugrian (Other)
+200    afonbFončina#Fonština#Fon
+200    afrebFrancúzština#Francouzština#French
+200    afrmbFrancúzština, stredná (cca.1400 – 1600)#Francouzština, střední doba (cca 1400-1600)#French, Middle (ca. 1400-1600)
+200    afrobFrancúzština, stará (cca. 842 – 1400)#Francouzština, stará (cca 842-1400)#French, Old (ca. 842-1400)
+200    afrrbFrízština, severná#Fríština, východní#North Frisian
+200    afrsbFrízština, východná#Fríština, východní#East Frisian
+200    afrybFrízština#Fríština#Frisian
+200    afulbFulbčina#Fulahština#Fula
+200    afurbFriulian#Friulština (furlanština)#Friulian
+200    agaabGa#Ga#Ga
+200    agaybGayo#Gayo#Gayo
+200    agbabGbaja#Gbaja#Gbaya
+200    agembGermánske jazyky (iné)#Germánské jazyky, ostatní#Germanic (Other)
+200    ageobGruzínčina#Gruzínština#Georgian
+200    agerbNemčina#Němčina#German
+200    agezbEtiópčina#Etiopština (geez)#Ethiopic
+200    agilbKiribatčina#Kiribatština#Gilbertese
+200    aglabŠkótska gaelčina#Skotská gaelština#Scottish Gaelic
+200    aglebÍrčina#Irština#Irish
+200    aglgbGalicijčina#Galicijština#Galician
+200    aglvbMančina#Manština (manx)#Manx
+200    agmhbNemčina, stredná horná (cca. 1050 – 1500)#Němčina, horní, střední doba (cca 1050-1500)#German, Middle High (ca. 1050-1500)
+200    agohbNemčina, stará horná (cca. 750 – 1050)#Němčina, horní, starší doba (cca 750-1050)#German, Old High (ca. 750-1050)
+200    agonbGondi#Góndština#Gondi
+200    agorbGorontalo#Gorontalo#Gorontalo
+200    agotbGótčina#Gótština#Gothic
+200    agrbbGrebo#Grebo#Grebo
+200    agrcbGréčtina, stará (do 1453)#Řečtina, starověká (do 1453)#Greek, Ancient (to 1453)
+200    agrebGréčtina, súčasná (1453 - )#Řečtina, moderní (po 1453)#Greek, Modern (1453- )
+200    agrnbGuarani#Guaraní#Guarani
+200    agswbNemčina, švajčiarska#Němčina, švýcarská#Swiss German
+200    agujbGudžarátčina#Gudžarátština#Gujarati
+200    agwibGwich'in#Gwich'in#Gwich'in
+200    ahaibHaida#Haida#Haida
+200    ahatbHaitská francúzska kreolčina#Haitsko-francouzská kreolština#Haitian French Creole
+200    ahaubHauština#Hauština#Hausa
+200    ahawbHavajčina#Havajština#Hawaiian
+200    ahebbHebrejčina#Hebrejština#Hebrew
+200    aherbHerero#Herero#Herero
+200    ahilbHiligajnončina#Hiligayonština#Hiligaynon
+200    ahimbHimačalčina#Himáčalí#Himachali
+200    ahinbHindčina#Hindština#Hindi
+200    ahitbChetitčina#Chetitština#Hittite
+200    ahmnbHmong#Hmongština#Hmong
+200    ahmobHiri motu#Hiri motu#Hiri Motu
+200    ahrvbChorvátčina#Chorvatština#Croatian
+200    ahsbbSorbčina, vyššia#Sorbština, vyšší#Upper Sorbian
+200    ahunbMaďarčina#Maďarština#Hungarian
+200    ahupbHupa#Hupa#Hupa
+200    aibabIban#Iban#Iban
+200    aibobIgbo#Igbo#Igbo
+200    aicebIslandčina#Islandština#Icelandic
+200    aidobMedzinárodný jazyk ido (vylepšené esperanto)#Ido#Ido
+200    aiiibSichuan yi#S'čchuanština#Sichuan Yi
+200    aijobIdžo#Idžo#Ijo
+200    aikubInuktitut#Inuktitut#Inuktitut
+200    ailebInterlingue#Interlingue#Interlingue
+200    ailobIloko#Ilokánština#Iloko
+200    ainabInterlingua (International Auxiliary Language Association)#Interlingua (Mezinárodní pomocná jazyková asociace)#Interlingua (International Auxiliary Language Association)
+200    aincbIndické jazyky (iné)#Indo-árijské jazyky, ostatní#Indic (Other)
+200    aindbIndonézsky jazyk#Indonéština#Indonesian
+200    ainebIndoeurópske jazyky (iné)#Indo-evropské jazyky, ostatní#Indo-European (Other)
+200    ainhbInguština#Inguština#Ingush
+200    aipkbInupiaq#Inupiaq#Inupiaq
+200    airabIránske jazyky (iné)#Íránské jazyky, ostatní#Iranian (Other)
+200    airobIrokézske jazyky (iné)#Irokézské jazyky#Iroquoian (Other)
+200    aitabTaliančina#Italština#Italian
+200    ajavbJávčina#Javánština#Javanese
+200    ajbobLojban#Lojban#Lojban (Artificial language)
+200    ajpnbJapončina#Japonština#Japanese
+200    ajprbŽidovská perzština#Judeo-perština#Judeo-Persian
+200    ajrbbŽidovská arabčina#Judeo-arabština#Judeo-Arabic
+200    akaabKarakalpačtina#Karakalpačtina#Kara-Kalpak
+200    akabbKabylčina#Kabulí#Kabyle
+200    akacbKačjinčina#Kačjinština#Kachin
+200    akambKamba#Kambština#Kamba
+200    akanbKannadčina#Kannadština#Kannada
+200    akarbKarenčina#Karenština#Karen
+200    akasbKašmírčina#Kašmírí#Kashmiri
+200    akaubKanuri#Kanuri#Kanuri
+200    akawbKawi#Kawi#Kawi
+200    akazbKazaština#Kazaština#Kazakh
+200    akbdbKabardčina#Kabardština#Kabardian
+200    akhabKhasijčina#Khásí#Khasi
+200    akhibKhojsánske jazyky (iné)#Khoisanské jazyky, ostatní#Khoisan (Other)
+200    akhmbKhmérčina#Khmerština#Khmer
+200    akhobKotčina#Chotánština#Khotanese
+200    akikbKikuju#Kukujština#Kikuyu
+200    akinbKiňarwanda#Rwandština#Kinyarwanda
+200    akirbKirgizština#Kyrgyzština#Kyrgyz
+200    akmbbKimbundu (idongo)#Kimbundština#Kimbundu
+200    akokbKonkánčina#Kónkánština#Konkani
+200    akombKomijčina#Komijština#Komi
+200    akonbKongo#Konžština#Kongo
+200    akorbKórejčina#Korejština#Korean
+200    akosbKusaie#Kosrajština (kusaie)#Kusaie
+200    akpebKpelle#Kpelle#Kpelle
+200    akrlbKarelčina#Karelština#Karelian
+200    akrobKru#Kru#Kru
+200    akrubKurukhčina#Kurukh#Kurukh
+200    akuabKuaňama#Kuaňamština#Kuanyama
+200    akumbKumytčina#Kumyčtina#Kumyk
+200    akurbKurdčina#Kurdština#Kurdish
+200    akutbKutenai#Kutenai#Kutenai
+200    aladbLadinčina#Ladinština#Ladino
+200    alahbLahandčina#Lahndština#Lahnda
+200    alambLamba#Lambština#Lamba
+200    alaobLaoština#Laoština#Lao
+200    alatbLatinčina#Latina#Latin
+200    alavbLotiština#Lotyština#Latvian
+200    alezbLezginčina#Lezgiština#Lezgian
+200    alimbLimburčina#Limburština#Limburgish
+200    alinbLingala#Lingalština#Lingala
+200    alitbLitovčina#Litevština#Lithuanian
+200    alolbMongo-nkundu#Mongština#Mongo-Nkundu
+200    alozbLozi#Lozština#Lozi
+200    altzbLuxemburčina#Lucemburština#Letzeburgesch
+200    aluabLuba-luluánčina#Luba-luluaština#Luba-Lulua
+200    alubbLuba-katangčina#Lubu-katanžština#Luba-Katanga
+200    alugbGanda#Ganda#Ganda
+200    aluibLuiseňo#Luiseňo#Luiseňo
+200    alunbLunda#Lundština#Lunda
+200    aluobLuo (Keňa a Tanzánia)#Luoština (Keňa a Tanzanie)#Luo (Kenya and Tanzania)
+200    alusbLušáí#Lušáí#Lushai
+200    amacbMacedónčina#Makedonština#Macedonian
+200    amadbMadurčina#Madurština#Madurese
+200    amagbMagahí#Magahština#Magahi
+200    amahbMaršalčina#Maršalština#Marshallese
+200    amaibMaithilčina#Maithilština#Maithili
+200    amakbMakasarčina#Makasarština#Makasar
+200    amalbMalajálamčina#Malajálamština#Malayalam
+200    amanbMandigo#Mandingština#Mandingo
+200    amaobMaorčina#Maorština#Maori
+200    amapbAustronézske jazyky (iné)#Malajsko-polynéské jazyky, ostatní#Austronesian (Other)
+200    amarbMaráthčina#Maráthština#Marathi
+200    amasbMasai#Masajština#Masai
+200    amaybMalajčina#Malajština#Malay
+200    amdrbMandarčina#Mandar#Mandar
+200    amenbMende#Mende#Mende
+200    amgabÍrčina, stredná (cca. 1100 – 1550)#Irština, střední doba (cca 1100-1550)#Irish, Middle (ca. 1100-1550)
+200    amicbMikman#Micmac#Micmac
+200    aminbMinangkabaučina#Minangkabau#Minangkabau
+200    amisbRôzne jazyky#Různé jazyky#Miscellaneous languages
+200    amkhbMonsko-kmérske jazyky (iné)#Mon-khmerské jazyky, ostatní#Mon-Khmer (Other)
+200    amlgbMalagaština#Malgaština#Malagasy
+200    amltbMaltčina#Maltština#Maltese
+200    amncbMandžuština#Manchu#Manchu
+200    amnibManípurčina#Manipurština#Manipuri
+200    amnobManobo jazyky#Manobo jazyky#Manobo languages
+200    amohbMohawk#Mohawk#Mohawk
+200    amolbMoldavčina#Moldavština#Moldavian
+200    amonbMongolčina#Mongolština#Mongolian
+200    amosbMosi#Mosi (more)#Mooré
+200    amulbViaceré jazyky#Více jazyků#Multiple languages
+200    amunbMundské jazyky (iné)#Mundské jazyky#Munda (Other)
+200    amusbMuskogi#Muskogee#Creek
+200    amwlbMirandeština#Mirandeština#Mirandese
+200    amwrbMarawari#Márvárština#Marwari
+200    amynbMayské jazyky#Mayské jazyky#Mayan languages
+200    anahbNahuatl#Nahuatl#Nahuatl
+200    anaibIndiánske jazyky Severnej Ameriky (iné)#Severoamerické indiánské jazyky, ostatní#North American Indian (Other)
+200    anapbNeapolská taliančina#Neapolská italština#Neapolitan Italian
+200    anaubNauruština#Nauruština#Nauru
+200    anavbNavaho#Navahština (navaho)#Navajo
+200    anblbNdebele (južná Afrika)#Ndebelština (Jižní Afrika)#Ndebele (South Africa)
+200    andebNdebele (Zimbabwe)#Ndebelština (Zimbabwe)#Ndebele (Zimbabwe) 
+200    andobNdonga#Ndondština#Ndonga
+200    andsbDolná nemčina#Němčina, dolní (plattdeutsch)#Low German
+200    anepbNepálčina#Nepálština#Nepali
+200    anewbNévarčina#Névárština#Newari
+200    aniabNias#Nias#Nias
+200    anicbNigersko-kordofánske jazyky (iné)#Nigersko-konžské jazyky, ostatní#Niger-Kordofanian (Other)
+200    aniubNiueština#Niue#Niuean
+200    annobNórčina (Nynorsk)#Nynorsk#Norwegian (Nynorsk)
+200    anobbNórčina (Bokmal)#Bokmal#Norwegian (Bokmal)
+200    anogbNogidalčina#Nogai#Nogai
+200    anonbNórčina, stará#Norština, stará#Old Norse
+200    anorbNórčina#Norština#Norwegian
+200    anqobN'ko#N'ko#N'Ko
+200    ansobSoto, severný#Sothoština, severní#Northern Sotho
+200    anubbNubijiské jazyky#Nubijské jazyky#Nubian languages
+200    anwcbNewari, klasická#Newari, klasická#Newari, Old
+200    anyabŇandža#Ňandžština#Nyanja
+200    anymbŇamwezi#Ňamwežština#Nyamwezi
+200    anynbŇankole#Nyankolština#Nyankole
+200    anyobŇoro#Nyorština#Nyoro
+200    anzibNzima#Nzima#Nzima
+200    aocibOkcitánčina (po 1500)#Okcitánština (po 1500)#Occitan (post-1500)
+200    aojibOdžibwa#Odžibwejština#Ojibwa
+200    aoribUríjčina#Urijština#Oriya
+200    aormbOromčina#Oromština#Oromo
+200    aosabOsage#Osage#Osage
+200    aossbOsetčina#Osetština#Ossetic
+200    aotabTurečtina, Ottoman#Turečtina, osmanská#Turkish, Ottoman
+200    aotobOto-pameské jazyky#Osmanské jazyky#Otomian languages
+200    apaabPapuánske jazyky (iné)#Papuánské jazyky, ostatní#Papuan (Other)
+200    apagbPangasinan#Pangsinan#Pangasinan
+200    apalbPahlaví#Pahlaví (střední perština)#Pahlavi
+200    apambPampangan, kapampangan#Pampangau#Pampanga
+200    apanbPandžábčina#Paňdžábština#Panjabi
+200    apapbPapiamento#Papiamento#Papiamento
+200    apaubPalaučina#Palauština#Palauan
+200    apeobPerzština, stará (cca 600 – 400 p.n.l.)#Perština, stará (600-400 př. K.)#Old Persian (ca. 600-400 B.C.)
+200    aperbPerzština#Perština#Persian
+200    aphibFilipínske jazyky (iné)#Filipínské jazyky, ostatní#Philippine (Other)
+200    aphnbFéničtina#Foiničtina#Phoenician
+200    aplibPálí#Páli#Pali
+200    apolbPoľština#Polština#Polish
+200    aponbPohnpeičina (ponape)#Pohnpeiština (ponape)#Ponape
+200    aporbPortugalčina#Portugalština#Portuguese
+200    aprabPrakritské jazyky#Prákrty#Prakrit languages
+200    aprobProvensálčina, stará (1500)#Provensálština, stará (do 1500)#Provençal (to 1500)
+200    apusbPaštčina#Pašto (pachto, paštština)#Pushto
+200    aquebKečuánčina#Kečuánština#Quechua
+200    arajbRadžastančina#Rádžasthánština#Rajasthani
+200    arapbRapanujčina#Rapanuiština#Rapanui
+200    ararbRarotongčina#Rarotongština#Rarotongan
+200    aroabRománske jazyky (iné)#Románské jazyky, ostatní#Romance (Other)
+200    arohbRétorománčina#Rétorománština#Raeto-Romance
+200    arombRómčina#Romština#Romani
+200    arumbRumunčina#Rumunština#Romanian
+200    arunbRundi#Rundština#Rundi
+200    arupbMakedo-rumunčina, aroumain#Makedo-rumunština, aroumain#Aromanian
+200    arusbRuština#Ruština#Russian
+200    asadbSandawe#Sandawština#Sandawe
+200    asagbSango#Sangština#Sango (Ubangi Creole)
+200    asahbJakutčina#Jakutština#Yakut
+200    asaibIndiánske jazyky Južnej Ameriky (iné)#Jihoamerické indiánské jazyky, ostatní#South American Indian (Other)
+200    asalbSališské jazyky#Salishské jazyky#Salishan languages
+200    asambSamaritánska aramejčina#Samarština#Samaritan Aramaic
+200    asanbSanskrit#Sanskrt#Sanskrit
+200    asasbSasačtina#Sasakština#Sasak
+200    asatbSantálí, santalčina#Santálí#Santali
+200    asccbSrbochorvátčina (srbčina, zastaralý kód)#Srbochorvatština (srbština, zastaralý kód)#Serbo-Croatian (serbian, old code)
+200    ascobŠkótčina#Skotština#Scots
+200    ascrbSrbochorvátčina (chorvátčina, zastaralý kód)#Srbochorvátčina (chorvatština, zastaralý kód)#Serbo-Croatian (croatian, old code)
+200    aselbSelkupčina#Selkupština#Selkup
+200    asembSemitské jazyky (iné)#Semitské jazyky, ostatní#Semitic (Other)
+200    asgabÍrština, stará (do 1100)#Irština, stará (do 900)#Irish, Old (to 1100)
+200    asgnbZnakové jazyky #Znakové jazyky#Sign languages
+200    ashnbŠančina#Šanština#Shan
+200    asidbSidamo#Sidamo#Sidamo
+200    asinbSinhalčina#Sinhálština#Sinhalese
+200    asiobSiouské jazyky (iné)#Siouxské jazyky, ostatní#Siouan (Other)
+200    asitbČínsko-tibetské jazyky (iné)#Sinotibetské jazyky, ostatní#Sino-Tibetan (Other)
+200    aslabSlovanské jazyky (iné)#Slovanské jazyky, ostatní#Slavic (Other)
+200    aslobSlovenčina#Slovenština#Slovak
+200    aslvbSlovinčina#Slovinština#Slovenian
+200    asmabSami (laponské) jazyky, južné#Sami jazyky, jižní#Southern Sami
+200    asmebSami (laponské) jazyky, severné#Sami jazyky, severní#Northern Sami
+200    asmibSami (laponský) jazyk#Sami jazyky#Sami
+200    asmjbSami (laponský) jazyk lule#Lule sami#Lule Sami
+200    asmnbSami (laponský) jazyk inari#Inari sami#Inari Sami
+200    asmobSamojčina#Samojština#Samoan
+200    asmsbSami (laponský) jazyk, skolt#Skolt sami#Skolt Sami
+200    asnabŠona#Šonština#Shona
+200    asndbSindhčina#Sindhština#Sindhi
+200    asnkbSoninke#Sonikština#Soninke
+200    asogbSogdčina#Soghdština#Sogdian
+200    asombSomálčina#Somálština#Somali
+200    asonbSonghai#Songhajština#Songhai
+200    asotbSoto#Sothoština, jižní#Sotho
+200    aspabŠpanielčina#Španělština#Spanish
+200    asrdbSardínsky jazyk#Sardština#Sardinian
+200    asrnbSranan tongo#Sranan tongo#Sranan
+200    asrpbSbrčina#Srbština#Serbian
+200    asrrbSerer#Serer#Serer
+200    assabNílsko-saharské jazyky#Nilsko-saharské jazyky, ostatní#Nilo-Saharan (Other)
+200    asswbSwati#Svatština#Swazi
+200    asukbSukuma#Sukuma#Sukuma
+200    asunbSundčina#Sundština#Sundanese
+200    asusbSusu#Susu#Susu
+200    asuxbSumerčina#Sumerština#Sumerian
+200    aswabSvahilčina#Svahilština#Swahili
+200    aswebŠvédčina#Švédština#Swedish
+200    asycbSýrčina, klasická#Syrština, klasická#Syriac, Old
+200    asyrbSýrčina#Syrština#Syriac
+200    atahbTahitčina#Tahitština#Tahitian
+200    ataibThajské jazyky (iné)#Thajské jazyky, ostatní#Tai (Other)
+200    atambTamilčina#Tamilština#Tamil
+200    atatbTatárčina#Tatarština#Tatar
+200    atelbTelugčina#Telugu#Telugu
+200    atembTemne#Temne#Temne
+200    aterbTereno#Tereno#Terena
+200    atetbTetum#Tetumština#Tetum
+200    atgkbTadžičtina#Tadžičtina#Tajik
+200    atglbTagalčina#Tagalština#Tagalog
+200    athabThajčina#Thajština#Thai
+200    athlbKlingon#Klingon#Klingon (Artificial language)
+200    atibbTibetčina#Tibetština#Tibetan
+200    atigbTigre#Tigrejština#Tigré
+200    atirbTirgriňa#Tigriňa#Tigrinya
+200    ativbTiv#Tivština#Tiv
+200    atklbTokelaučina#Tokelauština#Tokelauan
+200    atlibTlingit#Tlingit#Tlingit
+200    atmhbTamašek#Tamašek#Tamashek
+200    atogbTongčina (Nyasa)#Tongština (nyasa)#Tonga (Nyasa)
+200    atonbTongčina (Tongské ostrovy)#Tongština#Tongan
+200    atpibTok pisin#Tok pisin#Tok Pisin
+200    atsibTsimshijské jazyky#Tsimshijské jazyky#Tsimshian
+200    atsnbČwančina (čwana)#Tswanština (čwanština)#Tswana
+200    atsobTsonga#Tsongština#Tsonga
+200    atukbTurkménčina#Turkmenština#Turkmen
+200    atumbTumbuka#Tumbukština#Tumbuka
+200    atupbJazyky tupi#Tupi jazyky#Tupi languages
+200    aturbTurečtina#Turečtina#Turkish
+200    atutbAltajské jazyky#Altajské jazyky, ostatní#Altaic (Other)
+200    atvlbTuvalčina#Tuvalština#Tuvaluan
+200    atwibTwi#Twi#Twi
+200    atyvbTuviančina#Tuvština#Tuvinian
+200    audmbUdmurtčina#Udmurtština#Udmurt
+200    augabUgaritčina#Ugaritština#Ugaritic
+200    auigbUjgurčina#Ujgurština#Uighur
+200    aukrbUkrajinčina#Ukrajinština#Ukrainian
+200    aumbbUmbundu#Umbundu#Umbundu
+200    aundbNeurčený#Neurčený, nezjistitelný#Undetermined
+200    aurdbUrdčina#Urdština#Urdu
+200    auzbbUzbečtina#Uzbečtina#Uzbek
+200    avaibVai#Vai#Vai
+200    avenbVenda#Vendština#Venda
+200    aviebVietnamčina#Vietnamština#Vietnamese
+200    avolbVolapük#Volapük#Volapük
+200    avotbVodčina#Votiatština#Votic
+200    awakbWakašské jazyky#Wakashské jazyky#Wakashan languages
+200    awalbWalamčina#Walamština#Walamo
+200    awarbWaray#Waray#Waray
+200    awasbWasho#Washo#Washo
+200    awelbWaleština#Velština#Welsh
+200    awenbSrbské jazyky#Lužická srbština#Sorbian languages
+200    awlnbWalloon, dialekt používaný v Belgicku#Valonština#Walloon
+200    awolbWolof#Wolofština#Wolof
+200    axalbKalmyčtina#Kalmyčtina, oirat#Kalmyk
+200    axhobXhosa#Xhosština#Xhosa
+200    ayaobYao (Afrika)#Jaoština#Yao (Africa)
+200    ayapbJapčina#Yapese#Yapese
+200    ayidbJidiš#Jidiš#Yiddish
+200    ayorbJorubčina#Jorubština#Yoruba
+200    aypkbYupické jazyky#Yupik#Yupik languages
+200    azapbZapotéčtina#Zapotéčtina#Zapotec
+200    azblbBliss#Bliss#Blissymbolics
+200    azenbZenaga#Zenaga#Zenaga
+200    azhabČuangčina#Čuangština#Zhuang
+200    azndbZande#Zandština#Zande
+200    azulbZuluština#Zuluština#Zulu
+200    azunbZuni#Zunijština#Zuni
+200    azxxbNedá sa použiť, nie je lingvistický obsah#Nelze použít, není lingvistický obsah#No linguistic content
+200    azzabZaza; dimili, kirdki, kirmanjki#Zaza; dimili, kirdki, kirmanjki#Zaza
+200    a---bBez jazyka (008)#Bez jazyku (008)#No language (008)
+210    aLANG1bslobczebgerbeng
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_LGT
+100    ajs 04.12.08; doplnene zastarale kody scc a scr pre srbochorvatcinu
+100    ajs 24.10.08; aktualizovane podla materialu NK CR (200809) - http://www.nkp.cz/pages/files/fond_Priloha_Y.doc
+200    aaarbAfarčina#Afar#Afar
+200    aabkbAbcházčina#Abchazština#Abkhaz
+200    aacebAcehčina#Aceh(ština)#Achinese
+200    aachbAčoli#Ačoli#Acoli
+200    aadabAdangme#Adangme#Adangme
+200    aadybAdygčina#Adygei#Adygei
+200    aafabAfroázijské jazyky (iné)#Afroasijské jazyky, ostatní#Afroasiatic (Other)
+200    aafhbAfrihikli (umelý jazyk)#Afrihili (umělý jazyk)#Afrihili (Artificial language)
+200    aafrbAfrikánčina#Afrikánština#Afrikaans
+200    aainbAinu#Ainu#Ainu
+200    aakabAkan#Akan#Akan
+200    aakkbAkkadčina#Akkadština#Akkadian
+200    aalbbAlbánčina#Albánština#Albanian
+200    aalebAleutčina#Aleutština#Aleut
+200    aalgbAlgongkinské jazyky #Algonkinské jazyky#Algonquian (Other)
+200    aaltbAltajčina, severná#Altajština, severní#Altai, north
+200    aamhbAmharčina#Amharština#Amharic
+200    aangbAngličtina, stará (cca. 450 - 1100)#Anglosaština, stará (cca 450-1100)#English, Old (ca. 450-1100)
+200    aanpbAngika#Angika#Angika
+200    aapabApačské jazyky#Apačské jazyky#Apache languages
+200    aarabArabčina#Arabština#Arabic
+200    aarcbAramejčina#Aramejština#Aramaic
+200    aargbAragónská španielčina#Aragonská španělština#Aragonese Spanish
+200    aarmbArménčina#Arménština#Armenian
+200    aarnbAraukánčina#Mapuche (araukánština)#Mapuche
+200    aarpbArapaho#Arapaho#Arapaho
+200    aartbUmelé jazyky (iné)#Umělé jazyky, ostatní#Artificial (Other)
+200    aarwbArawačtina#Arawacké jazyky#Arawak
+200    aasmbAsámčina#Asámština#Assamese
+200    aastbBable#Bable#Bable
+200    aathbAthabaské jazyky (iné)#Athapaskánské jazyky#Athapascan (Other)
+200    aausbAustrálske jazyky#Australské jazyky#Australian languages
+200    aavabAvarčina#Avarština#Avaric
+200    aavebAvestský jazyk (avesta)#Avestský jazyk#Avestan
+200    aawabAwadhi#Avadhština (avadhí)#Awadhi
+200    aaymbAymarčina#Ajmarština#Aymara
+200    aazebAzerbajdžančina#ázerbájdžánština#Azerbaijani
+200    abadbBanda#Banda#Banda
+200    abaibBamileke#Bamileke#Bamileke languages
+200    abakbBaškirčina#Baškirština#Bashkir
+200    abalbBalúdžtina#Balúčština#Baluchi
+200    abambBambara#Bambarština#Bambara
+200    abanbBalijčina#Balijština#Balinese
+200    abaqbBaskilčtina#Baskičtina#Basque
+200    abasbBasa#Basa#Basa
+200    abatbBaltské jazyky #Baltské jazyky, ostatní#Baltic (Other)
+200    abejbBedža#Bedža#Beja
+200    abelbBieloruština#Běloruština#Belarusian
+200    abembBemba#Bembština#Bemba
+200    abenbBengálčina#Bengálština#Bengali
+200    aberbBerberské jazyky (iné) #Berberské jazyky, ostatní#Berber (Other)
+200    abhobBhódžpurčina#Bhódžpurí (bhódžpurština)#Bhojpuri
+200    abihbBiharčina#Bihárština#Bihari
+200    abikbBikolčina#Bikolština#Bikol
+200    abinbBini#Bini#Edo
+200    abisbBislama#Bislama#Bislama
+200    ablabSiksika#Siksika#Siksika
+200    abntbBantuské jazyky (iné)#Bantuské jazyky, ostatní#Bantu (Other)
+200    abosbBosniačtina#Bosenština#Bosnian
+200    abrabBradžčina#Bradžština#Braj
+200    abrebBretónčina#Bretonština#Breton
+200    abtkbBatačtina (Indonézia)#Batačtina#Batak
+200    abuabBuriatčina#Burjatština#Buriat
+200    abugbBuginčina#Bugiština#Bugis
+200    abulbBulharčina#Bulharština#Bulgarian
+200    aburbBarmčina#Barmština#Burmese
+200    abynbBlin, bilin#Blin, bilin#Bilin
+200    acadbKaddo#Caddo#Caddo
+200    acaibIndiánske jazyky Strednej Ameriky#Indiánské jazyky střední Ameriky, ostatní#Central American Indian (Other)
+200    acarbKaribčina#Karibština#Carib
+200    acatbKatalánčina#Katalánština#Catalan
+200    acaubKaukazké jazyky (iné)#Kavkazské jazyky, ostatní#Caucasian (Other)
+200    acebbCebuánčina#Cebuánština#Cebuano
+200    acelbKeltské jazyky (iné)#Keltské jazyky, ostatní#Celtic (Other)
+200    achabČamorčina#Čamoro#Chamorro
+200    achbbČibča#Čibča#Chibcha
+200    achebČečenčina#Čečenština#Chechen
+200    achgbČagatajčina#Čagatajština#Chagatai
+200    achibČínština#Čínština#Chinese
+200    achkbTruk#Čukčtina#Truk
+200    achmbMaríjčina#Marijština#Mari
+200    achnbČinucký žargón#Chinook (činuk) pidžin#Chinook jargon
+200    achobChoctaw#Choctawština#Choctaw
+200    achpbČipewjančina#Chipewyan#Chipewyan
+200    achrbČerokí#Cherokee#Cherokee
+200    achubCirkevnoslovanské jazyky#Církevní slověnština#Church Slavic
+200    achvbČuvaština#Čuvaština#Chuvash
+200    achybČejenčina#Čejenština#Cheyenne
+200    acmcbČamaské jazyky#Čamské jazyky#Chamic languages
+200    acopbKoptčina#Koptština#Coptic
+200    acorbKornčina#Kornština#Cornish
+200    acosbKorzičtina#Korsičtina#Corsican
+200    acpebKreolské jazyky a pidžiny, na báze angličtiny (iné)#Kreolština a jiné pidginy na základě angličtiny#Creoles and Pidgins, English-based (Other)
+200    acpfbKreolské jazyky a pidžiny, na báze francúzštiny (iné)#Kreolština a jiné pidginy na základě francouzštiny#Creoles and Pidgins, French-based (Other)
+200    acppbKreolské jazyky a pidžiny, na báze portugalčiny (iné)#Kreolština a jiné pidginy na základě portugalštiny#Creoles and Pidgins, Portuguese-based (Other)
+200    acrebKrí#Cree#Cree
+200    acrhbKrimská tatárčina#Krymská tatarština#Crimean Tatar
+200    acrpbKreolské jazyky a pidžiny (iné) #Kreolština a jiné pidginy, ostatní#Creoles and Pidgins (Other)
+200    acsbbKašubčina#Kašubština#Kashubian
+200    acusbKušitské jazyky (iné)#Kušitské jazyky, ostatní#Cushitic (Other)
+200    aczebČeština#Čeština#Czech
+200    adakbDakota#Dakota#Dakota
+200    adanbDánčina#Dánština#Danish
+200    adarbDarginčina#Dargwa#Dargwa
+200    adaybDajačtina#Dajáčtina#Dayak
+200    adelbDelaware#Delaware#Delaware
+200    adenbSlave (slejv)#Slave#Slave
+200    adgrbDogrib#Dogrib#Dogrib
+200    adinbDinka#Dinkština#Dinka
+200    adivbDivehi (maledivčina)#Divehi#Divehi
+200    adoibDogri#Dógrí#Dogri
+200    adrabDrávidské jazyky (iné)#Drávidské jazyky, ostatní#Dravidian (Other)
+200    adsbbSorbčina, nižšia#Sorbština, nižší#Lower Sorbian
+200    aduabDuala#Dualština#Duala
+200    adumbHolandčina, stredná (cca 1050 – 1350)#Nizozemština, střední doba (cca 1050-1350)#Dutch, Middle (ca. 1050-1350)
+200    adutbHolandčina#Nizozemština#Dutch
+200    adyubDjula#Djula#Dyula
+200    adzobDzongkä#Dzongkä#Dzongkha
+200    aefibEfik#Efik#Efik
+200    aegybEgyptčina#Egyptština#Egyptian
+200    aekabEkadžuk#Ekajuk#Ekajuk
+200    aelxbElamčina#Elamština#Elamite
+200    aengbAngličtina#Angličtina#English
+200    aenmbAngličtina, stredná (1100 – 1500)#Angličtina, střední doba (1100-1500)#English, Middle (1100-1500)
+200    aepobEsperanto#Esperanto#Esperanto
+200    aestbEstónčina#Estonština#Estonian
+200    aewebEwe#Eweština#Ewe
+200    aewobEwondo#Ewondo#Ewondo
+200    afanbFang#Fang#Fang
+200    afaobFaerčina#Faerština#Faroese
+200    afatbFanti#Fantiština#Fanti
+200    afijbFidžijčina#Fidžijština#Fijian
+200    afilbFilipiko; pilipino#Filipiko; pilipino#Filipino
+200    afinbFínčina#Finština#Finnish
+200    afiubUgrofínske jazyky (iné)#Ugrofinské jazyky, ostatní#Finno-Ugrian (Other)
+200    afonbFončina#Fonština#Fon
+200    afrebFrancúzština#Francouzština#French
+200    afrmbFrancúzština, stredná (cca.1400 – 1600)#Francouzština, střední doba (cca 1400-1600)#French, Middle (ca. 1400-1600)
+200    afrobFrancúzština, stará (cca. 842 – 1400)#Francouzština, stará (cca 842-1400)#French, Old (ca. 842-1400)
+200    afrrbFrízština, severná#Fríština, východní#North Frisian
+200    afrsbFrízština, východná#Fríština, východní#East Frisian
+200    afrybFrízština#Fríština#Frisian
+200    afulbFulbčina#Fulahština#Fula
+200    afurbFriulian#Friulština (furlanština)#Friulian
+200    agaabGa#Ga#Ga
+200    agaybGayo#Gayo#Gayo
+200    agbabGbaja#Gbaja#Gbaya
+200    agembGermánske jazyky (iné)#Germánské jazyky, ostatní#Germanic (Other)
+200    ageobGruzínčina#Gruzínština#Georgian
+200    agerbNemčina#Němčina#German
+200    agezbEtiópčina#Etiopština (geez)#Ethiopic
+200    agilbKiribatčina#Kiribatština#Gilbertese
+200    aglabŠkótska gaelčina#Skotská gaelština#Scottish Gaelic
+200    aglebÍrčina#Irština#Irish
+200    aglgbGalicijčina#Galicijština#Galician
+200    aglvbMančina#Manština (manx)#Manx
+200    agmhbNemčina, stredná horná (cca. 1050 – 1500)#Němčina, horní, střední doba (cca 1050-1500)#German, Middle High (ca. 1050-1500)
+200    agohbNemčina, stará horná (cca. 750 – 1050)#Němčina, horní, starší doba (cca 750-1050)#German, Old High (ca. 750-1050)
+200    agonbGondi#Góndština#Gondi
+200    agorbGorontalo#Gorontalo#Gorontalo
+200    agotbGótčina#Gótština#Gothic
+200    agrbbGrebo#Grebo#Grebo
+200    agrcbGréčtina, stará (do 1453)#řečtina, starověká (do 1453)#Greek, Ancient (to 1453)
+200    agrebGréčtina, súčasná (1453 - )#řečtina, moderní (po 1453)#Greek, Modern (1453- )
+200    agrnbGuarani#Guaraní#Guarani
+200    agswbNemčina, švajčiarska#Němčina, švýcarská#Swiss German
+200    agujbGudžarátčina#Gudžarátština#Gujarati
+200    agwibGwich'in#Gwich'in#Gwich'in
+200    ahaibHaida#Haida#Haida
+200    ahatbHaitská francúzska kreolčina#Haitsko-francouzská kreolština#Haitian French Creole
+200    ahaubHauština#Hauština#Hausa
+200    ahawbHavajčina#Havajština#Hawaiian
+200    ahebbHebrejčina#Hebrejština#Hebrew
+200    aherbHerero#Herero#Herero
+200    ahilbHiligajnončina#Hiligayonština#Hiligaynon
+200    ahimbHimačalčina#Himáčalí#Himachali
+200    ahinbHindčina#Hindština#Hindi
+200    ahitbChetitčina#Chetitština#Hittite
+200    ahmnbHmong#Hmongština#Hmong
+200    ahmobHiri motu#Hiri motu#Hiri Motu
+200    ahrvbChorvátčina#Chorvatština#Croatian
+200    ahsbbSorbčina, vyššia#Sorbština, vyšší#Upper Sorbian
+200    ahunbMaďarčina#Maďarština#Hungarian
+200    ahupbHupa#Hupa#Hupa
+200    aibabIban#Iban#Iban
+200    aibobIgbo#Igbo#Igbo
+200    aicebIslandčina#Islandština#Icelandic
+200    aidobMedzinárodný jazyk ido (vylepšené esperanto)#Ido#Ido
+200    aiiibSichuan yi#S'čchuanština#Sichuan Yi
+200    aijobIdžo#Idžo#Ijo
+200    aikubInuktitut#Inuktitut#Inuktitut
+200    ailebInterlingue#Interlingue#Interlingue
+200    ailobIloko#Ilokánština#Iloko
+200    ainabInterlingua (International Auxiliary Language Association)#Interlingua (Mezinárodní pomocná jazyková asociace)#Interlingua (International Auxiliary Language Association)
+200    aincbIndické jazyky (iné)#Indo-árijské jazyky, ostatní#Indic (Other)
+200    aindbIndonézsky jazyk#Indonéština#Indonesian
+200    ainebIndoeurópske jazyky (iné)#Indo-evropské jazyky, ostatní#Indo-European (Other)
+200    ainhbInguština#Inguština#Ingush
+200    aipkbInupiaq#Inupiaq#Inupiaq
+200    airabIránske jazyky (iné)#Íránské jazyky, ostatní#Iranian (Other)
+200    airobIrokézske jazyky (iné)#Irokézské jazyky#Iroquoian (Other)
+200    aitabTaliančina#Italština#Italian
+200    ajavbJávčina#Javánština#Javanese
+200    ajbobLojban#Lojban#Lojban (Artificial language)
+200    ajpnbJapončina#Japonština#Japanese
+200    ajprbŽidovská perzština#Judeo-perština#Judeo-Persian
+200    ajrbbŽidovská arabčina#Judeo-arabština#Judeo-Arabic
+200    akaabKarakalpačtina#Karakalpačtina#Kara-Kalpak
+200    akabbKabylčina#Kabulí#Kabyle
+200    akacbKačjinčina#Kačjinština#Kachin
+200    akambKamba#Kambština#Kamba
+200    akanbKannadčina#Kannadština#Kannada
+200    akarbKarenčina#Karenština#Karen
+200    akasbKašmírčina#Kašmírí#Kashmiri
+200    akaubKanuri#Kanuri#Kanuri
+200    akawbKawi#Kawi#Kawi
+200    akazbKazaština#Kazaština#Kazakh
+200    akbdbKabardčina#Kabardština#Kabardian
+200    akhabKhasijčina#Khásí#Khasi
+200    akhibKhojsánske jazyky (iné)#Khoisanské jazyky, ostatní#Khoisan (Other)
+200    akhmbKhmérčina#Khmerština#Khmer
+200    akhobKotčina#Chotánština#Khotanese
+200    akikbKikuju#Kukujština#Kikuyu
+200    akinbKiňarwanda#Rwandština#Kinyarwanda
+200    akirbKirgizština#Kyrgyzština#Kyrgyz
+200    akmbbKimbundu (idongo)#Kimbundština#Kimbundu
+200    akokbKonkánčina#Kónkánština#Konkani
+200    akombKomijčina#Komijština#Komi
+200    akonbKongo#Konžština#Kongo
+200    akorbKórejčina#Korejština#Korean
+200    akosbKusaie#Kosrajština (kusaie)#Kusaie
+200    akpebKpelle#Kpelle#Kpelle
+200    akrlbKarelčina#Karelština# Karelian
+200    akrobKru#Kru#Kru
+200    akrubKurukhčina#Kurukh#Kurukh
+200    akuabKuaňama#Kuaňamština#Kuanyama
+200    akumbKumytčina#Kumyčtina#Kumyk
+200    akurbKurdčina#Kurdština#Kurdish
+200    akutbKutenai#Kutenai#Kutenai
+200    aladbLadinčina#Ladinština#Ladino
+200    alahbLahandčina#Lahndština#Lahnda
+200    alambLamba#Lambština#Lamba
+200    alaobLaoština#Laoština#Lao
+200    alatbLatinčina#Latina#Latin
+200    alavbLotiština#Lotyština#Latvian
+200    alezbLezginčina#Lezgiština#Lezgian
+200    alimbLimburčina#Limburština#Limburgish
+200    alinbLingala#Lingalština#Lingala
+200    alitbLitovčina#Litevština#Lithuanian
+200    alolbMongo-nkundu#Mongština#Mongo-Nkundu
+200    alozbLozi#Lozština#Lozi
+200    altzbLuxemburčina#Lucemburština#Letzeburgesch
+200    aluabLuba-luluánčina#Luba-luluaština#Luba-Lulua
+200    alubbLuba-katangčina#Lubu-katanžština#Luba-Katanga
+200    alugbGanda#Ganda#Ganda
+200    aluibLuiseňo#Luiseňo#Luise?o
+200    alunbLunda#Lundština#Lunda
+200    aluobLuo (Keňa a Tanzánia)#Luoština (Keňa a Tanzanie)#Luo (Kenya and Tanzania)
+200    alusbLušáí#Lušáí#Lushai
+200    amacbMacedónčina#Makedonština#Macedonian
+200    amadbMadurčina#Madurština#Madurese
+200    amagbMagahí#Magahština#Magahi
+200    amahbMaršalčina#Maršalština#Marshallese
+200    amaibMaithilčina#Maithilština#Maithili
+200    amakbMakasarčina#Makasarština#Makasar
+200    amalbMalajálamčina#Malajálamština#Malayalam
+200    amanbMandigo#Mandingština#Mandingo
+200    amaobMaorčina#Maorština#Maori
+200    amapbAustronézske jazyky (iné)#Malajsko-polynéské jazyky, ostatní#Austronesian (Other)
+200    amarbMaráthčina#Maráthština#Marathi
+200    amasbMasai#Masajština#Masai
+200    amaybMalajčina#Malajština#Malay
+200    amdrbMandarčina#Mandar#Mandar
+200    amenbMende#Mende#Mende
+200    amgabÍrčina, stredná (cca. 1100 – 1550)#Irština, střední doba (cca 1100-1550)#Irish, Middle (ca. 1100-1550)
+200    amicbMikman#Micmac#Micmac
+200    aminbMinangkabaučina#Minangkabau#Minangkabau
+200    amisbRôzne jazyky#Různé jazyky#Miscellaneous languages
+200    amkhbMonsko-kmérske jazyky (iné)#Mon-khmerské jazyky, ostatní#Mon-Khmer (Other)
+200    amlgbMalagaština#Malgaština#Malagasy
+200    amltbMaltčina#Maltština#Maltese
+200    amncbMandžuština#Manchu#Manchu
+200    amnibManípurčina#Manipurština#Manipuri
+200    amnobManobo jazyky#Manobo jazyky#Manobo languages
+200    amohbMohawk#Mohawk#Mohawk
+200    amolbMoldavčina#Moldavština#Moldavian
+200    amonbMongolčina#Mongolština#Mongolian
+200    amosbMosi#Mosi (more)#Mooré
+200    amulbViaceré jazyky#Více jazyků#Multiple languages
+200    amunbMundské jazyky (iné)#Mundské jazyky#Munda (Other)
+200    amusbMuskogi#Muskogee#Creek
+200    amwlbMirandeština#Mirandeština#Mirandese
+200    amwrbMarawari#Márvárština#Marwari
+200    amynbMayské jazyky#Mayské jazyky#Mayan languages
+200    anahbNahuatl#Nahuatl#Nahuatl
+200    anaibIndiánske jazyky Severnej Ameriky (iné)#Severoamerické indiánské jazyky, ostatní#North American Indian (Other)
+200    anapbNeapolská taliančina#Neapolská italština#Neapolitan Italian
+200    anaubNauruština#Nauruština#Nauru
+200    anavbNavaho#Navahština (navaho)#Navajo
+200    anblbNdebele (južná Afrika)#Ndebelština (Jižní Afrika)#Ndebele (South Africa)
+200    andebNdebele (Zimbabwe)#Ndebelština (Zimbabwe)#Ndebele (Zimbabwe) 
+200    andobNdonga#Ndondština#Ndonga
+200    andsbDolná nemčina#Němčina, dolní (plattdeutsch)#Low German
+200    anepbNepálčina#Nepálština#Nepali
+200    anewbNévarčina#Névárština#Newari
+200    aniabNias#Nias#Nias
+200    anicbNigersko-kordofánske jazyky (iné)#Nigersko-konžské jazyky, ostatní#Niger-Kordofanian (Other)
+200    aniubNiueština#Niue#Niuean
+200    annobNórčina (Nynorsk)#Nynorsk#Norwegian (Nynorsk)
+200    anobbNórčina (Bokmal)#Bokm?l#Norwegian (Bokm?l)
+200    anogbNogidalčina#Nogai#Nogai
+200    anonbNórčina, stará#Norština, stará#Old Norse
+200    anorbNórčina#Norština#Norwegian
+200    anqobN'ko#N'ko#N'Ko
+200    ansobSoto, severný#Sothoština, severní#Northern Sotho
+200    anubbNubijiské jazyky#Nubijské jazyky#Nubian languages
+200    anwcbNewari, klasická#Newari, klasická#Newari, Old
+200    anyabňandža#ňandžština#Nyanja
+200    anymbňamwezi#ňamwežština#Nyamwezi
+200    anynbňankole#Nyankolština#Nyankole
+200    anyobňoro#Nyorština#Nyoro
+200    anzibNzima#Nzima#Nzima
+200    aocibOkcitánčina (po 1500)#Okcitánština (po 1500)#Occitan (post-1500)
+200    aojibOdžibwa#Odžibwejština#Ojibwa
+200    aoribUríjčina#Urijština#Oriya
+200    aormbOromčina#Oromština#Oromo
+200    aosabOsage#Osage#Osage
+200    aossbOsetčina#Osetština#Ossetic
+200    aotabTurečtina, Ottoman#Turečtina, osmanská#Turkish, Ottoman
+200    aotobOto-pameské jazyky#Osmanské jazyky#Otomian languages
+200    apaabPapuánske jazyky (iné)#Papuánské jazyky, ostatní#Papuan (Other)
+200    apagbPangasinan#Pangsinan#Pangasinan
+200    apalbPahlaví#Pahlaví (střední perština)#Pahlavi
+200    apambPampangan, kapampangan#Pampangau#Pampanga
+200    apanbPandžábčina#Paňdžábština#Panjabi
+200    apapbPapiamento#Papiamento#Papiamento
+200    apaubPalaučina#Palauština#Palauan
+200    apeobPerzština, stará (cca 600 – 400 p.n.l.)#Perština, stará (600-400 př. K.)#Old Persian (ca. 600-400 B.C.)
+200    aperbPerzština#Perština#Persian
+200    aphibFilipínske jazyky (iné)#Filipínské jazyky, ostatní#Philippine (Other)
+200    aphnbFéničtina#Foiničtina#Phoenician
+200    aplibPálí#Páli#Pali
+200    apolbPoľština#Polština#Polish
+200    aponbPohnpeičina (ponape)#Pohnpeiština (ponape)#Ponape
+200    aporbPortugalčina#Portugalština#Portuguese
+200    aprabPrakritské jazyky#Prákrty#Prakrit languages
+200    aprobProvensálčina, stará (1500)#Provensálština, stará (do 1500)#Provençal (to 1500)
+200    apusbPaštčina#Pašto (pachto, paštština)#Pushto
+200    aquebKečuánčina#Kečuánština#Quechua
+200    arajbRadžastančina#Rádžasthánština#Rajasthani
+200    arapbRapanujčina#Rapanuiština#Rapanui
+200    ararbRarotongčina#Rarotongština#Rarotongan
+200    aroabRománske jazyky (iné)#Románské jazyky, ostatní#Romance (Other)
+200    arohbRétorománčina#Rétorománština#Raeto-Romance
+200    arombRómčina#Romština#Romani
+200    arumbRumunčina#Rumunština#Romanian
+200    arunbRundi#Rundština#Rundi
+200    arupbMakedo-rumunčina, aroumain#Makedo-rumunština, aroumain#Aromanian
+200    arusbRuština#Ruština#Russian
+200    asadbSandawe#Sandawština#Sandawe
+200    asagbSango#Sangština#Sango (Ubangi Creole)
+200    asahbJakutčina#Jakutština#Yakut
+200    asaibIndiánske jazyky Južnej Ameriky (iné)#Jihoamerické indiánské jazyky, ostatní#South American Indian (Other)
+200    asalbSališské jazyky#Salishské jazyky#Salishan languages
+200    asambSamaritánska aramejčina#Samarština#Samaritan Aramaic
+200    asanbSanskrit#Sanskrt#Sanskrit
+200    asasbSasačtina#Sasakština#Sasak
+200    asatbSantálí, santalčina#Santálí#Santali
+200    asccbSrbochorvátčina (srbčina, zastaralý kód)#Srbochorvatština (srbština, zastaralý kód)#Serbo-Croatian (serbian, old code)
+200    ascobškótčina#skotština#Scots
+200    ascrbSrbochorvátčina (chorvátčina, zastaralý kód)#Srbochorvátčina (chorvatština, zastaralý kód)#Serbo-Croatian (croatian, old code)
+200    aselbSelkupčina#Selkupština#Selkup
+200    asembSemitské jazyky (iné)#Semitské jazyky, ostatní#Semitic (Other)
+200    asgabÍrština, stará (do 1100)#Irština, stará (do 900)#Irish, Old (to 1100)
+200    asgnbZnakové jazyky #Znakové jazyky#Sign languages
+200    ashnbŠančina#Šanština#Shan
+200    asidbSidamo#Sidamo#Sidamo
+200    asinbSinhalčina#Sinhálština#Sinhalese
+200    asiobSiouské jazyky (iné)#Siouxské jazyky, ostatní#Siouan (Other)
+200    asitbČínsko-tibetské jazyky (iné)#Sinotibetské jazyky, ostatní#Sino-Tibetan (Other)
+200    aslabSlovanské jazyky (iné)#Slovanské jazyky, ostatní#Slavic (Other)
+200    aslobSlovenčina#Slovenština#Slovak
+200    aslvbSlovinčina#Slovinština#Slovenian
+200    asmabSami (laponské) jazyky, južné#Sami jazyky, jižní#Southern Sami
+200    asmebSami (laponské) jazyky, severné#Sami jazyky, severní#Northern Sami
+200    asmibSami (laponský) jazyk#Sami jazyky#Sami
+200    asmjbSami (laponský) jazyk lule#Lule sami#Lule Sami
+200    asmnbSami (laponský) jazyk inari#Inari sami#Inari Sami
+200    asmobSamojčina#Samojština#Samoan
+200    asmsbSami (laponský) jazyk, skolt#Skolt sami#Skolt Sami
+200    asnabŠona#Šonština#Shona
+200    asndbSindhčina#Sindhština#Sindhi
+200    asnkbSoninke#Sonikština#Soninke
+200    asogbSogdčina#Soghdština#Sogdian
+200    asombSomálčina#Somálština#Somali
+200    asonbSonghai#Songhajština#Songhai
+200    asotbSoto#Sothoština, jižní#Sotho
+200    aspabŠpanielčina#Španělština#Spanish
+200    asrdbSardínsky jazyk#Sardština#Sardinian
+200    asrnbSranan tongo#Sranan tongo#Sranan
+200    asrpbSbrčina#Srbština#Serbian
+200    asrrbSerer#Serer#Serer
+200    assabNílsko-saharské jazyky#Nilsko-saharské jazyky, ostatní#Nilo-Saharan (Other)
+200    asswbSwati#Svatština#Swazi
+200    asukbSukuma#Sukuma#Sukuma
+200    asunbSundčina#Sundština#Sundanese
+200    asusbSusu#Susu#Susu
+200    asuxbSumerčina#Sumerština#Sumerian
+200    aswabSvahilčina#Svahilština#Swahili
+200    aswebŠvédčina#Švédština#Swedish
+200    asycbSýrčina, klasická#Syrština, klasická#Syriac, Old
+200    asyrbSýrčina#Syrština#Syriac
+200    atahbTahitčina#Tahitština#Tahitian
+200    ataibThajské jazyky (iné)#Thajské jazyky, ostatní#Tai (Other)
+200    atambTamilčina#Tamilština#Tamil
+200    atatbTatárčina#Tatarština#Tatar
+200    atelbTelugčina#Telugu#Telugu
+200    atembTemne#Temne#Temne
+200    aterbTereno#Tereno#Terena
+200    atetbTetum#Tetumština#Tetum
+200    atgkbTadžičtina#Tadžičtina#Tajik
+200    atglbTagalčina#Tagalština#Tagalog
+200    athabThajčina#Thajština#Thai
+200    athlbKlingon#Klingon#Klingon (Artificial language)
+200    atibbTibetčina#Tibetština#Tibetan
+200    atigbTigre#Tigrejština#Tigré
+200    atirbTirgriňa#Tigriňa#Tigrinya
+200    ativbTiv#Tivština#Tiv
+200    atklbTokelaučina#Tokelauština#Tokelauan
+200    atlibTlingit#Tlingit#Tlingit
+200    atmhbTamašek#Tamašek#Tamashek
+200    atogbTongčina (Nyasa)#Tongština (nyasa)#Tonga (Nyasa)
+200    atonbTongčina (Tongské ostrovy)#Tongština#Tongan
+200    atpibTok pisin#Tok pisin#Tok Pisin
+200    atsibTsimshijské jazyky#Tsimshijské jazyky#Tsimshian
+200    atsnbČwančina (čwana)#Tswanština (čwanština)#Tswana
+200    atsobTsonga#Tsongština#Tsonga
+200    atukbTurkménčina#Turkmenština#Turkmen
+200    atumbTumbuka#Tumbukština#Tumbuka
+200    atupbJazyky tupi#Tupi jazyky#Tupi languages
+200    aturbTurečtina#Turečtina#Turkish
+200    atutbAltajské jazyky#Altajské jazyky, ostatní#Altaic (Other)
+200    atvlbTuvalčina#Tuvalština#Tuvaluan
+200    atwibTwi#Twi#Twi
+200    atyvbTuviančina#Tuvština#Tuvinian
+200    audmbUdmurtčina#Udmurtština#Udmurt
+200    augabUgaritčina#Ugaritština#Ugaritic
+200    auigbUjgurčina#Ujgurština#Uighur
+200    aukrbUkrajinčina#Ukrajinština#Ukrainian
+200    aumbbUmbundu#Umbundu#Umbundu
+200    aundbNeurčený#Neurčený, nezjistitelný#Undetermined
+200    aurdbUrdčina#Urdština#Urdu
+200    auzbbUzbečtina#Uzbečtina#Uzbek
+200    avaibVai#Vai#Vai
+200    avenbVenda#Vendština#Venda
+200    aviebVietnamčina#Vietnamština#Vietnamese
+200    avolbVolapük#Volapük#Volapük
+200    avotbVodčina#Votiatština#Votic
+200    awakbWakašské jazyky#Wakashské jazyky#Wakashan languages
+200    awalbWalamčina#Walamština#Walamo
+200    awarbWaray#Waray#Waray
+200    awasbWasho#Washo#Washo
+200    awelbWaleština#Velština#Welsh
+200    awenbSrbské jazyky#Lužická srbština#Sorbian languages
+200    awlnbWalloon, dialekt používaný v Belgicku#Valonština#Walloon
+200    awolbWolof#Wolofština#Wolof
+200    axalbKalmyčtina#Kalmyčtina, oirat#Kalmyk
+200    axhobXhosa#Xhosština#Xhosa
+200    ayaobYao (Afrika)#Jaoština#Yao (Africa)
+200    ayapbJapčina#Yapese#Yapese
+200    ayidbJidiš#Jidiš#Yiddish
+200    ayorbJorubčina#Jorubština#Yoruba
+200    aypkbYupické jazyky#Yupik#Yupik languages
+200    azapbZapotéčtina#Zapotéčtina#Zapotec
+200    azblbBliss#Bliss#Blissymbolics
+200    azenbZenaga#Zenaga#Zenaga
+200    azhabČuangčina#Čuangština#Zhuang
+200    azndbZande#Zandština#Zande
+200    azulbZuluština#Zuluština#Zulu
+200    azunbZuni#Zunijština#Zuni
+200    azxxbNedá sa použiť, nie je lingvistický obsah#Nelze použít, není lingvistický obsah#No linguistic content
+200    azzabZaza; dimili, kirdki, kirmanjki#Zaza; dimili, kirdki, kirmanjki#Zaza
+200    a---bBez jazyka (008)#Bez jazyku (008)#No language (008)
+210    aLANG1bslobczebgerbeng
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_SUBBASE
+200    axknibKnihy
+200    axjcpbPeriodiká - čísla 
+200    axzrpbPeriodiká - zviazané ročníky
+200    axszpbPeriodiká - súborné záznamy
+200    axclabČlánky
+200    axpcabPublikačná činnosť
+002    -pokusne pole
+200    aXX1bXX1 (pokusne pole)
+200    aXXALLbXX All (pokusne pole)
+200    axmonbMonografie
+002    priklad subsetu TEST: 
+002      pre pole s kodom XX1 sa v tomto subsete pouzije hodnota 'XX2'
+002      pre pole s kodom XXALL sa v tomto subsete pouzije hodnota @attr 5=1 'XX' (t.j. 'XX*')
+210    aTESTbxjcpbxszpbXX1dXX2bXXALLd@attr 5=1 'XX'nPOZOR funkcnost $d je len v stadiu konceptu
+210    aSLDKbxszpbxjcpbxzrpbxcla
+210    aSUBBASE1bxclabxknibxszpbxjcpbxzrpbxpca
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DKPQ
+200    aPQ~SCHOLARLY~JOURNALSbVedecké časopisy#Vědecké časopisy#Scholarly journals
+200    aPQ~MAGAZINESbMagazíny#Magazíny#Magazines         
+200    aPQ~TRADE~PUBLICATIONSbObchodné publikácie#Obchodní publikace#Trade publications
+200    aPQ~NEWSPAPERSbNoviny#Noviny#Newspapers        
+200    aPQ~REPORTSbOdborné správy#Odborné zprávy#Reports
+210    aDKPQbPQ~SCHOLARLY~JOURNALSbPQ~MAGAZINESbPQ~TRADE~PUBLICATIONSbPQ~NEWSPAPERSbPQ~REPORTS           
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_ZNPQ
+002     ----------------PROQUEST DOCUMENT GENRES-----------------------------
+200    aPQ~COMMENTARYbKomentáre#Komentáře#Commentary#Komentare              
+200    aPQ~CORRECTIONSbKorektúry#Korektury#Corrections#Corrections
+200    aPQ~COVER~STORYbTitulné strany#Titulní strany#Cover story#Cover story
+200    aPQ~EDITORIALbEditoriály#Editoriály#Editorials#Editorials
+200    aPQ~EDITORIAL~CARTOONbEditoriály anim.#Editoriály anim.#Editorial cartoon#Editorial Cartoon
+200    aPQ~FEATUREbVýznamné články#Významné články#Features#Features                 
+200    aPQ~FICTIONbBeletria#Beletrie#Fiction#Fiction
+200    aPQ~GENERAL~INFORMATIONbVšeobecné informácie#Všeobecné informace#General information#General information
+200    aPQ~INSTRUCTIONALbInštruktáže#Instruktáže#Instructional#Instructional           
+200    aPQ~INTERVIEWbRozhovory#Rozhovory#Interview#Interview
+200    aPQ~LETTERbListy#Listy#Letter#Letter
+200    aPQ~NEWSbNovinky#Novinky#News#News
+200    aPQ~OBITUARYbNekrológy#Nekrology#Obituary#Obituary
+200    aPQ~POETRYbPoézia#Poezie#Poetry#Poetry
+200    aPQ~RECIPEbNávody#Návody#Recipe#Recipe
+200    aPQ~REVIEWbRecenzie#Recenze#Review#Review
+200    aPQ~ARTS/EXHIBITS~REVIEWbUmelec. recenzie#Umělec. recenze#Arts/exhibits review#Arts/exhibits review    
+200    aPQ~AUDIO~REVIEWbRecenzie audia#Recenze audia#Audio review#Audio review            
+200    aPQ~BOOK~REVIEWbRecenzie kníh#Recenze knih#Book review#Book review
+200    aPQ~MOVIE~REVIEWbRecenzie filmov#Recenze filmů#Movie review#Movie review
+200    aPQ~PERFORMANCE~REVIEWbRecenzie podujatí#Recenze akcí#Performance review#Performance review
+200    aPQ~PRODUCT~REVIEWbRecenzie produktov#Recenze produktů#Product review#Product review          
+200    aPQ~RESTAURANT~REVIEWbRecenzie reštaurácií#Recenze restaurací#Restaurant review#Restaurant review
+200    aPQ~TELEVISION~REVIEWbRecenzie TV#Recenze TV#TV review#TV review       
+200    aPQ~VIDEO~REVIEWbRecenzie videa#Recenze videa#Video review#Video review
+200    aPQ~SPEECHbReč#Řeč#Speech#Speech
+200    aPQ~STATISTICSbŠtatistiky#Statistiky#Statistics#Statistics
+210    aZNPQbPQ~COMMENTARYbPQ~CORRECTIONSbPQ~COVER~STORYbPQ~EDITORIALbPQ~EDITORIAL~CARTOONbPQ~FEATUREbPQ~FICTIONbPQ~GENERAL~INFORMATIONbPQ~INSTRUCTIONALbPQ~INTERVIEWbPQ~LETTERbPQ~NEWSbPQ~OBITUARYbPQ~POETRYbPQ~RECIPEbPQ~REVIEWbPQ~ARTS/EXHIBITS~REVIEWbPQ~AUDIO~REVIEWbPQ~BOOK~REVIEWbPQ~MOVIE~REVIEWbPQ~PERFORMANCE~REVIEWbPQ~PRODUCT~REVIEWbPQ~RESTAURANT~REVIEWbPQ~TELEVISION~REVIEWbPQ~VIDEO~REVIEWbPQ~SPEECHbPQ~STATISTICS
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DZSCO
+002    24.07.14 jk; zmena na ELSEVIER REST API
+002    03.04.08 jt; pridana tabulka pre rozsirene vyhladavanie v Elsevier-Scopus podla typu dokumentu
+002    ------------------- SCOPUS DOCUMENT TYPE -----------------
+200    ajbČasopisy#Časopisy#Journals
+200    abbKnihy#Knihy#Books
+200    akb#Edice#Book Series
+200    apbKonferenčné zborníky#Konferenční zborníky#Conference Proceeding
+200    arbSprávy#Správy#Reports
+200    adbFiremná literatúra#Firemní literatura#Trade Publication
+210    aDZSCObjbbbkbpbrbd
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DZSDI
+002    24.07.14 jk; zmena na ELSEVIER REST API
+002    03.04.08 jt; pridana tabulka pre rozsirene vyhladavanie v Elsevier-ScienceDirect podla typu dokumentu
+002    --------------- SCIENCEDIRECT DOCUMENT TYPE --------------
+200    aserialbČasopisy, edície, príručky#Časopisy, edice, příručky#Journals, book series, handbook series 
+200    anonserialbe-knihy, referenčné diela#e-knihy, referenční díla#eBooks, reference works
+210    aDZSDIbserialbnonserial
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DDWOS
+002    31.07.08 jk; zruseno druhe opakovani I
+002    30.06.08 jt; pridana tabulka pre rozsirene vyhladavanie cez Thomson-Web of Science podla typu dokumentu
+002    --------------- WEB OF SCIENCE DOCUMENT TYPE --------------
+200    a2bAbstrakt publikovaného článku#Abstrakt publikovaného článku#Abstract of Published Item
+200    aAbRecenzia na expozíciu#Recenze na expozici#Art Exhibit Review
+200    a@bČlánok#Článek#Article 
+200    a7bBibliografia#Bibliografie#Bibliography
+200    aIbBibliografický článok#Bibliografický článek#Biographical-Item
+200    aBbKnižná recenzia#Knižní recenze#Book Review
+200    aKbChronológia#Chronológie#Chronology
+200    aCbKorekcia#Korekce#Correction, Addition
+200    aZbRecenzia na tanečné vystúpenie##Dance Performance Review
+200    a0bDatabázová recenzia##Database Review 
+200    aDbDiskusia##Discussion
+200    aEbRedakčný materiál##Editorial Material
+200    aXbVýťah z článku##Excerpt
+200    aObBeletria##Fiction, Creative Prose
+200    aFbFilmová recenzia##Film Review
+200    a8bHardvérová recenzia##Hardware Review
+200    aLbDopis#Dopis#Letter
+200    aMbAbstrakt zo stretnutia##Meeting Abstract
+200    aJbRecenzia na hudobné vystúpenie##Music Performance Review
+200    aSbPartitúra##Music Score
+200    aGbRecenzia na partitútu##Music Score Review
+200    a5bNovinový článok##News Item
+200    aNbPoznámka#Poznámka#Note
+200    aYbPoézia#Poezie#Poetry
+200    aHbHudobná recenzia##Record Review
+200    a6bNové vydanie##Reprint
+200    aRbRecenzia##Review
+200    aQbSkriptum##Script
+200    a9bSoftvérová recenzia##Software Review
+200    aVbRecenzia na televíziu, rádio, video##TV Review, Radio Review, Video
+200    aTbDivadelná recenzia##Theater Review
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_LANGWOS
+002    30.06.08 jt; pridana tabulka pre rozsirene vyhladavanie cez Thomson-Web of Science podla jazyka
+002    --------------- WEB OF SCIENCE LANGUAGE --------------
+200    aAFbafrický#africký#Afrikaans
+200    aBEbbengálsky##Bengali
+200    aBUbbulharský##Bulgarian 
+200    aBYbbieloruský##Byelorussian
+200    aCAbkatalánsky#katalánsky#Catalan
+200    aCHbčínsky#čínsky#Chinese
+200    aCRbchorvátsky##Croatian
+200    aCZbčeský##Czech
+200    aDAbdánsky##Danish
+200    aDUbholandský##Dutch 
+200    aENbanglický##English
+200    aESbestónsky##Estonian
+200    aFIbfínsky##Finnish
+200    aFLbflámsky##Flemish
+200    aFRbfrancúzsky##French
+200    aGAbgaelský##Gaelic
+200    aGLbhaličský##Galician
+200    aGNbgruzínsky##Georgian
+200    aGEbnemecký##German
+200    aGRbgrécky##Greek
+200    aHEbhebrejský##Hebrew
+200    aHUbmaďarský##Hungarian
+200    aICbislandský##Icelandic
+200    aITbtaliansky##Italian
+200    aJAbjaponský##Japanese
+200    aKObkórejský##Korean
+200    aLAblatisnký##Latin
+200    aMCbmacedónsky##Macedonian
+200    aXXbmnohojazyčný##Multi-Language
+200    aNObnórsky##Norwegian
+200    aPEbperzský##Persian
+200    aPObpoľský##Polish
+200    aPTbportugalský##Portuguese
+200    aPRbprovensálsky##Provencal
+200    aRMbrumunský##Rumanian
+200    aRSbruský##Russian
+200    aSEbsrbský##Serbian
+200    aSCbsrbsko-chorvátsky##Serbo-Croatian
+200    aSKbslovenský##Slovak
+200    aSLbslovinský##Slovene
+200    aSPbšpanielsky##Spanish
+200    aSWbšvédsky##Swedish
+200    aTUbturecký##Turkish
+200    aUKbukrajinský##Ukrainian
+200    aWEbvelšský##Welsh
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DDCCC
+002    28.10.08 jt; pridana tabulka pre rozsirene vyhladavanie cez Thomson-Current Contents podla typu dokumentu
+002    --------------- CURRENT CONTENTS DOCUMENT TYPE --------------
+200    aArt Exhibit ReviewbRecenzia na expozíciu##Art Exhibit Review
+200    aArticle bČlánok##Article 
+200    aBibliographybBibliografia##Bibliography
+200    aBiographical-ItembBibliografický článok##Biographical-Item
+200    aBook ReviewbKnižná recenzia##Book Review
+200    aCorrectionbKorekcia##Correction
+200    aDance Performance ReviewbRecenzia na tanečné vystúpenie##Dance Performance Review
+200    aDatabase ReviewbDatabázová recenzia##Database Review
+200    aDiscussionbDiskusia##Discussion
+200    aEditorial MaterialbRedakčný materiál##Editorial Material
+200    aExcerptbVýťah z článku##Excerpt
+200    aFiction, Creative ProsebBeletria##Fiction, Creative Prose
+200    aFilm ReviewbFilmová recenzia##Film Review
+200    aHardware ReviewbHardvérová recenzia##Hardware Review
+200    aLetterbDopis#Dopis#Letter
+200    aMeeting AbstractbAbstrakt zo stretnutia##Meeting Abstract
+200    aMusic Performance ReviewbRecenzia na hudobné vystúpenie##Music Performance Review
+200    aMusic ScorebPartitúra##Music Score
+200    aMusic Score ReviewbRecenzia na partitútu##Music Score Review
+200    aNews ItembNovinový článok##News Item
+200    aNotebPoznámka#Poznámka#Note
+200    aPoetrybPoézia#Poezie#Poetry
+200    aRecord ReviewbHudobná recenzia##Record Review
+200    aReprintbNové vydanie##Reprint
+200    aReviewbRecenzia#Recenze#Review
+200    aScriptbSkriptum##Script
+200    aSoftware ReviewbSoftvérová recenzia##Software Review
+200    aTv Review, Radio ReviewbRecenzia na televíziu, rádio, video##TV Review, Radio Review
+200    aTheater ReviewbDivadelná recenzia##Theater Review
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_LANGCCC
+002    28.10.08 jt; pridana tabulka pre rozsirene vyhladavanie cez Thomson-Current Contents podla jazyka
+002    --------------- WEB OF SCIENCE LANGUAGE --------------
+200    aAfrikaansbafrický##Afrikaans
+200    aArabicbarabský#arabský#Arabic
+200    aBulgarianbbulharský##Bulgarian
+200    aCatalanbkatalánsky##Catalan
+200    aChinesebčínsky#čínsky#Chinese
+200    aCroatianbchorvátsky##Croatian
+200    aCzechbčeský#český#Czech
+200    aDanishbdánsky#dánský#Danish
+200    aDutchbholandský#holandský#Dutch 
+200    aEnglishbanglický##English
+200    aEstonianbestónsky##Estonian
+200    aFinnishbfínsky##Finnish
+200    aFlemishbflámsky##Flemish
+200    aFrenchbfrancúzsky##French
+200    aGaelicbgaelský##Gaelic
+200    aGalicianbhaličský##Galician
+200    aGeorgianbgruzínsky##Georgian
+200    aGermanbnemecký#německý#German
+200    aGreekbgrécky#řecký#Greek
+200    aHebrewbhebrejský##Hebrew
+200    aHungarianbmaďarský##Hungarian
+200    aIcelandicbislandský##Icelandic
+200    aItalianbtaliansky##Italian
+200    aJapanesebjaponský##Japanese
+200    aKoreanbkórejský##Korean
+200    aLatinblatinský#latinský#Latin
+200    aLithuanianblitovský##Lithuanian
+200    aNorwegianbnórsky#norský#Norwegian
+200    aPolishbpoľský#polský#Polish
+200    aPortuguesebportugalský##Portuguese
+200    aProvencalbprovensálsky##Provencal
+200    aRumanianbrumunský##Rumanian
+200    aRussianbruský##Russian
+200    aSerbianbsrbský##Serbian
+200    aSlovakbslovenský##Slovak
+200    aSlovenebslovinský##Slovene
+200    aSpanishbšpanielský#španělský#Spanish
+200    aSwedishbšvédský#švédský#Swedish
+200    aTurkishbturecký#turecký#Turkish
+200    aUkrainianbukrajinský#ukrajinský#Ukrainian
+200    aWelshbvelšský#velšský#Welsh
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_UPS
+002    23.10.13 js; doplneny ciselnik pre standardne typy suborov v CS
+200    acontentbvšeobecný#obecný#common
+200    acoverbObálka#Obálka#Cover
+200    atocbObsah#Obsah#Table of contents
+200    afotobFoto#Foto#Photo
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DK
+200    aXCLAbČlánky#Články#Articles
+200    aXELZbElektronické  zdroje#Elektronické  zdroje#Electronic resources
+200    aXKNIbKnihy#Knihy#Books#Bücher
+200    aXSZPbPERIODIKÁ  Súborný záznam#Periodika – souborné záznamy#Serials
+200    aXJCPbPERIODIKÁ  Jednotlivé čísla#Periodika – čísla#Serials
+200    aXZRPbPERIODIKÁ  Zviazaný ročník#Periodika – svázané ročníky#Serials
+200    aXPCAbPublikačná činnosť#Publikační činnost#
+002    --
+200    aAbKnihy##Booksd@attr 5=1 %TERM%nPOZOR funkcnost $d je len v stadiu konceptu
+200    aBbPeriodiká#Periodika#Periodicalsd@attr 5=1 %TERM%
+200    aRbČlánky (analytický rozpis článkov)#Články (analytický rozpis článků)#Articlesd@attr 5=1 %TERM%
+200    aDbVedecké a vysokoškolské kvalifikačné práce#Vědecké a vysokoškolské kvalifikační práced@attr 5=1 %TERM%
+200    aMbVýskumné a cestovné správy#Výzkumné a cestovní zprávy#Research and travel reportsd@attr 5=1 %TERM%
+200    aIbOficiálne dokumenty (zákony...)#Oficiální dokumenty (zákony...)#Official documentsd@attr 5=1 %TERM%
+200    aEbŠpeciálne tlačoviny (výročné správy...)#Speciální tiskoviny (výroční zprávy...)#Special printsd@attr 5=1 %TERM%
+200    aNbNormatívne dokumenty#Normativní dokumenty#Normative documentsd@attr 5=1 %TERM%
+200    aCbKartografické dokumenty##Cartographics documentsd@attr 5=1 %TERM%
+200    aFbFiremná literatúra#Firemní literatura#Company literatured@attr 5=1 %TERM%
+200    aSbElektronické zdroje##Electronic sourcesd@attr 5=1 %TERM%
+200    aJbAudioviz. a zvuk. dokumenty (mikrofiše...)##Mikrofilmsd@attr 5=1 %TERM%
+200    aHbHudobniny#Hudebniny#
+200    aJMGbMagnetofónové kazety#Magnetofonové kazety
+200    aJVObVideokazety#Videokazety#Videotapes
+002    --
+200    aXXbVyskumne spravyd@or 'MVS' 'AVS'nPOZOR funkcnost $d je len v stadiu konceptu
+210    aDK1bXCLAbXELZbXKNIbXSZPbXJCPbXZRPbXPCA
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_UNA_DTVY
+200    a200001b01.2000
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DS
+200    aAbAkvizícia
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_UNA_DK
+200    a200bOsobné mená
+200    a210bKorporácie/akcie
+200    a215bGeografické mená
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_KPC
+200    aAAAbVedecké monografie vydané v zahraničných vydavateľstvách##Scientific monography issued in foreign editorships
+200    aAABbVedecké monografie vydané v domácich vydavateľstvách##Scientific monography issued in home editorships
+200    aABAbŠtúdie v časopisoch a zborníkoch charakteru vedeckej monografie vydané v zahraničných vydavateľstvách##Studies in magazines and year-books with character of scientific monography issued in foreign editorship
+200    aABBbŠtúdie v časopisoch a zborníkoch charakteru vedeckej monografie vydané v domácich vydavateľstvách##Studies in magazines and year-books with character of scientific monography issued in home editorship
+200    aABCbKapitoly vo vedeckých monografiách vydané v zahraničných vydavateľstvách##Chapters in scientific monography issued in foreign editorship
+200    aABDbKapitoly vo vedeckých monografiách vydané v domácich vydavateľstvách##Chapters in scientific monography issued in home editorship
+200    aACAbVysokoškolské učebnice vydané v zahraničných vydavateľstvách##Academic school-books issued in foreign editorship
+200    aACBbVysokoškolské učebnice vydané v domácich vydavateľstvách##Academic school-books issued in home editorship
+200    aACCbKapitoly vo vysokoškolských učebniciach vydané v zahraničných vydavateľstvách##Chapters in academic school-books issued in foreign editorship
+200    aACDbKapitoly vo vysokoškolských učebniciach vydané v domácich vydavateľstvách##Chapters in academic school-books issued in home editorship
+200    aADCbVedecké práce v zahraničných karentovaných časopisoch##Scientific titles in foreign carented magazines and noticed year-books
+200    aADDbVedecké práce v domácich karentovaných časopisoch##Scientific titles in home carented magazines and noticed year-books
+200    aADEbVedecké práce v zahraničných nekarentovaných časopisoch##Scientific titles in foreign not carented magazines and other year-books
+200    aADFbVedecké práce v domácich nekarentovaných časopisoch##Scientific titles in home not carented magazines and other year-books
+200    aAECbVedecké práce v zahraničných recenzovaných vedeckých zborníkoch, monografiách##Scientific titles in foreign noticed scientific year-books (not conference)
+200    aAEDbVedecké práce v domácich recenzovaných vedeckých zborníkoch, monografiách##Scientific titles in home noticed scientific year-books (not conference)
+200    aAEEbVedecké práce v zahraničných nerecenzovaných vedeckých zborníkoch, monografiách##Scientific titles in foreign not noticed scientific year-books (not conference)
+200    aAEFbVedecké práce v domácich nerecenzovaných vedeckých zborníkoch, monografiách##Scientific titles in home not noticed scientific year-books (not conference)
+200    aAEGbStručné oznámenia, abstrakty vedeckých prác v zahraničných karentovaných časopisoch
+200    aAEHbStručné oznámenia, abstrakty vedeckých prác v domácich karentovaných časopisoch
+200    aAFAbPublikované pozvané príspevky na zahraničných vedeckých konferenciách##Invited reports at international scientific conferences
+200    aAFBbPublikované pozvané príspevky na domácich vedeckých konferenciách##Invited reports at home scientific conferences
+200    aAFCbPublikované príspevky na zahraničných vedeckých konferenciách##Reports at international scientific conferences
+200    aAFDbPublikované príspevky na domácich vedeckých konferenciách##Reports at home scientific conferences
+200    aAFEbAbstrakty pozvaných príspevkov zo zahraničných konferencií##Abstractions of invited reports from international scientific conferences
+200    aAFFbAbstrakty pozvaných príspevkov z domácich konferencií##Abstractions of invited reports from home scientific conferences
+200    aAFGbAbstrakty príspevkov zo zahraničných konferencií##Abstractions of scientific titles in year-books from international conferences
+200    aAFHbAbstrakty príspevkov z domácich konferencií##Abstractions of scientific titles in year-books from home conferences
+200    aAFIbPreprinty vedeckých prác vydané v zahraničných vydavateľstvách##Preprints of scientific titles issued in foreign editorships
+200    aAFJbPreprinty vedeckých prác vydané v domácich vydavateľstvách##Preprints of scientific titles issued in home editorships
+200    aAFKbPostery zo zahraničných konferencií##Posters issued in foreign editorship 
+200    aAFLbPostery z domácich konferencií##Posters issued in home editorships
+200    aAGIbSprávy o vyriešených vedeckovýskumných úlohách##Reports about solved problems of scientific-research 11** Allocated grants
+200    aAGJbAutorské osvedčenia, patenty, objavy##Authority certificates, patents, discoveries
+200    aBAAbOdborné monografie vydané v zahraničných vydavateľstvách##Scientific book titles issued in foreign editorship
+200    aBABbOdborné monografie vydané v domácich vydavateľstvách##Scientific book titles issued in home editorship
+200    aBBAbKapitoly v odborných monografiách vydané v zahraničných vydavateľstvách##Chapters in scientific book titles issued in foreign editorship
+200    aBBBbKapitoly v odborných monografiách vydané v domácich vydavateľstvách##Chapters in scientific book titles issued in home editorship
+200    aBCBbUčebnice pre základné a stredné školy##Secondary and primary school-books
+200    aBCIbSkriptá a učebné texty##Scripts and school texts (lectures)
+200    aBCKbKapitoly v učebniciach a učebných textoch
+200    aBDAbHeslá v odborných terminologických slovníkoch a encyklopédiách vydaných v zahraničných vydavateľstvách##Signs in foreign dictionaries and encyclopedies
+200    aBDBbHeslá v odborných terminologických slovníkoch a encyklopédiách vydaných v domácich vydavateľstvách##Signs in home dictionaries and encyclopedies
+200    aBDCbOdborné práce v zahraničných karentovaných časopisoch##Scientific works in foreign noticed magazines
+200    aBDDbOdborné práce v domácich karentovaných časopisoch##Scientific works in home noticed magazines
+200    aBDEbOdborné práce v zahraničných nekarentovaných časopisoch##Scientific works in othes foreign magazines
+200    aBDFbOdborné práce v domácich nekarentovaných časopisoch##Scientific works in others home magazines
+200    aBECbOdborné práce v zahraničných recenzovaných zborníkoch (konferenčných aj nekonferenčných)##Scientific works in noticed year-books from international undertakings, foreign year-books
+200    aBEDbOdborné práce v domácich recenzovaných zborníkoch (konferenčných aj nekonferenčných)##Scientific works in noticed year-books from home undertakings, home year-books
+200    aBEEbOdborné práce v zahraničných nerecenzovaných zborníkoch (konferenčných aj nekonferenčných)##Scientific works in not noticed year-books from international undertakings, foreign year-books
+200    aBEFbOdborné práce v domácich nerecenzovaných zborníkoch (konferenčných aj nekonferečných)##Scientific works in not noticed year-books from home undertakings, home year-books
+200    aBFAbAbstrakty odborných prác zo zahraničných podujatí (konferencie...)
+200    aBFBbAbstrakty odborných prác z domácich podujatí (konferencie...)
+200    aBGGbŠtandardy, normy##Standards, norms, references
+200    aBGHbLegislatívne dokumenty##Legislative documents
+200    aCAAbUmelecké monografie, preklady, autorské katalógy vydané v zahraničných vydavateľstvách##Art monographies and translations issued in foreign editorships
+200    aCABbUmelecké monografie, preklady, autorské katalógy vydané v domácich vydavateľstvách##Art monographies and translations issued in home editorships
+200    aCAGbAudiovizuálne diela (videokazeta, film, CD-ROM, DVD) natočené v zahraničnej produkcii 
+200    aCAHbAudiovizuálne diela (videokazeta, film, CD-ROM, DVD) natočené v domácej produkcii
+200    aCAIbHudobné diela (partitúry, gramoplatne, CD, magnetofónové kazety) vydané v zahraničných vydavateľstvách 
+200    aCAJbHudobné diela (partitúry, gramoplatne, CD, magnetofónové kazety) vydané v domácich vydavateľstvách
+200    aCDCbUmelecké práce a preklady v zahraničných karentovaných časopisoch##Art works and translations in foreign carented magazines
+200    aCDDbUmelecké práce a preklady v domácich karentovaných časopisoch##Art works and translations in home carented magazines
+200    aCDEbUmelecké práce a preklady v zahraničných nekarentovaných časopisoch##Art works and translations in foreign not carented magazines
+200    aCDFbUmelecké práce a preklady v domácich nekarentovaných časopisoch##Art works and translations in home not carented magazines
+200    aCECbUmelecké práce a preklady v zborníkoch, knižných publikáciách a skupinových katalógoch vydaných v zahraničných vydavateľstvách##Art works in year-books and catalogs issued in foreign editorhips
+200    aCEDbUmelecké práce a preklady v zborníkoch, knižných publikáciách a skupinových katalógoch vydaných v domácich vydavateľstvách##Art works in year-books and catalogs issued in home editorhips
+200    aCGCbUmelecké a architektonické štúdie a projekty - v zahraničí##Art and architectonic studies and projects - in foreign
+200    aCGDbUmelecké a architektonické štúdie a projekty - doma##Art and architectonic studies and projects - home
+200    aDAIbDizertačné a habilitačné práce##Qualificational works (thesis, habilitation, atestation...)
+200    aEAIbPrehľadové práce - knižné##Browse works - bookish
+200    aEAJbOdborné preklady publikácií - knižné##Scientific translations of publications
+200    aEDIbRecenzie v časopisoch a zborníkoch##Notice in scientific magazines and year-books
+200    aEDJbPrehľadové práce, odborné preklady v časopisoch a zborníkoch##Browse works, scientific translations in magazines and year-books
+200    aFAIbRedakčné a zostavovateľské práce knižného charakteru (bibliografie, časopisy, encyklopédie, katalógy, slovníky, zborníky...)##Editorial and reported works (bibliographies, magazines, encyclopedies, catalogs, dictionaries, year-books...)
+200    aGAIbVýskumné štúdie a priebežné správy##Research studies and running reports
+200    aGIIbRôzne publikácie a dokumenty, ktoré nemožno zaradiť do žiadnej z predchádzajúcich kategórií##Several publications and documents, which are not in any previous category
+200    aGHGbPráce zverejnené na internete#Práce uveřejněné na internetu#Works carried in Internet
+200    aXXXbNezaradenénINTERNA kategoria Cosmotron - pre vystupy sa sem zaradia zaznamy s prazdnym 970$b
+210    aKPC_ALLbAAAbAABbABAbABBbABCbABDbACAbACBbACCbACDbADCbADDbADEbADFbAECbAEDbAEEbAEFbAEGbAEHbAFAbAFBbAFCbAFDbAFEbAFFbAFGbAFHbAFIbAFJbAFKbAFLbAGIbAGJbBAAbBABbBBAbBBBbBCBbBCIbBCKbBDAbBDBbBDCbBDDbBDEbBDFbBECbBEDbBEEbBEFbBFAbBFBbBGGbBGHbCAAbCABbCAGbCAHbCAIbCAJbCDCbCDDbCDEbCDFbCECbCEDbCGCbCGDbDAIbEAIbEAJbEDIbEDJbFAIbGAIbGIIbGHGbXXX
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_KATO
+200    a1bCitácie v zahraničných publikáciách, registrované v citačných indexoch Web of Science a databáze SCOPUS#Citace v zahraničních publikacích, registrované v citačních indexech#Tags in foreign publications, registered in tag indexes
+200    a2bCitácie v domácich publikáciách, registrované v citačných indexoch Web of Science a databáze SCOPUS#Citace v domácích publikacích, registrované v citačních indexech#Tags in home publications, registered in tag indexes
+200    a3bCitácie v zahraničných publikáciách neregistrované v citačných indexoch#Citace v zahraničních publikacích, neregistrované v citačních indexech#Tags in foreign publications, not registered in tag indexes
+200    a4bCitácie v domácich publikáciách neregistrované v citačných indexoch#Citace v domácích publikacích, neregistrované v citačních indexech#Tags in home publications, not registered in tag indexes
+200    a5bRecenzie v zahraničných publikáciách#Recenze v zahraničních publikacích#Notices in foreign publications
+200    a6bRecenzie v domácich publikáciách#Recenze v domácích publikacích#Notices in home publications
+200    a7bUmelecké kritiky zahraničné##Art foreign notices
+200    a8bUmelecké kritiky domáce##Art home notices
+210    aKATO_ALLb1b2b3b4b5b6b7b8
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_EBSCOLIMAU
+002    prazdne, doplnit novy prvek jako je dualcombo ale pro text
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_EBSCOLIMFT
+200    aFTbPlný text u záznamu#Plný text u záznamu#Record with full text
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_EBSCOLIMFT1
+200    aFT1bDostupné v Library Collection#Dostupné v Library Collection#Available in Library Collection
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_EBSCOLIMRV
+200    aRVbPosúdené, preskúmané#Posouzeno, přezkoumáno#Peer Reviewed
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_EBSCOLIMSO
+200    aControlling
+200    aDimensions of Early Childhood
+200    a... a spousta dalsich ... doplnit novy prvek jako je dualcombo ale pro text
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_EBSCOLIMTI
+002    prazdne, doplnit novy prvek jako je dualcombo ale pro text
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_EBSCOLIMLA99
+200    aChinesebChinese
+200    aCroatianbCroatian
+200    aCzechbCzech
+200    aEnglishbEnglish
+200    aDutch/FlemishbDutch/Flemish
+200    aFrenchbFrench
+200    aGermanbGerman
+200    aItalianbItalian
+200    aNorwegianbNorwegian
+200    aPortuguesebPortuguese
+200    aSlovakbSlovak
+200    aSlovenianbSlovenian
+200    aSpanishbSpanish
+200    aSpanish; CastilianbSpanish; Castilian
+200    aRussianbRussian
+200    aSwedishbSwedish
+200    aDutch; FlemishbDutch; Flemish
+200    aGreek, Modern 1453-bGreek\, Modern 1453-
+200    aIcelandicbIcelandic
+200    aLatinbLatin
+200    aAfrikaansbAfrikaans
+200    aArabicbArabic
+200    aAragonesebAragonese
+200    aBosnianbBosnian
+200    aBretonbBreton
+200    aCatalan; ValencianbCatalan; Valencian
+200    aDanishbDanish
+200    aGalicianbGalician
+200    aHungarianbHungarian
+200    aIndonesianbIndonesian
+200    aJapanesebJapanese
+200    aLithuanianbLithuanian
+200    aPersianbPersian
+200    aPolishbPolish
+200    aSlavic languagesbSlavic languages
+200    aTurkishbTurkish
+200    aUkrainianbUkrainian
+200    aWelshbWelsh
+200    aGaelic; Scottish GaelicbGaelic; Scottish Gaelic
+200    aCatalanbCatalan
+200    aGalitianbGalitian
+200    aBasquebBasque
+200    aRomanianbRomanian
+200    aBelarusianbBelarusian
+200    aBulgarianbBulgarian
+200    aEsperantobEsperanto
+200    aFinnishbFinnish
+200    aGreek, Modern (1453-)bGreek\, Modern \(1453-\)
+200    aHebrewbHebrew
+200    aLadinobLadino
+200    aLatvianbLatvian
+200    aRomanybRomany
+200    aRundibRundi
+200    aSerbianbSerbian
+200    aYiddishbYiddish
+200    aDutchbDutch
+200    aAchinesebAchinese
+200    aAlbanianbAlbanian
+200    aAmharicbAmharic
+200    aEnglish, Old (ca.450-1100)bEnglish\, Old \(ca.450-1100\)
+200    aOfficial Aramaic (700-300 BCE); Imperial Aramaic (700-300 BCE)bOfficial Aramaic \(700-300 BCE\); Imperial Aramaic \(700-300 BCE\)
+200    aArmenianbArmenian
+200    aAssamesebAssamese
+200    aAvestanbAvestan
+200    aAwadhibAwadhi
+200    aAzerbaijanibAzerbaijani
+200    aBashkirbBashkir
+200    aBaluchibBaluchi
+200    aBalinesebBalinese
+200    aBengalibBengali
+200    aBerber languagesbBerber languages
+200    aBhojpuribBhojpuri
+200    aBantu languagesbBantu languages
+200    aBrajbBraj
+200    aBatak languagesbBatak languages
+200    aBuginesebBuginese
+200    aBurmesebBurmese
+200    aCaucasian languagesbCaucasian languages
+200    aCebuanobCebuano
+200    aChurch Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church SlavonicbChurch Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic
+200    aChuvashbChuvash
+200    aDivehi; Dhivehi; MaldivianbDivehi; Dhivehi; Maldivian
+200    aDogribDogri
+200    aDravidian languagesbDravidian languages
+200    aEgyptian (Ancient)bEgyptian \(Ancient\)
+200    aEnglish, Middle (1100-1500)bEnglish\, Middle \(1100-1500\)
+200    aEstonianbEstonian
+200    aEwebEwe
+200    aFinno-Ugrian languagesbFinno-Ugrian languages
+200    aFrench, Middle (ca.1400-1600)bFrench\, Middle \(ca.1400-1600\)
+200    aFrench, Old (842-ca.1400)bFrench\, Old \(842-ca.1400\)
+200    aWestern FrisianbWestern Frisian
+200    aFulahbFulah
+200    aGayobGayo
+200    aGeorgianbGeorgian
+200    aGeezbGeez
+200    aIrishbIrish
+200    aGerman, Middle High (ca.1050-1500)bGerman\, Middle High \(ca.1050-1500\)
+200    aGerman, Old High (ca.750-1050)bGerman\, Old High \(ca.750-1050\)
+200    aGreek, Ancient (to 1453)bGreek\, Ancient \(to 1453\)
+200    aGujaratibGujarati
+200    aHausabHausa
+200    aHimachali languages; Western Pahari languagesbHimachali languages; Western Pahari languages
+200    aHindibHindi
+200    aIndic languagesbIndic languages
+200    aJavanesebJavanese
+200    aJudeo-PersianbJudeo-Persian
+200    aJudeo-ArabicbJudeo-Arabic
+200    aKannadabKannada
+200    aKashmiribKashmiri
+200    aKawibKawi
+200    aKazakhbKazakh
+200    aKhasibKhasi
+200    aCentral KhmerbCentral Khmer
+200    aKinyarwandabKinyarwanda
+200    aKonkanibKonkani
+200    aKomibKomi
+200    aKoreanbKorean
+200    aKurukhbKurukh
+200    aKumykbKumyk
+200    aKurdishbKurdish
+200    aLahndabLahnda
+200    aLaobLao
+200    aLimburgan; Limburger; LimburgishbLimburgan; Limburger; Limburgish
+200    aGandabGanda
+200    aLushaibLushai
+200    aMacedonianbMacedonian
+200    aMaduresebMadurese
+200    aMagahibMagahi
+200    aMaithilibMaithili
+200    aMalayalambMalayalam
+200    aMandingobMandingo
+200    aAustronesian languagesbAustronesian languages
+200    aMarathibMarathi
+200    aMalaybMalay
+200    aMinangkabaubMinangkabau
+200    aUncoded languagesbUncoded languages
+200    aMalagasybMalagasy
+200    aMongolianbMongolian
+200    aMultiple languagesbMultiple languages
+200    aMunda languagesbMunda languages
+200    aMarwaribMarwari
+200    aMayan languagesMayan languagesbMayan languagesMayan languages
+200    aNdebele, North; North NdebelebNdebele\, North; North Ndebele
+200    aLow German; Low Saxon; German, Low; Saxon, LowbLow German; Low Saxon; German\, Low; Saxon\, Low
+200    aNepalibNepali
+200    aNepal Bhasa; NewaribNepal Bhasa; Newari
+200    aNiger-Kordofanian languagesbNiger-Kordofanian languages
+200    aPedi; Sepedi; Northern SothobPedi; Sepedi; Northern Sotho
+200    aChichewa; Chewa; NyanjabChichewa; Chewa; Nyanja
+200    aOriyabOriya
+200    aTurkish, Ottoman (1500-1928)bTurkish\, Ottoman \(1500-1928\)
+200    aPapuan languagesbPapuan languages
+200    aPahlavibPahlavi
+200    aPanjabi; PunjabibPanjabi; Punjabi
+200    aPhilippine languagesbPhilippine languages
+200    aPalibPali
+200    aPrakrit languagesbPrakrit languages
+200    aProvençal, Old (to 1500); Occitan, Old (to 1500)bProvençal\, Old \(to 1500\); Occitan\, Old \(to 1500\)
+200    aPushto; PashtobPushto; Pashto
+200    aQuechuabQuechua
+200    aRajasthanibRajasthani
+200    aRomance languagesbRomance languages
+200    aRomanian; Moldavian; MoldovanbRomanian; Moldavian; Moldovan
+200    aYakutbYakut
+200    aSanskritbSanskrit
+200    aSasakbSasak
+200    aSinhala; SinhalesebSinhala; Sinhalese
+200    aSino-Tibetan languagesbSino-Tibetan languages
+200    aShonabShona
+200    aSindhibSindhi
+200    aSomalibSomali
+200    aSotho, SouthernbSotho\, Southern
+200    aSundanesebSundanese
+200    aSwahilibSwahili
+200    aSyriacbSyriac
+200    aTamilbTamil
+200    aTatarbTatar
+200    aTelugubTelugu
+200    aTajikbTajik
+200    aTagalogbTagalog
+200    aThaibThai
+200    aTibetanbTibetan
+200    aTswanabTswana
+200    aTsongabTsonga
+200    aTurkmenbTurkmen
+200    aAltaic languagesbAltaic languages
+200    aUndeterminedbUndetermined
+200    aUrdubUrdu
+200    aUzbekbUzbek
+200    aVietnamesebVietnamese
+200    aWolofbWolof
+200    aXhosabXhosa
+200    aYorubabYoruba
+200    aZulubZulu
+200    aBokmål, Norwegian; Norwegian BokmålbBokmål\, Norwegian; Norwegian Bokmål
+200    aKhmerbKhmer
+200    aGreek, Ancient to 1453bGreek\, Ancient to 1453
+200    aInterlinguabInterlingua
+200    aBasabBasa
+200    aChinook jargonbChinook jargon
+200    aHmong; MongbHmong; Mong
+200    aHiri MotubHiri Motu
+200    aMaoribMaori
+200    aNorth American Indian languagesbNorth American Indian languages
+200    aOjibwabOjibwa
+###
+# @id UnTablesd BASE_IPAC2_SERVER_GOOGLES
+100    aWcGoogle Scholarbhttps://scholar.google.com/scholar?ie=UTF-8&oe=UTF-8&hl=en&btnG=Search&q=hspecializovaný vyhledávač odborných textů (např. článků z časopisů, preprintů, vysokoškolských kvalifikačních prácí).
+200    agoogle_scholarbGoogle ScholarnFS_WBASE
+###
+# @id UnTablesd BASE_IPAC2_SERVER_GOOGLE
+100    aWcGooglebhttps://www.google.com/search?hl=en&q=huniverzální fulltextový webový vyhledávač.
+200    agoogle_googlebGooglenFS_WBASE
+###
+# @id UnTablesd BASE_IPAC2_SERVER_YAHOO
+100    aWcYahoobhttps://search.yahoo.com/bin/search?ie=utf-8&oe=utf-8&p=huniverzální fulltextový webový vyhledávač.
+200    ayahoo_yahoobYahoonFS_WBASE
+###
+# @id UnTablesd BASE_IPAC2_SERVER_PUBMED
+100    aWcPubmedbhttp://www.ncbi.nlm.nih.gov/entrez/query.fcgi?WebEnv=&db=pubmed&orig_db=pubmed&cmd=search&cmd_current=&term=hslužba National Library of Medicine, obsahuje více než 15 milionů citací článků z lékařských časopisů do roku 1950, patří k nejlepším nástrojům pro vyhledávání v Medline na Internetu.
+200    anlm_pubmedbPubmednFS_WBASE
+###
+# @id UnTablesd BASE_IPAC2_SERVER_HIGHWIRE
+100    aWcHighWirebhttp://highwire.stanford.edu/cgi/searchresults?andorexactfulltext=and&author1=&pubdate_year=&volume=&firstpage=&src=hw&searchsubmit=redo&resourcetype=1&search=Search&fmonth=Jan&fyear=1844&tmonth=Mar&tyear=&fdatedef=1+January+1844&tdatedef=&fulltext=hdatabáze článků z odborných časopisů z oblasti biologických věd, lékařství, fyzikálních věd a společenských věd.  Články z časopisů, které má instituce předplacené (v rámci elektronických databází) jsou k dispozici v plném textu.
+200    ahighwire_highwirebHighWirenFS_WBASE
+###
+# @id UnTablesd BASE_IPAC2_SERVER_SCIRUS
+100    aWcScirusbhttp://www.scirus.com/srsapp/search?ds=jnl&ds=nom&ds=web&g=s&t=all&q=hspecializovaný vyhledávač informací z oblasti vědy, výzkumu a vzdělávání. Vyhledává paralelně ve volně přístupných  webových zdrojích a zdrojích pro registrované uživatele.
+200    ascirus_scirusbScirusnFS_WBASE
+###
+# @id UnTablesd BASE_IPAC2_SERVER_OAISTER
+100    aWcOaisterbhttp://oaister.umdl.umich.edu/cgi/b/bib/bib-idx?type=boolean&size=10&rgn1=entire+record&rgn2=entire+record&rgn3=entire+record&c=oaister&searchfield=Keyword&op2=And&searchfield=Keyword&q2=&op3=And&searchfield=Keyword&q3=&op6=And&rgn6=norm&restype=all+types&sort=title&submit2=search&q1=hvirtuální katalog, který zpřístupňuje vědecky orientované zdroje (i digitální),  které běžné vyhledávače (Google, Altavista)  nezaznamenávají.
+200    aoaister_oaisterbOaisternFS_WBASE
+###
+# @id UnTablesd BASE_IPAC2_SERVER_BMC
+002    Bibliographia Medica Čechoslovaca - http://dec2.nlk.cz:4001/ALEPH/CZE/BMC/BMC/BMC/START
+002    pozn.znakova sada ISO Latin2
+100    aWcBMČ (Bibliographia Medica Čechoslovaca)bhttp://dec2.nlk.cz:4001/ALEPH/CZE/BMC/BMC/BMC/FIND-A?FIND=V%B9echny+rejs&BASE=V%B9echny+dokum&VALUE=honline verze BMČ BIBLIOMEDICA (data pouze od roku 1999). Česká lékařská bibliografie, obsahuje záznamy (bez abstraktů) o pracích českých autorů s tématikou lékařství a zdravotnictví. Ve Vědecké knihovně je také dostupná na CD-ROM retrospektiva báze od roku 1986.eI
+200    abmc_bmcbBMČnFS_WBASE
+###
+# @id UnTablesd BASE_IPAC2_SERVER_UKBA
+002     omicron.ulib.sk:9919
+100    aZbsun1.kis3g.sk:2222cUniverzitná knižnica v Bratislavee8
+200    adefault5,defaultbSúborný katalóg periodíknFS_ZBASEmdefault-ZF3jBS_SORT_UN
+###
+# @id UnTablesd BASE_IPAC2_SERVER_UKBA1
+100    aZbsun1.kis3g.sk:5555cUniverzitná knižnica v Bratislavee8
+200    adefault1,defaultbKatalógnFS_ZBASEmdefault-ZF3jBS_SORT_UN
+###
+# @id UnTablesd BASE_IPAC2_SERVER_UKBA2
+100    aZbsun1.kis3g.sk:1111cUniverzitná knižnica v Bratislavee8
+200    adefault2,defaultbKatalóg SNK plus + ďalšienFS_ZBASEmdefault-ZF3jBS_SORT_UN
+###
+# @id UnTablesd BASE_IPAC2_SERVER_UKBA3
+100    aZbsun1.kis3g.sk:3333cŠtátna vedecká knižnica Banská Bystricae8
+200    adefault3,defaultbKatalógnFS_ZBASEmdefault-ZF3jBS_SORT_UN
+###
+# @id UnTablesd BASE_IPAC2_SERVER_VILIUNIBA
+100    aZbedo.uniba.sk:1111cVirtuálna knižnica Univerzity Komenského v Bratislavedgueste8
+200    aDEFAULT4,DEFAULTbSúborný katalóg knižníc fakúltnFS_ZBASEmdefault-ZF3jBS_SORT_UN
+###
+# @id UnTablesd BASE_IPAC2_SERVER_THOMSON
+002    15.08.23 jk; pridana autentizace username password, vypnut curl
+002    11.11.15 jk; pridan FS_FILTER pro UN
+002    21.09.15 js; zmeneny odkaz na parsovanie CCC
+002    11.09.14 jk; zalozeno
+100    aX1bsearch.webofknowledge.com:/esti/wokmws/ws/WokSearch:POSTcThomsondusername==:password:1xLICENCED
+200    awosbWeb of Sciencer1nFLDSETWOSkSORTWOSmdefault-ZF_EXT_X1oFS_MSG2-WOS_BODY,FS_XML2MARC-IPAC2_XMLPARSE_WOS,FS_FILTER-FILTER_THOMSON_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
+200    awoscitbWeb of Science - Citing Articlesr1nFLDSETWOKIDmdefault-ZF_EXT_X1oH,FS_MSG2-WOSCIT_BODY,FS_XML2MARC-IPAC2_XMLPARSE_WOSCIT,FS_FILTER-FILTER_THOMSON_WOS,GEN856-THOMSON1_WOSCIT-THOMSON2,EZPROXY
+200    acccbCurrent Contents Connectr1nFLDSETCCCkSORTWOSmdefault-ZF_EXT_X1oFS_MSG2-CCC_BODY,FS_XML2MARC-IPAC2_XMLPARSE_CCC,FS_FILTER-FILTER_THOMSON_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
+200    awokidbWeb of Knowledge - Retrieve By IDr1nFLDSETWOKIDmdefault-ZF_EXT_X1oH,FS_MSG2-WOKID_BODY,FS_XML2MARC-IPAC2_XMLPARSE_WOKID,FS_FILTER-FILTER_THOMSON_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
+###
+# @id UnTablesd BASE_IPAC2_SERVER_THOMSON_AUTH
+002    WS sluzba pro prihlaseni, ziskani session sid a odhlaseni
+002    15.08.23 jk; pridana autentizace username password, vypnut curl
+002    11.09.14 jk; zalozeno
+100    aX1bsearch.webofknowledge.com:/esti/wokmws/ws/WOKMWSAuthenticate:POSTcThomsondusername==:password:1xLICENCED
+200    athomsonauthbThomson authenticater1oFS_MSG2-THOMSONAUTH_BODY,EZPROXY,H
+200    athomsonclosebThomson closeSessionr1oFS_MSG2-THOMSONCLOSE_BODY,EZPROXY,H
+###
+# @id UnTablesd BASE_IPAC2_SERVER_CLARIVATE
+002    20.09.23 jk; Clarivate WoS API Expanded ve verzi pro Unimarc, pro M21 je potreba zamenit XMLPARSE a FILTER za M21 verze, ZF TF_EXT_X1 za TF_EXT_X1_US pripadne zapojit jiny ZF
+100    aX2bapi.clarivate.com::GET:httpscClarivatexLICENCED
+200    aclwosbClarivate Web of SciencekSORTCLWOSr1nFLDSETCLWOSmdefault-TF_EXT_X1oH,FS_SERVICE-CLWOS_EXP,FS_MSG1-CLWOS_HEADER,FS_MSG2-CLWOS_EXP_SEARCH,FS_XML2MARC-IPAC2_XMLPARSE_CLWOS,FS_FILTER-FILTER_CLARIVATE_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
+200    aclwoscitbClarivate Web of Science - Citing Articlesr1nFLDSETCLWOSCITmdefault-TF_EXT_X1oH,FS_SERVICE-CLWOS_CIT,FS_MSG1-CLWOS_HEADER,FS_MSG2-CLWOS_CIT_SEARCH,FS_XML2MARC-IPAC2_XMLPARSE_CLWOS,FS_FILTER-FILTER_CLARIVATE_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
+200    aclcccbClarivate Current Contents ConnectkSORTCLWOSr1nFLDSETCLWOSmdefault-TF_EXT_X1oH,FS_SERVICE-CLWOS_EXP,FS_MSG1-CLWOS_HEADER,FS_MSG2-CLCCC_SEARCH,FS_XML2MARC-IPAC2_XMLPARSE_CLWOS,FS_FILTER-FILTER_CLARIVATE_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
+###
+# @id UnTablesd BASE_IPAC2_SERVER_ELSEVIER
+002    12.01.16 jk; pridan FS_FILTER
+002    11.09.14 jk; zalozeno
+100    aX2bapi.elsevier.com::GET:httpscElsevierkCurlxLICENCED
+200    ascopusbScopusr1nFLDSETSCOkSORTSCOmdefault-ZF_EXT_X1oFS_SERVICE-SCOPUS_SERVICE,FS_MSG1-SCOPUS_HEADER,FS_MSG2-SCOPUS_BODY,FS_XML2MARC-IPAC2_XMLPARSE_SCOPUS,FS_FILTER-FILTER_ELSEVIER_SCOPUS,GEN856-ELSEVIER1-ELSEVIER2,EZPROXY
+200    asdbScienceDirectr1nFLDSETSDIkSORTSDImdefault-ZF_EXT_X1oFS_SERVICE-SD_SERVICE,FS_MSG1-SD_HEADER,FS_MSG2-SD_BODY,FS_XML2MARC-IPAC2_XMLPARSE_SD,EZPROXY
+###
+# @id UnTablesd BASE_IPAC2_SERVER_EBSCO_EDS
+002    11.09.14 jk; zalozeno
+100    aX2beds-api.ebscohost.com::GET:httpscEbsco EDSd::0kCURLxLICENCED
+200    aebscoauthipbEbsco authenticate IPr1oFS_SERVICE-EBSCO_AUTHIP_SERVICE,FS_MSG2-EBSCO_AUTHIP_BODY,FS_PASSWD-bohemia,H
+200    aebscoauthsidbEbsco authenticate SIDr1oFS_SERVICE-EBSCO_AUTHSID_SERVICE,FS_MSG1-EBSCO_AUTHSID_HEADER,FS_MSG2-EBSCO_AUTHSID_BODY,FS_PASSWD-bohemia,H
+200    aebscosearchbEbsco Searchr1nFLDSETEBSCOSEARCHkSORTEBSCOSEARCHmdefault-ZF_EXT_X1oFS_SERVICE-EBSCO_SEARCH_SERVICE,FS_MSG1-EBSCO_SEARCH_HEADER,FS_MSG2-EBSCO_SEARCH_BODY,FS_XML2MARC-IPAC2_XMLPARSE_EBSCO_SEARCH
+200    aebscoretrievebEbsco Retriever1nFLDSETEBSCORETRIEVEkSORTEBSCOSEARCHmdefault-ZF_EXT_X1oFS_SERVICE-EBSCO_RETRIEVE_SERVICE,FS_MSG1-EBSCO_RETRIEVE_HEADER,FS_MSG2-EBSCO_RETRIEVE_BODY,FS_XML2MARC-IPAC2_XMLPARSE_EBSCO_RETRIEVE
+###
+# @id UnTablesd BASE_IPAC2_FLDDATA_DEXT
+200    asdtocbDoručovanie obsahov#Doručování obsahů#Content delivery
+###
+# @id UnTablesd BASE_IPAC2_SERVER_RSSOVID
+002    29.10.14 jk; pro jednotlive db doplnit SZP instituce do DPC
+100    aRSScRSSOVIDbhttp://ovidsp.ovid.comhStahování obsahů časopisů z Ovidu přes RSSxLICENCED
+200    arssovid_surpathbAmerican Journal of Surgical PathologyoHL-http://ovidsp.ovid.com/rss/journals/00000478/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_archneurbArchives of NeurologyoHL-http://ovidsp.ovid.com/rss/journals/00000816/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_archotolarbArchives of Otolaryngology - Head & Neck SurgeryoHL-http://ovidsp.ovid.com/rss/journals/00002090/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_brainbBrainoHL-http://ovidsp.ovid.com/rss/journals/00002423/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_clingenbClinical GeneticsoHL-http://ovidsp.ovid.com/rss/journals/00003049/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_curropallergybCurrent Opinion in Allergy and Clin.ImmunologyoHL-http://ovidsp.ovid.com/rss/journals/00130832/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_curroprheubCurrent Opinion in RheumatologyoHL-http://ovidsp.ovid.com/rss/journals/00002281/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_cytopathbCytopathologyoHL-http://ovidsp.ovid.com/rss/journals/00001706/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_devmedchildbDevelopmental Medicine and Child neurologyoHL-http://ovidsp.ovid.com/rss/journals/00003434/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_endocpathbEndocrine PathologyoHL-http://ovidsp.ovid.com/rss/journals/00009216/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_epilepsiabEpilepsiaoHL-http://ovidsp.ovid.com/rss/journals/00003606/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_euroneurobEuropean Journal of NeurologyoHL-http://ovidsp.ovid.com/rss/journals/00054821/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_evidbasedmedbEvidence Based MedicineoHL-http://ovidsp.ovid.com/rss/journals/00115326/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_geneandimmubGene and immunityoHL-http://ovidsp.ovid.com/rss/journals/00130296/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_immunorevbImmunological ReviewsoHL-http://ovidsp.ovid.com/rss/journals/00004210/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_jourallergclinimmubJournal of  Allergy and Clinical ImmunologyoHL-http://ovidsp.ovid.com/rss/journals/00004483/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_jourclinimmubJournal of Clinical ImmunologyoHL-http://ovidsp.ovid.com/rss/journals/00004679/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_jourpedorthobJournal of Pediatric OrthopaedicsoHL-http://ovidsp.ovid.com/rss/journals/01241398/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_jourpediabJournal of PediatricsoHL-http://ovidsp.ovid.com/rss/journals/00005186/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_jourperinamedbJournal of Perinatal MedicineoHL-http://ovidsp.ovid.com/rss/journals/00005199/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_lancetbLancetoHL-http://ovidsp.ovid.com/rss/journals/00005531/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_mededucbMedical EducationoHL-http://ovidsp.ovid.com/rss/journals/00005855/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_naturebNatureoHL-http://ovidsp.ovid.com/rss/journals/00006056/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_neuropathbNeuropathologyoHL-http://ovidsp.ovid.com/rss/journals/00115722/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_neuropsychrevbNeuropsychology ReviewoHL-http://ovidsp.ovid.com/rss/journals/00008545/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_neurosurgbNeurosurgeryoHL-http://ovidsp.ovid.com/rss/journals/00006123/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_otolarheadnecksurgbOtolaryngology - Head and Neck SurgeryoHL-http://ovidsp.ovid.com/rss/journals/00006372/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_pathointerbPathology InternationaloHL-http://ovidsp.ovid.com/rss/journals/00041332/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_pedidrugsbPediatric DrugsoHL-http://ovidsp.ovid.com/rss/journals/00148581/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_pedinursbPediatric NursingoHL-http://ovidsp.ovid.com/rss/journals/01217119/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_pediatricsbPediatricsoHL-http://ovidsp.ovid.com/rss/journals/00006455/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+200    arssovid_sciencebScienceoHL-http://ovidsp.ovid.com/rss/journals/00007529/current.rss,FS_XML2MARC-IPAC2_XMLPARSE_RSSOVID,DPC-ictx_us_cat*xxxxxx
+###
+# @id UnTablesd BASE_IPAC2_SERVER_NAXOS
+002    podle instituce upravit hlavni stranku Naxos napr. kvkli.NaxosMusicLibrary.com
+002    lze zapojit i bez EZProxy s vyuzitim Apache2, priklad na KJM
+100    aHLcKolekce nahrávek klasické hudby, okrajově jazz, worldmusic, zvukové knihy a další žánry. Umožňuje vytváření vlastního playlistu, obsahuje biografie skladatelů, anglický slovník hudební terminologie, analýzy jednotlivých děl, výukový modul pro děti,… xLICENCED
+200    anax1bKLASICKÁ HUDBA (Naxos Music Library)ynaxosmusiclibrary.pngoHL-https://NaxosMusicLibrary.com,EZPROXYr1
+###
+# @id UnTablesd BASE_IPAC2_SERVER_NAXOSJAZZ
+002    podle instituce upravit hlavni stranku Naxos napr. kvkli.NaxosMusicLibrary.com
+002    lze zapojit i bez EZProxy s vyuzitim Apache2, priklad na KJM
+100    aHLcTéměř 200 000 nahrávek špičkových jazzových skladeb. Umožňuje vytváření vlastního playlistu.xLICENCED
+200    anax2bJAZZ (Naxos Music Library)oHL-https://NaxosMusicLibrary.com/jazz,EZPROXYr1ynaxosmusiclibrary-jazz.png
+###
+# @id UnTablesd BASE_IPAC2_SERVER_NAXOSVIDEO
+002    podle instituce upravit hlavni stranku Naxos napr. kvkli.NaxosMusicLibrary.com
+002    lze zapojit i bez EZProxy s vyuzitim Apache2, priklad na KJM
+100    aHLcVíce než 3 000 záznamů hudebních vystoupení, oper, baletních představení, živých koncertů a dokumentů v provedení největších světových operních stánků, baletních souborů, orchestrů a uměleckých skupin. Umožňuje vytváření vlastního playlistu.xLICENCED
+200    anax3bNAXOS VIDEO LIBRARYoHL-https://NaxosVideoLibrary.com,EZPROXYr1ynaxosvideolibrary.png
+###

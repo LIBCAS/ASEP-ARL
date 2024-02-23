@@ -1,0 +1,456 @@
+////
+/// Obecne komponenty
+/// <du>1</du>
+////
+
+///	NADPISY
+#bside {
+	h1 {
+		margin-top: 0;
+	}
+}
+
+.nojs .collapse:not(.show) {
+	display: flex;
+}
+
+//* Cookies bar
+#cookiesbar {
+	background-color: white;
+	border: 1px solid silver;
+
+	.cookiesbar-body {
+		padding: 20px 0;
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, xl)) {
+	#cookiesbar {
+		.btn {
+			display: block;
+			width: 100%;
+		}
+	}
+}
+
+/// ZVÝRAZNĚNÍ
+.highlight,
+mark,
+.mark {
+	background-color: #ffffb8 !important;
+	padding: 0;
+}
+
+#cavrules .highlight {
+	padding: 1rem;
+}
+
+span.emphasis {
+	border-bottom: 1px #000 dashed;
+}
+
+///	TABULKY
+table {
+	.price,
+	.date,
+	.nr {
+		text-align: right;
+	}
+
+	td.price {
+		white-space: pre;
+	}
+
+	th span {
+		// Popisne texty (Bookmark, Checkbox)
+		display: none;
+	}
+
+	th,
+	td {
+		vertical-align: top !important;
+	}
+
+	td img {
+		width: 30px;
+	}
+}
+
+.fc-block,
+.fc-inline {
+	display: none;
+}
+
+.bootstrap-table td code {
+	color: $dark;
+	white-space: pre;
+}
+
+.fullscreen {
+	.fc-none {
+		display: none !important;
+	}
+
+	.d-none.fc-block {
+		display: block !important;
+	}
+
+	.d-none.fc-inline {
+		display: inline !important;
+	}
+
+	.bootstrap-table {
+		padding-left: 1rem;
+		padding-right: 1rem;
+		color: white;
+	}
+}
+
+.modal-fullscreen.modal-dialog {
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	max-width: 100% !important;
+}
+
+.modal-fullscreen .modal-content {
+	height: auto;
+	height: 100vh;
+	border-radius: 0;
+	border: none;
+}
+
+.modal-fullscreen .modal-body {
+	overflow-y: auto;
+}
+
+.fixed-table-container thead th .th-inner {
+	padding: 0.18rem 1.125rem 0.18rem 0.5rem;
+}
+
+@media (max-width: map-get($grid-breakpoints, xs)) {
+	#btn-fullscreen {
+		display: none;
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, sm)) {
+	.fixed-table-toolbar {
+		.columns-right {
+			margin-left: 0;
+		}
+
+		.keep-open {
+			flex: 1 1 auto;
+
+			button {
+				padding-left: 0;
+			}
+		}
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, xs)) {
+	.bootstrap-table .float-right {
+		float: none !important;
+	}
+
+	.table-responsive {
+		margin: 1rem 0;
+	}
+}
+
+/// ZALOZKY
+div.tabs {
+	min-height: 1.9rem;
+	margin-bottom: 1rem;
+
+	li .nav-link {
+		padding: 0.4rem 0.6rem;
+	}
+}
+
+/// STRANKOVANI
+ul.pagination {
+	margin: 0;
+	justify-content: flex-end;
+	display: flex;
+}
+@media (max-width: 405px) {
+	ul.pagination {
+		li.page-item-nr:nth-child(3),
+		li.page-item-nr:nth-child(6),
+		li.page-item-nr:nth-child(7) {
+			display: none;
+		}
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, xs)) {
+	.pagination {
+		display: block;
+
+		.page-item {
+			float: left;
+		}
+	}
+}
+
+/// EXTERNI ODKAZY
+a[rel="external"],
+a.external {
+	padding-right: 1.12rem;
+
+	&::after {
+		content: "\E81b";
+		font-size: 70%;
+		padding-left: 0.125rem;
+		top: -0.3rem;
+		position: relative;
+	}
+
+	&:hover::after {
+		text-decoration: none;
+	}
+}
+a[rel="external"].noex,
+a.external.noex,
+a.noex {
+	padding-right: 0;
+
+	&::after {
+		content: "";
+		padding-left: 0;
+		top: 0;
+	}
+	&:hover::after {
+		text-decoration: none;
+	}
+}
+
+/// Dalsi komponenty
+.guide h2 {
+	position: relative;
+	margin-top: 0;
+
+	em {
+		@extend .pull-right;
+
+		font-style: normal;
+		font-variant: super;
+		position: absolute;
+		right: -10px;
+		top: -0.6rem;
+	}
+}
+
+/* Info pro IE */
+#old-browser {
+	font-weight: 700;
+	text-align: center;
+	margin: 3rem 0;
+	padding: 0.6rem 0;
+	border: 3px solid $table-border-color;
+	font-size: 100%;
+
+	img {
+		margin: 1.25rem 0 0;
+	}
+
+	a.external {
+		background: none;
+	}
+}
+
+#page-image {
+	position: relative;
+	bottom: 0;
+	height: 900px;
+	overflow: hidden;
+
+	img {
+		position: fixed;
+		bottom: 0;
+		max-height: 56rem;
+		width: 100%;
+		z-index: 5;
+		height: auto;
+	}
+}
+
+// DropDown
+.dropdown-item.active,
+.dropdown-item.active a {
+	color: white;
+}
+
+.dropdown-menu {
+	transform: scale(0);
+	transition: all 0.3s ease;
+	transform-origin: 0 top;
+
+	&.show {
+		box-shadow: 0.6rem -0.3rem 0.3rem 0 #0003;
+		transform: scale(1);
+	}
+}
+
+.datepicker.dropdown-menu {
+	transform: none !important;
+	transition: all 0s ease 0s !important;
+
+	&.show {
+		transform: none !important;
+	}
+}
+
+.dropdown-submenu {
+	position: relative;
+
+	.dropdown-menu {
+		top: 0;
+		left: 100%;
+		margin-top: -1px;
+	}
+}
+
+/* Chovani pri vyponutem JS */
+.nojs {
+	.password-meter {
+		display: none;
+	}
+
+	.fade {
+		opacity: 1;
+	}
+}
+
+.ipac-loading {
+	text-align: center;
+	width: 100%;
+	font-size: 200%;
+}
+
+#system-info {
+	font {
+		color: $black;
+		font-weight: 700;
+	}
+}
+
+ol.sortlithx {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+
+	li.nr {
+		counter-increment: item;
+
+		&::before {
+			content: counter(item) ". ";
+			position: relative;
+			top: 2.3rem;
+			font-size: $h2-font-size;
+		}
+
+		h2,
+		h3 {
+			padding-left: 1.6rem;
+		}
+	}
+}
+
+.popover mark {
+	background: transparent !important;
+}
+
+@include media-breakpoint-down(sm-1) {
+	.overlay {
+		background-color: rgba(250, 250, 250, 0.8);
+		z-index: 3;
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: none !important;
+	}
+
+	#page.toggled {
+		.overlay {
+			display: block !important;
+		}
+	}
+}
+
+.has-success .icon-uncheck {
+	@extend .icon-check;
+}
+
+a.contact {
+	.icon-loading {
+		font-size: 80%;
+		top: -2px;
+	}
+}
+
+.jsmap-link .icon-search {
+	@extend .icon-gmap;
+}
+
+span.btn {
+	cursor: pointer;
+}
+
+/* Okno nad pro bod mapy */
+.smap {
+	.card {
+		.card-header {
+			padding: 0;
+			border: 0;
+		}
+
+		.card-body {
+			padding: 0;
+		}
+
+		.card-footer {
+			padding: 0;
+			border: 0;
+		}
+	}
+}
+
+/*
+Nacitani modalniho okna - zatím zrušeno
+.modal-backdrop.loading::before {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    color: white;
+    text-align: center;
+    font-size: 6rem;
+    display: inline-block;
+    content: "\E838";
+    font-family: "IPAC Icons";
+    animation: spin 2s infinite linear;
+}
+*/
+
+.modal #short-detail {
+	min-height: 130px;
+	a {
+		float: left;
+		margin-right: 1rem;
+	}
+	picture img {
+		max-height: 120px !important;
+	}
+}
+
+#mojeid-f button span {
+	white-space: normal;
+}

@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865_3U)" ts="2022-08-15 12:41:47">
+<Class name="content.zf">
+<Description><![CDATA[
+<pre> zobrazovaci bloky pro contentServer
+
+; 15.08.22 ln; fix pristupu "S"
+08.04.22 ln; rank trideni pres api selectRecAll
+24.03.22 ln; zruseni podpory verze bez bootstrap
+22.12.21 ln; podpora CRank
+08.07.21 ln; zabezpeceny dokument take jako typ pristupu
+13.10.20 ln; fulltextove solr jadro
+20.05.20 ln; obohaceni tagem CON
+22.08.19 js; fmtContent: zobrazenie textu z číselníku pre "pouze info"
+29.04.19 js; info s dátumom embarga
+12.02.19 ln; podpora transfercontent
+24.01.19 tt; pridany sloupec pro uzivatele, ktery fulltext vlozil
+19.11.18 ln; opravena ikona pro info only mod
+01.08.17 kp; nahrazeni ikony za font
+05.06.17 ln; modifikator blank
+15.12.16 ln; opraven preklep v prefixu
+11.11.16 ln; do pole CON pridan repozitar a klic pro symboliky
+09.08.16 ln; podpora arlsso
+31.05.16 ln; cover toc a foto se filtruji vzdy
+05.05.16 ln; pridan info only mod contentServeru
+08.01.15 ln; odkaz na spravu se defaulte zobrazi s okazem k uploadu
+25.11.14 tt; pridano not do filteru
+03.09.14 ln; filtrace radku podle hodnoty
+01.09.14 ln; libovolny metadatovy sloupec
+23.07.13 ln; podpora pro fotogalerii
+12.12.12 tt; fmtContent: upraveny cesty na ikonky zamku
+16.10.12 tt; fmtContent: pridany priznak pro NUSL
+26.09.12 ln; aktualizace imageServeru pri zmene typu 
+20.09.12 ln; podpora pro sloupec typu pristupu
+26.07.12 ln; podpora pretty url
+...
+</pre>]]></Description>
+<IncludeCode>Common,%occCommon,I2</IncludeCode>
+<TimeChanged>66336,45643.458564</TimeChanged>
+<TimeCreated>62188,40801.56001</TimeCreated>
+
+<Method name="fmtContent">
+<Description><![CDATA[
+<pre> blok vypisujici tabulku se soubory contentServeru
+
+15.08.22 ln; fix pristupu "S"
+08.04.22 ln; rank trideni pres api selectRecAll
+22.12.21 ln; podpora CRank
+08.07.21 ln; zabezpeceny dokument take jako typ pristupu
+13.10.20 ln; fulltextove solr jadro
+20.05.20 ln; obohaceni tagem CON
+22.08.19 js; zobrazenie stavu pri "iba info" z číselníku
+29.04.19 js; info s dátumom embarga
+12.02.19 ln; podpora transfercontent
+15.12.16 ln; opraven preklep v prefixu
+11.11.16 ln; do pole CON pridan repozitar a klic pro symboliky
+09.08.16 ln; podpora arlsso
+31.05.16 ln; cover toc a foto se filtruji vzdy
+05.05.16 ln; pridan info only mod contentServeru
+03.09.14 ln; filtrace radku podle hodnoty
+01.09.14 ln; libovolny metadatovy sloupec
+23.07.13 ln; podpora pro fotogalerii
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&result,&handleorig:%Binary,params:%String=""]]></FormalSpec>
+<Implementation><![CDATA[
+  q:'##class(i2.base.tpl).isPage("uploader") ""
+  
+  d ##class(User.MARC).mergeX(.handle,.handleorig)
+  d ##class(i2.imageServer).getConfig(.conf)
+  s zf=##class(i2.export).getExportFmt()  
+  s lang=##class(rep.zf.tf).getMod(.handle,"language")
+  s class=$$$HandleClass(handle)
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s t001=$$$HandleT001(handle)
+  s idx=##class(i2.dblink).recordIdX(.handle)
+  s skinPath=##class(i2.base.tpl).skin()  
+  s lockpicPath=skinPath_"icons/locked.gif"
+  s unlockpicPath=skinPath_"icons/unlocked.gif"  
+  
+  //d ##class(content.api).selectRecRepo(.output,repo,class,t001)
+  d ##class(content.api).selectRecAll(.output,class,t001)
+  q:'$d(output)
+  
+  s skinPath= ##class(i2.base.tpl).skin()
+  s lockpicPath=skinPath_"icons/locked.gif"
+  s unlockpicPath=skinPath_"icons/unlocked.gif"  
+  
+  ; 09.08.16 ln; podpora arlsso
+  s ssopar="", bTrans=0
+  if '$$$IsSessionI2 {
+    s secUser=##class(i2.ws.auth).getSessionUserName()
+    if (secUser'="") && (##class(util.sec.security).securityGet(secUser,$$$secIsUser)'="") {
+      s ssopar="_arlsso="_secUser_"&_arlssopw="_##class(i2.html.base).encode(%ipac2("arlsso"))
+    }
+    
+    ; 12.02.19 ln; podpora transfercontent
+    s secID=$p(##class(i2.config).getFieldInfo("transfercontent",.sErr,"I2_WS_COMMANDS"),$c(10),$$$I2cfgrowC)
+    if (secID'="") && ##class(i2.ws.auth).checkRights(secID,"w",0) {      
+      s $p(params,"T=",*)="CONA TP=⮫ CL=-3 T="_$p(params,"T=",*)
+      s bTrans=1, transcont=##class(i2.config).tx("TRANSCONT")
+    }
+  }
+  
+  /*
+  w !,"<pre>"
+  zw output
+  w !,"</pre>"
+  */
+    
+  s par=""
+  d ##class(rep.zf.tfHoldings).fmtTablePar(.params,.handle,.par)  
+  /*
+  w !,"<pre>"
+  zw par
+  w !,"</pre>"  
+  */
+  
+  ; 03.09.14 ln; filtrace radku podle hodnoty
+  s filter=$g(par("pm",1,"M=filter"))
+  s fvalue=$p(filter,"-",2)
+  s fvNot=$p(filter,"-",3)
+  s filter=$p(filter,"-")
+  
+  ; 05.06.17 ln; modifikator blank
+  s target=""
+  s blank=+$g(par("pm",1,"M=blank"))
+  s:blank target=""" data-target=""_blank"
+  
+  ; 01.09.14 ln; libovolny metadatovy sloupec
+  s node=""
+  f { s node=$o(par("tab",node)) q:node=""
+    s sub=$e($g(par("tab",node,"Tag")),4)
+    s:sub other(sub)=$g(par("pm",node,"M=key"))
+  }
+  
+  ; 15.08.22 ln; fix pristupu "S"
+  s bReader = ##class(i2.base.tpl).isPage("contreader")
+  
+  /*  
+  w !,"<pre>"
+  w !,filter
+  w !,"|",fvalue,"|",!
+  zw other
+  w !,"</pre>"  
+  */
+  
+  ; ikona | soubor | komentar | verze | velikost | format | pristup
+  s item="", seq=0
+  f { s item=$o(output(item)) q:item=""
+    s repo=output(item,"repository")
+    s key=output(item,"key")
+    s mode=##class(content.api).engineRead(repo,key,.array)
+    continue:'mode
+    ; 26.09.12 ln; aktualizace imageServeru pri zmene typu 
+    s type=$g(array("type")) ; TODO omezit select dotaz
+    ; 31.05.16 ln; cover toc a foto se filtruji vzdy
+    ; 23.07.13 ln; podpora pro fotogalerii
+    continue:type="cover" 
+    continue:type="toc"
+    continue:type="foto"
+    
+    ; 13.10.20 ln; fulltextove solr jadro
+    s iset=$$$GETREQVAR("iset")
+    if iset && $d(^$$$I2G($$$cI2GNodeSession,$$$GETSID,"set",iset,"full")) {
+      continue:'$d(^$$$I2G($$$cI2GNodeSession,$$$GETSID,"set",iset,"full",repo_"|"_key))
+    }
+
+    ; accession type
+    s typeacc=$g(array("accession"))
+    
+    if filter'="" {
+      ; 03.09.14 ln; filtrace radku podle hodnoty
+      if fvalue="'" {
+        if fvNot="not" {
+          continue:$g(array(filter))'=""  
+        } else {
+          continue:$g(array(filter))=""
+        }
+      } else {
+        ; 25.11.14 tt; pridano not do filteru
+        s tmp=($g(array(filter))'=fvalue)
+        ; zpracovani not - neguje vsechno predchozi
+        s:fvNot="not" tmp='tmp    
+        continue:tmp
+      }
+    }
+    s seq=seq+1
+    ; 01.08.17 kp; nahrazeni ikony za font
+    if mode=2 {
+      s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contclaim","idx="_idx_"&repo="_repo_"&key="_key)
+      ; 24.03.22 ln; zruseni podpory verze bez bootstrap
+      s icon="<a rel=""nofollow"" href="""_href_"""><span aria-hidden=""true"" class=""icon-lock""></span></a>"
+      s access="<a rel=""nofollow"" href="""_href_""">"_##class(rep.zf.tf).prefix(.handle,"0997")_"</a>"
+    }
+    elseif (mode=3) && '##class(content.api).isApproval(repo,key) {
+      s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contapp","idx="_idx_"&repo="_repo_"&key="_key)
+      ; 24.03.22 ln; zruseni podpory verze bez bootstrap
+      s icon="<a rel=""nofollow"" href="""_href_"""><span aria-hidden=""true"" class=""icon-lock-open""></span></a>"
+      s access="<a rel=""nofollow"" href="""_href_""">"_##class(rep.zf.tf).prefix(.handle,"0996")_"</a>"
+    }
+    elseif mode=5 {
+      ; 19.11.18 ln; opravena ikona pro info only mod
+      ; 05.05.16 ln; pridan info only mod contentServeru
+      s href=""
+      ; 24.03.22 ln; zruseni podpory verze bez bootstrap
+      s icon="<span aria-hidden=""true"" class=""icon-lock""></span>"
+      ; 22.08.19 js; doplnene zobrazenie textu cez preklad číselníka
+      s access=##class(User.Util).sXlate("UT_CONTENT_ACCESS",typeacc,,ipref,"i")
+      if access="" {
+        s access=##class(rep.zf.tf).prefix(.handle,"0999")
+      }
+    }
+    elseif mode=6 {
+      s href="" ; 29.04.19 js; info s dátumom embarga
+      ; 24.03.22 ln; zruseni podpory verze bez bootstrap
+      ; 29.04.19 js; oprava volania ikonky
+      s icon="<span aria-hidden=""true"" class=""icon-lock""></span>"
+      s dayfrom=$g(array("dayfrom"))
+      if dayfrom'="" {
+        s dayfrom=$e(dayfrom,7,8)_"."_$e(dayfrom,5,6)_"."_$e(dayfrom,1,4)
+        s access=##class(rep.zf.tf).prefix(.handle,"0799")_" "_dayfrom
+      } else { 
+        ; 22.08.19 js; doplnene zobrazenie textu cez preklad číselníka
+        s access=##class(User.Util).sXlate("UT_CONTENT_ACCESS",typeacc,,ipref,"i")
+        if access="" {
+          s access=##class(rep.zf.tf).prefix(.handle,"0999")
+        }
+      }
+    } else {
+      if (type="secure") || (($g(array("accession"))="S") && bReader) {
+        ; 15.08.22 ln; fix pristupu "S"
+        ; 08.07.21 ln; zabezpeceny dokument take jako typ pristupu1
+        ; 3.10.20 ln; fulltextove solr jadro
+        s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contreader","idx="_idx_"&repo="_repo_"&key="_key)_target
+      } else {        
+        ; 05.06.17 ln; modifikator blank
+        s href=##class(content.csg2).getLink(repo,key,,ssopar)_target
+      }
+      ; 24.03.22 ln; zruseni podpory verze bez bootstrap
+      s icon="<a rel=""nofollow"" href="""_href_"""><span aria-hidden=""true"" class=""icon-lock-open""></span></a>"
+      ; 15.12.16 ln; opraven preklep v prefixu
+      s access="<a rel=""nofollow"" href="""_href_""">"_##class(rep.zf.tf).prefix(.handle,"0996")_"</a>"
+    }
+    
+    
+    s ext=$g(array("extension"))
+    
+    if $g(array("translation"))="" {
+      s name=$g(array("origname"))
+    } else {
+      s name=##class(i2.config).languageSelect(array("translation"))
+    }
+    if mode'=5 {
+      s orig="<a rel=""nofollow"" href="""_href_""">"_name_"</a>"
+    } else {
+      s orig=name
+    }
+    
+    s coment=##class(i2.config).languageSelect($g(array("description")),,lang)
+    s version=$g(array("version"))
+    s size=$g(array("humansize"))    
+    ; preklad pripony na format
+    s format=..application(ext)
+    ; pocet stazeni
+    s count=$g(array("count"))
+    ; 22.08.19 js; accesion type presunuté vyššie
+    ; accession type
+    ;s typeacc=$g(array("accession"))
+    ; 16.10.12 tt; pridany priznak pro NUSL
+    s nusl=$g(array("nusl"))
+    ; 24.01.19 tt; pridany sloupec pro uzivatele, ktery fulltext vlozil
+    s userF=$g(array("importer"))
+    if (userF'="")
+    { ;  pokud mame vyplneneho uzivatele, nactu si jej
+      s slIctx=##class(User.Util).getClassPrefixParam(class)
+      if ##class(User.MARC).readX(.handleU,(slIctx_"IsUser"),userF)
+      {
+         s sNameAut=$$$getTagX(.handleU,"100a") 
+         s:(sNameAut'="") userF=sNameAut
+      }
+    }
+    
+    s line="CON    "_$c(31)_"i"_icon_$c(31)_"n"_orig_$c(31)_"c"_coment_$c(31)_"v"_version_$c(31)_
+      "s"_size_$c(31)_"f"_format_$c(31)_"a"_access_$c(31)_"b"_count_$c(31)_"t"_typeacc_$c(31)_"l"_nusl
+      ; 11.11.16 ln; do pole CON pridan repozitar a klic pro symboliky
+      _$c(31)_"r"_repo_$c(31)_"k"_key_$c(31)_"u"_userF
+    
+    ; 12.02.19 ln; podpora transfercontent
+    s:bTrans line=line_$c(31)_"A<a title="""_transcont_""" rel=""nofollow"" href=""MOVEFILE*"_repo_"*"_key_""">⮳</a>"
+    
+    ; 01.09.14 ln; libovolny metadatovy sloupec
+    s node=""
+    f { s node=$o(other(node),1,val) q:node=""      
+      s key=$p(val,"-")
+      continue:key=""
+      
+      s value=$g(array(key))
+      s:$p(val,"-",2)=1 value=$$$ls(value)
+      s:value'="" line=line_$c(31)_node_value
+    }
+    
+    d ##class(User.MARC).appendLineX(.handle,line)
+  }
+  
+  ; 20.05.20 ln; obohaceni tagem CON
+  d ##class(util.index).enhanceTag(.handle,"CON")
+  
+  
+  /*
+  w !,"<pre>"
+  w !,##class(i2.html.base).escape($replace(handle("Rec",1),$c(31),"$$"))
+  w !,"</pre>"
+  */
+  
+  d:seq ##class(rep.zf.tfHoldings).fmtTable(.result,.handle,"",.par)
+]]></Implementation>
+</Method>
+
+<Method name="icon">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>extension:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  if extension="pdf" {
+    s ret="fulltx-pdf.gif" 
+  } else {
+    s ret="fulltx.gif"
+  }
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="application">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>extension:%String,lang:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  /*
+  if extension="pdf" {
+    s ret="Adobe PDF"
+  } elseif extension="txt" {
+    s ret="text"
+  } else {
+    s ret=extension
+  }
+  */
+  
+  s ret=$zcvt(extension,"U")
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="testContent">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  
+  s t001="m0007489"
+  s src="cbvk_us_cat"
+  s tpl="tf"
+  
+  d ##class(User.MARC).readLX(.h,src_"*"_t001)
+  d ##class(util.index).enhanceTag(.h,"CON")
+  
+  d ##class(i2.init).batchinit($p(src,"_"),2)
+  d ##class(rep.zf.tf).formatXinit(.h)  
+  d ##class(rep.zf.tf).setMod(.h,"ictx",$$$GETICTX)
+  d ##class(rep.zf.tf).setMod(.h,"language",$$$GETLANGUAGE)  
+  
+  $$$SetupSessionTask
+  d ##class(i2.common).sessionSetup("testIms",$$$GETICTX,$$$GETLANGUAGE)
+  d ##class(i2.export).setExportFmt("zf1")
+  
+  d ..fmtContent(.result,.h,"T=CONa TP=\s T=CONb TP=File T=CONc TP=Commentary T=CONd TP=Version T=CONe TP=Size T=CONf TP=Format T=CONg TP=Access")  
+  w !
+  zw result
+  
+  d ##class(i2.zf.generator).eval(.result,.o,src)  
+  w !
+  zw o    
+  
+  s data("ERRORS")=""
+  s data("REPORTS")=""
+  s data("ISMOBILE")=0
+  s data("PAGEID")="result"
+  s data("TFTYPE")=tpl
+  m data("RESULT")=o
+  d ##class(i2.html.tpl).callTpl(.data,"zf",tpl)
+]]></Implementation>
+</Method>
+
+<Method name="fmtMaintain">
+<Description><![CDATA[
+<pre> Blok pro odkaz na servisni stranku se spravou souboru zaznamu
+parametry oddelene - 
+   1. prefix
+   2. oddelovac
+   3. odkaz na správu příloh podle práva editace
+
+29.08.17 oi tt; podminka pro NEzobrazeni spravy souboru v pripade, ze zaznam jeste neni vytvoren (t001=new)
+09.08.16 ln; podpora arlsso
+08.01.15 ln; odkaz na spravu se defaulte zobrazi s okazem k uploadu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,params:%String=""]]></FormalSpec>
+<Implementation><![CDATA[
+  q:'##class(i2.base.tpl).isPage("uploader") ""
+  
+  s prefix=$p(params,"-",1)  
+  s delim=$p(params,"-",2)   ; oddelovac  
+  s:delim="" delim=" "
+  s checkEdit=+$p(params,"-",3)  ; pro service kontrolovat pravo edit
+  
+  s runtime("t001")=$$$HandleT001(handle)  
+  s runtime("class")=$$$HandleClass(handle)
+  s runtime("status")="link"
+  s idx=##class(i2.dblink).recordIdX(.handle)  
+  s (link,urlpar1,urlpar2)=""
+  s urlpar="idx="_idx
+  s iset=$$$GETREQVAR("iset")
+  s:iset'="" urlpar=urlpar_"&amp;iset="_iset
+  
+  ; 08.01.15 ln; odkaz na spravu se defaulte zobrazi s okazem k uploadu
+  if ('checkEdit && ##class(content.api).engineToUpload(,.runtime)) ||
+     (checkEdit && ##class(content.api).engineToEdit(.array,.runtime))
+  { 
+    s pageId=##class(content.service).getPageID()
+    s:##class(i2.base.tpl).isPage(pageId) urlpar1=urlpar
+  } 
+  if ##class(content.api).engineToUpload(,.runtime) {    
+    s urlpar2=urlpar
+  }
+  q:urlpar1_urlpar2="" ""
+  
+  ; 09.08.16 ln; podpora arlsso
+  if '$$$IsSessionI2 {
+    s secUser=##class(i2.ws.auth).getSessionUserName()
+    if (secUser'="") && (##class(util.sec.security).securityGet(secUser,$$$secIsUser)'="") {
+      s tmp="&_arlsso="_secUser_"&_arlssopw="_##class(i2.html.base).encode(%ipac2("arlsso"))
+      s:urlpar1'="" urlpar1=urlpar1_tmp
+      s:urlpar2'="" urlpar2=urlpar2_tmp
+    }
+  }
+  
+  if urlpar1'="" {
+    s pageId=##class(content.service).getPageID()
+    s link1=##class(i2.html.tpl).getLink(pageId,urlpar1,,"nav-link","icon-list")
+    s link="<span class=""contser nav-item"">"_link1_"</span>"
+  }  
+  if urlpar2'="" {
+    s:link'="" link=link_delim
+    s pageId=##class(content.uploader).getPageID()    
+    s link2=##class(i2.html.tpl).getLink(pageId,urlpar2,,"nav-link","icon-upload")
+    s link=link_"<span class=""uploader nav-item"">"_link2_"</span>"
+  }
+
+  s prefix=##class(rep.zf.util).prefix(.handle,prefix)
+  s:prefix="" prefix=##class(rep.zf.tf).prefix(.handle,"0990")   
+   if (runtime("t001")="new")   ; když neni zaznam jeste ulozen/vytvoren tak nezobrazovat spravu souboru a nahrani prilohy
+  {
+      s prefix=##class(rep.zf.util).prefix(.handle,prefix)
+      s:prefix="" prefix=##class(rep.zf.tf).prefix(.handle,"0990")
+      s link=##class(rep.zf.util).prefix(.handle,"1272")
+      q prefix_" : "_link
+  }    
+  q prefix_" : "_link
+]]></Implementation>
+</Method>
+</Class>
+</Export>

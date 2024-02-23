@@ -1,0 +1,38 @@
+/// HLAVIČKA
+/// <du>2</du>
+#header {
+	position: relative;
+	padding: 0 0 0.9rem 0;
+	background: $primary;
+	color: white;
+
+	a {
+		color: white;
+		text-decoration: underline;
+	}
+
+	.subtitle {
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin-top: 1.87rem;
+	}
+}
+
+#aboutdb {
+	font-weight: bold;
+}
+
+///	INFO KOLIK JE V KOSIKU
+#basket-info {
+	br {
+		display: none;
+	}
+
+	.icon-basket {
+		padding-right: 0.3rem;
+	}
+}
+
+#nav {
+	margin-bottom: 1rem;
+}

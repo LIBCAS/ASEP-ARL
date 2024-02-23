@@ -1,0 +1,2891 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1.4 (Build 505_1U)" ts="2021-11-12 09:43:54">
+<Class name="User.CavVf">
+<Description><![CDATA[
+
+
+Prosim neprehravat tridu
+
+12.06.20 tt; VysNDupChecVypis: provedeno osetreni rozpracovanych zaznamu, aby nesly do duplicit    
+05.05.20 tt; pridano osetreni na data u duplicit, dle emailu od pani Dolezelove
+23.04.20 tt; doplneny parametry a preusporadan vystup
+15.04.20 tt; zalozena nova metoda na zaklade puvodnich VysNDupChec
+31.08.10 tt; VysDupChecN: pridano cislo edice
+26.08.10 tt; VysDupChec: metoda zalozena pro vystup kontrol duplicit
+13.08.10 pb; metoda dupCheck na kontrolu duplicitnych zaznamov CavUnEpca podla zadania p.Dolezelovej
+30.01.07 rs; konverzia presmerovana do CavUnEpca2 - za ucelom testovania
+             a porovnavania zaznamov pred/po konverzii
+26.01.07 rs; zborniky2 - porovnanie 463/200a z konverzie a aktualne
+01.02.06 mk; upravy pre konverzie UIVT,UOCHB,UTIA<br>
+30.11.05 mk; upravy konverzie ustavov 2500 zaznamov<br> 
+22.11.05 mk; uprava konverzie z VF<br> 
+01.11.05 mk; uprava roku ak je do 2000 pridar 19 pred rok a na dve miesta<br>
+11.08.05 mk; pridana metoda na prevod do UnEpca<br>
+14.04.05 rs; doladovacky<br>      
+08.04 05 rs; presun genMaxRec do CavUnEpca
+15.03.05 rs; jednoduchy symbolik na statisticku analyzu vstupnych dat<br>
+11.02.04 rs; dalsie upravy indexovania<br>
+11.02.04 rs; upravy indexovania<br>
+25.03.03 lp; prevzane z PAR
+29.01.03 lp; indexovani - zacatek a konec nahrazen novymi bloky kodu <br>]]></Description>
+<ClassType>persistent</ClassType>
+<ProcedureBlock>0</ProcedureBlock>
+<Super>User.DataTable</Super>
+<TimeChanged>66060,35013.691257</TimeChanged>
+<TimeCreated>59575,83515.552302</TimeCreated>
+
+<Method name="classNameX">
+<Description>
+return current class unlike %ClassName this is a class method</Description>
+<Final>0</Final>
+<ClassMethod>1</ClassMethod>
+<CodeMode>code</CodeMode>
+<FormalSpec/>
+<Private>0</Private>
+<ReturnType>%Library.String</ReturnType>
+<SqlProc>0</SqlProc>
+<Implementation><![CDATA[ quit "CavVf"
+]]></Implementation>
+</Method>
+
+<Method name="ixIndexValues">
+<Description><![CDATA[
+11.02.04 rs; upravy indexovania<br>
+29.01.03 lp; zacatek a konec nahrazen novymi bloky kodu <br>
+04.12.01 rs; added indexing of 099x]]></Description>
+<Final>0</Final>
+<ClassMethod>1</ClassMethod>
+<CodeMode>code</CodeMode>
+<FormalSpec><![CDATA[&handle:%Library.Binary]]></FormalSpec>
+<Private>0</Private>
+<SqlProc>0</SqlProc>
+<Implementation><![CDATA[
+ $$$ixBegin
+ ; kompat s SPIndex
+ n psClass,lnId s psClass=lsClass,lnId=##class(MARC).recordIdX(.handle)
+
+ n i,lsLine,lsTag,lsI1,lsI2,brk s brk=0
+
+ for i=1:1:9999 set lsLine=##class(MARC).getLineX(.handle,i)  q:brk>1  do
+ . if lsLine="" s brk=brk+1 q
+ . set lsTag=$e(lsLine,1,3),lsI1=$e(lsLine,5,5),lsI2=$e(lsLine,6,6)
+ . d addIDX("tag",lsTag,"b")
+ . if lsTag="005"     d commonBLOCK("005")  q
+ . ;----koniec uvodnej casti--------------
+ .
+ . if lsTag="200" d
+ . . s lsLine=$tr(lsLine,"^",$c(31)) d commonBLOCK("glo")
+ . . 
+ . if lsTag="601" d ixTagList("x","ano","b") ; ASEP no
+
+
+ $$$ixEnd
+ ;do ..msg(psClass_"("_lnId_") - ix update a="_c_",d="_cd_",skip="_cs)
+ quit
+
+
+ ;---zaciatok koncovej casti---------------------------------------------------
+ ; AKTUALNA VERZIA SPOLOCNEHO KODU je v ##class(SPIndex).ixIndexValuesCommonEnd
+ ; verzia rs 24.01.03/b
+ ;
+ixTagList(psSTlist,psIX,psBX)            d ##class(SPIndex).idxTagList(pnGIdx,psClass,lnId,psSTlist,psIX,psBX,lsLine,"") q
+ixTagListx(psSTlist,psIX,psBX,psLine)        d ##class(SPIndex).idxTagList(pnGIdx,psClass,lnId,psSTlist,psIX,psBX,psLine,"") q
+ixTagListKEY(psSTlist,psIX,psBX,psLine,psSTABLE) d ##class(SPIndex).idxTagList(pnGIdx,psClass,lnId,psSTlist,psIX,psBX,psLine,psSTABLE) q
+ixTagListConCat(psSTlist,psIX,psBX)          d ##class(SPIndex).idxTagListConCat(pnGIdx,psClass,lnId,psSTlist,psIX,psBX," ",lsLine) q
+ixTagListConCatX(psSTlist,psIX,psBX,psDel,psLine) d ##class(SPIndex).idxTagListConCat(pnGIdx,psClass,lnId,psSTlist,psIX,psBX,psDel,psLine) q
+getST(st)           q ##class(MARC).getSubTagStr(.lsLine,st)
+getSTx(psLine,st)       q ##class(MARC).getSubTagStr(.psLine,st)     
+getST4xx(psLine)        q ##class(MARC).getSubTagStr4xx(.psLine)     
+addIDX(ix,term,bx)  d ##class(SPIndex).ixAddTermX(.handle,psClass,lnId,ix,term,bx,"") q
+addauth(idx)        d ##class(SPIndex).ixAddAuth(lsLine,pnGIdx,psClass,lnId,idx) q
+commonBLOCK(blockn)     d ##class(SPIndex).idxCommonBlock(blockn,pnGIdx,psClass,.handle,lsLine) q
+ ; ---koniec koncovej casti-----------------------------------------
+]]></Implementation>
+</Method>
+
+<Method name="symGenTagForm">
+<Description><![CDATA[
+
+generovanie tmp tabulky na analyzu, ktory tag je pozuity v ktorom formulari<br>
+Spustenie:
+  k ^x2
+  s sy="##class(CavVf).symGenTagForm(.handle)"
+  d ^X("s CavVf")
+  d ^X("g")   // pozn. globalka je fiktivna ziaden zaznam sa nezmeni
+              // ide len o spustenie symboliku pre kazdy zaznam selectu
+              // vysledok je potom v globale ^x2
+Pozor je koncipovane ako jednorazova zalezitost. Pouziva sa pomocny
+global ^x2, ktory treba pred pouzitim zmazat.
+              
+15.03.05 rs;]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s fo=##class(MARC).getTagX(.handle,"002.")
+ if fo="" s fo="?"
+ s brk=0
+ 
+ f i=1:1:9999 set lsLine=##class(MARC).getLineX(.handle,i)  q:brk>1  d
+ . if lsLine="" s brk=brk+1 q
+ . s lsTag=$e(lsLine,1,3),lsI1=$e(lsLine,5,5),lsI2=$e(lsLine,6,6)
+ . 
+ . d regST(" ")
+ . 
+ . ;s ^x2(" "_lsTag_" ",fo)=""
+ . ;s ^x2(" "_lsTag_" ")=$g(^x2(" "_lsTag_" "))+1
+ . 
+ . s c=$l(lsLine,$c(31))
+ . 
+ . if c=1 q ;d regST(".") q
+ . 
+ . f j=2:1:c d
+ . . s st=$e($p(lsLine,$c(31),j)) if st="." s st="?"
+ . . d regST(st)
+ q
+ 
+regST(st)
+ s sKey=" "_lsTag_st
+ s ^x2(sKey,fo)=""
+ 
+ if $d(bSTlist(sKey))
+ {
+     // toto tag+podpole uz v tomto zazname bolo
+     // 
+     if $d(bSTlistM(sKey)) q
+     // ale este nebolo zapocitane do poctu zaznamov, kde je multi
+     s bSTlistM(sKey)=""
+     s ^x2(sKey,"_recm")=$g(^x2(sKey,"_recm"))+1
+     q
+ }
+ s bSTlist(sKey)=""
+ ; pocet zaznamov s tymto subtagom
+ s ^x2(sKey,"_rec")=$g(^x2(sKey,"_rec"))+1
+ q
+]]></Implementation>
+</Method>
+
+<Method name="printTagFormTable">
+<Description>
+
+vypis temp tabulky generovanej v symGenTagForm()
+vysledok cez COPY/PASTE prenesieme do suboru s nazovom napr. TAG.CSV
+a tento nasledne nacitame do Excelu
+
+
+15.03.05 rs;</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  /*s tag=""
+  f    
+  {
+      s tag=$o(^x(tag)) q:tag=""
+      s fo="",n=1
+      w !,"""'"_tag_""","""
+      f   
+      { 
+        s fo=$o(^x(tag,fo)) q:fo="" 
+        if n>1 w " "
+        w fo
+        
+        s n=n+1
+      }
+      w """"
+  }
+  w !,!,!*/
+  
+  w !,"TagST,Forms,Records,RecordsMV"
+  s tag=""
+  f    
+  {
+      s tag=$o(^x2(tag)) q:tag=""
+      s fo="",n=1
+      w !,"""'"_tag_""","""
+      ;s nReps=0
+      ;if $e(tag,5)=" " s nReps=$g(^x2(tag))
+      f   
+      { 
+        s fo=$o(^x2(tag,fo)) q:fo=""
+        if $e(fo)="_" continue // interne info
+        if n>1 w " "
+        w fo
+        
+        s n=n+1
+      }
+      ;if 'nReps s nReps=""
+      s nRecST=$g(^x2(tag,"_rec"))
+      s nRecSTM=$g(^x2(tag,"_recm"))
+      
+      w ""","_nRecST_","_nRecSTM
+      
+  }
+]]></Implementation>
+</Method>
+
+<Method name="genCatFromVfCAV">
+<Description><![CDATA[
+30.01.07 rs; konverzia presmerovana do CavUnEpca2 - za ucelom testovania
+             a porovnavania zaznamov pred/po konverzii
+01.02.06 mk; upravy pre konverzie UIVT,UOCHB,UTIA<br>
+17.02.05 mk; pridana metoda na generovanie CavUnCat clanky z CavVf<br>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ ;parametre
+ ;.handle aktualneho zaznamu katalogu
+ ;s sy="##class(CavVf).genCatFromVfCAV(.handle)"
+ 
+ n class,t001,handlec,lsST,subtag
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ d ##class(MARC).strswapX(.handle,"\"_$c(34),$c(34)) ; vymena retazca \" za "
+ d ##class(MARC).strswapX(.handle,"\'","'") ; vymena retazca \' za '
+ ;w !,"write "_t001
+ ; otvorenie noveho handle v katalogu CavUnEpca
+ ; a vypnutire kontroly allowsave
+ d ##class(MARC).newX(.handlec,"CavUnEpca2",t001)   ; rovnaky kod zaznamu ako v CavVf
+ d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handlec,1)
+ ; tag 000
+ d ##class(MARC).setTagX(.handlec,"000    00000nam  22        450")
+ ; tag 005
+ n t005 s t005=##class(MARC).genT005()
+ d ##class(MARC).setTagX(.handlec,"005    "_t005)
+ 
+ n i,tag,subtag,lstag,tC99,t700,t701,t200,t101,t102,t225,t205,t210,t215,t010,t011,tC12,t970,t964
+ n t610,t541,tC13,t912,tC24,tC15,t999,t301,spracovatel,t915,t710,t702,t300,tC20,t463
+ n sub1,sub2,sub3,sub4,sub5,sub6,tC26,pracovisko,t856,tC30,tC11,t470,sub7,t002,grant,tC20x
+ n suff,tC33,t972,t971,textc33
+ s tag="",tC99="",t700="",t701="",t200="",t101="",t102="",t225="",t205="",t210=""
+ s t215="",t010="",t011="",tC12="",t970="",t964="",t610="",t541="",tC13="",t915=""
+ s t710="",t702="",t300="",tC20="",t463="",sub1="",sub2="",sub3="",sub4="",sub5="",sub6=""
+ s t912="",tC24="",tC15="",t999="",t301="",i=0,lstag="",subtag="",spracovatel="arl"
+ s tC26="",pracovisko="",t856="",tC30="",tC11="",t470="",sub7="",t002="",grant="",tC20x=""
+ s suff="",tC33="",t972="",t971="",text33=""
+ n rok,mesiac,den,sub8,sub9,sub10
+ s rok="",mesiac="",den="",sub8="",sub9="",sub10=""
+ ; nacitavat postupne tagy VF a priradovat do noveho handlu
+  
+ s grant=",GA AV ČR,GA BIS,GA ČBÚ,GA ČSÚ,GA ČUZ,GA ČR,GA MDS,GA MF,GA MK"
+ s grant=grant_",GA MMR,GA MO,GA MPO,GA MPS,GA MS,GA MŠk,GA MV,GA MZd,GA MZe,GA MŽP"
+ s grant=grant_",GA MZV,GA NBÚ,GA SÚJB,GA ÚV,"
+ s grant=$zcvt(grant,"l") ; prevedene na male pismena
+ n gratn2,sub11,sub12,sub13,sub14,sub14
+ s grant2="",sub11="",sub12="",sub13="",sub14="",sub15=""
+   
+ ; tag C99
+ s tag=##class(MARC).getTagX(.handle,"601") 
+ s pracovisko=tag
+ s tag=##class(Util).strswap(tag,"601    "_$c(31)_"x","")
+ ;if tag'="" s tC99=tC99_$c(31)_"c"_$e(tag,8,9999)   ;zkratka prac. a cislo zaznamu
+ if tag'="" s tC99=tC99_$c(31)_"a"_tag   ;zkratka prac. a cislo zaznamu
+
+ 
+ ; z 002 defaultny formular 
+ s t002=##class(MARC).getTagX(.handle,"002") 
+ s t002=##class(Util).strswap(t002,"002    ","") 
+ s t002=$e(t002,1,1)
+ ; ak je tag 015 tak ak je druh = a pridavat 1 ak nie tak 2
+  
+ s tag=##class(MARC).getTagX(.handle,"011") ; zistit ci je akcia C20
+ if t002="X"   ; druh dokumentu X
+ { 
+   if tag'=""  ; ak je korporacia
+   {
+     s t002="C"
+   }
+   else
+   {
+     s t002="M"  
+   }           
+ }
+ if t002="O" s t002="P"  
+ if t002="F" s t002="D",text33="diplomová práce"
+ if t002="S" s t002="B",text33="skripta" 
+  
+  
+ if t002 = "A" d ; ak je druh dokumentu A
+ . s sub1=##class(MARC).getTagX(.handle,"015") 
+ . if sub1'="" s t002=t002_"1"
+ . if sub1="" s t002=t002_"2"
+ . s sub1=""
+ if t002'="" d
+ . if tC99'="" s tC99=tC99_$c(31)_"dDFLT_CZ_EPCA_"_t002
+ . if tC99="" s tC99=$c(31)_"dDFLT_CZ_EPCA_"_t002
+ 
+ s tC99=##class(Util).strswap(tC99,$c(31)_"x","") 
+ 
+
+ ;;;;;;
+ ; tag 700,701
+ s tag=##class(MARC).getTagX(.handle,"X06",-1)
+ n dop
+ s dop=##class(MARC).getTagX(.handle,"601x")
+ s dop=$p(dop," ",1) 
+
+ if tag'="" d 
+ . ;w !,"autoriok= "
+ . s sub6 = $l(tag,$c(10))+1
+ . ;w !,"pocet= ",sub6
+ . for i=1:1:sub6 d 
+ . . s subtag=$p(tag,$c(10),i)  ; jedno opakovanie
+ . . ;w !,"riadok= ",subtag
+ . . s sub1=##class(MARC).getSubTagStr(subtag,"k")  ; jmeno
+ . . s sub2=##class(MARC).getSubTagStr(subtag,"p")  ; prijmeni
+ . . s sub3=##class(MARC).getSubTagStr(subtag,"u")  ; kod pracoviska a zeme
+ . . if sub3="" d
+ . . . if $l(sub1)>2 s sub3=dop ; ak je meno autora dlhsie ako 2 znaky neexistuje pracovisko tak sa doplni
+ . . s sub4=##class(MARC).getSubTagStr(subtag,"o")  ; autorska zodpovednost
+ . . s sub5=##class(MARC).getSubTagStr(subtag,"y")  ; autorsky podil
+ . . ;w !,"sub2= ",sub2
+ . . ;
+ . . s subtag=""
+ . . if sub2'="" s subtag=subtag_$c(31)_"a"_sub2  ; prijmeni 
+ . . if sub1'="" s subtag=subtag_$c(31)_"b"_sub1  ; jmeno
+ . . if sub3'="" d
+ . . . if $l(sub3)=2 s subtag=subtag_$c(31)_"y"_sub3  ; zeme
+ . . . if $l(sub3)'=2 s subtag=subtag_$c(31)_"p"_sub3 ; pracovisko
+ . . if sub4'="" d
+ . . . if sub4="E" s subtag=subtag_$c(31)_"4340"
+ . . . if sub4'="E" s subtag=subtag_$c(31)_"x"_sub4
+ . . ;w !,"cely= ",subtag
+ . . if sub5'="" s subtag=subtag_$c(31)_"9"_sub5  ; autorsky podil
+ . . if subtag'="" d
+ . . . if sub4'="E" d
+ . . . . if t701'="" s t701=t701_$c(10)_"701  1 "_subtag_$c(31)_"4070"
+ . . . . if t701="" s t701="701  1 "_subtag_$c(31)_"4070"
+ . . . if sub4="E" d
+ . . . . if t701'="" s t701=t701_$c(10)_"701  1 "_subtag
+ . . . . if t701="" s t701="701  1 "_subtag
+ ;w !,"t701= ",t701
+ if $e(t701,1,3)="701" s t701="700"_$e(t701,4,9999)
+
+ ; tag 200  
+ s tag=##class(MARC).getTagX(.handle,"X01",-1)  ; nazev prace
+ s t200=##class(Util).strswap(tag,$c(31)_"x",$c(31)_"a")
+ s t200=##class(Util).strswap(t200,"X01    ","200 1  ")
+ s t200=##class(Util).strswap(t200,$c(10)_"200 1  ",$c(31)_"a")
+ ; vymaz bodky na konci
+ if ($e(t200,$l(t200),$l(t200))=".") && ($e(t200,$l(t200)-1,$l(t200))'="..") s t200=$e(t200,1,$l(t200)-1)
+ ;
+ s tag=##class(MARC).getTagX(.handle,"031")  ; popis casti dokumentu
+ if t200'="" d
+ . s subtag=##class(MARC).getSubTagStr(tag,"o")
+ . if subtag'="" s t200=t200_$c(31)_"h"_subtag ; oznaceni a cislo
+ . s subtag=##class(MARC).getSubTagStr(tag,"n")
+ . if subtag'="" s t200=t200_$c(31)_"i"_subtag ; nazev casti
+ if t200="" d
+ . s t200=##class(Util).strswap(tag,"031    ","200 1  ")
+ . s t200=##class(Util).strswap(t200,$c(31)_"o",$c(31)_"h")  ; oznaceni a cislo
+ . s t200=##class(Util).strswap(t200,$c(31)_"n",$c(31)_"i")  ; nazev casti
+ ; VF 086 a 087
+ if t200'="" d
+ . s tag=##class(MARC).getTagX(.handle,"087")   
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","") 
+ . s tag=##class(Util).strswap(tag,"087    ","") 
+ . if tag'="" s t200=t200_$c(31)_"h"_tag ; oznaceni dilu
+ . s tag=##class(MARC).getTagX(.handle,"086")
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s tag=##class(Util).strswap(tag,"086    ","") 
+ . if tag'="" s t200=t200_$c(31)_"i"_tag ; nazev dilu
+  
+ ; tag 101
+ s tag=##class(MARC).getTagX(.handle,"063",-1) 
+ s t101=##class(Util).strswap(tag,"063    ","101 0  ")
+ s t101=##class(Util).strswap(t101,$c(31)_"j",$c(31)_"a")  ; jazyk prace
+ s t101=##class(Util).strswap(t101,$c(31)_"o",$c(31)_"c")  ; jazyk originalu
+ s t101=##class(Util).strswap(t101,$c(31)_"r",$c(31)_"d")  ; jazyk resume
+ ; tag 102
+ s tag=##class(MARC).getTagX(.handle,"066",-1) 
+ s t102=##class(Util).strswap(tag,$c(31)_"x","")
+ s t102=##class(Util).strswap(t102,"066    ","102    "_$c(31)_"a") ; zeme vydani
+ ; tag 225 
+ s tag=##class(MARC).getTagX(.handle,"045",-1)     
+ s t225=##class(Util).strswap(tag,"045    ","225 1  ")
+ s t225=##class(Util).strswap(t225,$c(31)_"n",$c(31)_"a")  ; nazev edice
+ s t225=##class(Util).strswap(t225,$c(31)_"r",$c(31)_"i")  ; nazev rady edice
+ s t225=##class(Util).strswap(t225,$c(31)_"c",$c(31)_"v")  ; oznaceni a cislo svazku
+ ; VF 088, 089, 090
+ if t225'="" d
+ . s tag=##class(MARC).getTagX(.handle,"088")   
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","") 
+ . s tag=##class(Util).strswap(tag,"088    ","")
+ . if tag'="" s t225=t225_$c(31)_"a"_tag ; nazev edice
+ . s tag=##class(MARC).getTagX(.handle,"089")
+ . s tag=##class(Util).strswap(tag,"089    ","")
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . if tag'="" s t225=t225_$c(31)_"i"_tag ; rada edice
+ . s tag=##class(MARC).getTagX(.handle,"090")
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s tag=##class(Util).strswap(tag,"090    ","")
+ . if tag'="" s t225=t225_$c(31)_"v"_tag ; svazek edice
+  if t225="" d
+ . s tag=##class(MARC).getTagX(.handle,"088")   
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s tag=##class(Util).strswap(tag,"088    ","") 
+ . if tag'="" s t225=t225_$c(31)_"a"_tag ; nazev edice
+ . s tag=##class(MARC).getTagX(.handle,"089")
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s tag=##class(Util).strswap(tag,"089    ","")
+ . if tag'="" s t225=t225_$c(31)_"i"_tag ; rada edice
+ . s tag=##class(MARC).getTagX(.handle,"090")
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s tag=##class(Util).strswap(tag,"090    ","")
+ . if tag'="" s t225=t225_$c(31)_"v"_tag ; svazek edice
+ . if t225'="" s t225="225 1  "_t225
+  
+ ; tag 701  prekopat na 702 ako opakovatelne a subtag v do 205
+ s tag=##class(MARC).getTagX(.handle,"014",-1) 
+ if tag'="" d 
+ . s sub6 = $l(tag,$c(10))+1
+ . for i=1:1:sub6 d 
+ . . s subtag=$p(tag,$c(10),i)  ; jedno opakovanie
+ . . s sub1=##class(MARC).getSubTagStr(subtag,"k")  ; jmeno
+ . . s sub2=##class(MARC).getSubTagStr(subtag,"p")  ; prijmeni
+ . . s sub3=##class(MARC).getSubTagStr(subtag,"v")  ; ciselne oznaceni vydani
+ . . if sub3'="" d ; ak je vydanie
+ . . . if t205'="" s t205=t205_$c(10)_"205    "_$c(31)_"a"_sub3
+ . . . if t205="" s t205="205    "_$c(31)_"a"_sub3
+ . . s subtag=""
+ . . if sub2'="" s subtag=subtag_$c(31)_"a"_sub2  ; prijmeni 
+ . . if sub1'="" s subtag=subtag_$c(31)_"b"_sub1  ; jmeno
+ . . if subtag'="" d 
+ . . . if t702'="" s t702=t702_$c(10)_"702  1 "_subtag_$c(31)_"4340"
+ . . . if t702="" s t702="702  1 "_subtag_$c(31)_"4340"
+ 
+ ; tag 205
+ ; VF 091
+ s tag=##class(MARC).getTagX(.handle,"091") 
+ s tag=##class(Util).strswap(tag,"091    ","205    ")
+ s tag=##class(Util).strswap(tag,$c(31)_"x",$c(31)_"a")  ; oznaceni vydani
+ if tag'="" d
+ . if t205'="" s t205=t205_$c(10)_tag
+ . if t205="" s t205=tag
+ 
+ ; tag 210
+ s tag=##class(MARC).getTagX(.handle,"040") 
+ ; rozdelit na subtagy a doplnit
+ s sub1=##class(MARC).getSubTagStr(tag,"m")  ; misto vydani
+ s sub2=##class(MARC).getSubTagStr(tag,"n")  ; nazev nakladatele
+ s sub3=##class(MARC).getSubTagStr(tag,"d")  ; datum vydani
+ s sub1=##class(Util).strswap(sub1,"-","")
+ s sub2=##class(Util).strswap(sub2,"-","")
+ s subtag=""
+ if sub1'="" s subtag=$c(31)_"a"_sub1
+ if sub2'="" s subtag=subtag_$c(31)_"c"_sub2
+ if sub3'="" s subtag=subtag_$c(31)_"d"_sub3
+ if subtag'="" s t210="210    "_subtag
+ 
+ ;s t210=##class(Util).strswap(tag,"040    ","210    ")
+ ;s t210=##class(Util).strswap(t210,$c(31)_"m",$c(31)_"a")  ; misto vydani
+ ;s t210=##class(Util).strswap(t210,$c(31)_"n",$c(31)_"c")  ; nazev nakladatele
+ ;s t210=##class(Util).strswap(t210,$c(31)_"d",$c(31)_"d")  ; datum vydani
+  
+ ; tag 215
+ s tag=##class(MARC).getTagX(.handle,"044s")  ; pocet stran 
+ if tag'="" s t215="215    "_$c(31)_"a"_tag_" s." ; pocet stran
+  
+ s tag=##class(MARC).getTagX(.handle,"282x")
+ if tag'="" d
+ . if t215'="" s t215=t215_$c(31)_"c"_tag ; nosic puv prace
+ . if t215="" s t215="215    "_$c(31)_"c"_tag ; nosic puv prace
+ ; 
+ ; VF 146
+ s tag=##class(MARC).getTagX(.handle,"146")    ; nosic elektr. dokumentu
+ if tag'="" d
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s tag=##class(Util).strswap(tag,"146    ","")
+ . if t215'="" s t215=t215_$c(31)_"c"_tag
+ . if t215="" s t215="215    "_$c(31)_"c"_tag
+ ; VF 044
+ s tag=##class(MARC).getTagX(.handle,"044") 
+ ; zobrat len d ako doprovodny material
+ s sub1 = ##class(MARC).getSubTagStr(tag,"d")  
+ if sub1'="" d
+ . if t215'="" s t215=t215_$c(31)_"e"_sub1 ; doprovodny material
+ . if t215="" s t215="215    "_$c(31)_"e"_sub1 ; doprovodny material
+
+
+
+
+
+
+ 
+ ; tag 011
+ s tag=##class(MARC).getTagX(.handle,"046") 
+ s t011=##class(Util).strswap(tag,$c(31)_"x","")
+ s t011=##class(Util).strswap(t011,$c(31)_"i","")
+ s t011=##class(Util).strswap(t011,"046    ","011    "_$c(31)_"a") ;issn
+ ; tag 010
+ s tag=##class(MARC).getTagX(.handle,"047") 
+ ;w !,"t047 :"_tag
+ ;s t010=##class(Util).strswap(tag,$c(31)_"x","")
+ s sub1 = ##class(MARC).getSubTagStr(tag,"x") 
+ if sub1="" s sub1 = ##class(MARC).getSubTagStr(tag,"i")
+ if sub1'="" s t010="010    "_$c(31)_"a"_sub1  ; isbn
+ ;w !,"t010p :"_t010
+ 
+ ; tag 011
+ s tag=##class(MARC).getTagX(.handle,"048") 
+ if t011=""
+ {
+   s t011=##class(Util).strswap(tag,$c(31)_"x","")
+   s t011=##class(Util).strswap(t011,$c(31)_"i","")
+   s t011=##class(Util).strswap(t011,"048    ","011    "_$c(31)_"a") ;issn
+ }
+ 
+ 
+ ; tag C12
+ s tag=##class(MARC).getTagX(.handle,"615",-1) ; grant
+
+ s sub6=""
+ ;
+ if tag'="" d
+ . s sub7 = $l(tag,$c(10))+1
+ . for i=1:1:sub7 d 
+ . . s subtag=$p(tag,$c(10),i)  ; jedno opakovanie
+ . . s sub1=##class(MARC).getSubTagStr(subtag,"g")  ; cislo grantu
+ . . s sub2=##class(MARC).getSubTagStr(subtag,"a")  ; poskytovatel (CEP)
+ . . s sub3=##class(MARC).getSubTagStr(subtag,"z")  ; zeme projektu
+ . . s subtag=""
+ . . if sub1'="" s subtag=subtag_$c(31)_"a"_sub1
+ . . if sub2'="" d
+ . . . ;rozdelenie podla skratky agentury
+ . . . s grant2=","_$zcvt(sub2,"l")_","
+ . . . if $f(grant,grant2) d
+ . . . . s subtag=subtag_$c(31)_"b"_sub2  ; ak je cesky
+ . . . . s sub3="" ; vymazat krajinu ak isla agentura do b
+ . . . if '$f(grant,grant2) s subtag=subtag_$c(31)_"c"_sub2 ; ak nie je cesky
+ . . if sub3'="" s subtag=subtag_$c(31)_"e"_sub3
+ . . if subtag'="" d
+ . . . if tC12'="" s tC12=tC12_$c(10)_"C12    "_subtag
+ . . . if tC12="" s tC12="C12    "_subtag
+ 
+ ;;;;;;;;;002
+ s tag=##class(MARC).getTagX(.handle,"002")  ; docasne ako druh dokumentu vzdy J
+ if t970'="" s t970=t970_$e(t002,1,1) ; druh dokumentu
+ if t970="" s t970="970    "_$c(31)_"b"_$e(t002,1,1)
+ ;;;;;;;;;;;;;
+ s tag=##class(MARC).getTagX(.handle,"521",-1) 
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"521    ",$c(31)_"d")
+ s tag=##class(Util).strswap(tag,$c(10),"")
+ if tag'="" d
+ . if t970'="" s t970=t970_tag ;rubrikator COSATI
+ . if t970="" s t970=tag ;rubrikator COSATI
+ s t970=##class(Util).strswap(t970,$c(10),"")
+ s t970=##class(Util).strswap(t970,$c(31)_"x","")
+ ; tag 964
+ s tag=##class(MARC).getTagX(.handle,"054") 
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s t964=##class(Util).strswap(tag,"054    ","964    "_$c(31)_"a") ;predmetova hesla
+ ; tag 610
+ s tag=##class(MARC).getTagX(.handle,"055",-1) 
+ s t610=##class(Util).strswap(tag,$c(31)_"x","")
+ s t610=##class(Util).strswap(t610,"055    ","610 1  "_$c(31)_"a") ;klicova slova
+ ; tag 541
+ s tag=##class(MARC).getTagX(.handle,"290") 
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s t541=##class(Util).strswap(tag,"290    ","541    "_$c(31)_"a") ; preklad nazvu prace do angl.
+ ; vymaz bodky na konci
+ if ($e(t541,$l(t541),$l(t541))=".") && ($e(t541,$l(t541)-1,$l(t541))'="..") s t541=$e(t541,1,$l(t541)-1)
+ if t541'="" s t541=t541_$c(31)_"zeng"
+ 
+ 
+ ; tag 301
+ if t541="" d 
+ . s tag=##class(MARC).getTagX(.handle,"301") 
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s t541=##class(Util).strswap(tag,"301    ","541    "_$c(31)_"a") ; preklad nazvu prace do cestiny
+ . ; vymaz bodky na konci
+ . if ($e(t541,$l(t541),$l(t541))=".") && ($e(t541,$l(t541)-1,$l(t541))'="..") s t541=$e(t541,1,$l(t541)-1)
+ . if t541'="" s t541=t541_$c(31)_"zcze"
+
+ 
+ 
+ 
+ ;s t541=""
+ ; vymaz bodky na konci
+ ;if ($e(tag,$l(tag),$l(tag))=".") && ($e(tag,$l(tag)-1,$l(tag))'="..") s tag=$e(tag,1,$l(tag)-1)
+ ;if tag'="" d
+ ;. if t541'="" s t541=t541_$c(10)_tag_$c(31)_"zeng"
+ ;. if t541="" s t541=tag_$c(31)_"zeng" 
+ 
+ ; tag C13
+ s tag=##class(MARC).getTagX(.handle,"216",-1) 
+ s tC13=##class(Util).strswap(tag,$c(31)_"x","")
+ s tC13=##class(Util).strswap(tC13,"216    ","C13    "_$c(31)_"a") ; vyzkumny zamer
+ ; VF 618
+ s tag=##class(MARC).getTagX(.handle,"618",-1)  
+ s tag=##class(Util).strswap(tag,$c(31)_"x","") 
+ s tag=##class(Util).strswap(tag,"618    ","C13    "_$c(31)_"a") ; vyzkumny zamer 
+ if tag'="" d
+ . if tC13'="" s tC13=tC13_$c(10)_tag
+ . if tC13="" s tC13=tag
+ 
+ ; tag 999
+ s tag=##class(MARC).getTagX(.handle,"296") 
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ if tag'="" s spracovatel = $e(tag,8,9999)                      ; sifra zpracovatele
+ ;s spracovatel=##class(MARC).getSubTagStr(tag,"a")
+ ; tag 912
+ ;s tag=##class(MARC).getTagX(.handle,"125") 
+ ;s t912=##class(Util).strswap(tag,"125    ","912    "_$c(31)_"p") ; geogr. zastoupeni na VT
+ ; tag C24  ;mk 19.03.05 zruseny tag C24
+ ;s tag=##class(MARC).getTagX(.handle,"615",-1) 
+ ;s tC24=##class(Util).strswap(tag,"615    ","C24    ")
+ ;s tC24=##class(Util).strswap(tC24,$c(31)_"a",$c(31)_"3")  ; kod poskytovatele
+ ;s tC24=##class(Util).strswap(tC24,$c(31)_"c",$c(31)_"a")  ; nazev poskytovatele
+ ;s tC24=##class(Util).strswap(tC24,$c(31)_"g",$c(31)_"4")  ; funkce poskytovatele
+ ; vymaz subtagu z dane ale kam ho dat ?
+ ;s tC24=##class(MARC).setSubTagStr(tC24,$c(31)_"z"_"","C24   ")
+ ; tag C15
+ s tag=##class(MARC).getTagX(.handle,"294",-1) 
+ s tC15=##class(Util).strswap(tag,"294    ","C15    "_$c(31)_"a") ; anotace (jazyk prace)
+ s tag=##class(MARC).getTagX(.handle,"295") 
+ if tC15'="" s tC15=tC15_##class(Util).strswap(tag,"295    ",$c(31)_"b") ; anotace v anglictine
+ if tC15="" s tC15=##class(Util).strswap(tag,"295    ","C15    "_$c(31)_"b") ;
+ s tC15=##class(Util).strswap(tC15,$c(31)_"x","")
+ ; VF 300
+ s tag=##class(MARC).getTagX(.handle,"300") 
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ if tC15'="" s tC15=tC15_##class(Util).strswap(tag,"300    ",$c(31)_"c") ; preklad anotace do cestiny
+ if tC15="" s tC15=##class(Util).strswap(tag,"300    ","C15    "_$c(31)_"c") ;
+ 
+ 
+ ; tag 300
+ ;s tag=##class(MARC).getTagX(.handle,"902") 
+ ;if tag'="" d
+ ;. s t300=##class(Util).strswap(tag,$c(31)_"x","")
+ ;. s t300=##class(Util).strswap(t300,"902    ","300    "_$c(31)_"a") ; poznamka
+
+ ; tag 300 VF 297
+ s tag=##class(MARC).getTagX(.handle,"297") 
+ if tag'="" d
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s tag=##class(Util).strswap(tag,"297    ","300    "_$c(31)_"a") ; poznamka
+ . if tag'="" d
+ . . if t300'="" s t300=t300_$c(10)_tag
+ . . if t300="" s t300=tag 
+ ; VF 650 prehodit do 300
+ s tag=##class(MARC).getTagX(.handle,"650") 
+ if tag'="" d
+ . s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ . s tag=##class(Util).strswap(tag,"650    ","300    "_$c(31)_"a") ; cislo grantu
+ . if tag'="" d
+ . . if t300'="" d
+ . . . s tag=##class(Util).strswap(tag,"300    "_$c(31)_"a","") 
+ . . . s t300=t300_" "_tag
+ . . if t300="" s t300=tag
+
+  
+ ; tag 463
+ s tag=##class(MARC).getTagX(.handle,"015")
+ ; vyskladat tag 463
+ s subtag=##class(MARC).getSubTagStr(tag,"i")    
+ if subtag'="" s t463=t463_$c(31)_"1011  "_$c(31)_"a"_subtag ; issn
+ ;sub1-sub5
+ s subtag = ""
+ s sub1=##class(MARC).getSubTagStr(tag,"f") ;nazev souborneho zaznamu (a)
+ ; vymaz bodky na konci
+ if ($e(sub1,$l(sub1),$l(sub1))=".") && ($e(sub1,$l(sub1)-1,$l(sub1))'="..") s sub1=$e(sub1,1,$l(sub1)-1)
+ s sub2=##class(MARC).getSubTagStr(tag,"n") ;rada periodika (i)
+ s sub3=##class(MARC).getSubTagStr(tag,"c") ;cislo (v)
+ if sub3="-" s sub3=""
+ s sub4=##class(MARC).getSubTagStr(tag,"r") ;rok vydani (v)
+ s sub5=##class(MARC).getSubTagStr(tag,"s") ;svazek (v)
+ if sub5="-" s sub5="" 
+ s sub8=##class(MARC).getSubTagStr(tag,"d") ; datum
+ if (sub3="") && (sub4="") && (sub5="") && (sub8="") s sub15="1"
+ 
+ s sub11=##class(MARC).getSubTagStr(tag,"e") ; rozsah stran 
+ s sub12=##class(MARC).getTagX(.handle,"044e")  ; rozsah stran
+ s sub9=##class(MARC).getTagX(.handle,"614x")  ; souborny nazev dila
+ s sub1=$zstrip(sub1,"<>W") 
+ s sub2=$zstrip(sub2,"<>W") 
+ s sub3=$zstrip(sub3,"<>W") 
+ s sub4=$zstrip(sub4,"<>W") 
+ s sub5=$zstrip(sub5,"<>W") 
+ s sub8=$zstrip(sub8,"<>W") 
+ s sub9=$zstrip(sub9,"<>W") 
+ s sub11=$zstrip(sub11,"<>W") 
+ s sub12=$zstrip(sub12,"<>W") 
+ ; vymaz bodky na konci
+ if ($e(sub9,$l(sub9),$l(sub9))=".") && ($e(sub9,$l(sub9)-1,$l(sub9))'="..") s sub9=$e(sub9,1,$l(sub9)-1)
+ ;s sub13=##class(MARC).getTagX(.handle,"044s")  ; pocet stran
+ ; ak existuje aspon jeden subtag prida hlavicku 200
+ if (sub12'="") || (sub11'="") || (sub8'="") || (sub9'="") || (sub1'="") || (sub2'="") || (sub3'="") || (sub4'="") || (sub5'="") s subtag=subtag_$c(31)_"12001 "
+ if sub1'="" s subtag=subtag_$c(31)_"a"_sub1   
+ if sub9'="" s subtag=subtag_$c(31)_"a"_sub9 
+ if sub2'="" s subtag=subtag_$c(31)_"i"_sub2
+ if sub8'="" d
+ . s rok=$p(sub8,".",1)
+ . s mesiac=$p(sub8,".",2)
+ . s den=$p(den,".",3)
+ . if $e(rok,1,1)'=0 s rok="19"_rok
+ . if $e(rok,1,1)=0 s rok="20"_rok
+ . s sub8="("_den_"."_mesiac_"."_rok_")"
+ if sub4'="" s sub4="("_sub4_")"  ; rok
+ if sub8'="" s sub4=sub8
+ s sub9=""
+ ; osetrit cislo
+ if sub3'="" d
+ . s sub10=##class(Util).isInteger(sub3)
+ . if sub10 s sub3="č. "_sub3
+ . s sub9=sub3  ; cislo
+ if sub15="" d
+ . if sub3="" s sub9="-"  ; cislo ak nie je tak sa doplni len -
+ 
+ if sub4'="" s sub9=sub9_" "_sub4  ; rok
+ 
+ if sub5'="" d
+ . s sub10=##class(Util).isInteger(sub5)
+ . if sub10 s sub5="Roč. "_sub5
+ . ; ak je rocnik sub5 prazdne nedavat ,
+ . s sub9=sub5_", "_sub9
+ 
+ if sub11="" s sub11=sub12
+ ; osetrit ak su len strany , nedavat
+ if sub11'="" d
+ . if sub9'="" s sub9=sub9_", s. "_sub11
+ . if sub9="" s sub9="s. "_sub11
+ ;
+ ;
+ if sub9'="" s subtag=subtag_$c(31)_"v"_$zstrip(sub9,"<>W") 
+ ;if sub13'="" s subtag=subtag_$c(31)_"9"_sub13
+ if subtag'="" s t463=t463_subtag ; nazvove udaje ukoncenie 
+ ;
+ ; VF 287
+ s sub14=##class(MARC).getTagX(.handle,"287x")  ; preklad souborneho nazvu do anglictiny
+ ; vymaz bodky na konci
+ if ($e(sub14,$l(sub14),$l(sub14))=".") && ($e(sub14,$l(sub14)-1,$l(sub14))'="..") s sub14=$e(sub14,1,$l(sub14)-1)
+ if sub14'="" d
+ . if t463'="" s t463=t463_$c(31)_"1541  "_$c(31)_"a"_sub14_$c(31)_"zeng"
+ ; 
+ if t463'="" s t463="463  1 "_t463 ; zapis celeho tagu
+
+ ; tag C20
+ ; treba z tohto vygenerovat autoritu akcie
+ s tag=##class(MARC).getTagX(.handle,"011") 
+ s tC20=##class(Util).strswap(tag,"011    ","C20 12 ")
+ s tC20=##class(Util).strswap(tC20,$c(31)_"f",$c(31)_"a")  ; nazev akce
+ 
+ ;;;;;;
+ ; VF 288 prehodit do c20b ; zmena na c20r
+ s tag=##class(MARC).getTagX(.handle,"288")  
+ s tag=##class(Util).strswap(tag,$c(31)_"x","") 
+ if ($e(tag,$l(tag),$l(tag))=".") && ($e(tag,$l(tag)-1,$l(tag))'="..") s tag=$e(tag,1,$l(tag)-1)
+ if tag'="" d
+ . if tC20'="" s tC20=tC20_$c(31)_"r"_tag
+ . if tC20="" s tC20="C20 12 "_$c(31)_"r"_tag
+ ;s tag=##class(Util).strswap(tag,"288    ","C20 12 "_$c(31)_"b") ; preklad nazvu konference do anglictiny
+ ;if tag'="" s tC20x=tag
+ 
+ ;;;;;;
+ s tC20=##class(Util).strswap(tC20,$c(31)_"m",$c(31)_"e")  ; misto konani
+ ; datum(y) upravit na nas format
+ s sub7=##class(MARC).getSubTagStr(tC20,"d") 
+ s sub6=##class(Util).strswap(sub7,".","") ; vycistit .
+ s sub5=$p(sub6,"-",1)  ; datum od
+ s sub4=$p(sub6,"-",2)  ; datum do
+ if sub5'="" d
+ . if $e(sub5,1,1)'=0 s sub5="19"_sub5
+ . if $e(sub5,1,1)=0 s sub5="20"_sub5
+ . s sub5=$e(sub5,7,8)_"."_$e(sub5,5,6)_"."_$e(sub5,1,4)
+ if sub4'="" d
+ . if $e(sub4,1,1)'=0 s sub4="19"_sub4
+ . if $e(sub4,1,1)=0 s sub4="20"_sub4
+ . s sub4=$e(sub4,7,8)_"."_$e(sub4,5,6)_"."_$e(sub4,1,4)
+ 
+ s sub6=sub5 ; spojenie datumov
+ if sub4'="" s sub6=sub6_"-"_sub4
+ s tC20=##class(Util).strswap(tC20,$c(31)_"d"_sub7,$c(31)_"f"_sub6)  ; datum konani
+ ;
+ s tC20=##class(Util).strswap(tC20,$c(31)_"z",$c(31)_"p")  ; zeme konani
+ ; VF 124, 125, 126, 127
+ s subtag=""
+ s tag=##class(MARC).getTagX(.handle,"125")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"125    ","")
+ if tag'="" s subtag=subtag_$c(31)_"l"_tag ; geograficke zastoupeni na VT
+ ;
+ s sub1=##class(MARC).getTagX(.handle,"127")
+ s sub1=##class(Util).strswap(sub1,"127    ","")
+ s sub1=##class(Util).strswap(sub1,$c(31)_"x","")
+ ;
+ s tag=##class(MARC).getTagX(.handle,"126")
+ s tag=##class(Util).strswap(tag,"126    ","")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ ;s tag = tag-sub1  ; dane len domacich
+ if tag'="" s subtag=subtag_$c(31)_"m"_tag ; pocet ucastniku VT celkem (domaci=celkom-zahr)
+ ;
+ if sub1'="" s subtag=subtag_$c(31)_"n"_sub1 ; pocet zahr.ucastniku VT 
+ ;
+ s tag=##class(MARC).getTagX(.handle,"124",-1)   
+ s tag=##class(Util).strswap(tag,$c(31)_"x","") 
+ s tag=##class(Util).strswap(tag,"124    ","")
+ if tag'="" s subtag=subtag_$c(31)_"o"_tag ; typ VT akce
+ if subtag'="" d
+ . ; do jedneho opakovania
+ . ;s subtag="C20 02 "_subtag
+ . if tC20'="" s tC20=tC20_subtag  ; len sa spoja
+ . if tC20="" s tC20="C20 12 "_subtag ; ako novy samostatny tag
+ 
+ ; tag 702  treba prehodit do 701
+ s tag=##class(MARC).getTagX(.handle,"X08",-1) 
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"X08    ","701  1 "_$c(31)_"4070")     ; rezerva autori cel.dila
+ s tag=##class(Util).strswap(tag,$c(31)_"k",$c(31)_"b")  ; jmeno
+ s tag=##class(Util).strswap(tag,$c(31)_"p",$c(31)_"a")  ; prijmeni
+ if tag'="" d
+ . if t701'="" s t701=t701_$c(10)_tag 
+ . if t701="" s t701=tag
+ 
+
+ 
+ ; VF 289, 286, 522, 143
+ s tC26=""
+ s tag=##class(MARC).getTagX(.handle,"289")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"289    ","")
+ s tag=##class(Util).strswap(tag,"x","1")
+ if tag'="" s tC26=tC26_$c(31)_"a"_tag ; zaznam pro sigle
+ ;
+ s tag=##class(MARC).getTagX(.handle,"286")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"286    ","")
+ s tag=##class(Util).strswap(tag,"x","1")
+ if tag'="" s tC26=tC26_$c(31)_"b"_tag ; alt. prace pro RIV
+ 
+ ; VF 144 
+ s tag=##class(MARC).getTagX(.handle,"144")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"144    ","")
+ s tag=##class(Util).strswap(tag,"x","1")
+ if tag'="" d
+ . if tag
+ . s tC26=tC26_$c(31)_"b"_tag ; prace pro RIV
+
+
+ ;
+ ; VF 601 v premennej pracovisko
+ s pracovisko=##class(Util).strswap(pracovisko,"601    "_$c(31)_"x","")
+ 
+ ; spracovanie roku vykazovania podla 800k
+ s tag=##class(MARC).getTagX(.handle,"800k")  ; rok vykazovani
+ s tag = $e(tag,1,4)
+ ; 01.11.05 mk uprava roku ak je do 2000 pridar 19 pred rok a na dve miesta
+ if tag'="" 
+ {
+   if $e(tag,1,2)'="20" s tag="19"_$e(tag,1,2)   
+   if tag'="" 
+   {
+     ;if (tag'="2004") && (tag'="2005") && (tag'="2006")
+     ;{
+       s tag=tag+1   
+     ;}
+   }       
+   s tC26=tC26_$c(31)_"d"_tag ; rok
+ }
+ s tag = $p(pracovisko," ",1)
+ if tag'="" s tC26=tC26_$c(31)_"e"_tag ; pracovisko
+ ;
+ s tag=##class(MARC).getTagX(.handle,"522")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"522    ","")
+ if tag'="" s tC26=tC26_$c(31)_"f"_tag ; vedny odbor pro RIV
+ ;
+ s tag=##class(MARC).getTagX(.handle,"143",-1)
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"143    ","")
+ s tag=##class(Util).strswap(tag,$c(10),$c(31)_"f")
+ if tag'="" s tC26=tC26_$c(31)_"f"_tag ; vedny odbor pro RIV 
+ ;
+ ; VF 711
+ ;s tag=##class(MARC).getTagX(.handle,"711",-1)
+ ;s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ ;s tag=##class(Util).strswap(tag,"711    ","")
+ ;s tag=##class(Util).strswap(tag,$c(10),", ")
+ ;if tag'="" s tC26=tC26_$c(31)_"g"_tag ; oddeleni
+ 
+ ; VF 802 (tagy 711 a 802 sa nevyskytuju sucasne)
+ ;s tag=##class(MARC).getTagX(.handle,"802",-1)
+ ;s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ ;s tag=##class(Util).strswap(tag,"802    ","")
+ ;s tag=##class(Util).strswap(tag,$c(10),", ")
+ ;if tag'="" s tC26=tC26_$c(31)_"g"_tag ; oddeleni 
+
+ ; VF 707
+ ;s tag=##class(MARC).getTagX(.handle,"707",-1)
+ ;s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ ;s tag=##class(Util).strswap(tag,"707    ","")
+ ;s tag=##class(Util).strswap(tag,$c(10),", ")
+ ;if tag'="" 
+ ;{
+ ;  s sub1=##class(MARC).getSubTagStr(tC26,"g")  
+ ;  if sub1'="" s tC26=tC26_", "_tag ; poznamky UIVT
+ ;  if sub1="" s tC26=tC26_$c(31)_"g"_tag ;
+ ;}  
+ ; VF 800s
+ s tag=##class(MARC).getTagX(.handle,"800s") ; stav publikacie
+ if tag'="" s tC26=tC26_$c(31)_"l"_tag ; 
+ 
+ ;zapis c26
+ if tC26'="" d
+ . s tC26="C26    "_tC26
+ 
+ ; tag 856 
+ s t856=""
+ s tag=##class(MARC).getTagX(.handle,"283")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"283    ","")
+ if tag'="" s t856=t856_$c(31)_"u"_tag ; elektronicka adresa
+ ;
+ s tag=##class(MARC).getTagX(.handle,"145")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"145    ","")
+ if tag'="" s t856=t856_$c(31)_"q"_tag ; 
+ ;
+ s tag=##class(MARC).getTagX(.handle,"271")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"271    ","")
+ if tag'="" s t856=t856_$c(31)_"q"_tag ; 
+ ;;;;;;;
+ ;VF 04f
+ s tag=##class(MARC).getTagX(.handle,"044f")   
+ if tag'="" s t856=t856_$c(31)_"s"_tag ; 
+ 
+ ;;;;;;;;
+ if t856'="" d
+ . s t856="856 4  "_t856
+  
+  
+ ; tag C30
+ s tC30=""
+ s tag=##class(MARC).getTagX(.handle,"186")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"186    ","")
+ ; datum(y) upravit na nas format
+ s tag=##class(Util).strswap(tag,".","") ; vycistit .
+ if tag'="" d
+ . if $e(tag,1,1)'=0 s tag="19"_tag
+ . if $e(tag,1,1)=0 s tag="20"_tag
+
+ if tag'="" s tC30=tC30_$c(31)_"a"_tag ; obhajoba disertace kdy
+ ;
+ s tag=##class(MARC).getTagX(.handle,"184")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"184    ","")
+ if tag'="" s tC30=tC30_$c(31)_"e"_tag ; rok predlozeni disertace
+ ;
+ s tag=##class(MARC).getTagX(.handle,"180",-1)
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"180    ","")
+ if tag'="" s tC30=tC30_$c(31)_"g"_tag ; akademiska hodnost disertace
+ ;
+ s tag=##class(MARC).getTagX(.handle,"181")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"181    ","")
+ if tag'="" s tC30=tC30_$c(31)_"i"_tag ; nazev pracoviste vypracovane disertace
+ ;
+ s tag=##class(MARC).getTagX(.handle,"182")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"182    ","")
+ if tag'="" s tC30=tC30_$c(31)_"j"_tag ; sidlo pracoviste vypracovane disertace
+ ;
+ s tag=##class(MARC).getTagX(.handle,"185")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"185    ","")
+ if tag'="" s tC30=tC30_$c(31)_"l"_tag ; obhajoba disertace kde
+ ;
+ if tC30'="" s tC30="C30    "_tC30
+ 
+ ; tag C11
+ s tC11=""
+ s tag=##class(MARC).getTagX(.handle,"201")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"201    ","")
+ if tag'="" s tC11=tC11_$c(31)_"a"_tag ; cislo patentoveho spisu
+ ;
+ s tag=##class(MARC).getTagX(.handle,"202")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"202    ","")
+ s sub1=$p(tag,".",1)
+ s tag=##class(Util).strswap(tag,".","") 
+ if $l(sub1)=2 d
+ . if $e(sub1,1,1)'=0 s tag="19"_tag
+ . if $e(sub1,1,1)=0 s tag="20"_tag
+ if tag'="" s tC11=tC11_$c(31)_"b"_tag ; datum podani patentoveho spisu
+ ;
+ s tag=##class(MARC).getTagX(.handle,"203")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"203    ","")
+ s sub1=$p(tag,".",1)
+ s tag=##class(Util).strswap(tag,".","") 
+ if $l(sub1)=2 d
+ . if $e(sub1,1,1)'=0 s tag="19"_tag
+ . if $e(sub1,1,1)=0 s tag="20"_tag
+ if tag'="" s tC11=tC11_$c(31)_"c"_tag ; datum udeleni patentu
+ ;
+ s tag=##class(MARC).getTagX(.handle,"194")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"194    ","")
+ if tag'="" s tC11=tC11_$c(31)_"f"_tag ; sidlo pracoviste prihlasujiciho patent
+ ;
+ if tC11'="" s tC11="C11    "_tC11
+ ;;;;;;;;; 
+ ; tag 470
+ s tag=##class(MARC).getTagX(.handle,"281")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")  
+ s tag=##class(Util).strswap(tag,"281    ","") 
+ if tag'="" s t470=t470_$c(31)_"1101  "_$c(31)_"a"_tag ; jazyk puvodni prace
+ s tag=##class(MARC).getTagX(.handle,"280")
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")  
+  s tag=##class(Util).strswap(tag,"280    ","")
+ if tag'="" s t470=t470_$c(31)_"12001 "_$c(31)_"a"_tag ; citace puv prace
+ ; VF 211
+ s tag=##class(MARC).getTagX(.handle,"211") ; v texte - opakovania , priezvisko a meno
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s tag=##class(Util).strswap(tag,"211    ","")
+ if tag'="" d
+ . s sub3 = $l(tag,"-")+1
+ . for i=1:1:sub3 d 
+ . . s subtag=$p(tag,"-",i)  ; jeden autor
+ . . s sub1=$zstrip($p(subtag,",",1),"<>W") ; priezvisko
+ . . s sub2=$zstrip($p(subtag,",",2),"<>W") ; meno 
+ . . s subtag=""
+ . . if sub1'="" s subtag=subtag_$c(31)_"a"_sub1
+ . . if sub2'="" s subtag=subtag_$c(31)_"b"_sub2
+ . . if subtag'="" s subtag=$c(31)_"1702 1"_subtag_$c(31)_"xP"
+ . . if subtag'="" d
+ . . . if t470'="" s t470=t470_subtag_$c(31)_"4340"
+ . . . if t470="" s t470=subtag_$c(31)_"4340"
+ ;
+ if t470'="" s t470="470  1 "_t470
+
+ ; tagy VF 032 len jedno opakovanie
+ ; do 470 (neprekryvaju sa tagy s predch. 470
+ s tag=##class(MARC).getTagX(.handle,"032",-1)  ; vsetky tagy 032
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s t470=""
+ s sub1=$l(tag,$c(10)) ; pocet opakovani
+ f i=1:1:sub1
+ {
+   s tval=$p(tag,$c(10),i)  ; jedno opakovanie tagu
+   s sub5=""
+   if (tval'="")
+   { 
+     s sub2=##class(MARC).getSubTagStr(tag,"n")  ; citace puvodni prace
+     s sub3=##class(MARC).getSubTagStr(tag,"p")  ; prijmeni
+     s sub4=##class(MARC).getSubTagStr(tag,"k")  ; jmeno 
+     if sub2'="" s sub5=$c(31)_"12001 "_$c(31)_"a"_sub2  
+     s sub6=""
+     if sub3'="" s sub6=$c(31)_"a"_sub3   
+     if sub4'="" s sub6=sub6_$c(31)_"b"_sub4
+     if sub6'="" s sub5=sub5_$c(31)_"1702 1"_sub6_$c(31)_"4730" ; prekladatel  
+     
+   }
+ }
+ if t470'="" s t470="470  1 "_t470
+ 
+ ; tagy VF 033
+ ; do 470 (neprekryvaju sa tagy s predch. 470
+ s tag=##class(MARC).getTagX(.handle,"033",-1)  ; vsetky tagy 033
+ s tag=##class(Util).strswap(tag,$c(31)_"x","")
+ s t470=""
+ s sub1=$l(tag,$c(10)) ; pocet opakovani
+ f i=1:1:sub1
+ {
+   s tval=$p(tag,$c(10),i)  ; jedno opakovanie tagu
+   s sub5=""
+   if (tval'="")
+   { 
+     s sub2=##class(MARC).getSubTagStr(tag,"r")  ; citace puvodni prace
+     s sub3=##class(MARC).getSubTagStr(tag,"p")  ; prijmeni
+     s sub4=##class(MARC).getSubTagStr(tag,"k")  ; jmeno 
+     if sub2'="" s sub5=$c(31)_"12001 "_$c(31)_"a"_sub2  
+     s sub6=""
+     if sub3'="" s sub6=$c(31)_"a"_sub3   
+     if sub4'="" s sub6=sub6_$c(31)_"b"_sub4
+     if sub6'="" s sub5=sub5_$c(31)_"1702 1"_sub6_$c(31)_"4675" ; recenzent  
+     
+   }
+ }
+ if t470'="" s t470="470  1 "_t470
+  
+ ;; tag C33  opakovatelny
+ ; tag 616 nzt, *618, 705, 707, *711, 704 
+ n tag616,tag618,tag705,tag707,tag711,tag704,tag800i,tag802,tag800t
+ ;s tag616=##class(MARC).getTagX(.handle,"616",-1)  ; vsetky opakovania 
+ ;s tag618=##class(MARC).getTagX(.handle,"618",-1)  ; vsetky opakovania 
+ ;s tag705=##class(MARC).getTagX(.handle,"705",-1)  ; vsetky opakovania 
+ s tag707=##class(MARC).getTagX(.handle,"707",-1)  ; vsetky opakovania 
+ s tag711=##class(MARC).getTagX(.handle,"711",-1)  ; vsetky opakovania 
+ s tag704=##class(MARC).getTagX(.handle,"704",-1)  ; vsetky opakovania 
+ s tag802=##class(MARC).getTagX(.handle,"802",-1)  ; vsetky opakovania 
+
+ ; nove tagy 701 a 900
+ s tag701vf=##class(MARC).getTagX(.handle,"701",-1)  ; vsetky opakovania 
+ ;s tag900=##class(MARC).getTagX(.handle,"900",-1)  ; vsetky opakovania 
+ s tag800i=##class(MARC).getTagX(.handle,"800i")  
+ s tag800t=##class(MARC).getTagX(.handle,"800t") 
+ 
+ ; zistit najvyssie cislo opakovania
+ ;s sub1=$l(tag616,$c(10)) ; pocet opakovani
+ s sub1=0
+ ;s sub2=$l(tag618,$c(10)) ; pocet opakovani
+ ;if sub2>sub1 s sub1=sub2
+ ;s sub2=$l(tag705,$c(10)) ; pocet opakovani
+ ;if sub2>sub1 s sub1=sub2
+ s sub2=$l(tag707,$c(10)) ; pocet opakovani
+ if sub2>sub1 s sub1=sub2
+ s sub2=$l(tag711,$c(10)) ; pocet opakovani
+ if sub2>sub1 s sub1=sub2
+ s sub2=$l(tag802,$c(10)) ; pocet opakovani
+ if sub2>sub1 s sub1=sub2
+
+ 
+ s sub2=$l(tag704,$c(10)) ; pocet opakovani
+ if sub2>sub1 s sub1=sub2
+ ;
+ s sub2=$l(tag701vf,$c(10)) ; pocet opakovani
+ if sub2>sub1 s sub1=sub2
+ ;s sub2=$l(tag900,$c(10)) ; pocet opakovani
+ ;if sub2>sub1 s sub1=sub2
+ ;
+ s sub2=$l(tag800i,$c(10)) ; pocet opakovani
+ if sub2>sub1 s sub1=sub2
+ s sub2=$l(tag800t,$c(10)) ; pocet opakovani
+ if sub2>sub1 s sub1=sub2
+ 
+ 
+ n tC33n ; docasne pre kazdy tag
+ 
+ f i=1:1:sub1
+ {  
+    s tC33n="" ; inicializacia tagu
+    n t616,t618,t705,t707vf,t711,t704,t800i,t802t800t
+    ;s t616=$p(tag616,$c(10),i)  ; jedno opakovanie tagu
+    ;s t618=$p(tag618,$c(10),i)  ; jedno opakovanie tagu
+    ;s t705=$p(tag705,$c(10),i)  ; jedno opakovanie tagu
+    s t707=$p(tag707,$c(10),i)  ; jedno opakovanie tagu
+    s t711=$p(tag711,$c(10),i)  ; jedno opakovanie tagu
+    s t704=$p(tag704,$c(10),i)  ; jedno opakovanie tagu
+    s t802=$p(tag802,$c(10),i)  ; jedno opakovanie tagu
+    ;
+    s t701vf=$p(tag701vf,$c(10),i)  ; jedno opakovanie tagu
+    ;s t900=$p(tag900,$c(10),i)  ; jedno opakovanie tagu
+    ;
+    s t800i=$p(tag800i,$c(10),i)  ; jedno opakovanie tagu
+    s t800t=$p(tag800t,$c(10),i)  ; jedno opakovanie tagu
+    
+    ;if t616'="" 
+    ;{
+      ;s t616=##class(Util).strswap(t616,$c(31)_"x","")
+      ;s sub3=##class(MARC).getSubTagStr(t616,"x")  ; 
+      ;s sub4=##class(MARC).getSubTagStr(t616,"x")  ; 
+      ;s sub5=##class(MARC).getSubTagStr(t616,"t")  ; 
+      ;if sub3'="" s tC33n=tC33n_$c(31)_"a"_sub3   ;nazev
+      ;if sub4'="" s tC33n=tC33n_$c(31)_"b"_sub4   ;zeme
+      ;if sub5'="" s tC33n=tC33n_$c(31)_"c"_sub5   ;typ spoluprace
+    ;}
+    ;if t618'="" 
+    ;{
+      ;s sub3=##class(MARC).getSubTagStr(t618,"x")  ; 
+      ;if sub3'="" s tC33n=tC33n_$c(31)_"d"_sub3   ;vyzkumny program
+    ;}
+    if t800i'="" 
+    {
+       if t800i="I" s t800i = "40" ; invited 
+       s tC33n=tC33n_$c(31)_"e"_t800i   ; zpusob interpretace
+    }
+    if t800t'=""
+    {
+      if t800t="A" s t800t = "abstrakt"  
+    
+    }
+    
+    if (t707'="") || (t802'="") || (t800t'="")
+    {
+      s sub3=##class(MARC).getSubTagStr(t707,"x")  ; 
+      s sub4=##class(MARC).getSubTagStr(t802,"x")  ;
+      if sub4'=""
+      {
+        if sub3'="" 
+        {
+          s sub3=sub3_", "_sub4  
+        }
+        else
+        {
+          s sub3=sub4   
+        }   
+            
+          
+      }    
+      if (t800t="skripta") || (t800t="abstrakt")
+      {
+        if sub3'="" 
+        {
+            
+          if '$f(sub3,"skripta") && '$f(sub3,"abstrakt") s sub3=sub3_", "_t800t  
+        }
+        else
+        {
+          s sub3=t800t  
+        }      
+           
+      }   
+      
+      if sub3'="" s tC33n=tC33n_$c(31)_"f"_sub3   ;poznamky URE
+    }
+    if t711'="" 
+    {
+      s sub3=##class(MARC).getSubTagStr(t711,"x")  ; 
+      if sub3="-" s sub3=""
+      if $f(tC33,$c(31)_"g"_sub3) s sub3=""
+      ; ak je prve opakovanie dat ako nove ak nie tak pridat ako retazec   
+      if $f(tC33,$c(31)_"g")  ; ak je uz subtag g
+      {
+          if sub3'=""
+          {
+            s sub11=##class(MARC).getSubTagStr(tC33,"g")   
+            ;s sub11=sub11_", "_sub3
+            
+            s tC33=##class(Util).strswap(tC33,$c(31)_"g"_sub11,$c(31)_"g"_sub11_", "_sub3)  ; autor
+          }
+      }
+      else  ; ak este g nie je
+      {     
+        if sub3'="" s tC33n=tC33n_$c(31)_"g"_sub3   ;archiv praci
+      }  
+    }
+    if t704'="" 
+    {
+      s sub3=##class(MARC).getSubTagStr(t704,"x")  ; 
+      if sub3'="" s tC33n=tC33n_$c(31)_"h"_sub3   ;typ akcie
+    }
+    if t701vf'="" 
+    {
+      s sub3=##class(MARC).getSubTagStr(t701vf,"x")  ; 
+      if sub3'="" s tC33n=tC33n_$c(31)_"i"_sub3   ;datum odevzdani do knihovny
+    }
+    ;if t900'="" 
+    ;{
+    ;  s sub3=##class(MARC).getSubTagStr(t900,"x")  ; 
+    ;  if sub3'="" s tC33n=tC33n_$c(31)_"j"_sub3   ;mfn archivi
+    ;}
+    
+    
+    
+    if tC33n'=""
+    {
+      if tC33'="" s tC33=tC33_$c(10)_"C33    "_tC33n
+      if tC33="" s tC33="C33    "_tC33n
+    }
+
+     
+ }  
+ 
+ ;;;;;;; 
+ ; VF 900  
+ s tag=##class(MARC).getTagX(.handle,"900")  ; mfn archiv  
+ s tag=##class(MARC).getSubTagStr(tag,"x")  ; 
+ if tag'="" s t972="972    "_$c(31)_"a"_tag   ;mfn archivu
+  
+  
+ ; VF 739 tag citacie
+ s tag=##class(MARC).getTagX(.handle,"739",-1)  ; citacie
+ ; zapis do 971i a 
+ s sub1=$l(tag,$c(10)) ; pocet opakovani
+ f i=1:1:sub1
+ {
+    s sub12="" 
+    s sub2=$p(tag,$c(10),i) ; jedno opakovanie tagu
+    s sub3=##class(MARC).getSubTagStr(sub2,"a") ; autor
+    s sub4=##class(MARC).getSubTagStr(sub2,"n") ; nazev
+    s sub5=##class(MARC).getSubTagStr(sub2,"z") ; zdroj
+    s sub6=##class(MARC).getSubTagStr(sub2,"m") ; misto vydani
+    s sub7=##class(MARC).getSubTagStr(sub2,"p") ; nakladatel
+    s sub8=##class(MARC).getSubTagStr(sub2,"v") ; svazek
+    s sub9=##class(MARC).getSubTagStr(sub2,"r") ; rok
+    s sub10=##class(MARC).getSubTagStr(sub2,"s") ; strany
+    s sub11=##class(MARC).getSubTagStr(sub2,"c") ; citacny index
+    if sub3'="" 
+    {
+      s sub3=sub3_"." 
+      s sub3=##class(Util).strswap(sub3,"..",".")  ; autor
+      s sub12=sub3    
+    }  
+    if sub4'="" 
+    {
+      s sub4=sub4_"." 
+      s sub4=##class(Util).strswap(sub4,"..",".")  ; nazev
+      if sub12'="" s sub12=sub12_" "_sub4
+      if sub12="" s sub12=sub4    
+    }  
+    if sub5'="" 
+    {
+      s sub5="in : "_sub5_"." 
+      s sub5=##class(Util).strswap(sub5,"..",".") ; zdroj
+      if sub12'="" s sub12=sub12_" "_sub5
+      if sub12="" s sub12=sub5    
+    }  
+    if sub6'="" 
+    {
+      if sub12'="" s sub12=sub12_" "_sub6   ; misto vydani
+      if sub12="" s sub12=sub6    
+    }  
+    if sub7'="" 
+    {
+      s sub7=" : "_sub7 
+      if sub12'="" s sub12=sub12_sub7  ; nakladatel
+      if sub12="" s sub12=sub5    
+    }      
+    if sub8'="" 
+    {
+      s sub8=", vol. "_sub8 
+      if sub12'="" s sub12=sub12_sub8 ; svazek
+      if sub12="" s sub12=sub8    
+    }  
+    if sub9'="" 
+    {
+      s sub9=", ("_sub9_")"
+      if sub12'="" s sub12=sub12_sub9 ; rok
+      if sub12="" s sub12=sub9    
+    }  
+    if sub10'="" 
+    {
+      s sub10=", pp. "_sub10
+      if sub12'="" s sub12=sub12_sub10 ; strany
+      if sub12="" s sub12=sub10   
+    }  
+    if sub12'="" s sub12=$c(31)_"i"_sub12  
+    if sub11'=""
+    {
+      if $zcvt(sub11,"u") = "ANO" s sub11="SCI"
+      if $zcvt(sub11,"u") = "NE" s sub11=""  
+    }    
+    if sub11'=""
+    {
+     s sub12=$c(31)_"c"_sub11_sub12
+         
+    }
+    if sub12'="" 
+    {
+      if t971'="" s t971=t971_$c(10)_"971    "_sub12    
+      if t971="" s t971="971    "_sub12         
+    }
+ }   
+  
+  
+  
+  
+
+
+ ;;;;;
+ if tC20x'="" d
+ . if tC20'="" s tC20=tC20_$c(10)_tC20x
+ . if tC20="" s tC20=tC20x
+  
+ 
+ ; k tagu 205 len prve opakovanie
+ if t205'="" s t205=$p(t205,$c(10),1) ;len prve opakovanie
+ ;;;;;;;
+ /// pre formulare A2,C,K,M
+ /// d ^X("s CavUnEpca dkf [] a2"),^X("s ||CavUnEpca dk ] c"),^X("s ||CavUnEpca dk ] k"),^X("s ||CavUnEpca dk ] m")
+ /// d ^X("s && 702")
+ /// 
+ /// s sy="##class(CavUnEpca).symMove702To463(.handle)"
+ if (t002="A2") || (t002="C") || (t002="K") || (t002="M")
+ {
+   if (t463'="") && ('$f(t463,$c(31)_"1702")) 
+   {
+     s sub2=""  
+     s sub1=$l(t702,$c(10))
+     f i=1:1:sub1
+     {
+        s tval=$p(t702,$c(10),i)
+        if (tval'="")
+        { 
+          // ok mame dany tag & v 463 nie je
+          s tval=$e(tval,5,6)_$e(tval,8,9999) ; nechat len indikatory a hodnotu
+          s t463=t463_$c(31)_"1702"_tval 
+        }
+     }
+     s t702=sub2
+   ;d:sub1 ##class(MARC).delTagX(.handle,"702")  ;vymaz 702 spravne opakovanie
+   }
+ }
+
+
+ ;. if tC99'="" s tC99=tC99_$c(31)_"dDFLT_CZ_EPCA_"_t002
+ ;. if tC99="" s tC99="C99    "_$c(31)_"dDFLT_CZ_EPCA_"_t002
+ ;;;;;;;;
+ ;;;;;;;;rozdelenie na 1/2 pre druh T a R
+ if (t002="R") || (t002="T") 
+ {
+    if t210="" { s suff="1"  } else { s suff="2" }
+    s tC99=##class(Util).strswap(tC99,"DFLT_CZ_EPCA_"_t002,"DFLT_CZ_EPCA_"_t002_suff)
+ }
+ ;;;;zapracovanie dalsej globalky kopirovanie 102a a 215a do C20
+ if (t002="U")
+ {
+   s tag=$p(t102,$c(10),1)  ; prve opakovanie
+   s sub1=##class(MARC).getSubTagStr(tag,"a")  
+   if sub1'=""
+   {
+     s t102=""
+     if tC20'="" s tC20=tC20_$c(31)_"p"_sub1
+     if tC20="" s tC20="C20 12 "_$c(31)_"p"_sub1
+   }
+   s tag=$p(t215,$c(10),1)  ; prve opakovanie
+   s sub1=##class(MARC).getSubTagStr(tag,"a")  
+   if sub1'=""
+   {
+     s t215=""
+     s sub1=$p(sub1," ",1)
+     if tC20'="" s tC20=tC20_$c(31)_"q"_sub1
+     if tC20="" s tC20="C20 12 "_$c(31)_"q"_sub1
+   }
+ } 
+
+ ; tu este spustit globalku 
+ s sub1=##class(MARC).getSubTagStr(tC99,"d")  
+ s sub1=$p(sub1,"_",4)
+
+ if t200="" 
+ {
+   s t200="200 1  "_$c(31)_"axxx"    
+ }   
+
+
+
+
+
+ ;w !,"t010 :"_t010
+ ;;;;;;;;;
+ ; pridavanie jednotlivych tagov v spravnom poradi
+ if t010'="" d ##class(MARC).setTagX(.handlec,t010)
+ if t011'="" d ##class(MARC).setTagX(.handlec,t011)
+ if t101'="" d ##class(MARC).setTagX(.handlec,t101)
+ if t102'="" d ##class(MARC).setTagX(.handlec,t102)
+ if t200'="" d ##class(MARC).setTagX(.handlec,t200)
+ if t205'="" d ##class(MARC).setTagX(.handlec,t205)
+ if t210'="" d ##class(MARC).setTagX(.handlec,t210)
+ if t215'="" d ##class(MARC).setTagX(.handlec,t215)
+ if t225'="" d ##class(MARC).setTagX(.handlec,t225)
+ if t300'="" d ##class(MARC).setTagX(.handlec,t300)
+ if t301'="" d ##class(MARC).setTagX(.handlec,t301)
+ if t463'="" d ##class(MARC).setTagX(.handlec,t463)
+ if t470'="" d ##class(MARC).setTagX(.handlec,t470)
+ if t610'="" d ##class(MARC).setTagX(.handlec,t610)
+ if t541'="" d ##class(MARC).setTagX(.handlec,t541)
+ if t701'="" d ##class(MARC).setTagX(.handlec,t701)
+ if t702'="" d ##class(MARC).setTagX(.handlec,t702)
+ if t710'="" d ##class(MARC).setTagX(.handlec,t710)
+ if t856'="" d ##class(MARC).setTagX(.handlec,t856)
+ if t912'="" d ##class(MARC).setTagX(.handlec,t912)
+ if t915'="" d ##class(MARC).setTagX(.handlec,t915)
+ if t964'="" d ##class(MARC).setTagX(.handlec,t964)
+ if t970'="" d ##class(MARC).setTagX(.handlec,t970)
+ if t971'="" d ##class(MARC).setTagX(.handlec,t971)
+ if t972'="" d ##class(MARC).setTagX(.handlec,t972)
+ if tC11'="" d ##class(MARC).setTagX(.handlec,tC11)
+ if tC12'="" d ##class(MARC).setTagX(.handlec,tC12)
+ if tC13'="" d ##class(MARC).setTagX(.handlec,tC13)
+ if tC15'="" d ##class(MARC).setTagX(.handlec,tC15)
+ if tC20'="" d ##class(MARC).setTagX(.handlec,tC20)
+ if tC24'="" d ##class(MARC).setTagX(.handlec,tC24)
+ if tC26'="" d ##class(MARC).setTagX(.handlec,tC26)
+ if tC30'="" d ##class(MARC).setTagX(.handlec,tC30)
+ if tC33'="" d ##class(MARC).setTagX(.handlec,tC33)
+ if tC99'="" d ##class(MARC).setTagX(.handlec,"C99    "_tC99)
+ ; riesenie 800d 
+ ; datum v tvare 1.12.2003 upravit do tvaru RRRRMMDD
+ n datumzap
+ s datumzap=##class(Util).date()
+ n tag800d  ; datum porizeni zaznamu
+ n mesiac,den,rok
+ s mesiac="",den="",rok=""
+ s tag800d=##class(MARC).getTagX(.handle,"800d")  
+ if tag800d'="" && $f(tag800d,".")
+ {
+    s den=$p(tag800d,".",1) 
+    s mesiac=$p(tag800d,".",2) 
+    s rok=$p(tag800d,".",3)
+    if $l(den)=1 s den="0"_den
+    if $l(mesiac)=1 s mesiac="0"_mesiac
+    s datumzap=rok_mesiac_den
+     
+    s spracovatel = "cav"    
+     
+ }
+ 
+ 
+ 
+ d ##class(MARC).setTagX(.handlec,"999    "_$c(31)_"a1"_$c(31)_"bCAV"_$c(31)_"cCAV"_$c(31)_"d"_spracovatel_"-"_datumzap)
+ 
+ 
+ ; tu este spustit globalku 
+ ;if (sub1="A2") || (sub1="C") || (sub1="R2") || (sub1="T2") || (sub1="K") || (sub1="M") 
+ ;{
+ ;  d ##class(CavUnEpca).symMoveTo463(.handlec) 
+ ;}
+ 
+ ;na konci zapisat cely novy handle
+ n sc s sc=##class(MARC).writeX(.handlec,1,,1)
+ if $$$ISERR(sc) w !,"write err id=",t001
+ 
+ q
+]]></Implementation>
+</Method>
+
+<Method name="importTXTisASEPNO">
+<Description>
+0/1 ci zadany retazec je platne ASEP cislo
+ocakavame tvar "XX-XX 20049999"</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>s,bChkYear=1</FormalSpec>
+<Implementation><![CDATA[
+    if $l(s," ")'=2 q 0
+    s s1=$p(s," ",1)
+    if $l(s1,"-")'=2 q 0
+    if $tr(s1,"ABCDEFGHIJKLMNOQPRSTUWVXYZ-")'="" q 0
+    
+    s s2=$p(s," ",2)
+    if 's2 q 0
+    if bChkYear,$e(s2,1,4)'="2004" q 0
+    
+    q 1
+]]></Implementation>
+</Method>
+
+<Method name="importTXTasepNo2T001">
+<Description>
+preved ASEP cislo na T001 indexom "ano"</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>s</FormalSpec>
+<Implementation><![CDATA[
+    s s=$$$trim($zcvt(s,"L"))
+    s id=$o(^ooDataTableI("CavVf","ano"," "_s,""))
+    if 'id q ""
+    
+    
+    q ##class(MARC).getT001(id)
+]]></Implementation>
+</Method>
+
+<Method name="importTXTasepNo2id">
+<Description>
+preved ASEP cislo na T001 indexom "ano"
+19.01.06 rs</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>s</FormalSpec>
+<Implementation><![CDATA[
+    s s=$$$trim($zcvt(s,"L"))
+    s id=$o(^ooDataTableI("CavVf","ano"," "_s,""))
+    if 'id q ""
+    
+    
+    q id
+]]></Implementation>
+</Method>
+
+<Method name="importTXTfldName2Tag">
+<Description>
+preved nazov pola na cislo tagu, zaroven funguje ako indikator ci mame
+alebo nemame nazov pola (ak nemame vrati "")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>s</FormalSpec>
+<Implementation><![CDATA[
+    s s=$$$trim(s)
+    if s="nazev"      q "500"
+    if s="nazevcj"    q "501"
+    if s="anotacepuv" q "502"
+    if s="anotacecj"  q "503"
+    
+    
+    q ""
+]]></Implementation>
+</Method>
+
+<Method name="trimPoint">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>s</FormalSpec>
+<Implementation><![CDATA[
+    s c=$l(s)
+    s s1=$e(s,c)
+    s s2=$e(s,c-1,c)
+    if s1=".",s2'=".." s $e(s,c)=""
+    q s
+]]></Implementation>
+</Method>
+
+<Method name="importTXTsaveFld">
+<Description>
+ulozit field do handle (fld je cislo tagu a podpole je vzdy $a)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,sFld,&sCurrFldVal]]></FormalSpec>
+<Implementation><![CDATA[
+    q:sCurrFldVal=""
+    
+    s sCurrFldVal=..trimPoint(sCurrFldVal)  
+    
+    d ##class(MARC).setTagX(.handle,sFld_"    "_$c(31)_"a"_sCurrFldVal)
+]]></Implementation>
+</Method>
+
+<Method name="importTXT">
+<Description>
+import TXT suboru s doplnenymi anotaciami
+jednorazovy specificky format</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>psFN</FormalSpec>
+<Implementation><![CDATA[
+  s file=##class(%FileCharacterStream).%New()
+  s file.Filename=psFN
+  s nCnt=0,nFileLine=0,nErr=0,nWritten=0
+  
+  s nLine=0
+  
+  
+  
+  s fileE=##class(%File).%New(psFN_".log")
+  s status=fileE.Open("WNS")
+  if $$$ISERR(status) q "error opening file "_psFN_".log"
+
+  d fileE.WriteLine("import of "_psFN)
+
+
+  
+  
+  s bHaveLine=0 ; toto je indikator preskocenia read-line ked uz jeden riadok mame v 'line'
+  While 'file.AtEnd 
+  {
+    
+    if 'bHaveLine s line=$$$trim(file.ReadLine()),nLine=nLine+1
+    s bHaveLine=0
+    if line="" continue
+    
+    if '..importTXTisASEPNO(line) 
+    {
+        d fileE.WriteLine(nLine_": ASEPNO expected found '"_line_"'")
+        s nErr=nErr+1 
+        continue
+    }
+    
+    
+    
+    // OK mame ASEP cislo
+    s t001=..importTXTasepNo2T001(line),sASEPno=line
+    w !,"ASEPno: "_sASEPno
+    if t001="" 
+    {
+        d fileE.WriteLine(nLine_": ASEPNO '"_line_"' not found" )
+        s nErr=nErr+1 
+        continue
+    }
+    
+    w " t001: "_t001
+    // OK mame cislo zaznamu v nasej DB
+    
+    d ##class(MARC).newX(.handle,"CavVf","a"_t001)
+    
+    // citame obsah zaznamu
+    s sFld="",nFieldsImp=0,sCurrFldVal="",nRecLine=0
+    While 'file.AtEnd 
+    {
+       s line=$$$trim(file.ReadLine()),nLine=nLine+1,nRecLine=nRecLine+1
+       if line="" continue
+       
+       if line="###" q
+       if ..importTXTisASEPNO(line) s bHaveLine=1 q
+       
+       
+       s fld=..importTXTfldName2Tag(line)
+       
+       ;; 2 vynimky osetruju autorov a nazov bez prefixu
+       ;;
+       if sFld="700",nRecLine s fld="500"
+       if sFld="",fld="",nRecLine=1 s fld="700"
+       
+       if sFld="",fld="" 
+       {
+           d fileE.WriteLine(nLine_": FLDNAME expected found "_line )
+           s nErr=nErr+1 
+           continue
+       }
+       if (fld'="")
+       { 
+         w " "_fld
+         if sCurrFldVal'="",sFld'="" d ..importTXTsaveFld(.handle,sFld,.sCurrFldVal) s nFieldsImp=nFieldsImp+1
+         s sFld=fld,sCurrFldVal="" 
+         continue
+       }
+       
+       // OK
+       if sCurrFldVal'="" s sCurrFldVal=sCurrFldVal_" "
+       s sCurrFldVal=sCurrFldVal_line
+       
+       
+    }
+    if sCurrFldVal'="" d ..importTXTsaveFld(.handle,sFld,.sCurrFldVal) s nFieldsImp=nFieldsImp+1
+    d ##class(MARC).setTagX(.handle,"601"_"    "_$c(31)_"y"_sASEPno)
+    
+    // Ok sme za zaznamom
+    w " - "_nFieldsImp_" flds OK"
+    if nFieldsImp 
+    { 
+      s bDups(sASEPno)=$g(bDups(sASEPno))+1,dc=bDups(sASEPno)
+      if dc>1
+      {
+          d fileE.WriteLine(nLine_": duplicity: "_sASEPno_" count="_dc ) s nErr=nErr=1
+      }
+      
+      
+      s st=##class(MARC).writeX(.handle,1) 
+      s nWritten=nWritten+1 
+      if $$$ISERR(st) d fileE.WriteLine(nLine_": err writting ASEPno: "_sASEPno )
+    }
+    else
+    { d fileE.WriteLine(nLine_": no fields to be written ASEPno: "_sASEPno )
+      s nErr=nErr+1 
+    }
+        
+  }
+  w !,"done "_nWritten_" records, count of errors: "_nErr
+  d fileE.%Close()
+]]></Implementation>
+</Method>
+
+<Method name="importASEPNOLIST">
+<Description>
+import TXT suboru s doplnenymi anotaciami
+jednorazovy specificky format</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>psFN</FormalSpec>
+<Implementation><![CDATA[
+  s file=##class(%FileCharacterStream).%New()
+  s file.Filename=psFN
+  s nCnt=0,nFileLine=0,nErr=0,nWritten=0
+  
+  s nLine=0
+  
+  s fileE=##class(%File).%New(psFN_".log")
+  s status=fileE.Open("WNS")
+  if $$$ISERR(status) q "error opening file "_psFN_".log"
+
+  d fileE.WriteLine("import of "_psFN)
+  
+  k ^Lists("tmp",$j)
+
+  s bHaveLine=0 ; toto je indikator preskocenia read-line ked uz jeden riadok mame v 'line'
+  While 'file.AtEnd 
+  {
+    
+    if 'bHaveLine s line=$$$trim(file.ReadLine()),nLine=nLine+1
+    s bHaveLine=0
+    if line="" continue
+    
+    if '..importTXTisASEPNO(line,0) 
+    {
+        d fileE.WriteLine(nLine_": ASEPNO expected found '"_line_"'")
+        s nErr=nErr+1 
+        continue
+    }
+    
+    
+    
+    // OK mame ASEP cislo
+    s id=..importTXTasepNo2id(line)
+    if 'id w !,"asepno "_line_" conversion to id failed" s nErr=nErr+1 continue
+    
+    
+    s ^Lists("tmp",$j,id)="",nWritten=nWritten+1
+  }
+  w !,"done "_nWritten_" records, count of errors: "_nErr
+  d fileE.%Close()
+]]></Implementation>
+</Method>
+
+<Method name="zb1">
+<Description>
+select zaznamov kde 463/010 obsahuje neplatne hodnoty + ich vypis</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+    s T463=##class(MARC).getTagX(.handle,"463")
+    if T463="" q
+
+    ; selekcna podmienka
+    if (0)
+    {
+        s Tx010=##class(MARC).getTag4xx(T463,"011")
+        ; obsahuje ine podpole ako $a
+        s s1=$$$strswap(Tx010,$c(31)_"a","")
+        s Tx010a=##class(MARC).getSubTagStr(Tx010,"a")
+        s s2=$zcvt(Tx010a,"l"),s2=$tr(s2," 0123456789-x")
+        s er=$f(s1,$c(31)) || (s2'="")
+    }
+    if (0)
+    {
+        s er=##class(MARC).getTag4xx(T463,"001")'=""
+    }
+    s er=1
+    
+    d:er ##class(MARC).recordSetupModifiedX(.handle,1)
+    s s=""
+    #define FX(%1) $tr($tr(%1,$c(31),"$"),";")
+    w:er !,$$$HandleT001(handle)
+         _";"_##class(MARC).getTagX(.handle,"C99a")
+         _";"_##class(MARC).getTagX(.handle,"200a")
+         _";"_$$$FX(##class(MARC).getTag4xx(T463,"200a"))
+]]></Implementation>
+</Method>
+
+<Method name="zborniky">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+    s sT001=$$$HandleT001(handle)
+    if '##class(MARC).readX(.handleu,"CavUnEpca",sT001) w !,"error reading UNI record for t001="_sT001 q
+    
+    s sASEPNO=##class(MARC).getTagX(.handle,"601x")      ; cislo ASEP
+    
+    s s200a=..trimPoint(##class(MARC).getTagX(.handle,"614x"))      ; nazov
+    s s200v=##class(MARC).getTagX(.handle,"044e")      ; strany
+    if s200v'="" s s200v="s. "_s200v
+    
+    s s210c=..trimPoint(##class(MARC).getTagX(.handle,"040n"))      ; nakladatel
+    s s210a=..trimPoint(##class(MARC).getTagX(.handle,"040m"))      ; miesto vydania
+    s s210d=..trimPoint(##class(MARC).getTagX(.handle,"040d"))      ; rok vydania
+    
+    s s225a=..trimPoint(##class(MARC).getTagX(.handle,"088x"))      ; edicia nazov
+    s s225v=##class(MARC).getTagX(.handle,"090x")      ; edicia cislo (oznacenie zvazku)
+    s s225i=..trimPoint(##class(MARC).getTagX(.handle,"089x"))      ; edicia řada
+    
+    s s010a=##class(MARC).getTagX(.handle,"010a")
+    s s011a=##class(MARC).getTagX(.handle,"011a")
+    s s702=##class(MARC).getTagX(.handle,"014",-1)
+    
+    s s463="463  1 "
+    if s200a="" s s200a="-"
+    s s463=s463_$c(31)_"12001 "_$c(31)_"a"_s200a
+    if s200v'="" s s463=s463_$c(31)_"v"_s200v
+
+    s c=$l(s702,$c(10))
+    f i=1:1:c
+    {
+        s s1=$p(s702,$c(10),i)
+        s sa=##class(MARC).getSubTagStr(s1,"p")
+        s sb=##class(MARC).getSubTagStr(s1,"k")
+        if sb'="",sa="" s sa="-"
+        
+        if sa'="" s s463=s463_$c(31)_"1702 1"_$c(31)_"a"_sa
+        if sb'="" s s463=s463_$c(31)_"b"_sb
+    }
+
+    
+    s:s010a'="" s463=s463_$c(31)_"1010  "_$c(31)_"a"_s010a
+    s:s011a'="" s463=s463_$c(31)_"1011  "_$c(31)_"a"_s011a
+    
+    if (s210a_s210c_s210d)'=""
+    {
+       s s463=s463_$c(31)_"12210  "
+       if s210a'="" s s463=s463_$c(31)_"a"_s210a
+       if s210c'="" s s463=s463_$c(31)_"c"_s210c
+       if s210d'="" s s463=s463_$c(31)_"d"_s210d
+    }
+    if (s225a_s225i_s225v)'=""
+    {
+       s s463=s463_$c(31)_"12225  "
+       if s225a'="" s s463=s463_$c(31)_"a"_s225a
+       if s225i'="" s s463=s463_$c(31)_"i"_s225i
+       if s225v'="" s s463=s463_$c(31)_"v"_s225v
+    }
+    
+    
+    s s463e=##class(MARC).getTagX(.handleu,"463")
+    if s463e="" s s463e="463    N/A"
+    
+    ; odmazeme 463/001 pretoze ten pojde aj tak do ...
+    s s1=$c(31)_"1001",q=$f(s463e,s1)
+    if q
+    {
+        s s2=$e(s463e,q,999999)
+        s s463e=$e(s463e,1,q-$l(s1)-1)_$c(31)_$p(s2,$c(31),2,99999)
+    }
+    
+    
+    w !,"** "_sT001_" "_sASEPNO
+    w !,"  NEW: "_$tr(s463,$c(31),"$")
+    w !,"  EX:  "_$tr(s463e,$c(31),"$")
+]]></Implementation>
+</Method>
+
+<Method name="zborniky2">
+<Description>
+porovnanie zbornikov z konverzie
+verzia2 - porovnava sa nazov zbornika u aktualneho zaznamu v CavUnEpca
+a povodneho v CavVf</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+    s sT001=$$$HandleT001(handle)
+    if '##class(MARC).readX(.handleu,"CavUnEpca",sT001) w !,"error reading UNI record for t001="_sT001 q
+    
+    s sASEPNO=##class(MARC).getTagX(.handle,"601x")      ; cislo ASEP
+    s sO463200a=..trimPoint(##class(MARC).getTagX(.handle,"614x"))      ; nazov zb.povodny
+    
+    s s200a=##class(MARC).getTagX(.handleu,"200a")
+    s s463=##class(MARC).getTagX(.handleu,"463")
+    if s463="" q
+    if '##class(MARC).t4xx2handle(.handle4,s463) zt "X"
+    
+    s s463200a=..trimPoint(##class(MARC).getTagX(.handle4,"200a"))      ; nazov zbornika novy
+    
+    s s1=$zcvt($tr(s463200a,",. /"),"L")
+    s s2=$zcvt($tr(sO463200a,",. /"),"L")
+    s er=s1'=s2
+    s er2=$e(s1,1,10)'=$e(s2,1,10)
+    
+    
+    d:er ##class(MARC).recordSetupModifiedX(.handle,1)
+    #define FX(%1) $tr($tr(%1,$c(31),"$"),";")
+    w:er !,$$$HandleT001(handle)
+         _";"_sASEPNO
+         _";"_$$$FX(s200a)
+         _";"_$$$FX(s463200a)
+         _";"_$$$FX(sO463200a)
+         _";"_er2
+]]></Implementation>
+</Method>
+
+<Method name="dupCheck">
+<Description><![CDATA[
+<pre>
+13.08.10 pb; metoda na kontrolu duplicitnych zaznamov CavUnEpca podla zadania p.Dolezelovej
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>par=""</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ ; start metody:
+ ;d ##class(User.CavVf).dupCheck() 
+ ; Metoda pracuje s aktivnym select listom. 
+ 
+ 
+ s prog="dupCheck: "
+ s OU=$IO use OU
+ w !," prg ",prog," started at ",$$$ShowDTime
+ w !!
+ 
+ s outf="CavDupCheck_"_$r(999)_".log"  ; vystupny subor
+ open outf:("NWS":/CREATE):0
+ s te=$test
+ if 'te w "failed to open the output file ('"_outf_"')!!" q
+ use outf
+ w !," prg ",prog," started at ",$$$ShowDTime
+
+ 
+ 
+ ; SPRACOVANIE ZAZNAMOV
+ s sClasses="",sClass="CavUnEpca",cntRecAll=0,cntCurrAll=0,cntDupAll=0
+ s idCnt=$i(^$$$MarcTempG)  ; pracovny uzol
+ k ^$$$MarcTempG(idCnt)  ; pre ladenie z terminalu
+ 
+ 
+ if ##class(Util).XcheckActiveList(0) {
+    ; pouzijem aktivny select list
+    
+    s id="",point=0,brk=""
+    w !
+    for  { 
+       s id=$o(^Lists("tmp",$j,id)) q:((id="") || brk)
+        
+       use OU
+       s point=point+1, sX=$e(point,$l(point)-2,$l(point))  if sX="000" d  w "."
+                      s sX=$e(point,$l(point)-4,$l(point))  if sX="00000" d  w !
+       use outf
+       s idx=id if $f(idx,"*") s idx=$p(idx,"*",2)  ; test na triedeny zoznam
+       s sClass=##class(MARC).getCLASS(idx)
+       s sT001=##class(MARC).getT001(idx)
+       
+       if '##class(MARC).readX(.handle,sClass,sT001) s brk=1,err="ERRCLM002#"_class_"*"_t001 w !,prog_"record "_class_"*"_t001_" not FOUND!" q
+       s cntRecAll=cntRecAll+1
+       
+       s sT010a=##class(MARC).getTagX(.handle,"010a")
+       s sT011a=##class(MARC).getTagX(.handle,"011a")
+       s sT014a=##class(MARC).getTagX(.handle,"014a")
+       s sT200a=##class(MARC).getTagX(.handle,"200a")
+       s sT210d=##class(MARC).getTagX(.handle,"210d")
+       s sT215a=##class(MARC).getTagX(.handle,"215a")
+       s sT701a=##class(MARC).getTagX(.handle,"701a")
+       s sTC26o=##class(MARC).getTagX(.handle,"C26o")
+       
+       s sT463=##class(MARC).getTagX(.handle,"463")
+       s sT463010a=##class(MARC).getTag4xx(sT463,"010a")
+       s sT463011a=##class(MARC).getTag4xx(sT463,"011a")
+       s sT463200a=##class(MARC).getTag4xx(sT463,"200a")
+       s sT463200v=##class(MARC).getTag4xx(sT463,"200v")
+       s sT463210d=##class(MARC).getTag4xx(sT463,"210d")
+       
+       s sT200aShort=sT200a
+       if ($l(sT200a)>100) s sT200aShort=$e(sT200a,1,100)_"<...>"_$e(sT200a,$l(sT200a)-20,$l(sT200a))  ; zlozenie z prvych 100 a posl.20 znakov
+       
+       
+       s sT970b=##class(MARC).getTagX(.handle,"970b")  ; nacitanie 970b
+       s sT970b=$zcvt(sT970b,"u")
+       
+       s sString="", sDupGrp=""
+       if ((sT970b="B")||(sT970b="G")||(sT970b="H")||(sT970b="T3")||(sT970b="V")) {
+          if (sT010a'="")  {
+             s sDupGrp="AA"
+             s sString=sString_sT010a_"#"_sT200aShort
+             s sString=sString_"#"
+             s sX=""
+             s sX=sT210d
+             if (sX="") s sX=sT463210d
+             s sString=sString_sX
+             s sString=sString_"#"
+             s sString=sString_sT215a
+          }
+          else {
+             s sDupGrp="AB"
+             s sString=sString_sTC26o_"#"_sT200aShort
+             s sString=sString_"#"
+             s sString=sString_sT701a
+             s sString=sString_"#"
+             s sString=sString_sT210d
+             s sString=sString_"#"
+             s sString=sString_sT215a
+          }
+       }
+       
+       if ((sT970b="C")||(sT970b="K")||(sT970b="M")||(sT970b="R2")||(sT970b="T2")) {
+          if (sT463010a'="") {
+             s sDupGrp="BA"
+             s sString=sString_sT463010a_"#"_sT200aShort
+             s sString=sString_"#"
+             s sString=sString_sT463210d
+             s sString=sString_"#"
+             s sString=sString_sT463200v
+          }
+          elseif (sT463011a'="") {
+             s sDupGrp="BB"
+             s sString=sString_sT463011a_"#"_sT200aShort
+             s sString=sString_"#"
+             s sString=sString_sT463210d
+             s sString=sString_"#"
+             s sString=sString_sT463200v
+          }
+          elseif (sT463010a=""),(sT463011a="") {
+             s sDupGrp="BC"
+             s sString=sString_sTC26o_"#"_sT200aShort
+             s sString=sString_"#"
+             s sString=sString_sT701a
+             s sString=sString_"#"
+             s sString=sString_sT210d
+             s sString=sString_"#"
+             s sString=sString_sT463200v
+          }
+       }
+             
+       if ((sT970b="J")||(sT970b="A1")||(sT970b="R1")||(sT970b="T1")) {
+          if (sT011a'="") {
+             s sDupGrp="CA"
+             s sString=sString_sT463011a_"#"_sT200aShort
+             s sString=sString_"#"
+             s sString=sString_sT463210d
+             s sString=sString_"#"
+             s sString=sString_sT463200v
+          }
+          else {
+             s sDupGrp="CB"
+             s sString=sString_sTC26o_"#"_sT200aShort
+             s sString=sString_"#"
+             s sString=sString_$e(sT463200a,1,60)
+             s sString=sString_"#"
+             s sString=sString_sT463210d
+             s sString=sString_"#"
+             s sString=sString_sT463200v
+          }
+       }
+       if ((sT970b="JI")) {
+          s sDupGrp="DA"
+          if (sT014a),($l(sT014a)<17) {
+             s sT014a=$e("00000000000000000",1,17-$l(sT014a))_sT014a
+          }
+          s sString=sString_sT014a
+       }
+       
+                                                                             ;;;;;; w !,"sString=",sString
+       if (sString'="") {
+          s sString=sT970b_"#"_sString
+          s sStringUpper=$zcvt(sString,"u")
+          s sStringUpper=$e(sStringUpper,1,200)
+          s sX=$g(^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper))
+          if (sX'="") {
+             s sX=sX_","
+             s ^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper,1)=sString
+             s cntDupAll=cntDupAll+1
+                                                                                 ;;;s brk=1  ; testovanie: po prvej duplicite skonci
+          }
+          s sX=sX_sT001
+          s ^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper)=sX
+       }
+ 
+    }
+ }
+ 
+ 
+ ; VYPIS VYSLEDKOV
+ use outf
+ w !!,"RESULT:"
+ w !
+ s sDupGrp="", ix=-1, brk1=""
+ for  {
+    s sDupGrp=$o(^$$$MarcTempG(idCnt,sClass,sDupGrp)) q:(sDupGrp="")||(brk1=1)
+    s sStringUpper="", brk2=""
+    for  {
+       s sStringUpper=$o(^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper)) q:(sStringUpper="")||(brk2=1)
+       s sT001Val=$g(^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper))
+       if $l(sT001Val,",")>1 {
+          s sStringOri=$g(^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper,1))  ; original retazec
+          w !,sT001Val
+          ;w !,"   ",sDupGrp,": ",sStringUpper
+          w !,"   ",sDupGrp,": ",sStringOri
+          w !
+          ;s brk2=1, brk1=1
+       }
+    }
+ }
+ 
+ use OU
+ w !!, "Spracovane zaznamy:", cntRecAll
+ w !!, "Pocet duplicit:", cntDupAll
+ w !!!," prg ",prog," ended at ",$$$ShowDTime      
+ 
+ use outf
+ w !!, "Spracovane zaznamy:", cntRecAll
+ w !!, "Pocet duplicit:", cntDupAll
+ w !!!," prg ",prog," ended at ",$$$ShowDTime      
+ 
+ 
+ close outf
+ use OU
+]]></Implementation>
+</Method>
+
+<Method name="VysDupChec">
+<Description><![CDATA[
+<pre> Metoda sloucici jako vstupni bod pro kontrolu duplicit autorit
+
+Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV_v%C3%BDstupy/duplicity_epca#Realizace_ve_t.C5.99.C3.ADd.C4.9B 
+
+Parametry
+   pPar - parametry - oddelene carkou
+          1. debag mod - jestli 1, vypisuji se pomocne texty - zatim nepouzity
+
+26.08.10 tt; metoda zalozena
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pEnvironment:%Binary,pPar:%String=""]]></FormalSpec>
+<PublicList>sOFileWithPath,sExportOpt,sRetMsg,sSelectCrit,sSelectCrit2,sSortFld,cDelimCrit,cDelimSpace,cDelimVals,nRecCount,sClass,sClassList,sSelectCrit2,bCaseSensitive,pnVerboseMode,sSymbExp1</PublicList>
+<ReturnType>%Library.String</ReturnType>
+<Implementation><![CDATA[
+  s pP="",OFN="",pErr=""         ; pomocne promenne
+  
+  ; nacteni parametru, obecna metoda
+  d ##class(User.CavS).repParO(.pP,pPar)                          
+  ; vystupni soubor bude lehce oteviratelny v excelu
+  ; otevreni soubor  
+  d ##class(rep.html.base).repSoubOC(.sRetMsg, .sOFileWithPath, .OFN,1,"_2.csv","CP1250")
+  ; volani metody zpracovavajici vystup
+  d ..VysDupChecN(.pP,.OFN)
+  ; uzavreni souboru
+  d ##class(rep.html.base).repSoubOC(.sRetMsg, .sOFileWithPath, .OFN,0)     
+  d SetPDefIO^%NLS("UTF8",3)
+  q ""                 ; konec
+]]></Implementation>
+</Method>
+
+<Method name="VysDupChecN">
+<Description><![CDATA[
+<pre>
+31.08.10 tt; pridano cislo edice
+26.08.10 tt; prepracovavani metody
+13.08.10 pb; metoda na kontrolu duplicitnych zaznamov CavUnEpca podla zadania p.Dolezelovej
+;d ##class(User.CavVf).dupCheck() 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pP,&OFN]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s prog="Kontrola duplicit: "            ; nejaka uvodni hlavicka
+ d OFN.WriteLine("Program "_prog_" začal "_$$$ShowDTime)
+   
+ ; SPRACOVANIE ZAZNAMOV - definice momocnych promennych
+ s sClasses="",sClass="",cntRecAll=0,cntCurrAll=0,cntDupAll=0
+ s s010a="", s011a="", s014a="", s200a="", s210d="", s215a="", s701a="", sC26o="", sC26e="", 
+   s225a="", s970b="", sT16r="", s463010a="", s463011a="", s463200a="", 
+   s463200v="", s463210d=""
+ s idCnt=$i(^$$$MarcTempG)  ; pracovny uzol
+ k ^$$$MarcTempG(idCnt)     ; pre ladenie z terminalu 
+ 
+ if ##class(User.Util).XcheckActiveList(0) 
+ {  ; pouzijem aktivny select list - z vystupu
+    s id="", idx="", point=0, brk=0
+    for  
+    { ; cyklus pro prochazeni vyselektovanych zaznamu
+      s idx=$o(^$$$ListsG($$$ListsActiveSel,$j,idx)),id=idx
+      if $f(id,"*") s id=$p(id,"*",2)   ; odstranit triediaci prefix/sufix
+      q:((id="") || brk)                ; ukoncime, jestli narazime na konec nebo chybu
+      
+      s point=point+1, sX=$e(point,$l(point)-2,$l(point))  if sX="000" d  w "."
+                     s sX=$e(point,$l(point)-4,$l(point))  if sX="00000" d  w !
+      s sClass=##class(User.MARC).getCLASS(id)    ; ziskame aktualni tridu 
+      s sT001=##class(User.MARC).getT001(id)      ; ziskame akualni id zaznamu
+       
+      if ('##class(MARC).readX(.handle,sClass,sT001,"T")) 
+      { ; pokud se nepodarilo zaznam nacist, ukoncime
+        s brk=1,err="ERRCLM002#"_sClass_"*"_sT001 w !,prog_"record "_sClass_"*"_sT001_" not FOUND!" q
+      }
+      s cntRecAll=cntRecAll+1                     ; zvysime pocitadlo nactenych zaznamu 
+       
+      ; nacteni vsech potrebnych informaci
+      d ..VysDupChecData(.handle,.s010a,.s011a,.s014a,.s200a,.s210d,.s215a,.s701a,.sC26o,.sC26e,.s225a,.s225v,.s970b,.sT16r,.s463010a,.s463011a,.s463200a,.s463200v,.s463210d)
+      
+      s s200aShort=s200a
+      ; zlozenie z prvych 100 a posl.20 znakov
+      s:($l(s200a)>100) s200aShort=$e(s200a,1,100)_"<...>"_$e(s200a,$l(s200a)-20,$l(s200a))  
+
+      s sString="", sDupGrp=""
+      if ((s970b="B")||(s970b="G")||(s970b="H")||(s970b="T3")||(s970b="V")) 
+      { 
+        if (s010a'="")  
+        {
+          s sDupGrp="AA"
+          s sString=sString_s010a_"#"_s200aShort
+          s sString=sString_"#"
+          s sX=""
+          s sX=s210d
+          if (sX="") s sX=s463210d
+          s sString=sString_sX
+          s sString=sString_"#"
+          s sString=sString_s215a
+        }
+        else 
+        {
+          s sDupGrp="AB"
+          s sString=sString_sC26o_"#"_s200aShort
+          s sString=sString_"#"
+          s sString=sString_s701a
+          s sString=sString_"#"
+          s sString=sString_s210d
+          s sString=sString_"#"
+          s sString=sString_s215a
+        }
+        ; kontrola edice u druhu V = edice - 225a.
+        s:(s970b="V") sString=sString_"#"_s225a_"#"_s225v  ; pro druh V byla pridana edice          
+      }
+       
+      if ((s970b="C")||(s970b="K")||(s970b="M")||(s970b="R2")||(s970b="T2")) 
+      {
+        if (s463010a'="") 
+        {
+          s sDupGrp="BA"
+          s sString=sString_s463010a_"#"_s200aShort
+          s sString=sString_"#"
+          s sString=sString_s463210d
+          s sString=sString_"#"
+          s sString=sString_s463200v
+        }
+        elseif (s463011a'="") 
+        {
+          s sDupGrp="BB"
+          s sString=sString_s463011a_"#"_s200aShort
+          s sString=sString_"#"
+          s sString=sString_s463210d
+          s sString=sString_"#"
+          s sString=sString_s463200v
+        }
+        elseif (s463010a=""),(s463011a="") 
+        {
+          s sDupGrp="BC"
+          s sString=sString_sC26o_"#"_s200aShort
+          s sString=sString_"#"
+          s sString=sString_s701a
+          s sString=sString_"#"
+          s sString=sString_s210d
+          s sString=sString_"#"
+          s sString=sString_s463200v
+        }
+      }
+             
+      if ((s970b="J")||(s970b="A1")||(s970b="R1")||(s970b="T1")) 
+      {
+        if (s011a'="") 
+        {
+          s sDupGrp="CA"
+          s sString=sString_s463011a_"#"_s200aShort
+          s sString=sString_"#"
+          s sString=sString_s463210d
+          s sString=sString_"#"
+          s sString=sString_s463200v
+        }
+        else 
+        {
+          s sDupGrp="CB"
+          s sString=sString_sC26o_"#"_s200aShort
+          s sString=sString_"#"
+          s sString=sString_$e(s463200a,1,60)
+          s sString=sString_"#"
+          s sString=sString_s463210d
+          s sString=sString_"#"
+          s sString=sString_s463200v
+        }
+      }
+      
+      if ((s970b="JI")) 
+      {
+        s sDupGrp="DA"
+        if (s014a),($l(s014a)<17) 
+        {
+          s s014a=$e("00000000000000000",1,17-$l(s014a))_s014a
+        }
+        s sString=sString_s014a
+       }
+       w !,sX
+                       
+       if (sString'="") 
+       { ; pokud jsme vytovrily nejaky retezec, jde do porovnavani
+         s sString=s970b_"#"_sString      
+         s sStringUpper=$zcvt(sString,"u")  
+         s sStringUpper=$e(sStringUpper,1,300)
+         s sX=$g(^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper),"")
+         if (sX'="") 
+         { ; pokuf se nasla shoda, ulozime si potrebne udaje
+           s sX=sX_","    ; oddelovac pro dalsi id zaznamu
+           ;s ^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper,1)=sT001
+           s cntDupAll=cntDupAll+1                                                                               ;;;s brk=1  ; testovanie: po prvej duplicite skonci
+         }
+        
+         s sX=sX_sT001
+         s ^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper)=sX        
+      } 
+    }
+ }
+ 
+ ; VYPIS VYSLEDKOV
+ ; vypiseme hlavicku, ktera bude v csv souboru
+ d OFN.WriteLine("Sysno;ZpZveřejnění;BiblCit;ISBN_ISSN;   ISBN_ISSN_ZdrDok;PočStran;OrigNázev;VlastníkZáznamu;RokVydání")
+                  ;T001 ; 970b      ;   zf  ; 010$a,011$a;  463/010$a,011$a ;215 $a;  200$a  ;  C26$e        ; T16$r
+                  
+ s sDupGrp="", ix=-1, brk1=""   ; definici pomocnych promennych pro cyklus
+ for  
+ { ; cyklus podle druhu vysledku
+   s sDupGrp=$o(^$$$MarcTempG(idCnt,sClass,sDupGrp)) q:(sDupGrp="")||(brk1=1)
+   s sStringUpper="", brk2=""
+   for  
+   { ; cyklus pres vsechny nalezene duplicity
+     s sStringUpper=$o(^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper)) q:(sStringUpper="")||(brk2=1)
+     s sT001Val=$g(^$$$MarcTempG(idCnt,sClass,sDupGrp,sStringUpper))
+     if ($l(sT001Val,",")>1) 
+     { ; pokud vime ze je nejaka duplicita
+       for i=1:1:$l(sT001Val,",")
+       { ; cyklus pres vsechny id zaznamu. 
+         s sAktT001=$p(sT001Val,",",i) ; ziskani aktualniho zpracovavaneho id zaznamu
+         
+         if (##class(MARC).readX(.handle,sClass,sAktT001,"T")) 
+         { ; pokud se podarilo nacist zaznam
+           ; nacteni vsech potrebnych informaci
+           d ..VysDupChecData(.handle,.s010a,.s011a,.s014a,.s200a,.s210d,.s215a,.s701a,.sC26o,.sC26e,.s225a,.s225v,.s970b,.sT16r,.s463010a,.s463011a,.s463200a,.s463200v,.s463210d)
+           
+           ; slouceni udaju ze zdroj, dok ISBN_ISSN_ZdrDok
+           s s4ISBNISS=s463010a_s463011a 
+           s:((s463010a'="")&&(s463011a'="")) s4ISBNISS=s463010a_","_s463011a
+           
+           ; slouceni udaju ze zdroj, dok ISBN_ISSN_ZdrDok
+           s sISBNIS= s010a_s011a 
+           s:((s010a'="")&&(s011a'="")) sISBNIS= s010a_","_s011a
+           s sBiblCit=$tr($$$getTagX(.handle,"Tbca"),";",":")
+           
+           d OFN.WriteLine(sAktT001_";"_s970b_";"_sBiblCit_";"_sISBNIS_";"_s4ISBNISS_";"_$tr(s215a,".str","")_";"_s200a_";"_sC26e_";"_sT16r)     
+         }         
+       }
+     }
+   }
+ }
+  
+ d OFN.WriteLine(""),OFN.WriteLine("")    ; vypisy na konci souboru
+ d OFN.WriteLine("Spracované záznamy: "_cntRecAll)
+ d OFN.WriteLine("Počet duplicit: "_cntDupAll)
+ d OFN.WriteLine("Program "_prog_" skončil v "_$$$ShowDTime)
+ k ^$$$MarcTempG(idCnt)     ; uklidime po sobe
+]]></Implementation>
+</Method>
+
+<Method name="VysDupChecData">
+<Description><![CDATA[
+<pre> Mododa pro nacteni dat z hanldu.Parametry jsou jednotlive tagy pro seskladani
+      informaci
+
+26.08.10 tt; metoda zalozena
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,&s010a,&s011a,&s014a,&s200a,&s210d,&s215a,&s701a,&sC26o,&sC26e,&s225a,&s225v,&s970b,&sT16r,&s463010a,&s463011a,&s463200a,&s463200v,&s463210d,&UTWOS]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+  s s010a=$$$getTagX(.handle,"010a")         ; nacteni vsech potrebnych informaci
+  s s011a=$$$getTagX(.handle,"011a")
+  s s014a=$$$getTagX(.handle,"014a")
+  s s200a=$$$getTagX(.handle,"200a")
+  s s210d=$$$getTagX(.handle,"210d")
+  s s215a=$$$getTagX(.handle,"215a")
+  s s701a=$$$getTagX(.handle,"701a")
+  s sC26o=$$$getTagX(.handle,"C26o")
+  s sC26e=$$$getTagX(.handle,"C26e")
+  s s225a=$$$getTagX(.handle,"225a")
+  s s225v=$$$getTagX(.handle,"225v")
+  s s970b=$$$getTagX(.handle,"970b")
+  s s970b=$zcvt(s970b,"u")                  ; uprave 970b
+  s sT16r=$$$getTagX(.handle,"T16r")
+       
+  s sT463=$$$getTagX(.handle,"463")
+  s s463010a=##class(MARC).getTag4xx(sT463,"010a")
+  s s463011a=##class(MARC).getTag4xx(sT463,"011a")
+  s s463200a=##class(MARC).getTag4xx(sT463,"200a")
+  s s463200v=##class(MARC).getTag4xx(sT463,"200v")
+  s s463210d=##class(MARC).getTag4xx(sT463,"210d")
+]]></Implementation>
+</Method>
+
+<Method name="VysNDupChecData">
+<Description><![CDATA[
+<pre> Mododa pro nacteni dat z hanldu.Parametry jsou jednotlive tagy pro seskladani
+      informaci - vyuziva se metoda jak pro indexaci (v CavUnEpca, tak i pri vypisu duplicit).
+      Proto je treba pri zmene reindexovat i CavUnEpca
+
+26.08.10 tt; metoda zalozena
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,&data]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+  ; zbirani informaci do data o jednotlivych handlech
+  s data("001")=$$$HandleT001(handle)
+  s data("010a")=$$$getTagX(.handle,"010a")         ; nacteni vsech potrebnych informaci
+  s data("i010a")=$zstrip($zcvt(data("010a"),"l"),"*WP")
+  s data("300a")=$$$getTagX(.handle,"300a")
+  s data("i300a")=$zstrip($zcvt(data("300a"),"l"),"*WP")
+  
+  s data("011a")=$$$getTagX(.handle,"011a")
+  s data("i011a")=$zstrip($zcvt(data("011a"),"l"),"*WP")
+  s data("011e")=$$$getTagX(.handle,"011e")
+  s data("i011e")=$zstrip($zcvt(data("011e"),"l"),"*WP")
+
+  s data("014a")=$$$getTagX(.handle,"014a")
+  s data("i014a")=$zstrip($zcvt(data("014a"),"l"),"*WP")
+  s data("200a")=$$$getTagX(.handle,"200a")
+  s data("i200a")=$zstrip($zcvt(data("200a"),"l"),"*WP")
+  s data("210d")=$$$getTagX(.handle,"210d")
+  s data("i210d")=$zstrip($zcvt(data("210d"),"l"),"*WP")
+  s data("215a")=$$$getTagX(.handle,"215a")
+  s data("i215a")=$zstrip($zcvt(data("215a"),"l"),"*WP")
+  s data("700a")=$$$getTagX(.handle,"700a")
+  s data("i700a")=$zstrip($zcvt(data("700a"),"l"),"*WP")
+  s data("701a")=$$$getTagX(.handle,"701a")
+  s data("i701a")=$zstrip($zcvt(data("701a"),"l"),"*WP")
+  s data("C26o")=$$$getTagX(.handle,"C26o")  
+  s:(data("C26o")="") data("C26o")=$$$getTagX(.handle,"c26o")   ; osetreni pro indexovani
+  s data("iC26o")=$zstrip($zcvt(data("C26o"),"l"),"*WP")
+  s data("C26e")=$$$getTagX(.handle,"C26e")
+  s:(data("C26e")="") data("C26e")=$$$getTagX(.handle,"c26e")
+  s data("C26c")=$$$getTagX(.handle,"C26c")
+  s:(data("C26c")="") data("C26c")=$$$getTagX(.handle,"c26c")
+  s data("C26d")=$$$getTagX(.handle,"C26d")                    ; rok sberu
+  s:(data("C26d")="") data("C26d")=$$$getTagX(.handle,"c26d")
+  s data("C26b")=$$$getTagX(.handle,"C26b")                    ; riv 
+  s:(data("C26b")="") data("C26b")=$$$getTagX(.handle,"c26b")
+
+
+  s data("iC26e")=$zstrip($zcvt(data("C26e"),"l"),"*WP")
+  s data("225a")=$$$getTagX(.handle,"225a")
+  s data("i225a")=$zstrip($zcvt(data("225a"),"l"),"*WP")
+  s data("225v")=$$$getTagX(.handle,"225v")
+  s data("i225v")=$zstrip($zcvt(data("225v"),"l"),"*WP")
+  s data("970b")=$$$getTagX(.handle,"970b")
+  s data("969f")=$$$getTagX(.handle,"969f")
+  s data("i970b")=$zstrip($zcvt(data("970b"),"l"),"*WP")
+  s data("u970b")=$zcvt(data("970b"),"u")                  
+  s data("T16r")=$$$getTagX(.handle,"T16r")                    ; toto pro indexovani neni dulezite
+  s data("iT16r")=$zstrip($zcvt(data("T16r"),"l"),"*WP")
+  s data("C82a")=$$$getTagX(.handle,"C82a")
+  s:(data("C82a")="") data("C82a")=$$$getTagX(.handle,"c82a")
+  s data("iC82a")=$zstrip($zcvt(data("C82a"),"l"),"*WP")
+       
+  s sT463=$$$getTagX(.handle,"463")
+  s data("463010a")=##class(MARC).getTag4xx(sT463,"010a")
+  s data("i463010a")=$zstrip($zcvt(data("463010a"),"l"),"*WP")
+  s data("463011a")=##class(MARC).getTag4xx(sT463,"011a")
+  s data("i463011a")=$zstrip($zcvt(data("463011a"),"l"),"*WP")
+  s data("463011e")=##class(MARC).getTag4xx(sT463,"011e")
+  s data("i463011e")=$zstrip($zcvt(data("463011e"),"l"),"*WP")
+  s data("463200a")=##class(MARC).getTag4xx(sT463,"200a")
+  s data("i463200a")=$zstrip($zcvt(data("463200a"),"l"),"*WP")
+  s data("463200v")=##class(MARC).getTag4xx(sT463,"200v")
+  s data("i463200v")=$zstrip($zcvt(data("463200v"),"l"),"*WP")
+  s data("463210d")=##class(MARC).getTag4xx(sT463,"210d")
+  s data("i463210d")=$zstrip($zcvt(data("463210d"),"l"),"*WP")
+  s data("pubmed")="", data("ipubmed")="",data("wos")="",  data("iwos")="",  data("scopus")="", data("iscopus")="", data("doi")="", data("idoi")=""
+  d {
+     s sT014=$$$getTagXC(.handle,"014",.c) ; projedme vsechny identifikacni cisla
+     continue:((sT014="")&&(c'=0))
+       if (sT014'="")
+       { ; pokud mame vyplnene data, muzeme provadet akce 
+         s sT0142=$$$getSubTagStr(sT014,"2")
+         s sT014a=$$$getSubTagStr(sT014,"a")
+         
+         if (sT014a'="")
+         {
+           if ($zcvt(sT0142,"l")="pubmed") 
+           {
+             s data("pubmed")=sT014a
+             if data("pubmed")'=""
+             { s data("ipubmed")="pubmed:"_$zstrip($zcvt(data("pubmed"),"l"),"*WP")    
+               s data("pubmed")="PubMed: "_data("pubmed")
+             }
+             else
+             { s data("ipubmed")=""    }
+           }
+           if ($zcvt(sT0142,"l")="wos") 
+           {
+             s data("wos")=sT014a
+             if data("wos")'=""
+             { s data("iwos")="wos:"_$zstrip($zcvt(data("wos"),"l"),"*WP") 
+               s data("wos")= "WOS: "_data("wos")
+              }
+             else { s data("iwos")="" }
+           }
+           if ($zcvt(sT0142,"l")="scopus") 
+           {
+             s data("scopus")=sT014a
+             if data("scopus")'=""
+             {  s data("iscopus")="scopus:"_$zstrip($zcvt(data("scopus"),"l"),"*WP") 
+                s data("scopus")="SCOPUS: "_data("scopus")
+             }
+             else { s data("iscopus")="" }
+           }          
+         }     
+       }
+     } while (c'=0)    
+     
+     s c=0
+     d { 
+         s sT017=$$$getTagXC(.handle,"017",.c) 
+         continue:((sT017="")&&(c'=0))
+         if (sT017'="")
+         { ; pokud mame vyplnene data, muzeme provadet akce 
+           s sT0172=$$$getSubTagStr(sT017,"2")
+           s sT017a=$$$getSubTagStr(sT017,"a")
+           if ($zcvt(sT0172,"l")="doi") 
+           {
+             s data("doi")=sT017a
+             if data("doi")'=""
+             {  s data("idoi")="doi:"_$zstrip($zcvt(data("doi"),"l"),"*WP")
+             
+             }
+             else { s data("idoi")="" }
+           }
+         }
+      } while (c'=0)
+      
+      ; skladani retezce pro vyhodnoceni
+      s s210d=data("i210d")
+      s:(s210d="") s210d=data("i463210d")
+      s s200aShort=data("i200a"),s463200aShort=data("i463200a")
+      s:($l(data("i200a"))>80) s200aShort=$e(data("i200a"),1,60)_"<...>"_$e(data("i200a"),$l(data("i200a"))-20,$l(data("i200a")))  
+      s:($l(data("i463200a"))>80) s463200aShort=$e(data("i463200a"),1,60)_"<...>"_$e(data("i463200a"),$l(data("i463200a"))-20,$l(data("i463200a")))  
+      s sKlic=data("i010a")
+      s sKlic1=data("i011a")
+      s:(sKlic1'="") sKlic1=data("i011e")
+      
+      // rozsirena verze je zatim zakomentovana 
+      // s data("zd1")=data("i970b")_"#"_data("i700a")_"#"_s210d_"#"_sKlic_"#"_data("i215a")_"#"_data("i225a")_"#"_data("i225v")
+      s data("zd1")=data("i970b")_"#"_data("i700a")_"#"_s210d_"#"_sKlic_"#"_sKlic1_"#"_data("i463200v")_"#"_data("i215a")
+      s data("zd2")=s200aShort
+]]></Implementation>
+</Method>
+
+<Method name="VysNDupChec">
+<Description><![CDATA[
+<pre> Metoda sloucici jako vstupni bod pro kontrolu duplicit autorit
+
+Dokumentace: https://arl2.library.sk/wiki_arl/index.php/CAV/v%C3%BDstup_duplicit#Realizace
+
+Parametry
+   pPar - parametry - oddelene carkou
+          1. debag mod - jestli 1, vypisuji se pomocne texty - zatim nepouzity
+
+15.04.20 tt; zalozena nova metoda na zaklade puvodnich VysNDupChec
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pEnvironment:%Binary,pPar:%String=""]]></FormalSpec>
+<PublicList>sOFileWithPath,sExportOpt,sRetMsg,sSelectCrit,sSelectCrit2,sSortFld,cDelimCrit,cDelimSpace,cDelimVals,nRecCount,sClass,sClassList,sSelectCrit2,bCaseSensitive,pnVerboseMode,sSymbExp1</PublicList>
+<ReturnType>%Library.String</ReturnType>
+<Implementation><![CDATA[
+  s pP="",OFN="",pErr=""         ; pomocne promenne
+  
+  ; nacteni parametru, obecna metoda
+  d ##class(User.CavS).repParO(.pP,pPar)                          
+  ; vystupni soubor bude lehce oteviratelny v excelu
+  ; otevreni soubor  
+  d ##class(rep.html.base).repSoubOC(.sRetMsg, .sOFileWithPath, .OFN,1,"_2.csv","CP1250")
+  ; volani metody zpracovavajici vystup
+  d ..VysNDupChecN(.pP,.OFN)
+  ; uzavreni souboru
+  d ##class(rep.html.base).repSoubOC(.sRetMsg, .sOFileWithPath, .OFN,0)     
+  d SetPDefIO^%NLS("UTF8",3)
+  q ""                 ; konec
+]]></Implementation>
+</Method>
+
+<Method name="VysNDupChecN">
+<Description><![CDATA[
+<pre>
+15.04.20 tt; zalozena nova metoda na zaklade puvodnich VysDupChecN
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pP,&OFN]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s prog="Kontrola duplicit: "            ; nejaka uvodni hlavicka
+ d OFN.WriteLine("Program "_prog_" začal "_$$$ShowDTime)
+   
+ ; SPRACOVANIE ZAZNAMOV - definice momocnych promennych
+ s pP("cntRecAll")=0,pP("cntCurrAll")=0,pP("cntDupAll")=0
+ s idCnt=$i(^$$$MarcTempG)  ; pracovny uzol
+ k ^$$$MarcTempG(idCnt)     ; pre ladenie z terminalu 
+ s pP("idCnt")=idCnt 
+ 
+ if ##class(User.Util).XcheckActiveList(0) 
+ {  ; pouzijem aktivny select list - z vystupu
+    s id="", idx=""
+    for  
+    { ; cyklus pro prochazeni vyselektovanych zaznamu
+      s idx=$o(^$$$ListsG($$$ListsActiveSel,$j,idx)),id=idx
+      if $f(id,"*") s id=$p(id,"*",2)   ; odstranit triediaci prefix/sufix
+      q:(id="")
+      
+      s sClass=##class(User.MARC).getCLASS(id)    ; ziskame aktualni tridu 
+      s sT001=##class(User.MARC).getT001(id)      ; ziskame akualni id zaznamu
+       
+      if ('##class(MARC).readX(.handle,sClass,sT001,"T")) 
+      { ; pokud se nepodarilo zaznam nacist, ukoncime
+        s err="ERRCLM002#"_sClass_"*"_sT001 w !,prog_"record "_sClass_"*"_sT001_" not FOUND!" 
+        q
+      }
+      s pP("cntRecAll")=pP("cntRecAll")+1                     ; zvysime pocitadlo nactenych zaznamu 
+
+      ; nacteni vsech potrebnych informaci
+      k data
+      d ..VysNDupChecData(.handle,.data) 
+      s data("seznamID")=";"_id_";"
+
+      s idDup=""
+      if (data("iwos")'="")
+      { ; kontrola duplicity podle indexu pro ID WOS
+        f
+        {
+          s idDup=##class(MARC).getIDByIndex(sClass,"zdi"," "_data("iwos"),idDup)
+          q:'idDup 
+          continue:(idDup=id) 
+          
+          ; kontrola jiz vypsanych zaznamu duplicit
+          continue:($g(^$$$MarcTempG(idCnt,idDup,id))="1")
+          s ^$$$MarcTempG(idCnt,idDup,id)="1",^$$$MarcTempG(idCnt,id,idDup)="1"
+
+          d ..VysNDupChecVypis(.pP, .OFN, .handle, .data,idDup,"duplicita podle WOS ID")
+        }
+      }
+      s idDup=""
+      if (data("iscopus")'="")
+      { ; kontrola duplicity podle ID SCOPUS
+        f
+        {
+          s idDup=##class(MARC).getIDByIndex(sClass,"zdi"," "_data("iscopus"),idDup)
+          q:'idDup 
+          continue:(idDup=id) 
+          
+          ; kontrola jiz vypsanych zaznamu duplicit
+          continue:($g(^$$$MarcTempG(idCnt,idDup,id))="1")
+          s ^$$$MarcTempG(idCnt,idDup,id)="1",^$$$MarcTempG(idCnt,id,idDup)="1"
+ 
+          d ..VysNDupChecVypis(.pP, .OFN, .handle, .data,idDup,"duplicita podle SCOPUS ID")
+        }
+      }
+      s idDup=""
+      if (data("ipubmed")'="")
+      { ; kontrola duplicity podle ID PUBMED
+        f
+        {
+          s idDup=##class(MARC).getIDByIndex(sClass,"zdi"," "_data("ipubmed"),idDup)
+          q:'idDup 
+          continue:(idDup=id) 
+
+          ; kontrola jiz vypsanych zaznamu duplicit
+          continue:($g(^$$$MarcTempG(idCnt,idDup,id))="1")
+          s ^$$$MarcTempG(idCnt,idDup,id)="1",^$$$MarcTempG(idCnt,id,idDup)="1"
+
+          d ..VysNDupChecVypis(.pP, .OFN, .handle, .data,idDup,"duplicita podle PUBMED ID")
+        }
+      }
+      
+      s idDup=""
+      if (data("idoi")'="")
+      { ; kontrola duplicity podle ID DOI
+        f
+        {
+          s idDup=##class(MARC).getIDByIndex(sClass,"zdi"," "_data("idoi"),idDup)
+          q:'idDup 
+          continue:(idDup=id)
+          
+          ; kontrola jiz vypsanych zaznamu duplicit
+          continue:($g(^$$$MarcTempG(idCnt,idDup,id))="1")
+          s ^$$$MarcTempG(idCnt,idDup,id)="1",^$$$MarcTempG(idCnt,id,idDup)="1"
+
+          d ..VysNDupChecVypis(.pP, .OFN, .handle, .data,idDup,"duplicita podle DOI")
+        }
+      }
+      
+      s idDup=""
+      if (data("zd1")'="")
+      { ; provadeni kontroly podle udaju v zaznamu
+        f
+        {
+          s idDup=##class(MARC).getIDByIndex(sClass,"zd1"," "_data("zd1"),idDup)
+          q:'idDup 
+          continue:(idDup=id) 
+   
+          ; kontrola jiz vypsanych zaznamu duplicit
+          continue:($g(^$$$MarcTempG(idCnt,idDup,id))="1")
+          s ^$$$MarcTempG(idCnt,idDup,id)="1",^$$$MarcTempG(idCnt,id,idDup)="1"
+
+          d ..VysNDupChecVypis(.pP, .OFN, .handle, .data,idDup,"")
+        }
+      }
+     
+   }
+ }
+  
+ d OFN.WriteLine(""),OFN.WriteLine("")    ; vypisy na konci souboru
+ d OFN.WriteLine("Spracované záznamy: "_pP("cntRecAll"))
+ d OFN.WriteLine("Počet duplicit: "_pP("cntDupAll"))
+ d OFN.WriteLine("Program "_prog_" skončil v "_$$$ShowDTime)
+ k ^$$$MarcTempG(idCnt)     ; uklidime po sobe
+]]></Implementation>
+</Method>
+
+<Method name="VysNDupChecVypis">
+<Description><![CDATA[
+<pre> Metoda na vypis samotne duplicity do CSV
+
+23.04.20 tt; doplneny parametry a preusporadan vystup
+15.04.20 tt; zalozeno
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pP,&OFN,&handle,&data,pidxDup,pDuvodD]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ if $g(pP("VypHlav"))=""
+ { ; VYPIS VYSLEDKOV 
+   ; vypiseme hlavicku, ktera bude v csv souboru
+
+   d OFN.WriteLine("""Sysno"";""ZpusobDuplicity"";""ZpZveřejnění"";""VlastníkZáznamu"";""BiblCit"";""RokVydání"";""Rok sběru"";""RIV"";""Poznámka"";""DOI"";""ID WOS"";""IS SCOPUS"";""ID_PUBMED"";""OrigNázev"";""Nazev_ZdrDok"";""ISSN"";""E-ISSN"";""ISBN"";""Strany_ZdrDok"";""Cislo clanku"";""PočStran""")
+                    ;T001 ;                      ; 970b           ;    C26$e          ;   zf       ; T16$r       ; C26d       ; C26b  ; 300a       ;017a    ;014a       ; 014a       ;014a        ;      200$a  ;463/200a        ,011$a     ;  011$e   ;010$a  ;463/200v        ; C82a            ;215 $a 
+   s pP("VypHlav")="Informace vypsana"                  ; priznak, ze jsme si hlavicku jiz vypsa
+ }
+
+ q:$f(data("seznamID"),pidxDup)
+ s data("seznamID")=data("seznamID")_";"_pidxDup_";"  ; pridani do seznamu duplicit
+
+ if (##class(User.MARC).getDATAX(.handleDup,pidxDup,"T"))
+ {  ; nacteme si duplicitni zaznam
+    s sT001Dup=$$$HandleT001(handleDup)
+
+    ; nacteme informace o duplicitnim zaznamu
+    k dataDup
+    d ..VysNDupChecData(.handleDup,.dataDup)
+    q:((data("zd1")'=dataDup("zd1"))&&(pDuvodD=""))
+    q:((data("zd2")'=dataDup("zd2"))&&(pDuvodD=""))
+    ; filtrovani pro NHU-C
+    q:((data("C26e")="NHU-C")||(dataDup("C26e")="NHU-C"))
+    ; musi byt jen data, ktere se exportuji do asep
+    q:((data("C26c")'="1")||(dataDup("C26c")'="1"))
+    ; 05.05.20 tt; pridano osetreni na data u duplicit, dle emailu od pani Dolezelove
+    q:((data("970b")="DATA")||(dataDup("970b")="DATA"))
+    ; 12.06.20 tt; provedeno osetreni rozpracovanych zaznamu, aby nesly do duplicit    
+    q:((data("969f")="N")||(dataDup("969f")="N"))    
+    
+    ; pokud je pDuvodD prazdne, je to duplicita podle udaju v zaznamu
+    s:(pDuvodD="") pDuvodD="Duplicita podle údajů v záznamu"
+
+    if $g(data("VypHlavnihoZaznamu"))=""
+    {
+       s sBiblCit=$tr($$$getTagX(.handle,"Tbca"),";",":")
+       s sBiblCit=$$$strswap(sBiblCit,"<em>",""), sBiblCit=$$$strswap(sBiblCit,"</em>","")     
+       s sBiblCit=$$$strswap(sBiblCit,"<strong>",""), sBiblCit=$$$strswap(sBiblCit,"</strong>","") 
+       s sBiblCit=$$$strswap(sBiblCit,"<u>",""), sBiblCit=$$$strswap(sBiblCit,"</u>","") 
+       s sBiblCit=$$$strswap(sBiblCit,".b.",""), sBiblCit=$$$strswap(sBiblCit,"./b.","") 
+
+       d OFN.WriteLine(""" "_data("001")_""";"""_pDuvodD_""";"""_data("970b")_""";"""_data("C26e")_""";"""_sBiblCit
+                        _""";"""_data("T16r")_""";"""_data("C26d")_""";"""_data("C26b")_""";"""_data("300a")
+                        _""";"""_data("doi")_""";"""_data("wos")_""";"""_data("scopus")_""";"""_data("pubmed")
+                        _""";"""_data("200a")_""";"""_data("463200a")_""";"""_data("011a")_""";"""_data("011e")
+                        _""";"""_data("010a")_""";"""_data("463200v")_""";"""_data("C82a")_""";"""_$tr(data("215a"),".str","")
+                        _"""")
+       s data("VypHlavnihoZaznamu")="vypsan hlavni zaznam"                  ; priznak, ze jsme si hlavicku jiz vypsali
+    }
+    b:(dataDup("scopus")'="")
+    ; napocitavani poctu duplicit
+    s pP("cntDupAll")=pP("cntDupAll")+1
+    s sBiblCit=$tr($$$getTagX(.handleDup,"Tbca"),";",":")
+    s sBiblCit=$$$strswap(sBiblCit,"<em>",""), sBiblCit=$$$strswap(sBiblCit,"</em>","")     
+    s sBiblCit=$$$strswap(sBiblCit,"<strong>",""), sBiblCit=$$$strswap(sBiblCit,"</strong>","") 
+    s sBiblCit=$$$strswap(sBiblCit,"<u>",""), sBiblCit=$$$strswap(sBiblCit,"</u>","") 
+    s sBiblCit=$$$strswap(sBiblCit,".b.",""), sBiblCit=$$$strswap(sBiblCit,"./b.","") 
+         
+    d OFN.WriteLine(""" "_dataDup("001")_""";"""_pDuvodD_""";"""_dataDup("970b")_""";"""_dataDup("C26e")_""";"""_sBiblCit
+                        _""";"""_dataDup("T16r")_""";"""_dataDup("C26d")_""";"""_dataDup("C26b")_""";"""_dataDup("300a")
+                        _""";"""_dataDup("doi")_""";"""_dataDup("wos")_""";"""_dataDup("scopus")_""";"""_dataDup("pubmed")
+                        _""";"""_dataDup("200a")_""";"""_dataDup("463200a")_""";"""_dataDup("011a")_""";"""_dataDup("011e")
+                        _""";"""_dataDup("010a")_""";"""_dataDup("463200v")_""";"""_dataDup("C82a")_""";"""_$tr(dataDup("215a"),".str","")
+                        _"""")
+  }
+]]></Implementation>
+</Method>
+
+<Method name="VysDupChecNTEST">
+<Description><![CDATA[
+<pre>
+26.08.10 tt; metoda zalozena
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    ; d ##class(User.CavVf).VysDupChecNTEST()
+    s gnDEBUG=1
+    //s ret=##class(Util).DBCommand("report SPCommon exporta CavUnEpca,0 «¤»!pra¤=¤UIACH-O«!exp¤=¤a C26e  . 0 . ##class(User.CavVf).VysNDupChec(.pEnvironment,"""") 1 . . . . ."_$c(10)_"tt"_$c(10)_"62.240.178.252 ## i2ws 2265OGro00 aRL ## F-CAV_36CFC76EE897B80F ## standalone v.2.1.163n1 (03.08.2010)"_$c(10)_"CMD_CAV_UN_EPCA")
+    //s ret=##class(User.Util).DBCommand("report ReportCommon exporta cav_is_user,cav_un_tablesd CavUnEpca,0 «¤»!exp¤=¤a«!pra¤=¤UBO-W C26e . . 0 . ##class(User.CavVf).VysNDupChec(.pEnvironment,"""") 1 . . . . . REPORTS_EPCA,CHECKDUP"_$c(10)_"arl"_$c(10)_"31.192.66.98 ## i2ws n1ZUrVik6B aRL ## ## standalone v.4.1.247b  (06.06.2019)"_$c(10)_"CMD_CAV_UN_EPCA")
+    s ret=##class(User.Util).DBCommand("report ReportCommon exporta cav_is_user,cav_un_tablesd CavUnEpca,0 «¤»!prav¤=¤UBO-W«!exp¤=¤a«!exp¤=¤r C26e . . 0 . ##class(User.CavVf).VysNDupChec(.pEnvironment,"""") 1 . . . . . REPORTS_EPCA,CHECKDUP"_$c(10)_"arl"_$c(10)_"31.192.66.98 ## i2ws csYATpC14z aRL ## ## standalone v.4.1.247b  (06.06.2019)"_$c(10)_"CMD_CAV_UN_EPCA")
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+</Storage>
+</Class>
+</Export>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 865U)" ts="2021-07-09 13:00:56">
+<Class name="content.list">
+<Description><![CDATA[
+<pre>
+
+26.04.19 ln; pridano RESTORE
+11.12.14 ln; prechod na CSG2
+13.11.12 ln; sablone predana pripona souboru
+30.10.12 kp; Smazani internich JS.
+04.01.12 kp; parametr robots a CurrentScripts
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>65934,46829.318297</TimeChanged>
+<TimeCreated>62315,35102.370952</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID} "contlist"]]></Description>
+<Default>contlist</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+   s data("RESTORE")=##class(i2.base.request).restore("idx,iset")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
+
+11.12.14 ln; prechod na CSG2
+13.11.12 ln; sablone predana pripona souboru
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("TAB")=$$$GETREQVAR("tab")
+  s:data("TAB")="" data("TAB")=1
+  s data("STATUS")=""
+  d ..getSubSite(.data)  
+  
+  ; TODO dispatch
+  if data("STATUS")="" {
+    s data("ERRORS")="no status for tab"
+    q
+  }
+  
+  ; TODO
+  s userT001=##class(i2.access).getLoginId()
+    
+  d ##class(content.api).selectUserStatus(.output,userT001,data("STATUS"))
+  
+  /*
+  w !,"<pre>"
+  zw output
+  w !,"</pre>"
+  */
+  
+  s item="", seq=0
+  f { s item=$o(output(item)) q:item=""
+    s key=$g(output(item,"key"))
+    s repo=$g(output(item,"repository"))
+    
+    ; resi mimo jine pravo  uzivatele na repozitar
+    continue:'##class(content.api).engineRead(repo,key,.array)
+    
+    ; pravo editovat pro zobrazeni linku na editaci
+    s data("EDIT")=##class(content.api).engineEdit(repo,key,.array)
+    
+    
+    /*
+    w !,"<pre>"
+    zw array
+    w !,"</pre>"
+    */
+    
+    ; TODO
+    s idx=##class(User.Util).objectName2lname(array("class"))_"*"_array("t001")
+    if '$d(records(idx)) {
+      continue:'##class(User.MARC).readX(.handle,array("class"),array("t001"))
+      s title=##class(i2.data.layer).title(.handle)
+      s records(idx)=##class(i2.html.base).escape(title) ; XSS
+    }       
+    
+    //s status=$g(array("status"),"empty")
+    
+    
+    ; MOZNA SE VYUZIE PRO ROZDELENI NA REPOZITARE
+    /*
+    if '$d(index(status,idx)) {
+      s seq=$g(count(status))+1
+      s count(status)=seq
+      s index(status,idx)=""  
+    } else {
+      s seq=$g(count(status))
+    }       
+    s count(status,idx)=$g(count(status,idx))+1
+    s tree(status,seq)=idx
+    */
+    
+    if '$d(index(idx)) {
+      s seq=seq+1
+      s index(idx)=""
+      s tree(seq)=idx
+    }       
+    s c=$g(count(idx))+1
+    s count(idx)=c    
+    
+    ; priponu souboru
+    s sPomNaS=array("origname")
+    s extension=$zcvt($p(array("origname"),".",$l(array("origname"),".")),"L")
+    if (extension="jpg") || (extension="gif") || (extension="png") || (extension="bmb") || (extension="jpeg") {
+      s isImage=1
+    } else {
+      s isImage=0
+    }    
+    
+    s keys(idx,c,"repo")=repo
+    s keys(idx,c,"key")=key
+    s keys(idx,c,"origname")=array("origname")
+    s keys(idx,c,"isimage")=isImage    
+    ; 11.12.14 ln; prechod na CSG2
+    s keys(idx,c,"csg")=$zcvt(##class(content.csg2).getLink(repo,key),"I","HTML")    
+    ; 13.11.12 ln; sablone predana pripona souboru
+    s keys(idx,c,"extension")=extension
+    
+    ; TODO pripadne vyjmenovat jednotlive soubory       
+  } 
+  
+  s node="", seq=1
+  f { s node=$o(tree(node),1,idx) q:node=""
+    s data("CONTENT",seq)=$lb(idx,records(idx),count(idx))
+    m data("CONTENT",seq)=keys(idx)
+    s seq=seq+1
+  }
+  
+  d ..userData(.data)  
+  
+  /*
+  w !,"<pre>"
+  zw tree
+  zw count
+  zw keys
+  zw data
+  w !,"</pre>"
+  */
+]]></Implementation>
+</Method>
+
+<Method name="userData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[  d ##class(content.human).xlate(.data,"UT_ASEP_STATUS_SER_INFO")
+]]></Implementation>
+</Method>
+
+<Method name="getSubSite">
+<Description><![CDATA[
+<pre>
+Záložky
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data:%Binary]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("TAB")=$$$GETREQVAR("tab")
+  s:data("TAB")="" data("TAB")="1"  ; default 
+    
+    d ##class(content.human).stable(.array,"UT_CONTENT_LIST_TAB")
+    s node=""
+    f { s node=$o(array("UT_CONTENT_LIST_TAB",node),1,val) q:node=""
+      s status=$li(val,2)
+      s:node=data("TAB") data("STATUS")=status
+      s data("SUBMENU",node,"pageid")=..#PageID
+      s data("SUBMENU",node,"param")="tab="_node
+      s data("SUBMENU",node,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID, data("SUBMENU",node,"param"))
+      s data("SUBMENU",node,"title")=""
+      s data("SUBMENU",node,"text")=$li(val,3)
+      s data("SUBMENU",node,"active")=$s(data("TAB")=node:"1",1:"")
+      s data("SUBMENU",node,"tpl")=""
+      s data("SUBMENU",node,"tab")=node
+      s data("SUBMENU")=node
+    }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865_3U)" ts="2022-11-06 23:04:39">
+<Class name="content.chronology">
+<Description><![CDATA[
+<pre> chronologie contentServeru
+
+06.11.22 kp; Doplnen data("DESCRIPTION")
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66419,82950.795576</TimeChanged>
+<TimeCreated>64890,48702.71976</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contchro</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+   s data("RESTORE")=##class(i2.base.request).restore("repo,key,idx,iset")
+]]></Implementation>
+</Method>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  q:ret'="" ret
+
+  if $$$GETREQVAR("type")="json" {
+    s %response.ContentType="application/json"
+    s %response.CharSet="UTF-8" 
+    d %response.SetHeader("Content-Disposition","attachment; filename="""_..#PageID_".json""")
+    $$$SETREQVAR("st","ajax")
+  }
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("DESCRIPTION")=""
+  s data("IDX")=$$$GETREQVAR("idx")
+  s data("TYPE")=$$$GETREQVAR("type")
+  s data("KEY")=$$$GETREQVAR("key")
+  s data("TESTDIR")=""
+  s data("FILENAME")="" // Název souboru
+  s data("RECORDNAME")="" // Název záznamu
+  
+  if ($$$GETREQVAR("test")=1) {
+     s data("TESTDIR")="test."
+     s data("JSONURL")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,data("RESTORE")_"&st=ajax&type=json&test=1")
+  } else {
+     s data("JSONURL")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,data("RESTORE")_"&st=ajax&type=json")
+  }  
+  
+  d ..fetch(.data)
+  
+  d ..userData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="fetch">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  if '##class(i2.dblink).recordReadLX(.handle,data("IDX")) {
+    s data("ERRORS")=data("ERRORS")_" "_..tx("ERRORRECORD")
+    q 0
+  }
+  s data("RECORDNAME")=##class(i2.data.layer).title(.handle)
+  
+  s repo=$$$GETREQVAR("repo"), key=$$$GETREQVAR("key")
+  if '##class(content.api).get(.array,repo,key) {
+    s data("ERRORS")=data("ERRORS")_" "_..tx("ERRORFILE")
+    q 0
+  }
+  s data("FILENAME")=array("origname")
+  
+  q:(data("TYPE")'="json")&&($$$GETREQVAR("_ladenka")'=1) 1 ; optimalizace
+  
+  &sql(DECLARE C1 CURSOR FOR
+    SELECT ID
+    INTO :id
+    FROM content.stat 
+    WHERE Repo = :repo AND CKey = :key AND Operation <> 'read'
+  )
+  
+  s seq=0
+  &sql(OPEN C1)
+  for { &sql(FETCH C1) q:SQLCODE  
+    s obj=##class(content.stat).%OpenId(id)
+    continue:'$isobject(obj)
+    
+    s seq=seq+1
+    s data("CHRONO",seq,"op")=obj.Operation
+    s data("CHRONO",seq,"opname")=..tx($zcvt(obj.Operation,"U"))
+    s data("CHRONO",seq,"datetime")=obj.Stamp
+    s tmp=obj.Stamp
+    s data("CHRONO",seq,"datehuman")=+$e(tmp,9,10)_"."_+$e(tmp,6,7)_"."_$e(tmp,1,4)_" "_$p(tmp," ",2)
+    s data("CHRONO",seq,"status")=##class(User.Util).sXlate("UT_CONTENT_STATE",obj.Status,"N",$$$IPREF)
+    
+    s userid=##class(User.MARC).existsLT001(obj.Idx)
+    if userid {
+      s data("CHRONO",seq,"user")=$zcvt(##class(User.MARC).getIdxVal(##class(User.Util).lname2objectName($p(obj.Idx,"*")),userid,"na"),"W")
+    } else {
+      s data("CHRONO",seq,"user")=obj.Idx
+    }
+    
+    d obj.getArray(.tmparray)
+    zkill tmparray
+    k tmparray("status"), tmparray("checksum")
+    m chrono(seq)=tmparray
+  }
+  &sql(CLOSE C1)
+    
+  ;m orig=array
+  
+  s node=""
+  f { s node=$o(chrono(node),-1) q:node=""
+    s meta="", seq=0
+    f { s meta=$o(chrono(node,meta),1,val) q:meta=""
+      s seq=seq+1
+      s name=..txn("T_"_meta) ; preklad
+      s:name="" name=meta
+      s data("CHRONO",node,seq,"name")=name
+      s data("CHRONO",node,seq,"from")=val
+      s data("CHRONO",node,seq,"to")=$g(array(meta))
+      s array(meta)=val
+      ;k orig(meta)
+    }
+  }
+  
+  /*w !,"<pre>"  
+  zw chrono
+  w !,"</pre>"
+  
+  ; neuzivatelska metadata
+  d ##class(i2.base.request).pure(.orig)
+  d ##class(content.engine).pure(.orig)
+  d ##class(content.engine).purge(.orig)
+  
+  s node=$o(chrono(node),-1), seq=$o(data("CHRONO",node,""),-1) 
+  f { s meta=$o(orig(meta),1,val) q:meta=""
+      s seq=seq+1
+      s data("CHRONO",node,seq,"name")=meta      
+      s data("CHRONO",node,seq,"to")=val
+  }*/
+  
+  q 1
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-06-09 08:54:47">
+<Class name="content.csg">
+<Description><![CDATA[
+<pre> Content Server Gateway brana
+
+09.06.23 ln; podpora transparentniho prihlaseni pres 7
+19.04.23 ln; login kategorie NOWATER
+15.08.22 ln; fix pristupu "S"
+06.10.21 ln; moznost opakovaneho stazeni jedne stranky kvuli chromu
+08.07.21 ln; zabezpeceny dokument take jako typ pristupu
+29.05.20 ln; secure pipeline
+24.01.18 ln; konkretni klient pro pimrepo do auditu misto statistik
+06.01.15 ln; inkrement poctu stazeni pouze pri uspechu
+01.09.14 ln; podpora volani z content.csg2
+17.10.13 ln; podpora pro watermark
+24.05.13 ln; obrazky rovnou zobrazit a ne nabidnout ke stazeni
+28.11.12 ln; volba BIGCONTENT pro triciselne adresare
+31.10.12 ln; podpora verzovani
+26.09.12 ln; podpora pro povoleno se souhlasem
+</pre>]]></Description>
+<IncludeCode>I2</IncludeCode>
+<Super>%CSP.Page</Super>
+<TimeChanged>66634,29349.8668352</TimeChanged>
+<TimeCreated>62185,35704.618863</TimeCreated>
+
+<Method name="OnPreHTTP">
+<Description><![CDATA[
+Event handler for <b>PreHTTP</b> event: this is invoked before
+the HTTP headers for a CSP page have been sent.  All changes to the
+<class>%CSP.Response</class> class, such as adding cookies, HTTP headers,
+setting the content type etc. must be made from within the OnPreHTTP() method.
+Also changes to the state of the CSP application such as changing
+%session.EndSession or %session.AppTimeout must be made within the OnPreHTTP() method.
+It is prefered that changes to %session.Preserve are also made in the OnPreHTTP() method
+as this is more efficient, although it is supported in any section of the page.
+Return <b>0</b> to prevent <method>OnPage</method> from being called.]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Boolean</ReturnType>
+<ServerOnly>1</ServerOnly>
+<Implementation><![CDATA[
+  s key=$$$GETREQVAR("key")
+  s repo=$$$GETREQVAR("repo")
+  s token=$$$GETREQVAR("token")
+  s origver=$$$GETREQVAR("version")
+  s version=origver
+  s:version=1 version=""
+  
+  if (key="") || (repo="") {
+    s %response.Status="404 Not Found"
+    d %response.SetHeader("Status","404 Not Found")
+    q 1
+  }  
+  
+  ; 01.09.14 ln; podpora volani z content.csg2
+  if $g($$$CALLBACK)'="content.csg2" {    
+    d ##class(i2.common).arlsidPreInit()  
+    s bGotCookie=##class(i2.common).arlsidInit()
+    
+    ; CSG neprovadi sessionSwitchCheck(), protoze nema jak vratit novou session
+    ; pokud se nepouzivaji cookies
+    if 'bGotCookie && ($$$GETREQVAR("OCSPCHD")'="") {
+      d ##class(i2.audit.storage).increment("p-csg","ocspchd")
+      s oldSession=##class(i2.common).sessionCookie2SID($$$GETREQVAR("OCSPCHD"))    
+      if %session.SessionId'=oldSession {
+        s %session.SessionId=oldSession
+        s %arlsid=%session.SessionId
+      }
+    } else {
+      d ##class(i2.audit.storage).increment("p-csg","csp1")
+    }  
+  
+    s sErr=""
+    d ##class(i2.common).preHTTP(.sErr)
+    s bLogin=0
+  } else {
+    s bLogin='##class(i2.access).isLoggedIn()
+  }
+  
+  if version="" {
+    s ret=##class(content.api).engineRead(repo,key,.array)
+  } else {
+    ; 31.10.12 ln; podpora verzovani
+    ; u starsich verzi neni podpora tokenu
+    s token=""
+    s runtime("oldversion")=version    
+    s ret=##class(content.api).engineRead(repo,key,.array,.runtime)
+  }
+  d ##class(i2.audit.storage).increment("p-csg",ret)
+  
+  ; 09.06.23 ln; podpora transparentniho prihlaseni pres 7
+  s:(ret=7)&&##class(i2.access).isLoggedIn() ret=1
+  
+  if (origver'="") && (ret'=4) {    
+    if 'ret {
+      s %response.Status="404 Not Found"
+      d %response.SetHeader("Status","404 Not Found")
+    } else {
+      s %response.Status="403 Forbidden"
+      d %response.SetHeader("Status","403 Forbidden")
+    }
+    q:bLogin "login"
+    
+    d ##class(i2.audit.storage).increment("p-csg","notversion")
+    d ##class(content.stat).addRead(.array,0)    
+    q 1
+  }
+  
+  ; pristup pres token
+  if (token'="") && 'ret {
+    d ##class(i2.audit.storage).increment("p-csg","token")
+    s tvalue=$g(array("tokens",token))
+    if tvalue {
+      s ret=1
+      s tvalue=tvalue-1
+      if tvalue {
+        s array("tokens",token)=tvalue
+      } else {
+        k array("tokens",token)
+      }
+      s:'##class(content.api).update(.array) ret=0
+    }
+  }
+  
+  if 'ret || (ret=2) || (ret>4) {
+    s %response.Status="404 Not Found"
+    d %response.SetHeader("Status","404 Not Found")
+    q:bLogin "login"
+    d ##class(content.stat).addRead(.array,0)
+    q 1
+  }
+  elseif (ret=3) && '##class(content.api).isApproval(repo,key) {
+    d ##class(i2.audit.storage).increment("p-csg","notapproval")
+    s %response.Status="403 Forbidden"
+    d %response.SetHeader("Status","403 Forbidden")
+    q 1
+  }
+  
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",%ipac2("ipref"),"b")
+  if path="" {
+    s %response.Status="404 Not Found"
+    d %response.SetHeader("Status","404 Not Found")
+    q 1
+  }
+ 
+  s sPathSep=##class(User.Util).getPathSepp()
+  if $e(path,$l(path))'=sPathSep { s path=path_sPathSep }
+  
+  ; 28.11.12 ln; volba BIGCONTENT pro triciselne adresare
+  s bigContent=$$$I2isOp("BIGCONTENT")
+  if 'bigContent {  
+    s dev=path_$e(key,1,2)_sPathSep_$e(key,3,99)
+  } else {
+    s dev=path_$e(key,1,3)_sPathSep_$e(key,4,99)
+  }
+  
+  ; 19.04.23 ln; login kategorie NOWATER
+  if '##class(i2.ws.auth).isLoginOptionP("NOWATER",##class(i2.ws.auth).getLoginCateg()) {
+    ; 17.10.13 ln; podpora pro watermark
+    s watermark=$g(array("watermark"))
+    if (watermark'="") && (watermark'="false") && (watermark'=0) {
+      d ##class(i2.audit.storage).increment("p-csg","watermark")
+      s dev=dev_"_water"_watermark
+    }
+  }
+  
+  s ver=$g(array("ver"))
+  
+  if version'="" { 
+    d ##class(i2.audit.storage).increment("p-csg","version")
+    s dev=dev_"_"_version
+  } 
+  elseif (origver'=1) && (ver'=1) && (ver'="") {
+    s dev=dev_"_"_ver
+  }
+  
+  ; 15.08.22 ln; fix pristupu "S"
+  ; 08.07.21 ln; zabezpeceny dokument take jako typ pristupu
+  ; 29.05.20 ln; secure pipeline
+  if (array("type")="secure") || (($g(array("accession"))="S") && ##class(i2.base.tpl).isPage("contreader")) {
+    s keys=$$$GETSESSVAR("fulltextkey")
+    s savedkey=$p(keys,"|",2)
+    ;s ftl=$$$GETSESSVAR("fulltextlock")
+    ;s delta=$zh-ftl
+    ;s:delta>5 ftl=""
+    s page=$$$GETREQVAR("page")
+    s:'page page=1
+    s fixedpage=$p(keys,"|",3)
+    ; 06.10.21 ln; moznost opakovaneho stazeni jedne stranky kvuli chromu
+    if fixedpage {
+      s:fixedpage'=page savedkey=""
+      s:$p(keys,"|",4)'=key savedkey=""
+    }
+    
+    ; ochrana proti hromadnemu stazeni
+    if (savedkey="") || (savedkey'=$$$GETREQVAR("skey")) { ;|| ($p(ftl,"|",2)="q") {
+      s %response.Status="404 Not Found"
+      d %response.SetHeader("Status","404 Not Found")
+      q 1
+    }
+    $$$SETSESSVAR("fulltextkey",$p(keys,"|",1,2)_"|"_page_"|"_key)
+    
+    ;if ftl { ; minimale 5s na stranku
+    ;  $$$SETSESSVAR("fulltextlock",$zh+5-delta_"|q")
+    ;  h 5-delta
+    ;}
+    ;$$$SETSESSVAR("fulltextlock",$zh_"|h")
+        
+    s dev=dev_sPathSep_"secure-"_$tr($j(page,$normalize($zlog($g(array("pgcount"),1)),-1)+1)," ",0)_".jpg"
+    s %response.ContentType="image/jpeg"
+  } else {
+    s ext=array("extension")
+    s dev=dev_"."_ext
+    s ctype=array("ctype")
+    s %response.ContentType=array("ctype")
+  
+    if (ext="pdf") {
+      s %response.ContentType="application/"_ext
+    }
+  }
+  
+  ; 24.05.13 ln; obrazky rovnou zobrazit a ne nabidnout ke stazeni
+  s filename=##class(CFS.Base).TranslateToASCII(array("origname"))
+  d %response.SetHeader("Content-Disposition","inline; filename="""_filename_"""")
+  
+  s %file=##class(%FileBinaryStream).%New()
+  s %file.Filename=dev
+  ; TODO prava  
+  
+  s size=%file.SizeGet()
+  if size=0 {
+    d ##class(i2.audit.storage).increment("p-csg","notfile")
+    s %response.Status="404 Not Found"
+    d %response.SetHeader("Status","404 Not Found")
+    s %response.ContentType="text/html"
+    ;s %response.CharSet="utf-8" 
+    d %response.DeleteHeader("Content-Disposition")
+    q 1
+  }  
+  
+  ; 06.01.15 ln; inkrement poctu stazeni pouze pri uspechu
+  s ret=##class(content.api).increment(repo,key,,version)
+  if repo'="pimrepo" {
+    d ##class(content.stat).addRead(.array,ret)
+  }
+  elseif ret && ($p(##class(i2.common).getIP(),".",1,3)="37.9.169") {    
+    ; 24.01.18 ln; konkretni klient pro pimrepo do auditu misto statistik
+    d ##class(i2.audit.storage).increment("content-pimrepo","read-"_array("type"))
+  } else {
+    d ##class(content.stat).addRead(.array,ret)
+  }
+  
+  s %response.ContentLength=size
+  
+  Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  ; TODO je otazkuou jestli vubec neco vracet kdyz se ocekava obrazek
+  if %response.Status="404 Not Found" {
+    w "404 Not Found"
+  }
+  elseif %response.Status="403 Forbidden" {
+    if $$$GETREQVAR("version")="" {
+      s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contapp","repo="_$$$GETREQVAR("repo")_"&amp;key="_$$$GETREQVAR("key"))
+      w "For access go <a href="""_href_""">here</a>"
+    } else {
+      w "403 Forbidden"
+    }
+  } else {  
+    d %file.OutputToDevice()
+  }
+  
+  Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

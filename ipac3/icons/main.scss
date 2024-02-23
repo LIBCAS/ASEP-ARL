@@ -1,0 +1,18 @@
+﻿/**
+ * @file IKONKY I3 aplikaci
+ * @example <span class="icon-search" aria-hidden="true"></span>
+*/
+
+$fonts-dir: "../icons/";
+
+/*
+ <b class="x-menu-item-icon icon-about"></b>
+*/
+
+.x-menu-item-icon {
+    position: absolute;
+    top: 10px;
+    line-height: 0;
+    left: 3px;
+    background-image: none;
+}

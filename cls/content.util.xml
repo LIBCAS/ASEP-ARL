@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-03 13:38:34">
+<Class name="content.util">
+<Description><![CDATA[
+<pre> X() prikazy pro spravu content a image serveru
+
+03.04.23 ln; udrzeni terminalovej session pri simulaci
+15.07.15 ln; pridana moznost vypsat runtime metadata
+</pre>]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<TimeChanged>66567,49016.7180958</TimeChanged>
+<TimeCreated>63426,33322.32534</TimeCreated>
+
+<Method name="help">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  w !,"cont                                    -- help"
+  w !,"cont l|la [<prefix>]                    -- list matadata on active select"
+  w !,"cont r|u|e|d|s|c|runtime [<ipadrr>] [<user001>] -- simulation of operation"
+  w !,"     read, upload, edit, delete, state, change, runtime metadata"
+  w !,"cont chro [<statid>|<key>]              -- vypis chronologie zmen"
+  w !,"cont okx [update|force|delete|reset]          -- okcz / oksk"
+  w !,"cont export <repo> [<file>] [<from>] [<to>] -- export (all) metadata in xml"
+  w !,"     from, to: YYYYMMDD"
+]]></Implementation>
+</Method>
+
+<Method name="dispatch">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>param:%String</FormalSpec>
+<Implementation><![CDATA[
+  s param=$zstrip(param,"<=>W")
+  s param=$p(param," ",2,999)
+  s param1=$p(param," ")
+  s params=$p(param," ",2,999)
+  
+  ;w !,param
+  
+  if (param="") || (param1="help") {
+	d ..help()
+  }
+  elseif (param1="l") || (param1="list") {
+    d ..list(params)
+  }
+  elseif (param1="la") {
+    d ..list(params,1)
+  }
+  elseif (param1="r") || (param1="u") || (param1="e") || (param1="d")
+      || (param1="s") || (param1="c") || (param1="runtime") {
+    d ..simulation(param1,params)
+  }
+  elseif param1="chro" {
+    d ..chronology(params)
+  }
+  elseif param1="okx" {
+    d ..okx(params)
+  }
+  elseif param1="export" {
+	d ..export(params)
+  } else {
+    w !,"unknown command: cont "_param1 
+  }
+]]></Implementation>
+</Method>
+
+<Method name="list">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>param,all:%Boolean=0</FormalSpec>
+<Implementation><![CDATA[
+  q:'##class(User.Util).XcheckActiveList()
+  
+  s pref=$p(param," ")
+  s len=$l(pref)
+  
+  s rid="", seq1=0
+  f { s rid=$o(^$$$ListsG($$$ListsActiveSel,$j,rid)) s id=rid q:id=""
+    s:$f(id,"*") id=$p(id,"*",2) ; sorted
+    s class=##class(User.MARC).getCLASS(id)
+    continue:class="CmRecycled"
+    s t001=##class(User.MARC).getT001(id)    
+    w !,class_" "_t001
+    k output
+    s seq1=seq1+1   
+    
+    s rset = ##class(%ResultSet).%New()
+    s rset.ClassName = "content.metadata"
+    s rset.QueryName = "RecAllTrue"
+    d rset.Execute(class,t001)
+    s seq2=0
+    
+    While (rset.Next(.sc)) {	
+      q:'$SYSTEM.Status.IsOK(sc)      
+      s list=rset.Data("Array")      
+      s cid=rset.Data("ID")
+      s version=rset.Data("Version")
+      if 'all && (version'="") { continue }
+      
+      s seq2=seq2+1, seq1=0            
+      d ##class(content.engine).deserial(.array,list)
+      w !,"  "_seq2_": "_cid_","_$g(array("repository"))_","_$g(array("key"))_","_version
+      s obj=##class(content.metadata).%OpenId(cid)
+      if '$isobject(obj) {
+        w !,"  ERROR: can't open cid=",cid
+        continue
+      }
+      s node=pref
+      f { s node=$o(array(node),1,val) q:node=""
+        if len && ($e(node,1,len)'=pref) { q }
+        w !,"    "_node_": "_val
+      }
+      
+      if '(seq2#5) {
+	    w !,"--more (q to quit for "_t001_")--" 
+        read more
+        if $e($zcvt(more,"L"))="q" {
+          s seq2=0
+          q
+        }
+      }
+    }    
+    
+    if seq2 { ;|| (seq1 && '(seq1#5)) {
+      w !,"--more (q to quit)--" 
+      read more
+      q:$e($zcvt(more,"L"))="q"
+    }  
+  }
+]]></Implementation>
+</Method>
+
+<Method name="simulation">
+<Description><![CDATA[
+<pre> Simulace operace contentServeru
+
+03.04.23 ln; udrzeni terminalovej session pri simulaci
+15.07.15 ln; pridana moznost vypsat runtime metadata
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>operation,param</FormalSpec>
+<Implementation><![CDATA[
+  s ip=$p(param," ",1)
+  s user=$p(param," ",2) 
+  
+  s rid="", seq1=0, more=0
+  f { s rid=$o(^$$$ListsG($$$ListsActiveSel,$j,rid)) s id=rid q:id=""
+    s:$f(id,"*") id=$p(id,"*",2) ; sorted
+    s class=##class(User.MARC).getCLASS(id)
+    continue:class="CmRecycled"
+    
+    if seq1=0 {
+      s ictx=$zcvt(##class(User.Util).getClassPrefixParam(class),"L")
+      $$$SetupSessionTask 
+      ; 03.04.23 ln; udrzeni terminalovej session pri simulaci
+      m tmp=^$$$MarcTempG("get_param",$$$JobID)
+      d ##class(i2.common).sessionSetup("CONTSIM",ictx,1)
+      m ^$$$MarcTempG("get_param",$$$JobID)=tmp
+      
+      $$$SETREQVAR("_session_type",$$$SessionTypeI2)
+      d ##class(i2.init).batchinit(ictx)
+      d ##class(i2.base.config).setupMain()
+      //$$$SETSESSVAR("ictx",ictx)
+      //$$$SETSESSVAR("language",1)
+      if ip'="" {
+        s %request.CgiEnvs("REMOTE_ADDR")=ip
+        $$$SETSESSVAR($$$I2StoredSessionIP,ip)
+      }
+      d ##class(i2.ui.menu).setupVersion()
+      
+      if (user'="") && ##class(User.MARC).readX(.h,$$$IPREF_"IsUser",user,"T") {
+	    s sName=##class(User.MARC).getTagX(.h,"100a")
+        s:sName="" sName="[? "_user_"]"
+        s sEmail=##class(User.MARC).getTagX(.h,"100e")
+	    s sCateg=$tr(##class(User.MARC).getTagX(.h,"T04a",-1),$c(10),",")
+        s:sCateg="" sCateg="1"
+	    s sT600=##class(User.MARC).getTagX(.h,"600",-1)
+	    s sLoginOptions=$tr(##class(User.MARC).getSubTagStr(sT600,"i",-1),$c(10),",")
+        s:sLoginOptions'="" sCateg=sCateg_","_sLoginOptions        
+        s sCardValid=##class(User.MARC).getTagX(.h,"T01p")
+	    s info=sName_$c(10)_sCateg_$c(10)_user_$c(10)_$$$IPREF_"IsUser"_$c(10)_sEmail_$c(10,10,10,10)_##class(User.MARC).getTagX(.h,"100k")
+	    d ##class(i2.ws.auth).setLoginInfo(info)	    
+      }
+      s xx=##class(i2.access).scanLoginChecks($$$GETICTX,##class(i2.common).getIP(),1)
+      //s yy=##class(i2.ws.auth).getLoginInfo()
+      //b
+    }
+    
+    s t001=##class(User.MARC).getT001(id)    
+    w !,class_" "_t001
+    k output
+    d ##class(content.api).selectRecAll(.output,class,t001)
+    
+    s item="", seq1=seq1+1, seq2=0
+    f { s item=$o(output(item)) q:item=""
+      s seq2=seq2+1
+      s key=$g(output(item,"key"))
+      s repo=$g(output(item,"repository"))
+      w !,"  "_item_": "_repo_", "_key
+      
+      if operation="r" {
+        w ": ",##class(content.api).engineRead(repo,key,.array)
+      }
+      elseif operation="e" {
+        w ": ",##class(content.api).engineEdit(repo,key,.array)
+      }
+      elseif operation="u" {
+        d ##class(content.engine).get(.arrtmp,repo,key)
+        k runtime
+        s runtime("class")=arrtmp("class")
+        s runtime("t001")=arrtmp("t001")
+        s runtime("origname")=arrtmp("origname")
+        s runtime("extension")=arrtmp("extension")
+        s runtime("size")=arrtmp("size")
+        s runtime("ctype")=arrtmp("ctype")
+        s runtime("type")=arrtmp("type")
+                
+        w ": ",##class(content.api).engineUpload(repo,.array,.runtime)
+      }
+      elseif operation="d" {
+        w ": ",##class(content.api).engineDelete(repo,key,.array)
+      }
+      elseif operation="s" {
+        s ret=##class(content.api).engineState(repo,key,.array)
+        s:ret=99 ret="display"
+        w ": "_array("status")_" -> "_ret
+      }
+      elseif operation="c" {
+        w ": ",##class(content.api).engineChange(repo,key,.array)
+      }
+      elseif operation="runtime" {
+        ; 15.07.15 ln; pridana moznost vypsat runtime metadata
+        k runtime
+        d ##class(content.engine).runtime(.runtime)
+        s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")  
+        d:callBack'="" $ZOBJCLASSMETHOD(callBack,"runtime",.runtime,class,t001)
+        w !
+        zw runtime
+      }
+    }
+    
+    s:seq2 more=1
+    
+    if more && '(seq1#10) {
+      s more=0
+      w !,"--more (q to quit)--" 
+      read more
+      q:$e($zcvt(more,"L"))="q"
+    }  
+  }
+]]></Implementation>
+</Method>
+
+<Method name="chronology">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>param</FormalSpec>
+<Implementation><![CDATA[
+   if param'="" {
+    s stat=##class(content.stat).%OpenId(param)
+    if $isobject(stat) {
+      w !
+      d $system.OBJ.Dump(stat)	          
+      q
+    }
+    
+    &sql(DECLARE CHRO1 CURSOR FOR
+       SELECT ID INTO :sid
+        FROM content.stat
+        WHERE CKey = :param
+        ORDER BY ID     
+    )    
+    
+    s seq=0
+    &sql(OPEN CHRO1)
+    for { &sql(FETCH CHRO1) q:SQLCODE
+      ;d ##class(content.engine).deserial(.array,chro)
+      s stat=##class(content.stat).%OpenId(sid)
+      s seq=seq+1
+      w seq,!
+      d:$isobject(stat) $system.OBJ.Dump(stat)
+      
+      w !,"--more (q to quit)--" 
+      read more
+      q:$e($zcvt(more,"L"))="q"
+    }
+    &sql(CLOSE CHRO1)
+    
+    w:'seq !,param," isn't valid stat object id"      
+    q
+  }
+    
+  
+  s rid=""
+  f { s rid=$o(^$$$ListsG($$$ListsActiveSel,$j,rid)) s id=rid q:id=""
+    s:$f(id,"*") id=$p(id,"*",2) ; sorted
+    s class=##class(User.MARC).getCLASS(id)
+    w !,class
+    continue:class="CmRecycled"
+    
+    s t001=##class(User.MARC).getT001(id)
+    w " ",t001
+    s seq1=0
+    
+    s rset = ##class(%ResultSet).%New()
+    s rset.ClassName = "content.metadata"
+    s rset.QueryName = "RecAll"
+    d rset.Execute(class,t001)
+    
+    While (rset.Next(.sc)) {	
+      q:'$SYSTEM.Status.IsOK(sc)            
+      s list=rset.Data("Array")      
+      
+      d ##class(content.engine).deserial(.final,list)
+      s key=$g(final("key"))
+      continue:key=""      
+    
+      &sql(DECLARE CHRO CURSOR FOR
+        SELECT ID, Stamp, Idx, Chronology
+        INTO :sid, :stamp, :user, :chro
+        FROM content.stat
+        WHERE CKey = :key AND Chronology IS NOT NULL
+        ORDER BY ID       
+      )
+    
+      k changed
+      s seq2=0, header=""
+      &sql(OPEN CHRO)
+      for { &sql(FETCH CHRO) q:SQLCODE
+        d ##class(content.engine).deserial(.array,chro)
+        s seq2=seq2+1
+        if seq2=1 {
+	      s seq1=seq1+1
+	      w !,"  ",seq1,": ",key
+        }
+        w:header'="" !,header
+        s header="    "_stamp_" ("_sid_") by "_user
+       
+        s node=""
+        f { s node=$o(array(node),1,val) q:node=""
+          w:$d(changed(node)) !,"      ",node,": ",changed(node)," ->"
+          s changed(node)=val
+        }
+      }
+      &sql(CLOSE CHRO)
+      
+      w:header'="" !,header
+      
+      s node=""
+      f { s node=$o(changed(node),1,val) q:node=""
+        w !,"      ",node,": ",changed(node)," -> ",$g(final(node))
+      }
+      
+      if seq1 && '(seq1#10) {
+	    w !,"--more (q to quit for "_key_")--" 
+        read more
+        q:$e($zcvt(more,"L"))="q"
+      }
+    }
+    
+    if seq1 {
+      w !,"--more (q to quit)--" 
+      read more
+      q:$e($zcvt(more,"L"))="q"
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="okx">
+<Description><![CDATA[
+<pre> sprava OKCZ / OKSK
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>param</FormalSpec>
+<Implementation><![CDATA[
+  
+  s rid="", seq=0
+  f { s rid=$o(^$$$ListsG($$$ListsActiveSel,$j,rid)) s id=rid q:id=""
+    s:$f(id,"*") id=$p(id,"*",2) ; sorted
+    s class=##class(User.MARC).getCLASS(id)
+    continue:class="CmRecycled"
+    
+    if seq=0 {
+      s ictx=$zcvt(##class(User.Util).getClassPrefixParam(class),"L")
+      d ##class(i2.init).batchinit(ictx)
+      
+      s okcz=##class(User.Util).sXlate("IMAGE_SERVER","OKCZ","N",$$$IPREF)'=""
+      if 'okcz {
+	    w !,"OKCZ not enabled"
+      } else {
+        s timeout=$g(^ImageServer("timeout","OKCZ"))
+        if timeout'="" {
+          s timeout=$zdt(##class(User.Util).HdtAdd($zdth(timeout,5),24*60*60),3,1)
+          w !,"OKCZ timeout till ",timeout
+        }
+        s sigla=$$$I2getOp("NEWOKCZ")
+        w:sigla'="" !,"SIGLA: ",sigla
+      }
+      
+      s oksk=##class(User.Util).sXlate("IMAGE_SERVER","OKSK","N",$$$IPREF)'=""
+      w:'oksk !,"OKSK not enabled"
+  
+      if param'="" {
+        q:'(okcz+oksk)
+      }
+    }    
+    
+    s seq=seq+1
+    s t001=##class(User.MARC).getT001(id)
+    w !,class_" "_t001
+    k R        
+    
+    if param="" {
+      d ..okDisp(class,t001)
+    } else {
+      s lname=##class(User.Util).objectName2lname(class)
+      continue:lname=""    
+      s idx=lname_"*"_t001
+      s R(1,idx)=""
+      s (ret1,ret2)=0
+	  
+	  if param="update" {
+        s:okcz ret1=##class(i2.imageServer).getOKCZ(.R)
+        s:oksk ret2=##class(i2.imageServer).getOKSK(.R)
+        w !,"  updated: ",ret1+ret2
+        d ..okDisp(class,t001)      
+      }
+      elseif param="force" {
+        s:okcz ret1=##class(i2.imageServer).getOKCZ(.R,1)
+        s:oksk ret2=##class(i2.imageServer).getOKSK(.R)
+        w !,"  forced: ",ret1+ret2
+        d ..okDisp(class,t001)
+      }
+      elseif param="delete" {
+        d ##class(i2.imageServer).resetUpdate(class,t001)
+        k ^$$$I2Gp("rating",idx) ; promazani kese
+        &sql(DELETE i2_data.rating WHERE Idx = :idx AND MyUser is null AND ReviewId <> '' AND ID <> ReviewId)
+        w " finished"
+      }
+      elseif param="reset" {
+        d ##class(i2.imageServer).resetUpdate(class,t001)
+        k ^$$$I2Gp("rating",idx) ; promazani kese
+        &sql(DELETE i2_data.rating WHERE Idx = :idx AND MyUser is null AND ReviewId <> '' AND ID <> ReviewId)
+        s:okcz ret1=##class(i2.imageServer).getOKCZ(.R)
+        s:oksk ret2=##class(i2.imageServer).getOKSK(.R)
+        w !,"  ",ret1+ret2	      
+        d ..okDisp(class,t001)
+      }
+    }
+    
+    if (param'="") || '(seq#10) {
+      w !,"--more (q to quit)--" 
+      read more
+      q:$e($zcvt(more,"L"))="q"
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="okDisp">
+<Description><![CDATA[
+<pre> zobrazeni metadat OKCZ / OKSK
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class,t001</FormalSpec>
+<Implementation><![CDATA[
+  s bookId=$g(^ImageServer("storage",class,t001,"OKCZ","bookid",1))  
+  if bookId'="" {      
+    s time=$g(^ImageServer("storage",class,t001,"OKCZ"))
+    if time'=""  {
+	  w !,"  not found till ",$tr(time,$c(10),",")," ("_bookId_")"
+    } else {
+      s time=$g(^ImageServer("OKCZ",bookId))
+      w !,"  last update ",time," ("_bookId_")"
+    }
+    
+    s cover=$g(^ImageServer("OKCZ",bookId,"cover"))
+    if cover'="" {
+      w !,"    ",$p(cover,$c(10),3)
+    }
+    s toc=$g(^ImageServer("OKCZ",bookId,"toc"))
+    if toc'="" {
+      w !,"    ",$p(toc,$c(10),3)
+      w !,"    ",$p(toc,$c(10),4)
+    }
+    s tocFull=$g(^ImageServer("OKCZ",bookId,"tocfull"))
+    if tocFull'="" {
+      w !,"    full text id ("_tocFull_")" 
+    }
+    s ratingCount=$g(^ImageServer("OKCZ",bookId,"rating_count"))
+    if ratingCount {
+      w !,"    rating count = "_ratingCount
+      w !,"    rating sum = "_$g(^ImageServer("OKCZ",bookId,"rating_sum"))
+    }
+    s reviewsCount=$g(^ImageServer("OKCZ",bookId,"reviews")) 
+    w:reviewsCount !,"    reviews count = "_reviewsCount
+    s idx=##class(User.Util).objectName2lname(class)_"*"_t001
+    s kes=$g(^$$$I2Gp("rating",idx))
+    w:kes'="" !,"    rating kes = "_kes_"#"_$g(^$$$I2Gp("rating",idx,"commentsCount"))
+    
+    if (cover'="") || (toc'="") {
+      w !,"    ",$p($g(^ImageServer("OKCZ",bookId,"maintainance")),$c(10),3)
+    }
+  }
+  
+  s time=$g(^ImageServer("storage",class,t001,"OKSK"))
+  if time'="" {      
+    w !,"  ",$tr(time,$c(10),",")
+    s cover=$g(^ImageServer("storage",class,t001,"OKSK","cover",1))
+    if cover'="" {
+      w !,"    ",$p(cover,$c(10),3)
+    }
+    s toc=$g(^ImageServer("storage",class,t001,"OKSK","toc",1))
+    if toc'="" {
+      w !,"    ",$p(toc,$c(10),3)
+      w !,"    ",$p(toc,$c(10),4)
+    }
+    if (cover'="") || (toc'="") {
+      w !,"    ",$p($g(^ImageServer("storage",class,t001,"OKSK","maintainance",1)),$c(10),3)
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="export">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>param</FormalSpec>
+<Implementation><![CDATA[
+  s repo=$p(param," ")
+  if repo="" {
+    w !," empty repository parameter"
+    q
+  }
+  
+  s file=$p(param," ",2)
+  if (file'="") && '$f(file,".") {
+    s from=file
+    s to=$p(param," ",3)
+    s file=""
+  } else {
+    s from=$p(param," ",3)
+    s to=$p(param," ",4)
+  }
+  
+  if from="" {	  
+    d ##class(content.metadata).exportAll(repo,file)
+  } else {
+    d ##class(content.metadata).exportByDate(repo,file,from,to)
+  }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

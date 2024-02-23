@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2023-08-02 13:28:17">
+<Class name="i2.cust.cav.claim">
+<Super>content.claim</Super>
+<TimeChanged>66688,48427.521445361</TimeChanged>
+<TimeCreated>62787,54154.824368</TimeCreated>
+
+<Parameter name="Ictx">
+<Description><![CDATA[
+<pre>
+02.08.23 ln; zrusena podedeni writeBody 
+01.08.23 tt; proveden změna označení html prvku
+26.06.23 tt; provedena zmena captcha
+03.03.23 tt; pridany zmeny pro vyzadani souboru z jineho repozitare
+03.03.23 tt; pokud mame data content serveru, posleme link
+09.10.19 jk; zmenena trida pro praci s emaily
+06.12.18 ln; podpora standardni verze stranky
+01.08.17 kp; Pridano zatrhnuti chceckboxu
+02.09.14 jk; odeslani emailu pres tridu util.email.cls
+25.09.14 tt; dodana podpora jazyku
+30.05.13 tt; dalsi zmeny dle pozadavku pani Dolezelove
+28.05.13 tt; mailBody: zmeny v tele emailu a linku
+25.05.13 tt; data: osetreni reseni prihlaseni pro zasilani fulltextu na vyzadani
+25.05.13 tt; mailBody: pridano textove zobrazeni linku pro vyzadani fulltextu
+30.12.12 tt; drobne zmeny ve tride - priprava na ipac3
+26.11.12 tt; nova trida zapojena contclaim
+</pre>
+ictx instituce]]></Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="data">
+<Description><![CDATA[
+&op={PageID} "contclaim"
+<pre> Telo stranky bez hlavicky a paticky
+</pre>
+25.05.13 tt; osetreni reseni prihlaseni pro zasilani fulltextu na vyzadani ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+
+  s data("TYPE")=$$$GETREQVAR("type")
+  
+  if ($$$GETREQVAR("testmail")'="") {
+    s data("VALIDSEND")=""
+    s data("POSTED")=""
+    s data("FORM")=""
+    d ..testMail(.data,$$$GETREQVAR("testmail"))
+    q
+  }
+ 
+  s sErrors = ""
+  s sReports = ""   
+  s sIctx = $$$GETICTX
+  s sBaseURL = ##class(i2.html.tpl).getBaseURL()              ; www adresa do rootu stránek IPACu
+  s data("WWW_SKIN") = sBaseURL_"s"_$$$GETSESSVAR("skin")_"/" ; www adresa do adresáře skinu 
+  s data("OP_VALUE") = ..#PageID                              ; id stranky do url parametru &op
+  s data("ACTION") = $$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID) 
+  s data("USER_OBJ") = ##class(i2.ui.tools).getAccountObj()   ; ipac2 zaznamu uzivatele
+  s data("LOGGED") = ##class(i2.access).isLoggedIn()
+  s data("REPLYTO")=##class(i2.access).getLoginEmail()
+  s:data("REPLYTO")="" data("REPLYTO")="@"
+  s data("RECTITLE_Z")=""
+  
+  s data("IDX") = $$$GETREQVAR("idx")           ; id zaznamu
+  ; 03.03.23 tt; pridany zmeny pro vyzadani souboru z jineho repozitare
+  s data("BIGDATA") = $$$GETREQVAR("bigdata")   ; nacteny parametr pro DATA - pokud jsou v jinem repozitari
+
+  //s data("IDX") = "0103816"
+  s data("REPO") = $$$GETREQVAR("repo")         ; nazev repozitare
+ // s data("REPO") = "xxx"
+  s data("KEY") = $$$GETREQVAR("key")           ; klic fulltextu 
+  //s data("KEY") = "key"
+  s:(data("IDX") = "") data("ERRORS")=..tx("FAILED")
+  s data("STAV_ZADOSTI")=$$$GETREQVAR("state")
+  s:(data("STAV_ZADOSTI")="") data("STAV_ZADOSTI")="0"
+  
+  /// 01.08.17 kp; Pridano zatrhnuti chceckboxu
+  s data("LICENCE_CHECKED")=""
+  ; kontrola ze uzivatel zatrhl podmímky použití
+  s bLicence=$$$GETREQVAR("licence[]")
+  if (bLicence=1) { s data("LICENCE_CHECKED")=" checked=""checked""" }  
+  
+  ; 26.06.23 tt; provedena zmena captcha
+  ; 19.10.22 ln; podpora RECAPTCHA v3
+  if data("TYPE")="recaptcha" {
+    s data("CAPTCHA_RES")=##class(i2.base.forms).checkCaptcha(1)
+    q
+  }
+  d ##class(i2.base.forms).initCaptcha(.data)
+  
+  s data("SUBJECT") = "Žádost o kopii fulltextu"
+  s data("SURNAME") = ""
+  s data("FIRSTNAME") = ""
+  s data("WORKPLACE") = ""
+  s data("MESSAGE") = ""
+  s data("EMAIL_V") = ""
+  s data("VERZE")=""
+  s data("FILE")=data("BIGDATA")
+  
+  s data("SURNAME") = $$$GETREQVAR("xsurname")     ; prijmeni
+  s data("FIRSTNAME") = $$$GETREQVAR("xfirstname") ; jmeno
+  s data("WORKPLACE") = $$$GETREQVAR("xworkplace") ; pracoviste
+  s data("MESSAGE") = $$$GETREQVAR("xmessage")     ; zprava
+  s data("EMAIL_V") = $$$GETREQVAR("xemail")
+  s:(data("EMAIL_V")="") data("EMAIL_V")="@"       ; pokud nemame vyhledany email, vlozime zavinac
+  
+  if ($$$GETREQVAR("send")'="")&&($$$GETREQVAR("mynamex")'="") {
+    s data("VALIDSEND")=""
+    s data("POSTED")=""
+    s data("FORM")=""
+    s data("ERRORS")=..txg("BOT_TEXT")
+    q
+  }
+
+  d ..getData(.data)  
+  
+  if ((data("KEY") '= "")&&(data("REPO") '= ""))
+  {
+    ; prava contentServeru pro cteni, ziskani orginalniho nazvu souboru
+    if '##class(content.api).engineRead(data("REPO"),data("KEY"),.array) {
+      s data("ERRORS")=..tx("FAILED") q
+    }
+    s data("FILE")=$g(array("origname"))
+    s data("VERZE")=$g(array("version"),"")
+    s data("VERZE")=##class(User.Util).sXlate("UT_ASEP_VERSION",data("VERZE"),"",%ipac2("ipref"),,$$$GETLANGUAGE)   
+  
+    ; formular byl odeslan, zpracuji data a odeslu email
+    if (($$$GETREQVAR("send")'="")&&(data("STAV_ZADOSTI")="0"))
+    { ; zpracovat formular pred odeslanim emailu
+      ; 01.11.12 tt; pridano array pro potreby statistik
+      d ..sendMail(.data,.array)      
+    }
+    elseif (($$$GETREQVAR("send")'="")&&(data("STAV_ZADOSTI")="1"))
+    { ; zpracovat formular pred odeslanim emailu
+      ; 01.11.12 tt; pridano array pro potreby statistik
+      d ..sendMailFile(.data,.array) 
+    }
+    elseif (($$$GETREQVAR("send")="")&&(data("STAV_ZADOSTI")="1"))
+    {
+      ; 25.05.13 tt; osetreni reseni prihlaseni pro zasilani fulltextu na vyzadani 
+      if (data("USER_ID")="") 
+      { ; 25.05.13 tt; neprihlasenym uzivatelum se vypise hlaska
+        s data("ERRORS")=data("ERRORS")_..tx("PLEASE")
+      }
+      else
+      { ; pokus je uzivatel prihlaseny, overime mejly
+        s sRet="",sEmailnaOver=""
+        s sEmailnaOver=..getEmail(data("IDX"))
+        if ##class(User.MARC).readLX(.handleU,"cav_is_user*"_data("USER_ID"))
+        { ; pokud se poradi nacist uzivatele, pokracuji
+          s sRet=$$$getTagX(.handleU,"100e")  ; email
+          if (sRet="")
+          { ; pokud se nepodarilo nacist email, pokusim se ho dotahnout z autority
+            s sIDAuth=$$$getTagX(.handleU,"620a") 
+            if ##class(User.MARC).readLX(.handleA,sIDAuth)
+            { ; nacteme autoritu
+              s sRet=$$$getTagX(.handleA,"C01f")  ; email            
+            }
+          }        
+        }
+        ; vypis chyby pokud uzivatel nema spravne emaily
+        s:(('$f(sEmailnaOver,sRet))||(sRet="")||(sEmailnaOver="")) data("ERRORS")=data("ERRORS")_..tx("SEND_RECORD_R")
+      }
+    }
+  }
+  elseif (data("BIGDATA")'="")
+  { ; 03.03.23 tt; pridany zmeny pro vyzadani souboru z jineho repozitare
+     s data("FILE")=data("BIGDATA")
+     s data("VERZE")=..tx("DATA")
+
+     ; formular byl odeslan, zpracuji data a odeslu email
+     if (($$$GETREQVAR("send")'="")&&(data("STAV_ZADOSTI")="0"))
+     { ; zpracovat formular pred odeslanim emailu
+       ; 01.11.12 tt; pridano array pro potreby statistik
+       d ..sendMail(.data,.array)      
+     }
+  }
+  else
+  { ; jinak chyba
+    s data("ERRORS")=..tx("FAILED") q
+  }
+]]></Implementation>
+</Method>
+
+<Method name="getData">
+<Description>
+metoda pro nacteni uzivatelskych dat</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; nacteme si data o zobrazovacim formatu
+  if ##class(i2.dblink).recordReadLX(.handle,data("IDX"),"T") {
+    s data("RECTITLE_Z")=$$$getTagX(.handle,"Tbca")
+    /// 01.08.23 tt; proveden změna označení html prvku
+    s data("RECTITLE_Z")=$$$strswap(data("RECTITLE_Z"),"<em>",".i.")
+    s data("RECTITLE_Z")=$$$strswap(data("RECTITLE_Z"),"</em>","./i.")
+    
+    
+    s data("RECTITLE_Z")=##class(User.Util).HTMLfixup($p(data("RECTITLE_Z"),"\n",1))
+    s data("C60a")=$$$getTagX(.handle,"C60a")
+  }
+  
+  s userId=##class(i2.access).getLoginId()  ; ziskame id uzivatele
+  s data("USER_ID")=userId
+  
+  ; pridavame popisku podle aktualniho stavu
+  if (data("STAV_ZADOSTI")="0")
+  {
+    s data("DESCRIPTION")=..tx("DESCRIPTION")
+  }
+  elseif (data("STAV_ZADOSTI")="1")
+  {
+    s data("DESCRIPTION")=..tx("DESCRIPTION_1")
+  }
+]]></Implementation>
+</Method>
+
+<Method name="sendMail">
+<Description><![CDATA[
+<pre>
+02.09.14 jk; odeslani emailu pres tridu util.email.cls
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  
+  ; doplnit adresu dle pozadavku
+  
+  ; 18.04.11 jk; kontrola CAPTCHA jen pro neprihlasene uzivatele
+  ;              do emailu naplnit "Od" z ISU_100$$e
+  s usrObj=$g(data("USER_OBJ"))
+  if $isobject(usrObj)
+  { } ; asi neprovedeme nic
+  elseif '##class(i2.base.forms).checkCaptcha() ; kontrola captcha pro neprihlasene
+  {
+    s data("ERRORS")=$g(data("ERRORS"),"")_..tx("ERR_CAPTCHA")
+    q
+  }
+ 
+    
+  ; nasteveni brat z ciselniku cav podle pracoviste
+  ; $$a pracoviste $b$ operace: email/ AUTOR(autor zaznamu)
+  s data("emailR")=..getEmail(data("IDX"))
+  ;w data("emailR")
+  ;w data("IDX")
+  if ($g(data("SURNAME"),"")="")
+  { ; kontrola vyplnenosti prijmeni
+    s data("ERRORS")=$g(data("ERRORS"),"")_" "_..tx("SURNAMEERR")
+    q
+  }
+  
+  if ($g(data("WORKPLACE"),"")="")
+  { ; kontrola vyplnenosti pracoviste
+    s data("ERRORS")=data("ERRORS")_" "_..tx("WORKPLACEERR")
+    q
+  }
+  
+  if ($g(data("EMAIL_V"),"")="")
+  { ; kontrola vyplnenosti emailu
+    s data("ERRORS")=$g(data("ERRORS"),"")_" "_..tx("EMAILERR")
+    q
+  }
+    
+  s sReplyTo=$g(data("EMAIL_V"),"")      ; ziskame si email komu poslat kopii
+  s:(sReplyTo="@") sReplyTo=""
+  
+  ; 02.09.14 jk; odeslani emailu pres tridu util.email.cls
+  s bHtml=1 ; nastaveno napevno, puvodne to bylo v konfiguraci I2_EMAILS
+  s sBody=..mailBody(.data,sReplyTo,bHtml)  
+  d ##class(util.emailgw).send($$$IPREF,sBody,,.ret,"contclaim",data("SUBJECT"),$$$GETLANGUAGE,,data("emailR"),,,sReplyTo)
+  //s ret="sending disabled at source code level"
+    ;;w !,"<pre>"              ; vypsani dat
+    ;;zw data
+    ;;zw sReplyTo
+    ;;zw sBody
+    ;;w !,"</pre>"
+
+  if (ret="") 
+  { ; email se dobre odeslal, vypiseme hlasku a vymazeme formulare
+     s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_$p(data("IDX"),"*","2"),..tx("SEND_RECORD"))
+    s:('$f(data("REPORTS"),..tx("SENDEMAILOK"))) data("REPORTS")=$g(data("REPORTS"),"")_..tx("SENDEMAILOK")
+                      _"<br />"_..tx("SEND_REC_TEXT")_" "_sLinkRec     ; dobre oteslany email
+    s data("REPLY")="@"                                                ; vymazeme hodnoty
+    s data("SUBJECT")=""
+    s data("MESSAGE")=""
+    d:(data("BIGDATA")="") ##class(content.stat).addClaim(.array,1)    
+    s data("STAV_ZADOSTI")="9"
+    s data("DESCRIPTION")=""
+  } 
+  else 
+  { ; email se neodeslal, vypiseme chybovou hlasku
+    s data("ERRORS")=$g(data("REPORTS"),"")_..tx("SENDEMAILERROR")_"("_ret_")"
+  }
+  
+  s data("SURNAME") = ""          ; promazene formular
+  s data("FIRSTNAME") = ""
+  s data("WORKPLACE") = ""
+  s data("EMAIL_V") = ""
+]]></Implementation>
+</Method>
+
+<Method name="mailBody">
+<Description>
+02.09.14 jk; zruseno cteni konfigurace MOFS, nastaven default format HTML
+28.05.13 tt; zmeny v tele emailu a linku
+25.05.13 tt; pridano textove zobrazeni linku pro vyzadani fulltextu</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,sReplyTo:%String,bHtml=1]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sBody=""
+  
+  ; link na zazan
+  s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1"),data("RECTITLE_Z"))
+  
+  ; 28.05.13 tt; zmeny v tele emailu a linku  
+  ; uzivatelsky pridane polozky formulare
+  /*s sBody=sBody_##class(i2.email).TableLine(..tx("FIRSTNAME"),data("FIRSTNAME"),bHtml) ; jmeno
+  s sBody=sBody_##class(i2.email).TableLine(..tx("SURNAME"),data("SURNAME"),bHtml) ; jmeno
+  s sBody=sBody_##class(i2.email).TableLine(..tx("WORKPLACE"),data("WORKPLACE"),bHtml) ; jmeno
+  s sBody=sBody_##class(i2.email).TableLine(..tx("EMAIL"),sReplyTo,bHtml) ; jmeno
+  */
+  s sBody=sBody_##class(i2.email).TableLine(..tx("ZADATEL"),data("FIRSTNAME")_" "_data("SURNAME")_", "_data("WORKPLACE")_", "_sReplyTo,bHtml) ; jmeno
+  s sBody=sBody_$$$strswap(##class(i2.email).TableLine(" "," ",bHtml),":","") 
+  s sBody=sBody_##class(i2.email).TableLine(..tx("MESSAGE"),data("MESSAGE"),bHtml) 
+  s sBody=sBody_##class(i2.email).TableLine(..tx("ZAZNAM"),$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")_" - "_sLinkRec,bHtml) ; zaznam
+  ; 30.05.13 tt; pridany link na hnadle net   
+  s:($g(data("C60a"))'="") sBody=sBody_##class(i2.email).TableLine(..tx("HANDLE_NET"),"<a href="_data("C60a")_" data-target=""_blank"" title=""Handle link"">"_data("C60a")_"</a>",bHtml) ; jmeno
+  s sBody=sBody_##class(i2.email).TableLine(..tx("SOUBOR"),data("FILE"),bHtml) ; jmeno
+  
+  
+  ; pokud mame novy IPAC, pridame generovani linku
+  s sBaseURL = ##class(i2.html.tpl).getBaseURL()  ; www adresa do rootu stránek IPCu
+  
+  if ((data("REPO")'="")&&(data("KEY")'=""))
+  { ; 03.03.23 tt; pokud mame data content serveru, posleme link
+    s urlparams  = "repo="_data("REPO")_"&amp;key="_data("KEY")_"&amp;idx="_data("IDX")_"&amp;xemail="_sReplyTo_"&amp;state=1"
+    ; 28.05.13 tt; zmeneny parametry linku
+    ; 25.05.13 tt; pridano textove zobrazeni linku pro vyzadani fulltextu
+    /* 
+    s link  = "<a href="""_sBaseURL_##class(i2.html.tpl).getLinkURL("cavclaimret",urlparams)_""">"_..tx("APPROVAL")_"</a>"
+             _"<br />("_$$$strswap(sBaseURL_##class(i2.html.tpl).getLinkURL("cavclaimret",urlparams),"&amp;","&")_")"
+    */
+    s link  = $$$strswap(sBaseURL_##class(i2.html.tpl).getLinkURL("cavclaimret",urlparams),"&amp;","&")
+    ; 30.05.13 tt; upraveny link
+    s link  = "<a href="""_link_""">"_link_"</a>"   
+      
+    s sBody=sBody_##class(i2.email).TableLine(..tx("SEND"),link,bHtml) 
+  } 
+  s:(bHtml) sBody=$$$CRLF_"<table style=""text-align:left;"">"_$$$CRLF_sBody_$$$CRLF_"</table>"
+
+  q sBody
+]]></Implementation>
+</Method>
+
+<Method name="getEmail">
+<Description><![CDATA[
+<pre> Metoda ziskani informaci emailu od zaznamu
+ Parametry: idx - idx zaznamu vcetne log. databaze
+
+ Navratova hodnota: string emailu
+w !,##class(content.claim).getEmailUstavR("0103816")
+
+06.12.18 ln; podpora standardni verze stranky
+23.05.14 lp; ze zaznamu ctenare nacist vsechny mailove adresy z opakovatelneho 100e
+22.09.11 tt; metoda zalozena
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>idx:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet="",sErr=""
+   
+  s sErr=##class(User.CavS).FTgetData(.handleU, "",.handleR,$p(idx,"*",2))  ; nacteme zaznamy
+  if (sErr'="") { q "" }                              ; ukoncime, pokud neni uzivatel registrovany
+
+  s sT001=$$$HandleT001(handleR), sClass=$$$HandleClass(handleR) ; ziskame tridu
+  s sIPref=%ipac2("ipref")                                            ; ziskame ictx
+
+  if ((sT001'="")&&(sClass'=""))
+  {    
+    s sPrac=$$$getTagX(.handleR,"C26e")                          ; ziskam pracoviste, ktere zaznam vykazuje
+    s sRet=##class(User.Util).sXlate("EPCA_WORKPLACE_EMAIL",sPrac,"N",sIPref)
+    if sRet="AUTOR"
+    { ; pokud mam dotahnout email autora zaznamu, zkusim
+      s sRet=""
+      s sIDUser=$$$getTagX(.handleR,"999e") 
+      if sIDUser'=""
+      {
+        if ##class(User.MARC).readLX(.handleU,sIDUser)
+        { ; pokud se poradi nacist uzivatele, pokracuji
+          ; 23.05.14 lp; ze zaznamu ctenare nacist vsechny mailove adresy z opakovatelneho 100e
+          s s100=$$$getTagX(.handleU,"100")
+          s sRet=##class(User.MARC).getSubTagStr(s100,"e",-1)  ; email
+          s sRet=$tr(sRet,$c(10),",")
+          if (sRet="")
+          { ; pokud se nepodarilo nacist email, pokusim se ho dotahnout z autority
+            s sIDAuth=$$$getTagX(.handleU,"620a") 
+            if ##class(User.MARC).readLX(.handleA,sIDAuth)
+            { ; nacteme autoritu
+              s sRet=$$$getTagX(.handleA,"C01f")  ; email            
+            }
+          }        
+        }
+      }
+    }
+    
+    ; pokud nemam vyplnene pole, vlozime hodnotu z podpole c
+    s:(sRet="") sRet=##class(User.Util).sXlate("EPCA_WORKPLACE_EMAIL",sPrac,"N",sIPref,"c")  
+  }  
+  ; pokud nemame hodnotu, vlozime defaultni
+  s:(sRet="") sRet=##class(User.Util).sXlate("EPCA_WORKPLACE_EMAIL","DEFAULT","N",sIPref,"b")     
+  q sRet                                               ; vratime vyslednou navratovou hodnotu
+]]></Implementation>
+</Method>
+
+<Method name="sendMailFile">
+<Description><![CDATA[
+<pre>odeslani emailu se souborem v priloze
+vejde sem ze stranky linkovane v emailu 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  
+  ; doplnit adresu dle pozadavku
+  ; nasteveni brat z ciselniku cav podle pracoviste
+  ; $$a pracoviste $b$ operace: email/ AUTOR(autor zaznamu)
+  s data("emailR")=..getEmail(data("IDX"))
+  ;w data("emailR")
+  ;w data("IDX")
+  
+  if ($g(data("EMAIL_V"),"")="")
+  { ; kontrola vyplnenosti emailu
+    s data("ERRORS")=$g(data("ERRORS"),"")_" "_..tx("EMAILERR")
+    q
+  }
+  
+  ;w !,"<pre>"              ; vypsani dat
+  ;zw data
+  ;zw array
+  ;w !,"</pre>"
+  
+  ; 02.09.14 jk; odeslani emailu pres tridu util.email.cls
+  s bHtml=1 ; nastaveno napevno, puvodne to bylo v konfiguraci I2_EMAILS
+  ; uzivatelsky pridane polozky formulare
+  s sBody=##class(i2.email).TableLine(..tx("MESSAGE"),data("MESSAGE"),bHtml) ; zprava  
+  s:(bHtml) sBody=$$$CRLF_"<table style=""text-align:left;"">"_$$$CRLF_sBody_$$$CRLF_"</table>"
+  
+  ; path je cesta k souboru contentServeru
+  s key=array("KEY")
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",array("repository"),"N",$$$IPREF,"b")
+  s sPathSep=##class(User.Util).getPathSepp()
+  if $e(path,$l(path))'=sPathSep { s path=path_sPathSep }
+  s path=path_$e(key,1,2)_sPathSep_$e(key,3,99)_"."_array("extension")
+ 
+  d ##class(util.emailgw).send($$$IPREF,sBody,,.ret,"contclaim",data("SUBJECT"),$$$GETLANGUAGE,,data("EMAIL_V"),,,,path)
+
+  if (ret="") 
+  { ; email se dobre odeslal, vypiseme hlasku a vymazeme formulare
+     s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_array("t001"),..tx("SEND_RECORD"))
+    s data("REPORTS")=$g(data("REPORTS"),"")_..tx("SENDEMAILOK")
+                      _"<br />"_..tx("SEND_REC_TEXT")_" "_sLinkRec     ; dobre oteslany email
+    s data("REPLY")="@"                                                ; vymazeme hodnoty
+    s data("SUBJECT")=""
+    s data("MESSAGE")=""
+    d ##class(content.stat).addClaim(.array,1)   
+    s data("STAV_ZADOSTI")="8"
+    s data("DESCRIPTION")="" 
+  } 
+  else 
+  { ; email se neodeslal, vypiseme chybovou hlasku
+    s data("ERRORS")=$g(data("REPORTS"),"")_..tx("SENDEMAILERROR")_"("_ret_")"
+  }
+  
+  s data("SURNAME") = ""          ; promazene formular
+  s data("FIRSTNAME") = ""
+  s data("WORKPLACE") = ""
+  s data("EMAIL_V") = ""
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+/*
+data("ACTION")="https://www.library.sk/i2/i2.entry.cls?ictx=cav&language=2&op=contclaim"
+data("DESCRIPTION")="Tento vyžádaný dokument není dostupný v režimu otevřeného přístupu (open access). Prostřednictvím níže dostupného formuláře jej můžete odeslat na email žadatele.
+"
+data("emailR")="arl@lib.cas.cz"
+data("EMAIL_V")="tom.t@email.cz"
+data("ERRORS")=""
+data("FILE")="prezentace_autor.ppt"
+data("FIRSTNAME")=""
+data("IDX")="cav_un_epca-1*0377410"
+data("ISMOBILE")=0
+data("KEY")=72314419440
+data("LOGGED")=1
+data("MESSAGE")="xx"
+data("OP_VALUE")="contclaim"
+data("PAGEID")="contclaim"
+data("RECTITLE_Z")="Doleželová, Jana ; Chmelařová, Zdeňka. Informační zdroj pro evaluaci - od bibliografické databáze k institucionálnímu repozitáři. In INFORUM 2012: 18. ročník konference o profesionálních informačních zdrojích. Praha : Albertina icome Praha, 2012, S. 1-6. ISSN 1801-2213. [INFORUM 2012: Konference o profesionálních informačních zdrojích /18./, Praha, 22.05.2012-24.05.2012, CZ]."
+data("REPO")="crepo1"
+data("REPORTS")=""
+data("STAV_ZADOSTI")=1
+data("SUBJECT")="Žádost o kopii fulltextu"
+data("SURNAME")=""
+data("USER_ID")="0000680"
+data("USER_OBJ")=[4@i2.data.User]
+data("VERZE")="Jiná"
+data("WORKPLACE")=""
+data("WWW_SKIN")="https://www.library.sk/i2/s1/"
+array("accession")="R"
+array("backurl")=""
+array("category")=1
+array("class")="CavUnEpca"
+array("client")=0
+array("context")=",1,"
+array("count")=7
+array("ctype")="application/vnd.ms-powerpoint"
+array("dayfrom")=""
+array("dayimport")=20120824
+array("description")=""
+array("extension")="ppt"
+array("humansize")="2.1 MB"
+array("ictx")="cav"
+array("importer")="0000682"
+array("intranet")=0
+array("ipadress")="109.81.252.25"
+array("isSuper")=0
+array("key")=72314419440
+array("nusl")="false"
+array("origname")="prezentace_autor.ppt"
+array("repo")="crepo1"
+array("repository")="crepo1"
+array("size")=2051072
+array("stateorig")=4
+array("status")=4
+array("super")="KNAV-K"
+array("supervisor")="KNAV-K"
+array("type")="doc"
+array("t001")="0377410"
+array("user")="0000680"
+array("userstate")=2
+array("version")="ANOTHER"
+*/
+]]></Content>
+</UDLText>
+</Class>
+</Export>

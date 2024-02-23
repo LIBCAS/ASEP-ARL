@@ -1,0 +1,14 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:layout1 noaside="1">
+
+<h2>
+<ipac:tx param="FNAME"/>
+<a #($s(data("FTYPEISIMG")=1:"class='gallery' data-type='image' data-toggle='lightbox'",1:"rel='enclosure'"))# data-title="#(data("FNAME"))#" title="#(data("FNAME"))#" href="#(data("OBJECT_URL"))#">#(data("FNAME"))#</a>
+</h2>
+
+<p>#(data("RECTITLE_Z"))#</p>
+
+<ipac:tpl version="form"/>
+
+</ipac:layout1>

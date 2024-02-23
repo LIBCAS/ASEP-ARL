@@ -1,0 +1,44 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+<csp:if condition=('data("MULTI"))>
+<ipac:form id="#(data("PAGEID"))#-f" data-infolimit="#(..tx("INFOLIMIT"))#" data-textlimit="#(..tx("LIMIT"))#" enctype="multipart/form-data" method="post" action="#(..base())#">
+<ipac:dtx param="FORM_UP"/>
+<p class="note-required"><ipac:txg param="FORM_NOTE_REQUIRED"/></p>
+<div class="container">
+
+<div class="row form-group">
+<label for="file" class="col-form-label"><ipac:tx param="FILE"/>: <em>*</em></label>
+<div class="half fv-row">
+<div class="fileinput fileinput-new input-group" data-provides="fileinput">
+<div data-trigger="fileinput"><i class="icon-file fileinput-exists"></i><span class="fileinput-filename"></span></div>
+<span class="btn btn-success btn-file"><span class="fileinput-new"><i class="icon-plus" aria-hidden="true"></i>&nbsp;<ipac:txg param="FILESELECT"/></span><span class="fileinput-exists"><i class="icon-plus" aria-hidden="true"></i>&nbsp;<ipac:txg param="FILECHANGE"/></span>
+<input type="file" data-fv-not-empty___message="#(..tx("ERRFILE"))#" aria-describedby="file-desc" class="form-control" id="file" name="FileStream"/>
+</span>
+<button type="button" class="btn btn-warning fileinput-exists" data-dismiss="fileinput"><i class="icon-ban" aria-hidden="true"></i>&nbsp;<ipac:txg param="FILEDELETE"/></button>
+</div>
+<p class="form-text" id="file-desc"><ipac:txn param="OKFORM"/><br>
+<ipac:txn param="NOFORM"/></p>
+</div>
+</div>
+
+<ipac:loop param="dummy"/>
+<ipac:node param="1"/>
+<ipac:tpl version="form"/>
+
+</div>
+
+<ipac:dtx param="SEND_UP"/>
+
+<div class="submit">
+<button type="submit" class="btn btn-primary" value="#(..tx("SAVE"))#"><ipac:tx param="SAVE"/></button>
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="repository" value="#(data("REPO"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+
+<ipac:dtx param="FORM_DOWN"/>
+</ipac:form>
+<csp:else>
+<ipac:tpl version="multi"/>
+</csp:if>

@@ -1,0 +1,8 @@
+th:nth-child(1) {
+	min-width: 140px;
+	max-width: 240px;
+}
+td:nth-child(2),th:nth-child(2) {
+	text-align: right;
+}
+

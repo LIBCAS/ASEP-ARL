@@ -1,0 +1,18 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:aside>
+
+<ipac:asidepart title=#(..txg("RELATED_PAGES"))#>
+<li class="nav-item"><ipac:a class="nav-link active" op="contapp" restore><ipac:atext/></ipac:a></li>
+    <csp:if condition=(data("IDX")'="")>
+<li class="nav-item"><ipac:a op="detail" class="nav-link" idx=#(data("IDX"))# restore><ipac:atext/></ipac:a></li>
+    </csp:if>
+    <csp:if condition=($g(data("ISET"))'="")>
+<li id="nav1-result" class="nav-item"><ipac:a op="result" class="nav-link" rel="nofollow" restore><ipac:atext/></ipac:a></li>
+    </csp:if>
+	<csp:if condition=(data("ORIG_QUERY")'="")>
+<li id="nav1-origresult" class="nav-item"><ipac:a op="result"lass="nav-link"  rel="nofollow" param="q=#(data("ORIG_QUERY"))#" title="#(..txg("QUERY_ORIG_TITLE"))#"><ipac:txg param="QUERY_ORIG"/></ipac:a></li>
+	</csp:if>
+</ipac:asidepart>
+
+</ipac:aside>

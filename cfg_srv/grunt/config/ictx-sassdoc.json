@@ -1,0 +1,11 @@
+{
+    "theme": "default",
+    "homepage": "https://www.cosmotron.cz/",
+    "package": "../package.json",
+    "verbose": "true",
+    "version": "4",
+    "display": {
+        "alias": "true",
+        "watermark": "false"
+    }
+}

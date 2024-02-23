@@ -1,0 +1,27 @@
+@charset "UTF-8";
+@use "sass:math";
+////
+/// @group ZClient
+/// <du>1</du>
+/// # Doplňkový stylopis pro ZClienta
+/// - Šablona je `\ipac2\csp-dir\templates2\parts\ztf.csp`
+/// - Cosmotron https://www.cosmotron.cz
+////
+
+@import "../../../../../sass/plugins/mixins";
+
+body {
+	text-align: left;
+}
+
+table {
+	&.zfTF col.zf_prefix {
+		width: 120px;
+	}
+
+	&.zfTF2 {
+		td {
+			width: 500px;
+		}
+	}
+}

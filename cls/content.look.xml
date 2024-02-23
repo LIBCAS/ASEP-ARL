@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865U)" ts="2019-04-17 13:53:40">
+<Class name="content.look">
+<Description><![CDATA[
+<pre> Vyhledavani v contentServeru (REST API)
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>65120,49993.477333</TimeChanged>
+<TimeCreated>62776,46346.096344</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contlook</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s offset=+$$$GETREQVAR("offset")
+  s:offset<1 offset=1
+  s limit=+$$$GETREQVAR("limit")
+  s:limit<1 limit=10
+  s to=offset+limit
+  s rest=$$$GETREQVAR("st")="rest"
+  
+  ; &sql(GRANT SELECT ON content.metadata TO UnknownUser)
+  if offset=1 {
+    s sql="SELECT TOP "_limit_" Repo, CKey, Version, Downloaded FROM content.metadata"
+  } else {
+    s sql="SELECT Repo, CKey, Version, Downloaded FROM content.metadata"
+  }
+    
+  s where=..where()
+  s:where'="" sql=sql_" WHERE "_where  
+  
+  s sort=..sort()
+  s:sort'="" sql=sql_" ORDER BY "_sort
+  
+  ; w !,"SQL = ",sql,!
+  
+  s count=0, seq=1
+  s rset=##class(%ResultSet).%New("%DynamicQuery:SQL")
+  s sc=rset.Prepare(sql)
+  if $$$ISERR(sc) {
+    s data("ERRORS")=..tx("PREPARE")_": "_$System.Status.GetErrorText(sc)
+    q
+  }
+  s sc=rset.Execute()
+  if $$$ISERR(sc) {
+    s data("ERRORS")=..tx("EXECUTE")_": "_$System.Status.GetErrorText(sc)
+    q
+  }
+  
+  while rset.%Next(.sc) {
+    if $$$ISERR(sc) {
+      s data("ERRORS")=..tx("NEXT")_": "_$System.Status.GetErrorText(sc)
+      q
+    }
+    
+    s count=count+1
+    q:count'<to
+    continue:count<offset
+    
+    //s list=rset.Data("Array")
+    //d ##class(content.engine).deserial(.array,list)
+    s repo=rset.Data("Repo")
+    s key=rset.Data("CKey")
+    s version=rset.Data("Version")
+    s:version'="" runtime("oldversion")=version
+    
+    if '##class(content.api).engineRead(repo,key,.array,.runtime) {     
+     s data("METADATA",seq,1)=$lb("error","no read permission")
+     s data("META",seq,"error")="no read permission"
+     s seq=seq+1
+     continue
+    }
+    
+    d ##class(content.engine).pure(.array)
+    s array("count")=rset.Data("Downloaded")    
+    
+    s node="", seq2=1
+    f { s node=$o(array(node),1,val) q:node=""
+     continue:node="st"
+     
+     s data("METADATA",seq,seq2)=$lb(node,val)
+     s data("META",seq,node)=val
+     s seq2=seq2+1
+    }
+    s seq=seq+1
+  }
+  s sc=rset.Close()
+  
+  s:rest data("REPORTS")="SUCCESS"
+  
+  d ..userData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="where">
+<Description><![CDATA[
+<pre> Doplneni where casti sql dotazu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s ret=""    
+ 
+  s repo=$$$GETREQVAR("repo")
+  s:repo'="" ret=ret_",Repo = '"_repo_"'"
+  
+  s key=$$$GETREQVAR("key")  
+  s:key'="" ret=ret_",CKey = '"_key_"'"
+  
+  s class=$$$GETREQVAR("class")  
+  s:class'="" ret=ret_",Class = '"_class_"'"
+  
+  s t001=$$$GETREQVAR("t001")  
+  s:t001'="" ret=ret_",T001 = '"_t001_"'"
+  
+  s uploader=$$$GETREQVAR("uploader")  
+  s:uploader'="" ret=ret_",Uploader = '"_uploader_"'"
+  
+  s supervisor=$$$GETREQVAR("supervisor")  
+  s:supervisor'="" ret=ret_",Supervisor = '"_supervisor_"'"
+  
+  s type=$$$GETREQVAR("type")  
+  s:type'="" ret=ret_",Type = '"_type_"'"
+  
+  s status=$$$GETREQVAR("status")  
+  s:status'="" ret=ret_",Status = '"_status_"'"
+  
+  s uploadDate=$$$GETREQVAR("uploadDate")  
+  s:uploadDate'="" ret=ret_",UploadDate = '"_uploadDate_"'"  
+  
+  s version=$$$GETREQVAR("version")
+  s:version=1 version=""
+  if version="" {
+    s ret=ret_",Version is NULL"  
+  } 
+  elseif version'="all" {
+    s ret=ret_",Version = '"_version_"'"  
+  }
+  
+  s editedBy=$$$GETREQVAR("Edited_by")  
+  s:editedBy'="" ret=ret_",EditedBy = '"_editedBy_"'"
+  
+  s editedOn=$$$GETREQVAR("Edited_on")  
+  s:editedOn'="" ret=ret_",EditedOn = '"_editedOn_"'"
+  
+  s changedBy=$$$GETREQVAR("Changed_by")  
+  s:changedBy'="" ret=ret_",ChangedBy = '"_changedBy_"'"
+  
+  s changedOn=$$$GETREQVAR("Changed_on")  
+  s:changedOn'="" ret=ret_",ChangedOn = '"_changedOn_"'"
+  
+  s $e(ret)=""
+  s ret=$replace(ret,","," AND ")
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="sort">
+<Description><![CDATA[
+<pre> Doplneni tridici casti sql dotazu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[  q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

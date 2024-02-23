@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 865U)" ts="2022-03-03 22:46:38">
+<Class name="i2.cust.cav.cavdelete">
+<Description><![CDATA[
+<pre> Stranka pro vymazani zaznamu z vysledku vyhledavani
+
+14.02.22 tt; pridana ochrana pred CSRF
+03.03.21 tt; doplneni uzivatele a ip do vymazu
+23.06.19 tt; provedena uprava na spatne dotazovani na zadost KP
+22.06.19 kp; Pridana podpora pro JSON a TYPE
+11.08.15 tt; provedeny úpravy pro vymazání
+11.08.15 kp; Vytvoreno
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66171,81746.127167</TimeChanged>
+<TimeCreated>63775,48815.507943</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>cavdelete</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>cavdelete#cavdelete#cavdelete</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHTTP">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  q:ret'="" ret
+  
+  if $$$GETREQVAR("type")="json" {
+    s %response.ContentType="application/json"
+    s %response.CharSet="UTF-8" 
+    d %response.SetHeader("Content-Disposition","attachment; filename="""_..#PageID_".json""")
+    $$$SETREQVAR("st","ajax")
+  }  
+  if $$$GETREQVAR("type")="modal" {
+      $$$SETREQVAR("st","ajax")
+  } 
+  
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s idx=$$$GETREQVAR("idx")
+  if $f(idx,".") {
+    $$$SETREQVAR("idx",$tr(idx,".","-"))
+  }
+  
+  s iset=$$$GETREQVAR("iset")
+  if (iset="") && ($$$GETREQVAR("bpg")'="") {
+    $$$SETREQVAR("iset","basket")
+  }
+  
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("idx,pg,iset,disprec")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+    s data("TITLEIDX")=""
+    s data("AJAX") = $$$GETREQVAR("st")="ajax"
+    s data("ORIG_QUERY")=$$$GETSESSVAR("q")
+    s data("SCOPE") = $$$GETREQVAR("scope")
+    s data("TYPE") = $$$GETREQVAR("type")
+    s data("ISET") = $$$GETREQVAR("iset")
+    s data("PAGE") = $$$GETREQVAR("pg")
+    s data("IDX") = $$$GETREQVAR("idx")
+    
+    ; 14.02.22 tt; pridana ochrana pred CSRF
+    s data("FNONCE_VALUE")=##class(i2.base.forms).initFormNonce(..#PageID)
+    s data("ACTION")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"fnonce="_data("FNONCE_VALUE"))
+   
+    s idx=data("IDX")
+    s data("ISDELETED")=0
+    if ((idx="")||('##class(i2.dblink).recordReadLX(.handle,idx)))
+    {
+      s data("ERRORS")=..tx("NOREC")
+    }  
+    
+    ; Záznam má být smazán, smazání bylo potvrzeno
+    if ($$$GETREQVAR("confirm")=1) {
+        ; 14.02.22 tt; pridana ochrana pred CSRF
+        if '##class(i2.base.forms).checkFormNonce(..#PageID) {
+         s data("ERRORS")=data("ERRORS")_" "_..txg("FORM_CSRF_DETECTED")
+         q
+        }
+        
+        s data("CONFIRM") = 1
+        /// realne smazani zaznamu tt
+        /// 11.08.15 tt; provedeny úpravy pro vymazání
+        s lname=$p($p(idx,"*",1),"-",1),t001=$p(idx,"*",2)
+        s class=##class(User.Util).lname2objectName(lname)
+        
+        ; 03.03.21 tt; doplneni uzivatele a ip do vymazu
+        s sc=##class(User.MARC).delete(class,t001,0,3_$c(10)_##class(i2.access).getLoginId()_$c(10)_##class(i2.common).getIP())
+        if '$$$ISOK(sc) {
+          s data("ERRORS")=..tx("DELERR")_##class(User.Util).status2str(sc)
+          s data("ISDELETED")=0   
+        }
+        else
+        {
+          s idx=""
+          s data("REPORTS")=..tx("DELOK")
+          s data("ISDELETED")=1
+        }
+        ; 14.02.22 tt; pridana ochrana pred CSRF
+        d ##class(i2.base.forms).clearFormNonce(..#PageID)
+    ; Záznam nemá být smazán, uzivatel se rozhodl jinak
+    } elseif ($$$GETREQVAR("confirm")=2) {
+        // 14.02.22 tt; zrejme nefugnuje
+        s data("CONFIRM") = 2
+        s data("ISDELETED")=0 
+    
+    ; Záznam má být smazán, ale ještě je potřeba smazání potvrdit.
+    } else {
+        s data("CONFIRM") = 0
+        s data("ISDELETED")=0
+    }
+    
+    
+    ; Zobrazení záznamu     
+    if idx'="" {
+    if ('##class(i2.dblink).recordReadLX(.handle,idx)) 
+    { s idx="" 
+    }
+    else { s data("NAZEV")=##class(i2.data.layer).title(.handle) 
+           d ##class(i2.ui.bookmark).titleData(.data,.handle)
+    }
+    } else {
+        s idx=data("SCOPE")
+    }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

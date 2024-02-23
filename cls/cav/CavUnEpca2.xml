@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="20" zv="Cache for Windows (Intel) 5.2 (Build 329U)" ts="2007-03-15 16:47:54">
+<Class name="User.CavUnEpca2">
+<Description>
+toto je pomocna databaza - pre konverzie globalky
+atd. normalne neobsahuje ziadne zaznamy
+
+15.03.07 rs</Description>
+<ClassType>persistent</ClassType>
+<IncludeCode>I2</IncludeCode>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>User.DataTable</Super>
+<TimeCreated>60660,60297.096346</TimeCreated>
+
+<Parameter name="INDEXPARAMS">
+<Description>
+17.02.06 rs; postSaveEx metoda na delayes index update (hlavne) pre zdrojove dokumenty</Description>
+<Default>C</Default>
+</Parameter>
+
+<Method name="classNameX">
+<Description>
+return current class unlike %ClassName this is a class method</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Library.String</ReturnType>
+<Implementation><![CDATA[ quit "CavUnEpca2"
+]]></Implementation>
+</Method>
+
+<Method name="symTypNapojenychZ">
+<Description>
+s sy="ret1=##class(CavUnEpca2).symTypNapojenychZ(.handle)"</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<Implementation><![CDATA[
+	s cl=$$$HandleClass(handle)
+	s k=" "_##class(Util).objectName2lname(cl)_"*"_$$$HandleT001(handle)
+	s ret="",id=""
+	f   
+	{
+		s id=$o(^ooDataTableI(cl,"auk",k,id)) q:'id
+		if '##class(MARC).getDATAX(.h,id) continue
+		
+		s t=$p(##class(MARC).getTagX(.h,"C99d"),"_",4)
+		
+		if t="" continue
+		if $f(" "_ret_" "," "_t_" ") continue
+		s ret=ret_" "_t
+	}
+	q $$$trim(ret)
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+</Storage>
+</Class>
+</Export>

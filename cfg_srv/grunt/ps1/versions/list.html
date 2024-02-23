@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="{lang}">
+    <head>
+        <meta charset="utf-8">
+        <title>{version_title}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Karel Pavelka; pavelka@cosmotron.cz">
+        <meta name="description" content="{version_title}. {version_plugins_title}.">
+        <meta name="robots" content="noindex">
+        <meta name="keywords" content="Grunt.js,plugin,PowerShell,Node.js,Sass,Npm">
+        <link href="../bootstrap.min.css" rel="stylesheet">
+        <style>
+            .paper{
+                height: 200px;
+                width: 350px;
+                margin: 0.5rem auto;
+                background-color: #DDD;
+                position: relative;
+                overflow: hidden;
+            }
+            .paper::after{
+                content: '';
+                display: block;
+                border-width: 0 50px 50px 0;
+                border-style: solid;
+                border-color: #d7d7d7 transparent;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+            .paper::after{
+                content: '';
+                display: block;
+                border-width: 0 50px 50px 0;
+                border-style: solid;
+                border-color: #d7d7d7 #FFF;
+                box-shadow: -5px 6px 10px rgb(129, 127, 127);
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+
+            .paper > h3{
+                margin: 1rem;
+                text-align:center;
+            }
+
+            .paper > p{
+                padding: 0 1rem;
+                font-size: 1rem;
+                color: #555;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <ul class="row">
+
+                <li class="paper col-md-3">
+                    <h3>HTML</h3>
+                    <div class="container">
+                        <dl class="row">
+                            <dt class="col-4">MIME:</dt><dd class="col-8">text/html <img width="16" src="ok.svg"><br></dd>
+                            <dt class="col-4">Charset:</dt><dd class="col-8">UTF-8 <img width="16" src="ok.svg"><br></dd>
+                            <dt class="col-4">CORS:</dt><dd class="col-8">Chybí <img width="16" src="alert.svg"/></dd>
+                        </dl>
+                    </div>
+                </li>
+                
+                <li class="paper col-md-3">
+                    <h3>HTML</h3>
+                    <div class="container">
+                        <dl class="row">
+                            <dt class="col-4">MIME:</dt><dd class="col-8">text/html <img width="16" src="alert.svg"><br>je text/x-html</dd>
+                            <dt class="col-4">Charset:</dt><dd class="col-8">UTF-8 chybí <img width="16" src="alert.svg"><br></dd>
+                            <dt class="col-4">CORS:</dt><dd class="col-8">Chybí <img width="16" src="alert.svg"/></dd>
+                        </dl>
+                    </div>
+                </li>
+                
+                 <li class="paper col-md-3">
+                    <h3><a href="file.js">Service worker</a></h3>
+                    <div class="container">
+                        <dl class="row">
+                            <dt class="col-4">MIME:</dt><dd class="col-8">text/javascript <img width="16" src="alert.svg"><br>je text/x-html</dd>
+                            <dt class="col-4">Charset:</dt><dd class="col-8">UTF-8 chybí <img width="16" src="alert.svg"><br></dd>
+                            <dt class="col-4">CORS:</dt><dd class="col-8">Chybí <img width="16" src="alert.svg"/></dd>
+                        </dl>
+                    </div>
+                </li>
+
+                <li class="paper col-md-3">
+                    <h3>XSL</h3>
+                    <div class="container">
+                        <dl class="row">
+                            <dt class="col-4">MIME:</dt><dd class="col-8">application/xslt+xml <img width="16" src="ok.svg"><br></dd>
+                            <dt class="col-4">Charset:</dt><dd class="col-8"> UTF-8 <img width="16" src="ok.svg"><br></dd>
+                        </dl>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </body>
+</html>

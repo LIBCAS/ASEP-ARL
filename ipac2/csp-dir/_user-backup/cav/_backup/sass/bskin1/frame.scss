@@ -1,0 +1,173 @@
+////
+/// KOSTRA: html, body, #body ,#page, .page, #content, #aside, #bside,
+/// <du>2</du>
+////
+
+html {
+	height: 100%;
+}
+
+body {
+	flex-direction: column;
+	display: flex !important;
+	height: 100%;
+	position: relative;
+	padding: 0;
+
+	/* https://leaverou.github.io/css3patterns/ */
+	$bgcolor: $gray-100;
+
+	background-color: white;
+	background-image: linear-gradient($bgcolor 1px, transparent 1px),
+		linear-gradient(90deg, $bgcolor 1px, transparent 1px),
+		linear-gradient($bgcolor 1px, transparent 1px),
+		linear-gradient(90deg, $bgcolor 1px, transparent 1px);
+	background-size: 50px 50px, 50px 50px, 5px 5px, 5px 5px;
+	background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+}
+#body {
+	position: relative;
+	flex: 1 0 auto;
+	width: auto;
+	display: flex;
+}
+#page {
+	box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.2);
+	background: $body-bg;
+	position: relative;
+	padding: 0;
+}
+/*
+#outer {
+	flex-direction: row-reverse;
+}
+*/
+#page.container-fluid #outer {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+#content {
+	min-height: 20rem;
+	position: relative;
+}
+
+#breadcrumb {
+	margin: 0 10px 10px 10px;
+	font-size: 0.8rem;
+
+	a {
+		color: darken($primary, 13%);
+	}
+}
+
+#page.container-fluid #breadcrumb {
+	margin: 0 25px 10px 25px;
+}
+
+.breadcrumb-item + .breadcrumb-item {
+	font-weight: 700;
+}
+
+#inner {
+	padding-bottom: 6rem;
+
+	#breadcrumb {
+		margin: 0 0 1rem 0;
+	}
+}
+
+.fullcreen {
+	#aside {
+		display: none;
+	}
+
+	#bside {
+		@include make-col(12);
+
+		padding: 0 0.5rem;
+	}
+}
+
+///	ASIDE & BSIDE
+#aside {
+	@include make-col(3);
+
+	padding: 0 1.5rem 0 0;
+}
+
+#bside {
+	@include make-col(9);
+
+	padding: 0 0 0 1rem;
+}
+
+@media (min-width: map-get($grid-breakpoints, lg)) {
+	#page.container-fluid {
+		#aside {
+			@include make-col(2);
+		}
+
+		#bside {
+			@include make-col(10);
+		}
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, lg)) {
+	#inner {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+
+	#aside {
+		background: $body-bg;
+
+		@include make-col(12);
+
+		padding: 0 0.5rem;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		height: auto;
+
+		#nav-aside {
+			transition: margin-left 0.3s, transform 0.3s;
+			transform-origin: left 0;
+			transform: scale(0);
+			will-change: transform;
+			width: 350px;
+			margin-left: -14.75rem;
+
+			&.show {
+				transform: scale(1);
+				margin-left: 0;
+				height: 100%;
+				box-shadow: 0.9rem -0.5rem 0.5rem 0 #0000002b;
+			}
+		}
+	}
+
+	#bside {
+		@include make-col(12);
+
+		padding: 0 1rem;
+
+		.bpage {
+			@include make-container;
+			@include make-container-max-widths;
+		}
+	}
+
+	#breadcrumb {
+		margin: 0 0.9rem 0.7rem;
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, xs)) {
+	#inner {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+}

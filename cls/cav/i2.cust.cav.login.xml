@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2023-11-07 21:16:54">
+<Class name="i2.cust.cav.login">
+<Description>
+07.11.23 tt; zakomentovany texty REDIRECTING
+31.08.18 tt; uprave textu stranky na prihlaseni
+12.10.15 tt; zapojena funkcnost, aby po prihlaseni se vzdy presunulo prihlaseni na myAsep
+data oddedeny kvuli tomuto:
+s data("OPAL_VALUE")="myasep"  </Description>
+<Super>i2.ui.login</Super>
+<TimeChanged>66785,76604.891287656</TimeChanged>
+<TimeCreated>63837,29382.237629</TimeCreated>
+
+<Parameter name="Ictx">
+<Default>cav</Default>
+</Parameter>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+
+03.04.19 ln; po prihlaseni nepresmerovat na zmenu hesla (zapomenute heslo)
+18.09.18 ln; po prihlaseni nepresmerovat na prihlaseni
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("AJAX") = $$$GETREQVAR("st")="ajax"
+  if ($$$GETREQVAR("st")="rest") && (data("ERRORS")="") && ##class(i2.access).isLoggedIn() {
+    s data("REPORTS")="SUCCESS"
+    q
+  }
+  
+  // Záložky
+  d ..getSubSite(.data)
+  
+  s data("SYNCHRO")=$$$GETREQVAR("synchro")
+  
+  ; odkaz na stranku zapomenute heslo
+  s data("FORGOT_LINK") = ##class(i2.html.tpl).getLink(##class(i2.ui.forgotPassword).getPageID())
+  
+  ; Odkaz na stránku předregistrace
+  s data("PREREG_LINK") = ""
+  
+  ; Skript který zpracuje odeslané data
+  s data("ACTION")    = $$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID)
+  
+  ; Při chybném odeslaní formulaře zobrazíme zpět zadaný login
+  s data("LOGIN_VALUE")     = $$$GETREQVAR("login")
+  
+  ; stránka kam bude uživatel po přihlášení přesměrován
+  s siteName=$$$GETREQVAR("opal")
+  ; 03.04.19 ln; po prihlaseni nepresmerovat na zmenu hesla (zapomenute heslo)
+  ; 18.09.18 ln; po prihlaseni nepresmerovat na prihlaseni
+  if (siteName=..#PageID) || (siteName="epw") {
+    s siteName=""
+    $$$SETREQVAR("opal","")
+  }
+  s:siteName="" siteName=$$$GETREQVAR("opals")
+  
+  s transparent=$$$GETREQVAR("opalt")
+  if transparent'="" {
+    s siteName=transparent
+    s:data("ERRORS")="" data("ERRORS")=..tx("PLEASE")
+  } else {
+    s:siteName="" siteName=##class(i2.ui.menu).getPageOption("opal")
+    s:siteName="" siteName=##class(i2.ui.menu).getPageOption("entry")
+  }  
+  
+  if siteName'="" {
+    d ##class(i2.html.tpl).getText(.array,siteName)
+    s siteText=$g(array("TEXT"))
+    if $e(siteText,1,2)="[?" {
+      s data("DESCRIPTION")=""
+    } else {
+      ; Po přihlášení budete přeměrován na stránku
+      //s data("DESCRIPTION")=..tx("REDIRECTING")_" <strong>"_siteText_"</strong>"
+       s data("DESCRIPTION")=""
+    }
+  }
+  s data("INFO_TEXT")=data("DESCRIPTION")
+  s data("OPAL_VALUE")="myasep"  
+
+  ; Skryté prvky formuláře
+  s data("NONCE_VALUE")     = ##class(i2.access).loginGetNewNonce()
+  
+  ; 20.05.11 jk; retezec USER_LOGIN_HTML vlozen do pole data
+  s data("USER_LOGIN_HTML")       = ##class(i2.config).tx("USER_LOGIN_HTML",1)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

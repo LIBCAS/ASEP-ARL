@@ -1,0 +1,13 @@
+﻿# ARL IPAC, COSMOTRON.cz, Robots v4
+
+User-agent: *
+Disallow: /aRL/
+Disallow: /aRLlog/
+Disallow: /i2/
+Disallow: /i3/
+Allow: /i2/css/
+Allow: /i2/js/
+Disallow: /i2t/
+Disallow: /i3t/
+
+# Sitemap: https://asep.lib.cas.cz/aRLreports/sitemaps/sitemap_index.xml

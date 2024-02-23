@@ -1,0 +1,28 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<h2>Operace se záznamem</h2>
+
+<p>
+Se záznamem lze dělat tyto následující operace:
+</p>
+
+<ul>
+
+<csp:if condition=(..isPage("basket"))>
+<li class="basket"><ipac:a op="help" key="basket"><ipac:txg param="BASKET_TO"/></ipac:a> 
+ – funkce uloží záznam do košíku k dalšímu zpracování.
+</li>
+</csp:if>
+
+<csp:if condition=(..isPage("bookmark"))>
+<li class="bookmark"><ipac:a op="help" key="bookmark"><ipac:atext/></ipac:a> 
+ – nabízí další možnosti vyhledání, sdílení záznamů nebo operací s daným záznamem.
+</li>
+</csp:if>
+
+<csp:if condition=(..isPage("export"))>
+<li class="dds"><ipac:a op="help" key="export"><ipac:atext/></ipac:a>
+ – export záznamu ve vybraném formátu
+</li>
+</csp:if>
+</ul>

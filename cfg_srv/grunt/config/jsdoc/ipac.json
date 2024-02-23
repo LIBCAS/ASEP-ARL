@@ -1,0 +1,28 @@
+{
+	"tags": {
+		"allowUnknownTags": true
+	},
+	"plugins": ["plugins/markdown"],
+	"templates": {
+		"systemName": "Dokumentace JS IPAC",
+		"footer": "Dokumentace JavaScriptu pro IPAC",
+		"cleverLinks": false,
+		"collapseSymbols": false,
+		"copyright": "Cosmotron.cz",
+		"dateFormat": "ddd MMM Do YYYY",
+		"inverseNav": true,
+		"linenums": true,
+		"logoFile": "",
+		"methodHeadingReturns": false,
+		"monospaceLinks": false,
+		"navType": "vertical",
+		"outputSourceFiles": true,
+		"outputSourcePath": true,
+		"protocol": "html://",
+		"theme": "cerulean"
+	},
+	"markdown": {
+		"parser": "gfm",
+		"hardwrap": true
+	}
+}

@@ -1,0 +1,13 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:layout1>
+
+<p class="summarypage">
+<ipac:tx param="NADPIS_A"/>&nbsp; #(data("RECTITLE_Z"))#<br>
+<ipac:tx param="NADPIS_B"/>&nbsp; #(data("FILE"))# - #(data("VERZE"))#<br>
+#(data("DESCRIPTION"))#
+</p>
+
+<ipac:tpl version="form"/>
+
+</ipac:layout1>

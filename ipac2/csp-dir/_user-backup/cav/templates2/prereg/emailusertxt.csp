@@ -1,0 +1,13 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream/><ipac:off><du>1</du></ipac:off>
+#(..stripHtml(..tx("EMAIL_TITLE")))#
+#($$$CRLF)#
+#(..stripHtml(..tx("EMAIL_BODY")))#
+#($$$CRLF)#
+#(..stripHtml(..tx("EMAIL_BODY2")))#:
+<ipac:loop param="EMAIL_DATA">
+<csp:if condition=((..li(1)'="")&&(..li(2)'=""))>
+#(..stripHtml(..li(1)))# : #(..stripHtml(..li(2)))#
+</csp:if>
+</ipac:loop>
+#($$$CRLF_$$$CRLF_..tx("REPORT_H"))#
+<ipac:tpl version="mailfoottxt" page="parts"/>

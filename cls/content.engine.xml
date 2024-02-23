@@ -1,0 +1,1471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-19 12:35:19">
+<Class name="content.engine">
+<Description><![CDATA[
+<pre> vykonne jadro contentServeru
+
+19.04.23 ln; watermark typu diag
+28.03.23 ln; volba flatten pro rozklad zabezpecenych pdf
+24.02.23 ln; watermark typy fit a tile
+15.02.23 ln; snaha zabranit csp timeoutu kvuli aratio
+06.12.22 ln; ulozeni aratio
+07.04.22 ln; CRank generovat vzdy
+22.12.21 ln; podpora CRank
+08.07.21 ln; zabezpeceny dokument take jako typ pristupu
+29.05.20 ln; secure pipeline
+24.02.20 mj; zamena $zf(-1
+14.11.19 ln; oprava moveAll: projekci Version a ID ma pouze RecAllTrue
+12.11.19 ln; nepouzivat callBack pro page404
+27.08.19 ln; podpole C52d
+18.07.19 ln; podpora Supervisor jako seznam
+19.03.19 lo; z moveAll vyluceny zoznam literatury BIB, tak isto ako TOC
+28.02.19 ln; pridana statistika pro moveAll
+26.10.18 ln; opraven testovaci rezim pro importFile
+11.01.18 ln; select napred promaze output
+20.10.16 ln; multiapload presunuje misto kopirovani
+29.07.15 ln; opraven testovaci import
+03.02.15 tt; vyjimka pro CavUnEpca, kdy tato standardni funkcnost nici zakaznickou funkcnost vzniklou drive
+20.06.14 ln; C52 neukladat pro castkove zaznamy fotogalerii
+23.05.14 ln; podpora multiupload
+28.03.14 tt; setC52: do overeni nesmi jit prazdne cust2
+17.10.13 ln; podpora pro watermark
+28.11.12 ln; volba BIGCONTENT pro triciselne adresare
+31.10.12 ln; podpora verzovani
+26.09.12 ln; aktualizace imageServeru pri zmene typu 
+18.09.12 ln; podpora pro pristup z zclienta
+</pre>]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<TimeChanged>66583,45261.6286041</TimeChanged>
+<TimeCreated>62187,27819.075418</TimeCreated>
+
+<Parameter name="pageSeparator">
+<Description><![CDATA[
+<pre> Oddelovac stranek (poppler, FF)
+29.05.20 ln; secure pipeline
+</pre>]]></Description>
+<Default>DA==</Default>
+<Encoded>1</Encoded>
+</Parameter>
+
+<Method name="call">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,service:%String]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  ; po prechodu 1 ictx 1 namespace se muze zrusit
+  q:$g(array("ictx"))'=$$$GETICTX 0
+  
+  s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")
+  q:$f(callBack,".page404") 0
+  
+  if callBack'="" {
+    d $ZOBJCLASSMETHOD(callBack,"runtime",.runtime,$g(array("class")),$g(array("t001")))
+    m array=runtime
+  }    
+  
+  /*
+  w !,"<pre>"
+  zw array
+  w !,"</pre>"
+  */
+  
+  try {
+    s ret=$ZOBJCLASSMETHOD("content.generated",$$$GETICTX_service,.array)
+  } catch {
+    s ret=0
+    w !,"je to spatne: ",$$$GETICTX_service,!
+  }
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="testEngine">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s ictx="cbvk", language=2
+  
+  $$$SetupSessionTask
+  d ##class(i2.common).sessionSetup("testEngine",,ictx,language)
+  d ##class(i2.init).batchinit(ictx,language)
+  
+  w ##class(engine.api).engineRead("crepo1","79763357320",.array)
+  w !
+  zw array
+]]></Implementation>
+</Method>
+
+<Method name="open">
+<Description>
+31.10.12 ln; podpora verzovani</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String,version=""</FormalSpec>
+<ReturnType>content.metadata</ReturnType>
+<Implementation><![CDATA[
+  s id=""
+  if version="" {
+    &sql(SELECT ID INTO id FROM content.metadata WHERE (Repo = :repo AND CKey = :key AND Version is NULL))
+  } else {
+    &sql(SELECT ID INTO id FROM content.metadata WHERE (Repo = :repo AND CKey = :key AND Version = :version))
+  }
+  s obj=##class(content.metadata).%OpenId(id)
+  q obj
+]]></Implementation>
+</Method>
+
+<Method name="select">
+<Description><![CDATA[
+<pre> interni metoda pro jednotlive select funkce z api
+
+07.04.22 ln; CRank generovat vzdy
+18.07.19 ln; podpora Supervisor jako seznam
+11.01.18 ln; select napred promaze output
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&output,repo:%String,class:%String,t001:%String,status:%String=""]]></FormalSpec>
+<Implementation><![CDATA[
+  k output ; 11.01.18 ln; select napred promaze output
+  
+  s isOrder=##class(i2.ui.menu).existMenuPage("contorder","contorder")
+  
+  s rset = ##class(%ResultSet).%New()
+  s rset.ClassName = "content.metadata"
+  if repo="" {
+  if class'="" {
+    if status="" {  
+      ; 07.04.22 ln; CRank generovat vzdy
+      if 'isOrder {
+        s rset.QueryName = "RecAll"
+      } elseif $$$I2isOp("CONTFIFO") {
+        s rset.QueryName = "RecAllRankAsc"
+      } else {
+        s rset.QueryName = "RecAllRankDesc"
+      }
+      d rset.Execute(class,t001)
+    } else {
+      s rset.QueryName = "RecStatus"
+      d rset.Execute(class,t001,status)
+    }
+  } else {
+    if status'="" {
+      s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")
+        if (callBack'="") && '$f(callBack,".page404") {
+          s super=$ZOBJCLASSMETHOD(callBack,"isSupervisor",t001)
+        } else {
+          s super=""
+        }
+      
+      if super="" {
+        s rset.QueryName = "UploaderStatus"
+        d rset.Execute(t001,status)        
+      } else {
+        ; 18.07.19 ln; podpora Supervisor jako seznam
+        s sql="SELECT TOP 200 Array,Downloaded FROM content.metadata WHERE Status = '"_status_"' AND Version is NULL AND ("
+        for i=1:1:$l(super,",") {        
+          s part=$p(super,",",i)
+          s:part'="" sql=sql_"POSITION(',"_part_",' in ','||Supervisor||',') > 0 OR "
+        }
+        s sql=$e(sql,1,*-3)_") ORDER BY ID DESC"
+        s rset=##class(%ResultSet).%New("%DynamicQuery:SQL")        
+        s sc=rset.Prepare(sql)
+        s sc=rset.Execute()
+      }    
+    } else {
+      if super="" {
+        s rset.QueryName = "UploaderAll"
+        d rset.Execute(t001)
+      } else {
+        s rset.QueryName = "SupervisorAll"
+        d rset.Execute(super)
+
+      }
+    }      
+  }
+  } else {
+    s rset.QueryName = "RecRepo"
+    d rset.Execute(repo,class,t001) 
+  }
+  
+  d ..loop(rset,.output)
+  
+  /*
+  s seq=1
+  While (rset.Next(.sc)) {  
+    q:'$SYSTEM.Status.IsOK(sc)
+    //w !,"<pre>"
+    //d $system.OBJ.Dump(rset)
+    //w !,"</pre>"
+    s list=rset.Data("Array")
+    d ##class(content.engine).deserial(.array,list)
+    s array("count")=rset.Data("Downloaded")
+    m output(seq)=array
+    s seq=seq+1
+  }
+  */
+]]></Implementation>
+</Method>
+
+<Method name="loop">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[rset:%ResultSet,&output]]></FormalSpec>
+<Implementation><![CDATA[
+  s seq=1
+  While (rset.Next(.sc)) {  
+    q:'$SYSTEM.Status.IsOK(sc)
+    //w !,"<pre>"
+    //d $system.OBJ.Dump(rset)
+    //w !,"</pre>"
+    s list=rset.Data("Array")
+    d ##class(content.engine).deserial(.array,list)
+    s array("count")=rset.Data("Downloaded")
+    ; TODO pokud by mela pretect pamet, bude lepsu do output dat jen to nebytne
+    s output(seq,"key")=array("key")
+    s output(seq,"repository")=array("repository")    
+    ;m output(seq)=array
+    s seq=seq+1
+  }
+]]></Implementation>
+</Method>
+
+<Method name="set">
+<Description><![CDATA[
+<pre> naplneni dat contentServeru (nejnizsi uroven)
+
+22.12.21 ln; podpora CRank
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,obj:content.metadata]]></FormalSpec>
+<Implementation><![CDATA[
+  d ..pure(.array)
+  
+  s obj.Class=array("class")
+  s obj.T001=array("t001")
+  s obj.Uploader=array("importer")
+  s obj.Supervisor=array("supervisor")
+  s obj.Type=array("type")
+  s obj.Status=$g(array("status"))
+  if $g(array("Created_on"))'="" {
+    s obj.UploadDate=array("Created_on")
+  }
+  elseif $g(array("dayimport"))'="" {
+  s obj.UploadDate=array("dayimport")
+  }  
+  
+  s:$g(array("size"))'="" array("humansize")=##class(content.human).sizeSI(array("size"))
+  ; po prechodu 1 ictx 1 namespace se muze zrusit
+  s array("ictx")=$$$GETICTX
+  
+  ; 22.12.21 ln; podpora CRank
+  s obj.CRank=$g(array("crank"))
+  
+  d ..split(.array,.storage)
+  d obj.setArray(.array)
+  
+  s list=..serial(.storage)    
+  s obj.Storage=list
+]]></Implementation>
+</Method>
+
+<Method name="get">
+<Description><![CDATA[
+<pre> cteni dat contentServeru (nejnizsi uroven)
+
+31.10.12 ln; podpora verzovani
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,repo:%String,key:%String,version="",increment:%Boolean=0,batch:%Boolean=0]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  k array
+  s id=""
+  
+  //s obj=##class(content.metadata).%OpenId(repo_"||"_key)
+  s obj=..open(repo,key,version)
+  
+  q:'$isobject(obj) 0
+  
+  if increment {
+    s obj.Downloaded=obj.Downloaded+1
+    s st=obj.%Save()
+    q:'st 0
+  }
+  
+  d obj.getArray(.array)  
+  s list=obj.Storage
+  d ..deserial(.storage,list)
+  m array=storage
+  s array("count")=obj.Downloaded
+  
+  q:batch 1
+  d ..runtime(.array)
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="runtime">
+<Description><![CDATA[
+<pre> Pridani standardnich runtime metadat
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<Implementation><![CDATA[
+  s array("intranet")=##class(i2.access).getLoginIntranet()  
+  s array("ipadress")=##class(i2.common).getIP()
+  s array("client")='$$$IsSessionI2
+  
+  if ##class(i2.access).isLoginRestricted() {
+    s array("userstate")=1
+  } 
+  elseif ##class(i2.access).isLoggedIn() {
+    s array("userstate")=2
+  } else {
+  s array("userstate")=0  
+  }
+  
+  s array("user")=##class(i2.access).getLoginId()
+  s array("context")=","_##class(i2.access).getLoginCateg()_","
+  s array("category")=##class(i2.access).getLogin100k()
+]]></Implementation>
+</Method>
+
+<Method name="pure">
+<Description><![CDATA[
+<pre> Odstraneni standardnich runtime metadat z array
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<Implementation><![CDATA[
+  k array("category")
+  k array("client")
+  k array("context")
+  k array("getSuper")  
+  k array("ictx")
+  k array("imgnode")
+  k array("intranet")
+  k array("ipadress")
+  k array("isAdmin")
+  k array("isAuthor")
+  k array("isSuper")
+  k array("nodesid")
+  k array("nodeuser")
+  k array("nodecred")
+  k array("nodefirst")
+  k array("oldversion")
+  k array("plang")
+  k array("pretty")
+  k array("user")
+  k array("userstate")
+  k array("CHANGED")
+  k array("FILE")
+  k array("DUPLICITY")
+  k array("TEST")
+]]></Implementation>
+</Method>
+
+<Method name="purge">
+<Description><![CDATA[
+<pre> Odstraneni metadat, ktera se nezasilaji pres editacni formular
+nesmi byt uzivatelsky zmeneny
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<Implementation><![CDATA[
+  k array("class")
+  k array("count")
+  k array("ctype")
+  k array("daychange")
+  k array("daydel")
+  k array("dayimport")
+  k array("extension")
+  k array("humansize") 
+  k array("importer")
+  k array("key")
+  k array("origname")
+  k array("repository")
+  k array("size")
+  k array("status")
+  k array("supervisor")
+  k array("t001")
+  k array("ver")
+  k array("checksum")
+]]></Implementation>
+</Method>
+
+<Method name="split">
+<Description>
+oddelit storage od array</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,&storage]]></FormalSpec>
+<Implementation><![CDATA[
+  s node=""
+  f { s node=$o(array(node)) q:node=""
+    if $d(array(node))>1 {
+      m storage(node)=array(node)
+      k array(node)
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="serial">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s node="", list=""
+  f { s node=$o(array(node),1,val) q:node=""
+    if $d(array(node))>1 {
+      s node2="", val=""
+      f { s node2=$o(array(node,node2),1,val2) q:node2=""
+        s val=val_$lb($lb(node2,val2))
+      }
+    }
+    s list=list_$lb($lb(node,val))
+  }
+  q list
+]]></Implementation>
+</Method>
+
+<Method name="deserial">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,list:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  k array
+  s listL=$listlength(list)
+  f i=1:1:listL {
+    s tmpl=$li(list,i)
+    s node=$li(tmpl,1)
+    s val=$li(tmpl,2)
+    if (val="") || '$listvalid(val) {
+      s array(node)=val
+    } else {
+      s nodeL=$listlength(val)
+      f j=1:1:nodeL s tmpl=$li(val,j),array(node,$li(tmpl,1))=$li(tmpl,2)
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="testSerDes">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s array("importer")=""
+  s array("jedna")="one"
+  s array("dve")="two"
+  s array("author","Bernau")="Adam"
+  s array("author","Tell")="Vilem"
+  
+  s list=..serial(.array)  
+  w ! zw list  
+  
+  d ..deserial(.pole,list)
+  w ! zw pole
+]]></Implementation>
+</Method>
+
+<Method name="getName">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s t001=$g(array("t001"))
+  q:t001="" ""  
+  q t001_"_"_$i(^ContentServer("ord",array("class"),t001))_"."_array("extension")
+]]></Implementation>
+</Method>
+
+<Method name="testGetName">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s array("class")="CbvkUsCat"
+  s array("t001")="m0007489"
+  s array("extension")="txt"
+  
+  w !,..getName(.array)
+]]></Implementation>
+</Method>
+
+<Method name="import">
+<Description><![CDATA[
+<pre> Import souboru zaslaneho ve streamu
+
+06.12.22 ln; ulozeni aratio
+07.04.22 ln; CRank generovat vzdy
+29.05.20 ln; secure pipeline
+26.10.18 ln; opraven testovaci rezim pro importFile
+20.10.16 ln; multiapload presunuje misto kopirovani
+29.07.15 ln; opraven testovaci import
+23.05.14 ln; podpora multiupload
+17.10.13 ln; podpora pro watermark
+28.11.12 ln; volba BIGCONTENT pro triciselne adresare
+31.10.12 ln; podpora verzovani
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[idx:%String,stream,&array,obj:content.metadata=""]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  /*
+  w !,"<pre>"
+  d $system.OBJ.Dump(%request)
+  w !,"</pre>"
+  
+  w !,"<pre>"  
+  zw array
+  w !,"</pre>"  
+  */
+  
+  ; overeni repozitare
+  s repo=$g(array("repository"))
+  q:repo="" "repo1"  
+  q:##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF)="" "repo2"
+  q:##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF,"c")="" "repo3"
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF,"b")
+  q:path="" "repo4"
+  s sPathSep=$$$PathSepp
+  if $e(path,$l(path))'=sPathSep { s path=path_sPathSep }  
+  
+  ; overeni zaznamu
+  q:idx="" "record"
+  s lname=$p($p(idx,"*",1),"-",1),t001=$p(idx,"*",2)
+  q:lname="" "record"
+  q:t001="" "record"
+  s class=##class(User.Util).lname2objectName(lname)
+  q:class="" "record"
+  q:'##class(User.MARC).existsT001(class,t001) "record"
+  
+  s array("class")=class
+  s array("t001")=t001
+  
+  ; 23.05.14 ln; podpora multiupload
+  if '$g(array("FILE")) {
+    s origname=stream.FileName
+    ; ziskani origname pro ie
+    if $e(origname,2,3)=":\" {
+    s origL=$l(origname,"\")
+    s origname=$p(origname,"\",origL,origL)
+    }
+    s array("origname")=origname 
+    s array("size")=stream.Size
+    s array("ctype")=stream.ContentType
+  }
+  q:'array("size") "size"  
+  
+  s extension=$zcvt($p(array("origname"),".",$l(array("origname"),".")),"L")
+  s array("extension")=extension
+  s array("dayimport")=$zd($h,8)  
+  s:$g(array("importer"))="" array("importer")=##class(i2.access).getLoginId()
+  s array("supervisor")=$g(array("supervisor"))
+  s type=$g(array("type"))
+  if type="" {
+    s type="content"
+    s array("type")=type
+  }
+  elseif type="extension" {
+    s type=extension
+    s array("type")=type
+  }
+  
+  ; ziskani klice
+  if obj="" {
+    s obj=##class(content.metadata).%New(repo)
+    s st=obj.%Save()
+    q:'st "key"
+    
+    s array("ver")=1    
+    s version=""
+  } else {
+    s version=array("ver")
+  }
+  s key=obj.CKey
+  s array("key")=key
+  
+  ; 28.11.12 ln; volba BIGCONTENT pro triciselne adresare
+  s bigContent=$$$I2isOp("BIGCONTENT")
+  
+  ; pripadne vytvorime podadresar
+  if 'bigContent {
+    s path=path_$e(key,1,2)_sPathSep
+    s filename=$e(key,3,99)
+  } else {
+    s path=path_$e(key,1,3)_sPathSep
+    s filename=$e(key,4,99)
+  }
+  if '##class(%File).DirectoryExists(path) { 
+    if '##class(%File).CreateDirectoryChain(path) {
+      d ##class(content.metadata).%DeleteId(obj.%Id())
+      q "dir"
+    }
+  }
+  
+  ; ulozeni verze
+  if version="" { 
+    s filename=filename_"."_extension
+  } else {
+     s filename=filename_"_"_version_"."_extension
+  }
+  s test=$g(array("TEST"))
+  
+  ; ulozeni souboru
+  ; 26.10.18 ln; opraven testovaci rezim pro importFile
+  if '$g(array("FILE")) || test {  
+    s file=##class(%FileBinaryStream).%New()
+    s file.Filename=path_filename
+    ;w !,"path=",path_filename  
+    if ('test && 'file.CopyFromAndSave(stream)) ||
+       (test && 'file.CopyFrom(stream)) {
+    d ##class(content.metadata).%DeleteId(obj.%Id())
+    q "file"
+    }
+  } else {
+    ; 20.10.16 ln; multiapload presunuje misto kopirovani
+    if '##class(%File).Rename(stream.Filename,path_filename) {
+      d ##class(content.metadata).%DeleteId(obj.%Id())
+      q "file"
+    }
+  }
+  
+  ; 06.12.22 ln; ulozeni aratio
+  d ..aratio(.array,path_filename)
+  ; 17.10.13 ln; podpora pro watermark
+  d ..watermark(.array)
+  ; 29.05.20 ln; secure pipeline
+  d ..secure(.array)
+  
+  s imgnode=$g(array("imgnode"))
+  
+  if imgnode'="" {  
+    s:$g(array("Changed_by"))'="" obj.ChangedBy=##class(i2.access).getLoginId()
+    s:$g(array("Changed_on"))'="" obj.ChangedOn=array("Changed_on")  
+  }
+  
+  ; 07.04.22 ln; CRank generovat vzdy
+  if $g(array("crank"))="" {
+    s crank=$e($o(^content.metadataI("CRank",class,t001,""),-1),2,*)
+    s array("crank")=##class(content.order).getRanks(crank)
+  }
+  
+  ; naplneni dat contentServeru
+  d ..set(.array,obj)
+  /*
+  w !,"<pre>"
+  d $system.OBJ.Dump(obj)
+  w !,"</pre>"  
+  */
+  ; 29.07.15 ln; opraven testovaci import
+  if test {    
+    w:$isobject($g(%request)) !,"<pre>"
+    d $system.OBJ.Dump(obj)
+    w:$isobject($g(%request)) !,"</pre>"
+    d:version="" ##class(content.metadata).%DeleteId(obj.%Id())
+    q ""
+  }  
+  
+  if 'obj.%Save() {
+    d:version="" ##class(content.metadata).%DeleteId(obj.%Id())
+  q "save"  
+  }
+  
+  ; naplneni dat imageServeru
+  d ..toImageServer(.array,imgnode)
+  
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="testImport">
+<Description>
+k ^ContentServer
+k ^ImageServer("storage","CbvkUsCat","m0007489","drepo1")
+k ^ImageServer("thumb","file:///mnt/fat32/db_cosmo/content/I/m0007489_2.jpg")</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s ictx="cbvk", language=2
+  
+  $$$SetupSessionTask
+  d ##class(i2.common).sessionSetup("testImport",,ictx,language)
+  d ##class(i2.init).batchinit(ictx,language)  
+  $$$SETREQVAR("op","uploader")
+  
+  s array("repository")="crepo1"
+  s array("type")="annotation"
+  s array("description")="ahoj julku"
+  
+  s array("uzel1")="ahoj"
+  
+  s stream=##class(%CSP.BinaryStream).%New()
+  s stream.FileName="file.txt"
+  s stream.ContentType="text/plain"
+  d stream.Write("ahoj julku jak se vede")
+  //d $system.OBJ.Dump(stream)
+  
+  w ..import("cbvk_us_cat*m0007489",stream,.array)
+  
+  w !
+  zw ^ContentServer
+]]></Implementation>
+</Method>
+
+<Method name="change">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  
+  s repo=array("repository")
+  s key=array("key")
+  
+  ; ulozeni noveho objektu - minula verze
+  s obj=##class(content.metadata).%New(repo,key)
+  s st=obj.%Save()
+  q:'st "version"
+  
+  s array("ver")=obj.Version
+  s array("daychange")=$zd($h,8)
+  ; ulozeni soucasne platne verze jako zalohu
+  d ..set(.array,obj)
+  
+  if $g(array("TEST")) {    
+    w:$isobject($g(%request)) !,"<pre>"
+    d $system.OBJ.Dump(obj)
+    w:$isobject($g(%request)) !,"</pre>"
+    d ##class(content.metadata).%DeleteId(obj.%Id())
+    q ""
+  }
+  
+  if 'obj.%Save() {
+    d ##class(content.metadata).%DeleteId(obj.%Id())
+    q "change"  
+  }
+  
+  ; odstraneni minule verze z image serveru
+  s array("imgnode")=..delImageServer(.array)  
+  
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="delete">
+<Description><![CDATA[
+<pre> Formalni smazani souboru (aktualni verze)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s obj=..open(repo,key)
+  
+  q:'$isobject(obj) 0  
+  d obj.getArray(.array)
+  
+  q:$g(array("repository"))="" 0
+  q:$g(array("class"))="" 0
+  q:$g(array("key"))="" 0
+  
+  q:$g(array("t001"))="" 0
+  q:$g(array("type"))="" 0
+  
+  q:$g(array("extension"))="" 0
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",array("repository"),"N",$$$IPREF,"b")
+  q:path="" 0
+  s sPathSep=##class(User.Util).getPathSepp()
+  if $e(path,$l(path))'=sPathSep { s path=path_sPathSep }
+  if ($$$GETSID'="") && $$$I2isOp("BIGCONTENT") {  ; kvuli ipac1
+    s path=path_$e(array("key"),1,3)_sPathSep
+    s filename=$e(array("key"),4,99)_"."_array("extension")
+  } else {
+    s path=path_$e(array("key"),1,2)_sPathSep
+    s filename=$e(array("key"),3,99)_"."_array("extension")
+  }
+  
+  ; zruseni polozky imageServeru
+  d ..delImageServer(.array)
+  
+  /*
+  ; od zavedeni verzovani se soubory nemazou
+  d ##class(%File).Delete(path_filename)
+  
+  ; zruseni polozky contentServeru
+  if '##class(content.metadata).%DeleteId(obj.%Id()) {
+    q 0
+  }
+  */  
+  
+  ; ulozeni aktualni verze jako minula verze
+  //&sql(SELECT count(*) INTO :cnt FROM content.metadata WHERE (Repo = :repo AND CKey = :key))  
+  //s obj.Version=cnt+1
+  ;w !,"version=",cnt+1
+  //s array("ver")=cnt+1
+  
+  s:$g(array("ver"))="" array("ver")=1  
+  s obj.Version=array("ver")
+  s array("daydel")=$zd($h,8)
+  
+  d ..set(.array,obj)
+  if 'obj.%Save() {
+  q 0
+  }
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="testDelete">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s ictx="cbvk", language=2  
+  d ##class(i2.init).preinit(ictx,language) 
+  
+  w !,..delete("crepo1",56723943853)
+]]></Implementation>
+</Method>
+
+<Method name="toImageServer">
+<Description><![CDATA[
+<pre> Pridani objektu do imageServeru
+
+08.07.21 ln; zabezpeceny dokument take jako typ pristupu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,imgnode=""]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s repo=array("repository")
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF,"b")
+  q:path="" 0
+  
+  s class=array("class")
+  s t001=array("t001")
+  s type=array("type")
+  ; 08.07.21 ln; zabezpeceny dokument take jako typ pristupu
+  s:$g(array("accession"))="S" type="secure"
+  s key=array("key")
+  s extension=array("extension")
+  s version=$g(array("ver"))
+  s:version=1 version=""
+  s sPathSep=##class(User.Util).getPathSepp()
+  s:$e(path,*)'=sPathSep path=path_sPathSep
+  
+  if ($$$GETSID'="") && $$$I2isOp("BIGCONTENT") {  ; kvuli ipac1
+    s path=path_$e(array("key"),1,3)_sPathSep
+    s filename=$e(array("key"),4,99)_"."_extension
+  } else {
+    s path=path_$e(array("key"),1,2)_sPathSep
+    s filename=$e(array("key"),3,99)_"."_extension
+  }  
+  
+  ; naplneni dat imageServeru
+  if imgnode {
+    s node=imgnode
+  }
+  elseif $d(^ImageServer("storage",class,t001,repo,type)) {
+    s node=$o(^ImageServer("storage",class,t001,repo,type,""),-1)+1
+  } else {
+    s node=1
+  }
+  s data="file://"_$replace(path_filename,sPathSep,"/")
+  s ^ImageServer("storage",class,t001,repo,type,node)=repo_$c(10,10)_data_$c(10,10,10,10,10)_key
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="delImageServer">
+<Description><![CDATA[
+<pre> Smazani zaznamu o soboru z imageServeru, vcetne promazani nahledu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=""
+  
+  ; zruseni polozky imageServeru
+  s node="", thumburl=""
+  f { s node=$o(^ImageServer("storage",array("class"),array("t001"),array("repository"),array("type"),node),1,val)
+    q:node=""
+    if $p(val,$c(10),8)=array("key") {
+      s thumburl=$p(val,$c(10),3)
+      k ^ImageServer("storage",array("class"),array("t001"),array("repository"),array("type"),node)
+      s ret=node
+      q
+    }
+  }
+  
+  ; promazani nahledu
+  d:thumburl'="" ##class(rep.zf.images).deleteThumbnail(thumburl)
+  
+  q ret
+  
+  ; zruseni polozky contentServeru
+  //k ^ContentServer(array("repository")
+]]></Implementation>
+</Method>
+
+<Method name="secure">
+<Description><![CDATA[
+<pre> Generovani artefaktu pro zabezpecene dokumenty
+vraci 1/0 jestli se podarilo
+
+28.03.23 ln; volba flatten pro rozklad zabezpecenych pdf
+08.07.21 ln; zabezpeceny dokument take jako typ pristupu
+29.05.20 ln; secure pipeline
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,process:%Boolean=0]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:(array("type")'="secure")&&($g(array("accession"))'="S") 0
+  q:$p($g(array("ctype")),"/",2)'="pdf" 0
+  s:'$d(array("pgstate")) array("pgstate")="p"
+  
+  if 'process {
+    d:array("pgstate")="p" ##class(content.reader).duiEnqueue(array("repository"),array("key"))
+    q 1 ; uploud pouze oznaci ke zpracovani, provede planovana uloha content.reader.task
+  }
+  
+  s verbose=1
+  s extension=array("extension")
+  s version=$g(array("ver"))
+  s:version=1 version=""
+  s test=$g(array("TEST"))  
+  
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",array("repository"),"N",$$$IPREF,"b")
+  if path="" {
+    w:verbose !,"IMAGE_SERVER: ",array("repository")," is not set"
+    q 0
+  }
+  
+  s pathSep=##class(User.Util).getPathSepp()
+  s path=path_$e(array("key"),1,2)_pathSep
+  s keyname=$e(array("key"),3,*)
+  s filename=keyname_"."_extension
+  s dest=path_keyname
+    
+  s bWin=##class(User.Util).isWindows()
+  if bWin {
+    s toolPath=$zcvt(##class(i2.common).getArlDir("REPORTS"),"L")
+    s toolPath=$e(toolPath,1,$f(toolPath,pathSep_"arl"_pathSep)-1)
+    s imagic=toolPath_"ImageMagick"_pathSep
+    s poppler=toolPath_"poppler"_pathSep
+  } else {
+    s imagic="", poppler=""
+  }
+  
+  if '##class(%File).DirectoryExists(dest) { 
+    if '##class(%File).CreateDirectory(dest) {
+      w:verbose !,"secure: directory FAILED!"
+      q 0
+    }
+  }
+  
+  if process<2 {
+    q:##class(%File).Exists(dest_".txt") 1
+  } else {    
+    w !,"clearing ",dest
+    d ##class(%File).Delete(dest_".txt")
+  }
+  
+  s command=poppler_"pdftotext -q """_path_filename_""" """_dest_".txt"""  ; -nopgbrk
+  w:verbose !,"poppler=",command
+  if 'test && ($ZF(-1,command)'=0) { ;(##class(deploy.common).executeOs(command)'=0) {
+    w:verbose !,"secure: poppler FAILED!"
+    q 0
+  }
+  
+  s file=##class(%FileCharacterStream).%New()
+  s file.Filename=dest_".txt"
+  d file.TranslateTableSet("UTF8")
+  
+  s start=1, page=0, pos=##class(util.common).findS(file,..#pageSeparator)
+  s:'pos pos=start+152
+  k array("pgprev")
+  
+  While pos {
+    s stop=start+150, page=page+1
+    s:stop>(pos-2) stop=pos-2
+    s item=##class(util.common).extractS(file,start,stop)
+    s item=$zstrip($p($tr(item,$c(13)),$c(10),1,*-1),"<=>C",,$c(9)) ; last line complete
+    s array("pgprev",page)=item
+    s start=pos
+    s pos=##class(util.common).findS(file,..#pageSeparator,start)
+  }
+  
+  ; ostranit posledni prazdnou stranku
+  if $zstrip(item,"*PC")="" {
+    k array("pgprev",page)
+    s page=page-1
+  }
+  
+  s array("pgcount")=page
+  w:verbose !,"pgcount=",page
+  
+  for i=0:1:page-1 {
+    ; 28.03.23 ln; volba flatten pro rozklad zabezpecenych pdf
+    s command=imagic_"convert -density 275 -flatten """_path_filename_"["_i_"]"" """_dest_pathSep_"secure-"_$tr($j(i+1,$normalize($zlog(page),-1)+1)," ",0)_".jpg"""
+    w:verbose !,"convert=",command
+  
+    if 'test && ($ZF(-1,command)'=0) { ;(##class(deploy.common).executeOs(command)'=0) {
+      w:verbose !,"secure: convert FAILED!"
+      return 0
+    }
+  }
+  s array("pgstate")="s"
+  
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="watermark">
+<Description><![CDATA[
+<pre> vytvoreni dalsiho obrazku s watermakrem
+pregenerovani pokud verbose=2
+
+19.04.23 ln; watermark typu diag
+24.02.23 ln; watermark typy fit a tile
+24.02.20 mj; zamena $zf(-1
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,verbose:%Boolean=0]]></FormalSpec>
+<Implementation><![CDATA[
+  q:$p(array("ctype"),"/")'="image"
+  
+  s watermark=$g(array("watermark"))
+  if (watermark="false") || (watermark=0) {
+    s watermark=""
+  }
+  q:watermark=""  
+  
+  s waterdev=##class(User.Util).sXlate("CONTENT_WATERMARK",watermark,"N",$$$IPREF,"b")
+  if waterdev="" {
+    w:verbose !,"CONTENT_WATERMARK ",watermark," is not set"
+    q
+  }    
+  
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",array("repository"),"N",$$$IPREF,"b")
+  if path="" {
+    w:verbose !,"IMAGE_SERVER: ",array("repository")," is not set"
+    q
+  }
+  
+  s extension=array("extension")
+  s version=$g(array("ver"))
+  s:version=1 version=""
+  s test=$g(array("TEST"))
+  s sPathSep=##class(User.Util).getPathSepp()
+  s:$e(path,*)'=sPathSep path=path_sPathSep
+  
+  if ($$$GETSID'="") && $$$I2isOp("BIGCONTENT") {  ; kvuli ipac1
+    s path=path_$e(array("key"),1,3)_sPathSep
+    s filename=$e(array("key"),4,99)_"."_extension
+  } else {
+    s path=path_$e(array("key"),1,2)_sPathSep
+    s filename=$e(array("key"),3,99)_"."_extension
+  }
+  
+  s dest=$p(filename,"."_extension)_"_water"_watermark
+  if version="" { 
+    s dest=path_dest_"."_extension
+  } else {
+    s dest=path_dest_"_"_version_"."_extension
+  }
+  
+  if verbose<2 {
+    q:##class(%File).Exists(dest)
+  } else {    
+    w !,"clearing ",dest
+    d ##class(%File).Delete(dest)
+  }
+  
+  s bWin=##class(User.Util).isWindows()
+  if bWin {
+    ; problematicke
+    s pathSepp=$$$PathSepp
+    s toolPath=$zcvt(##class(i2.common).getArlDir("REPORTS"),"L")
+    s toolPath=$e(toolPath,1,$f(toolPath,pathSepp_"arl"_pathSepp)-1)_"ImageMagick"_pathSepp
+  } else { 
+    s toolPath="" 
+  }      
+  
+  ; 24.02.23 ln; watermark typy fit a tile
+  s type=##class(User.Util).sXlate("CONTENT_WATERMARK",watermark,"N",$$$IPREF,"t") 
+  s gravity=##class(User.Util).sXlate("CONTENT_WATERMARK",watermark,"N",$$$IPREF,"g") 
+  s:gravity="" gravity="SouthWest"
+  s aratio=$g(array("aratio"))
+  
+  if type="tile" {
+    ;  -dissolve 15
+    s command=toolPath_"composite -tile """_waterdev_""" """_path_filename_""" """_dest_""""
+  }
+  elseif (type="fit") && (aratio'="") {
+	 ;s command=toolPath_"magick """_path_filename_""" """_waterdev_""" -resize ""%[fx:u[0].w]x"" -gravity center -composite """_dest_""""
+	 s command=toolPath_"composite -gravity """_gravity_""" """_waterdev_""" """_path_filename_""" -resize """_aratio_""" """_dest_""""
+  }  
+  elseif (type="diag") && (aratio'="") {
+	; 19.04.23 ln; watermark typu diag
+	s command=toolPath_"convert -rotate 330 -background none """_waterdev_"""  -resize """_aratio_""" miff:- | "
+             _toolPath_"composite -gravity """_gravity_""" - """_path_filename_""" """_dest_""""
+  } else {
+    s command=toolPath_"composite -gravity """_gravity_""" """_waterdev_""" """_path_filename_""" """_dest_""""
+  }
+  w:verbose !,"toolPath=",command
+  
+  ; 24.02.20 mj; zamena $zf(-1
+  if 'test && ($ZF(-1,command)'=0) { ;(##class(deploy.common).executeOs(command)'=0) {
+    ; TODO chyba v generovani watermarku
+    w:verbose !,"watermark generation FAILED!"
+  }
+]]></Implementation>
+</Method>
+
+<Method name="aratio">
+<Description><![CDATA[
+<pre> aratio = <sirka>x<vyska>
+
+15.02.23 ln; snaha zabranit csp timeoutu kvuli aratio
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,path:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  s ext=$zcvt($p(path,".",*),"L")
+  ; 15.02.23 ln; snaha zabranit csp timeoutu kvuli aratio
+  q:$p(array("ctype"),"/")'="image"
+  if (ext'="jpg") && (ext'="jpeg") && (ext'="gif") && (ext'="png") && (ext'="tif") q
+  
+  s pathSep=$$$PathSepp, convert="convert -quiet"_" "
+  
+  if ##class(User.Util).isWindows() {
+    s pathRep=$zcvt(##class(i2.common).getArlDir("REPORTS"),"L")
+    q:pathRep="" 0
+    
+    s convert=$e(pathRep,1,$f(pathRep,pathSep_"arl"_pathSep)-1) ; problematicke
+                _"ImageMagick"_pathSep_convert    
+  }
+  
+  s cmd=convert_path_" -format ""%wx%h"" info:"  
+  s aratio=##class(util.ie.cmd).line(cmd)
+  
+  s:aratio'="" array("aratio")=aratio
+]]></Implementation>
+</Method>
+
+<Method name="update">
+<Description><![CDATA[
+<pre> Update metadat souboru, volano pres api ze stranky spravy souboru
+
+29.05.20 ln; secure pipeline
+17.10.13 ln; podpora pro watermark
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s obj=##class(content.engine).open($g(array("repository")),$g(array("key")))  
+  q:'$isobject(obj) 0
+  
+  s type=$g(array("type"))
+  q:type="" 0
+  
+  if obj.Type'=type {
+    s oldType=obj.Type
+  } else {
+    s oldType=""
+  }  
+  
+  if $$$GETSID'="" {  ; kvuli ipac1
+    s:$g(array("Edited_by"))'="" obj.EditedBy=##class(i2.access).getLoginId()
+    s:$g(array("Edited_on"))'="" obj.EditedOn=array("Edited_on")
+  }
+  
+  ; 29.05.20 ln; secure pipeline
+  d ..secure(.array)
+  
+  d ##class(content.engine).set(.array,obj)
+  s st=obj.%Save()
+  s ret=$SYSTEM.Status.IsOK(st)
+  
+  if ret && (oldType'="") {
+    s tmp=array("type")
+    s array("type")=oldType
+    d ..delImageServer(.array)
+    s array("type")=tmp
+    q:'..toImageServer(.array) 0
+  }
+  
+  ; 17.10.13 ln; podpora pro watermark
+  d ..watermark(.array)
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="setC52">
+<Description><![CDATA[
+<pre> Metoda pro vygenerovani/pridani do tagu C52
+volatelne bezpecne mimo CSP
+
+27.08.19 ln; podpole C52d
+03.02.15 tt; vyjimka pro CavUnEpca, kdy tato standardni funkcnost nici zakaznickou funkcnost vzniklou drive
+20.06.14 ln; C52 neukladat pro castkove zaznamy fotogalerii
+28.03.14 tt; do overeni nesmi jit prazdne cust2
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,&array,origstat="",origacc="",origtype=""]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s status=$g(array("status"))
+  s accession=$g(array("accession"))
+  s type=$g(array("type"))
+  
+  s ret=0  
+  
+  s class=$$$HandleClass(handle)
+  q:class="" 0
+  s t001=$$$HandleT001(handle)
+  ; 03.02.15 tt; vyjimka pro CavUnEpca, kdy tato standardni funkcnost nici zakaznickou funkcnost vzniklou drive
+  q:(class="CavUnEpca") 0
+  ; 20.06.14 ln; C52 neukladat pro castkove zaznamy fotogalerii
+  if (type="foto") && $f(t001,"_") { q 0 }
+    
+  s c52=$$$getTagX(.handle,"C52")
+  s:c52="" c52="C52    "
+  ;w !,",c52=",$tr(c52,$c(31),"$"),"|"
+  
+  s orig=origstat
+  if (status'=orig) && (orig'="") && $f(c52,$c(31)_"a"_orig) {
+    &sql(SELECT count(ID)
+         INTO :count
+         FROM content.metadata
+         WHERE Class = :class AND T001 = :t001 AND Version is NULL AND Status = :orig
+    )  
+    ; w !,"count1=",count
+    if (SQLCODE=0) && 'count {       
+      s c52=$replace(c52,$c(31)_"a"_orig,"")
+      s ret=1
+    }
+  }
+  
+  if (status'="") && '$f(c52,$c(31)_"a"_status) {
+    s c52=c52_$c(31)_"a"_status
+    s ret=1
+  }
+
+  s orig=origacc
+  if (accession'=orig) && (orig'="") && $f(c52,$c(31)_"b"_orig) {
+    &sql(SELECT count(ID)
+         INTO :count
+         FROM content.metadata
+         WHERE Class = :class AND T001 = :t001  AND Version is NULL AND
+         FOR SOME %ELEMENT(Array) (%KEY='accession' AND %VALUE = :orig)
+    )  
+    ;w !,"count2=",count
+    if (SQLCODE=0) && 'count {        
+      s c52=$replace(c52,$c(31)_"b"_orig,"")        
+      s ret=1
+    }
+  }
+    
+  if (accession'="") && '$f(c52,$c(31)_"b"_accession) {
+    s c52=c52_$c(31)_"b"_accession
+    s ret=1
+  }
+  
+  s orig=origtype
+  if (type'=orig) && (orig'="") && $f(c52,$c(31)_"t"_orig) {
+    &sql(SELECT count(ID)
+         INTO :count
+         FROM content.metadata
+         WHERE Class = :class AND T001 = :t001  AND Version is NULL AND Type = :orig         
+    )  
+    ;w !,"count3=",count
+    if (SQLCODE=0) && 'count {        
+      s c52=$replace(c52,$c(31)_"t"_orig,"")        
+      s ret=1
+    }
+  }
+    
+  if (type'="") && '$f(c52,$c(31)_"t"_type) {
+    s c52=c52_$c(31)_"t"_type
+    s ret=1
+  }
+  
+  ; 27.08.19 ln; podpole C52d
+  if ##class(User.Util).getModifByClass(class,"C52d")'="" {
+    s orig=origacc_origstat, new=accession_status
+    if (new'=orig) && (orig'="") && $f(c52,$c(31)_"d"_orig) {
+      &sql(SELECT count(ID)
+         INTO :count
+         FROM content.metadata
+         WHERE Class = :class AND T001 = :t001 AND Version is NULL AND Status = :origstat AND 
+         FOR SOME %ELEMENT(Array) (%KEY='accession' AND %VALUE = :origacc)
+      )  
+      if (SQLCODE=0) && 'count {       
+        s c52=$replace(c52,$c(31)_"d"_orig,"")
+        s ret=1
+      }
+    }
+  
+    if (new'="") && '$f(c52,$c(31)_"d"_new) {
+      s c52=c52_$c(31)_"d"_new
+      s ret=1
+    }
+  }
+  
+  s ictx=$zcvt(##class(User.Util).getClassPrefixParam(class),"L")
+  s callBack=##class(i2.init).getCallBack(ictx,"uploader")
+  if (callBack'="") && '$f(callBack,".page404") {
+  s custom=$ZOBJCLASSMETHOD(callBack,"getCustom",.handle,.array)
+  
+  if $f(c52,$c(31)_"c") {
+    s list=""
+    &sql(DECLARE C52 CURSOR FOR
+           SELECT Array
+           INTO list
+           FROM content.metadata
+           WHERE Class = :class AND T001 = :t001 AND Version is NULL         
+      )  
+      &sql(OPEN C52)
+      &sql(FETCH C52)
+      
+      While (SQLCODE = 0) {        
+        d ##class(content.engine).deserial(.array2,list)
+        s cust2=$ZOBJCLASSMETHOD(callBack,"getCustom",.handle,.array2)
+      ;w !,",cust2=",cust2
+      s:cust2'="" custArr(cust2)=""
+        k list
+        &sql(FETCH C52)
+      }
+      &sql(CLOSE C52)
+      
+      s cAll=##class(User.MARC).getSubTagStr(c52,"c",-1)
+      for i=1:1:$l(cAll,$c(10)) {
+      s cOne=$p(cAll,$c(10),i)
+      ;w !,",cOne=",cOne
+      ; 28.03.14 tt; do overeni nesmi jit prazdne cust2
+      if (cOne'="")
+      {
+        if '$d(custArr(cOne)) {
+            s c52=$replace(c52,$c(31)_"c"_cOne,"")
+            s ret=1
+        }
+      }
+      }
+  }
+      
+  if (custom'="") && '$f(c52,$c(31)_"c"_custom) && ((status'="")||(accession'="")||(type'="")) { 
+      s c52=c52_$c(31)_"c"_custom
+      s ret=1
+    }
+  }
+  
+  if ret {
+  if $l(c52)>7 {
+    s c52tmp=c52
+    d ##class(User.MARC).getSubTagStr(.c52tmp,"c",-1)
+    if $l(c52tmp)>7 {
+      d ##class(User.MARC).setTagX(.handle,c52)
+    } else {
+    d ##class(User.MARC).delTagX(.handle,"C52")
+    }
+  } else {
+    d ##class(User.MARC).delTagX(.handle,"C52")
+  }
+  }
+  ;w !,",ret=",ret  
+  ;w !,"c52=",$tr(c52,$c(31)_" ","$."),"|",!
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="moveAll">
+<Description><![CDATA[
+<pre> Presun souboru od zaznamu from k zaznamu to
+
+14.11.19 ln; oprava moveAll: projekci Version a ID ma pouze RecAllTrue
+19.03.19 lo; z moveAll vyluceny zoznam literatury BIB, tak isto ako TOC
+28.02.19 ln; pridana statistika pro moveAll
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[classFrom,t001From,classTo,t001To,&info]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s rset = ##class(%ResultSet).%New()
+  s rset.ClassName="content.metadata"
+  s rset.QueryName="RecAllStable"
+  d rset.Execute(classFrom,t001From)
+  
+  s bTransfer=0
+  s:$g(info)="transfer" bTransfer=1
+  
+  s ret=1, seq=1
+  s lnameF=##class(User.Util).objectName2lname(classFrom)
+  s lnameT=##class(User.Util).objectName2lname(classTo)
+  
+  While (rset.Next(.sc)) {  
+    q:'$SYSTEM.Status.IsOK(sc)
+    s list=rset.Data("Array")
+    s version=rset.Data("Version")
+    continue:(version'="")&&bTransfer
+    
+    s id=rset.Data("ID")
+    d ##class(content.engine).deserial(.array,list)
+    s obj=##class(content.metadata).%OpenId(id)
+    if '$isobject(obj) {
+      s ret=0
+      q
+    }    
+    
+    if bTransfer {
+      s type=$g(array("type"))
+      continue:type="cover" 
+      continue:type="toc"
+      ; 19.03.19 lo; z moveAll vyluceny zoznam literatury BIB, tak isto ako TOC
+      continue:type="bib"
+      continue:type="foto"
+    }
+    
+    k orig m orig=array    
+    s array("class")=classTo
+    s array("t001")=t001To
+    s transfer=$g(array("transfer"))    
+    s array("transfer")=$s(transfer'="":transfer_",",1:"")_lnameF_"*"_t001From
+    
+    d ..set(.array,obj) 
+    if 'obj.%Save() {
+      s ret=0
+      q
+    }
+    d ..delImageServer(.orig)
+    d:version="" ..toImageServer(.array)    
+    
+    s info(seq)=$g(array("repository"))_$c(10)_$g(array("key"))_$c(10)_$g(array("origname"))
+    s seq=seq+1
+    
+    ; statistika (chronologie)
+    continue:$d(orig("daydel"))
+    d ##class(content.stat).addEdit(.orig,1,.array)    
+    
+    ; statistika pro puvodni zaznam
+    ;k array m array=orig    
+    ;s array("transferTo")=lnameT_"*"_t001To
+    ;d ##class(content.stat).addEdit(.orig,1,.array)
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="testMoveAll">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  d ##class(i2.init).batchinit("cbvk",2)
+  //q:'##class(User.MARC).readX(.handle,"CbvkUsCat","m0000063")
+  //w ##class(content.api).moveAll(.handle,"m0000014")
+  
+  q:'##class(User.MARC).readX(.handle,"CbvkUsCat","m0000014")
+  w ##class(content.api).moveAll(.handle,"m0000063")
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,557 @@
+# @id UN_TAGMAP A_UN_TAGMAPH_M21
+002    -
+002    !!!! subor nezapajat ani nenahravat do klienta!!!!
+002    definicia holdingoveho formatu pre M21 - u nas sa nepouziva
+002    ------------
+002    09.12.09 js; definicia ush poli presunuta z un_tagmaph
+###
+# @id UN_TAGMAP USH_001
+100    aKontrolní číslo##CONTROL NUMBER (NR)
+200    a.bControl number (NR)
+###
+# @id UN_TAGMAP USH_003
+100    aIdentifikátor kontrolního čísla##CONTROL NUMBER INDENTIFIER (NR)
+200    a.bControl number identifier (NR)
+###
+# @id UN_TAGMAP USH_004
+100    aCONTROL NUMBER FOR RELATED BIBLIOGRAPHIC RECORD (NR)
+200    a.bControl number for related bibliographic record (NR)
+###
+# @id UN_TAGMAP USH_005
+100    aDatum posledního zpracování##DATE AND TIME OF LATEST TRANSACTION (NR)
+200    a.bDate and time of latest transaction (NR)
+###
+# @id UN_TAGMAP USH_007
+100    aPole pevné délky pro fyzický popis##PHYSICAL DESCRIPTION FIXED FIELD--GENERAL INFORMATION (R)
+200    a.bPhysical description fixed field--general information (NR)
+###
+# @id UN_TAGMAP USH_008
+100    aÚdaje pevné délky##FIXED-LENGTH DATA ELEMENTS--GENERAL INFORMATION (NR)
+200    a.bFixed-length data elements--general information (NR)
+###
+# @id UN_TAGMAP USH_010
+100    aIdentifikační číslo Library of Congress##LIBRARY OF CONGRESS CONTROL NUMBER (NR)
+200    aabLC control number (NR)
+200    abbNUCMC control number (R)
+200    azbCancelled/invalid LC control number  (R)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_014
+100    aLINKAGE NUMBER (R)
+200    ai1bType of linkage number
+200    aabLinkage number (NR) 
+200    abbSource of number (NR)
+200    azbCanceled or invalid linkage number (R) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR)
+###
+# @id UN_TAGMAP USH_016
+100    aIdentifikační číslo národní bibliografické agentury##NATIONAL BIBLIOGRAPHIC AGENCY CONTROL NUMBER (R)
+200    ai1bNational bibliographic agency
+200    aabRecord control number (NR)
+200    azbCancelled or invalid record control number (R)
+200    a2bSource (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_020
+100    aMezinárodní standardní číslo knihy##INTERNATIONAL STANDARD BOOK NUMBER (R)
+200    aabMezinárodní standardní číslo knihy##International Standard Book Number  (NR)
+200    acbDostupnost##Terms of availability (NR)
+200    azbZrušené/chybné číslo##Cancelled/invalid ISBN (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_022
+100    aMezinárodní standardní číslo seriálu##INTERNATIONAL STANDARD SERIAL NUMBER (R)
+200    ai1bÚroveň mezinárodního významu##Level of international interest
+200    aabMezinárodní standardní číslo seriálu##International Standard Serial Number  (NR)
+200    aybNesprávné ISSN##Incorrect ISSN (R)
+200    azbZrušené ISSN##Cancelled ISSN (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_024
+100    aJiná standardní čísla##OTHER STANDARD IDENTIFIER (R)
+200    ai1bType of standard number or code
+200    ai2bDifference indicator
+200    aabStandard recording code (NR)
+200    acbTerms of availability (NR)
+200    adbAdditional codes following the standard number or code (NR)
+200    azbCancelled/invalid standard code (R)
+200    a2bSource of code or number (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_027
+100    aStandardní číslo technické zprávy##STANDARD TECHNICAL REPORT NUMBER (R)
+200    aabStandardní číslo technické zprávy##Standard Technical Report Number (NR)
+200    azbZrušené/neplatné číslo##Cancelled/invalid STRN (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_030
+100    aCODEN##CODEN DESIGNATION (R)
+200    aabCODEN##CODEN (NR)
+200    azbZrušený/chybný CODEN##Cancelled/invalid CODEN (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_035
+100    aSystémové číslo##SYSTEM CONTROL NUMBER (R)
+200    aabSystémové číslo##System control number (NR)
+200    azbZrušené/chybné systémové číslo##Cancelled/invalid system control number (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_040
+100    aZdroj katalogizace##CATALOGING SOURCE (NR)
+200    aabAgentura zajišťující původní katalogizaci##Original cataloging agency (NR)
+200    abbJazyk katalogizace##Language of cataloging (NR)
+200    acbAgentura převádějící záznam do strojem čitelné podoby##Transcribing agency (NR)
+200    adbAgentura, která záznam modifikovala##Modifying agency (R)
+200    aebPoužitá pravidla popisu##Description conventions (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R)
+###
+# @id UN_TAGMAP USH_066
+100    aPoužité znakové sady##CHARACTER SETS PRESENT (NR)
+200    aabPrimary G0 character set designation (NR)
+200    abbPrimary G1 character set designation (NR)
+200    acbAlternate G0 or G1 character set (R)
+###
+# @id UN_TAGMAP USH_541
+100    aPoznámka o přímém zdroji akvizice##IMMEDIATE SOURCE OF ACQUISITION NOTE (R) 
+200    aabSource of acquisition (NR)
+200    abbAddress (NR) 
+200    acbMethod of acquisition (NR)
+200    adbDate of acquisition (NR) 
+200    aebAccession number (NR)
+200    afbOwner (NR)
+200    ahbPurchase price (NR) 
+200    anbExtent (R)
+200    aobType of unit (R)
+200    a3bBližší určení dokumentu##Materials specified (NR) 
+200    a5Kód instituce##bInstitution to which field applies (NR) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_561
+100    aPoznámka o historii vlastnictví##OWNERSHIP AND CUSTODIAL HISTORY (R) 
+200    aabHistory (NR) 
+200    a3bBližší určení dokumentu##Materials specified (NR) 
+200    a5Kód instituce##bInstitution to which field applies (NR) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_562
+100    aPoznámka k exempláři##COPY AND VERSION IDENTIFICATION NOTE (R) 
+200    aabIdentifying markings (R)
+200    abbCopy identification (R)
+200    acbVersion identification (R)
+200    adbPresentation format (R)
+200    aebNumber of copies (R) 
+200    a3bBližší určení dokumentu##Materials specified (NR) 
+200    a5Kód instituce##bInstitution to which field applies (NR) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_563
+100    aPoznámka o vazbě##BINDING INFORMATION (R) 
+200    aabBinding note (NR) 
+200    aubAdresa elektronického zdroje##Uniform Resource Identifier (R)
+200    a3bBližší určení dokumentu##Materials specified (NR) 
+200    a5Kód instituce##bInstitution to which field applies (NR) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_583
+100    aPoznámka o kontrolách a zásazích do stavu exempláře##ACTION NOTE (R) 
+200    aabAction (NR)
+200    abbAction identification (R)
+200    acbTime/date of action (R)
+200    adbAction interval (R)
+200    aebContingency for action (R)
+200    afbAuthorization (R)
+200    ahbJurisdiction (R)
+200    aibMethod of action (R)
+200    ajbSite of action (R)
+200    akbAction agent (R)
+200    albStatus (R)
+200    anbExtent (R)
+200    aobType of unit (R)
+200    aubAdresa elektronického zdroje##Uniform Resource Identifier (R)
+200    axbNonpublic note (R) 
+200    azbPublic note (R) 
+200    a2bSource of term (NR)
+200    a3bBližší určení dokumentu##Materials specified (NR) 
+200    a5Kód instituce##bInstitution to which field applies (NR) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_841
+100    aHoldingová kódovaná data##HOLDINGS CODED DATA VALUES (NR) 
+200    aabType of record (NR)
+200    abbFixed-length data elements (NR)
+200    aebEncoding level (NR)
+###
+# @id UN_TAGMAP USH_842
+100    aOznačovač formy textu##TEXTUAL PHYSICAL FORM DESIGNATOR (NR) 
+200    aabTextual physical form designator (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_843
+100    aPoznámka k reprodukci##REPRODUCTION NOTE (R)
+200    aabType of reproduction (NR)
+200    abbPlace of reproduction (R)
+200    acbAgency responsible for reproduction (R)
+200    adbDate of reproduction (NR)
+200    aebPhysical description of reproduction (NR)
+200    afbSeries statement of reproduction (R)
+200    ambDates of publication and/or sequential designation of issues reproduced (R)
+200    anbNote about reproduction (R)
+200    a3bBližší určení dokumentu##Materials specified (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a7bFixed-length data elements of reproduction (NR)
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_844
+100    aNázev jednotky##NAME OF UNIT (NR) 
+200    aabName of unit (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_845
+100    aPoznámka k termínům regulace a reprodukce##TERMS GOVERNING USE AND REPRODUCTION NOTE (R) 
+200    aabTerms governing use and reproduction (NR)
+200    abbJurisdiction (NR)
+200    acbAuthorization (NR)
+200    adbAuthorized users (NR)
+200    a3bBližší určení dokumentu##Materials specified (NR)
+200    a5Kód instituce##bInstitution to which field applies (NR) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_852
+100    aLokace##LOCATION (R) 
+200    ai1bShelving scheme 
+200    ai2bShelving order
+200    aabLocation (NR)
+200    abbSublocation or collection (R)
+200    acbShelving location (R) 
+200    aebAddress (R)
+200    afbCoded location qualifier (R)
+200    agbNon-coded location qualifier (R)
+200    ahbClassification part (NR) 
+200    aibItem part (R) 
+200    ajbShelving control number (NR) 
+200    akbCall number prefix (R) 
+200    albShelving form of title (NR)
+200    ambCall number suffix (R) 
+200    anbCountry code (NR)
+200    apbPiece designation (NR)
+200    aqbPiece physical condition (NR)
+200    asbCopyright article-fee code (R) 
+200    atbCopy number (NR)
+200    axbNonpublic note (R) 
+200    azbPublic note (R) 
+200    a2bSource of classification or shelving scheme (NR)
+200    a3bBližší určení dokumentu##Materials specified (NR) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bSequence number (NR)
+###
+# @id UN_TAGMAP USH_853
+100    aZáhlaví a zápatí - základní bibliografická jednotka##CAPTIONS AND PATTERN--BASIC BIBLIOGRAPHIC UNIT (R) 
+200    ai1bCompressibility and expandability
+200    ai2bCaption evaluation
+200    aabFirst level of enumeration (NR)
+200    abbSecond level of enumeration (NR)
+200    acbThird level of enumeration (NR)
+200    adbFourth level of enumeration (NR)
+200    aebFifth level of enumeration (NR)
+200    afbSixth level of enumeration (NR)
+200    agbAlternative numbering scheme, first level of enumeration (NR)
+200    ahbAlternative numbering scheme, second level of enumeration (NR)
+200    aibFirst level of chronology (NR)
+200    ajbSecond level of chronology (NR)
+200    akbThird level of chronology (NR)
+200    albFourth level of chronology (NR)
+200    ambAlternative numbering scheme, chronology (NR)
+200    anbPattern note (NR)
+200    apbNumber of pieces per issuance (NR)
+200    atbCopy (NR)
+200    aubBibliographic units per next higher level (R)
+200    avbNumbering continuity (R)
+200    awbFrequency (NR)
+200    axbCalendar change (NR)
+200    aybRegularity pattern (R)
+200    azbNumbering scheme (R)
+200    a3bBližší určení dokumentu##Materials specified (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###
+# @id UN_TAGMAP USH_854
+100    aZáhlaví a zápatí - doplňkový materiál##CAPTIONS AND PATTERN--SUPPLEMENTARY MATERIAL (R) 
+200    ai1bCompressibility and expandability
+200    ai2bCaption evaluation
+200    aabFirst level of enumeration (NR)
+200    abbSecond level of enumeration (NR)
+200    acbThird level of enumeration (NR)
+200    adbFourth level of enumeration (NR)
+200    aebFifth level of enumeration (NR)
+200    afbSixth level of enumeration (NR)
+200    agbAlternative numbering scheme, first level of enumeration (NR)
+200    ahbAlternative numbering scheme, second level of enumeration (NR)
+200    aibFirst level of chronology (NR)
+200    ajbSecond level of chronology (NR)
+200    akbThird level of chronology (NR)
+200    albFourth level of chronology (NR)
+200    ambAlternative numbering scheme, chronology (NR)
+200    anbPattern note (NR)
+200    aobType of supplementary material (NR)
+200    apbNumber of pieces per issuance (NR)
+200    atbCopy (NR)
+200    aubBibliographic units per next higher level (R)
+200    avbNumbering continuity (R)
+200    awbFrequency (NR)
+200    axbCalendar change (NR)
+200    aybRegularity pattern (R)
+200    azbNumbering scheme (R)
+200    a3bBližší určení dokumentu##Materials specified (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###
+# @id UN_TAGMAP USH_855
+100    aZáhlaví a zápatí - indexy##CAPTIONS AND PATTERN--INDEXES (R) 
+200    aabFirst level of enumeration (NR)
+200    abbSecond level of enumeration (NR)
+200    acbThird level of enumeration (NR)
+200    adbFourth level of enumeration (NR)
+200    aebFifth level of enumeration (NR)
+200    afbSixth level of enumeration (NR)
+200    agbAlternative numbering scheme, first level of enumeration (NR)
+200    ahbAlternative numbering scheme, second level of enumeration (NR)
+200    aibFirst level of chronology (NR)
+200    ajbSecond level of chronology (NR)
+200    akbThird level of chronology (NR)
+200    albFourth level of chronology (NR)
+200    ambAlternative numbering scheme, chronology (NR)
+200    anbPattern note (NR)
+200    aobType of index (NR)
+200    apbNumber of pieces per issuance (NR)
+200    atbCopy (NR)
+200    aubBibliographic units per next higher level (R)
+200    avbNumbering continuity (R)
+200    awbFrequency (NR)
+200    axbCalendar change (NR)
+200    aybRegularity pattern (R)
+200    azbNumbering scheme (R)
+200    a3bBližší určení dokumentu##Materials specified (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###
+# @id UN_TAGMAP USH_856
+100    aElektronické umístění a přístup##ELECTRONIC LOCATION AND ACCESS (R) 
+200    ai1bAccess method
+200    ai2bRelationship
+200    aabHost name (R)
+200    abbAccess number (R)
+200    acbCompression information (R)
+200    adbPath (R) 
+200    afbElectronic name (R) 
+200    ahbProcessor of request (NR)
+200    aibInstruction (R)
+200    ajbBits per second (NR) 
+200    akbPassword (NR) 
+200    albLogon (NR)
+200    ambContact for access assistance (R) 
+200    anbName of location of host (NR)
+200    aobOperating system (NR) 
+200    apbPort (NR)
+200    aqbElectronic format type (NR)
+200    arbSettings (NR) 
+200    asbFile size (R) 
+200    atbTerminal emulation (R) 
+200    aubAdresa elektronického zdroje##Uniform Resource Identifier (R)
+200    avbHours access method available (R) 
+200    awbRecord control number (R) 
+200    axbNonpublic note (R) 
+200    aybLink text (R)
+200    azbPublic note (R) 
+200    a2bAccess method (NR)
+200    a3bBližší určení dokumentu##Materials specified (NR) 
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_863
+100    aVyčíslení a chronologie - základní bibliografická jednotka##ENUMERATION AND CHRONOLOGY--BASIC BIBLIOGRAPHIC UNIT (R) 
+200    ai1bField encoding level
+200    ai2bForm of holdings
+200    aabFirst level of enumeration (NR)
+200    abbSecond level of enumeration (NR)
+200    acbThird level of enumeration (NR)
+200    adbFourth level of enumeration (NR)
+200    aebFifth level of enumeration (NR)
+200    afbSixth level of enumeration (NR)
+200    agbAlternative numbering scheme, first level of enumeration (NR)
+200    ahbAlternative numbering scheme, second level of enumeration (NR)
+200    aibFirst level of chronology (NR)
+200    ajbSecond level of chronology (NR)
+200    akbThird level of chronology (NR)
+200    albFourth level of chronology (NR)
+200    ambAlternative numbering scheme, chronology (NR)
+200    anbConverted Gregorian year (NR)
+200    apbPiece designation (NR)
+200    aqbPiece physical condition (NR)
+200    asbCopyright article-fee code (R)
+200    atbCopy number (NR)
+200    awbBreak indicator (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###
+# @id UN_TAGMAP USH_864
+100    aVyčíslení a chronologie - doplňkový materiál##ENUMERATION AND CHRONOLOGY--SUPPLEMENTARY MATERIAL (R) 
+200    ai1bField encoding level
+200    ai2bForm of holdings
+200    aabFirst level of enumeration (NR)
+200    abbSecond level of enumeration (NR)
+200    acbThird level of enumeration (NR)
+200    adbFourth level of enumeration (NR)
+200    aebFifth level of enumeration (NR)
+200    afbSixth level of enumeration (NR)
+200    agbAlternative numbering scheme, first level of enumeration (NR)
+200    ahbAlternative numbering scheme, second level of enumeration (NR)
+200    aibFirst level of chronology (NR)
+200    ajbSecond level of chronology (NR)
+200    akbThird level of chronology (NR)
+200    albFourth level of chronology (NR)
+200    ambAlternative numbering scheme, chronology (NR)
+200    anbConverted Gregorian year (NR)
+200    aobTitle of supplementary material (NR)
+200    apbPiece designation (NR)
+200    aqbPiece physical condition (NR)
+200    asbCopyright article-fee code (R)
+200    atbCopy number (NR)
+200    awbBreak indicator (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###
+# @id UN_TAGMAP USH_865
+100    aVyčíslení a chronologie - indexy##ENUMERATION AND CHRONOLOGY--INDEXES (R) 
+200    ai1bField encoding level
+200    ai2bForm of holdings
+200    aabFirst level of enumeration (NR)
+200    abbSecond level of enumeration (NR)
+200    acbThird level of enumeration (NR)
+200    adbFourth level of enumeration (NR)
+200    aebFifth level of enumeration (NR)
+200    afbSixth level of enumeration (NR)
+200    agbAlternative numbering scheme, first level of enumeration (NR)
+200    ahbAlternative numbering scheme, second level of enumeration (NR)
+200    aibFirst level of chronology (NR)
+200    ajbSecond level of chronology (NR)
+200    akbThird level of chronology (NR)
+200    albFourth level of chronology (NR)
+200    ambAlternative numbering scheme, chronology (NR)
+200    anbConverted Gregorian year (NR)
+200    aobTitle of index (NR)
+200    apbPiece designation (NR)
+200    aqbPiece physical condition (NR)
+200    asbCopyright article-fee code (R)
+200    atbCopy number (NR)
+200    awbBreak indicator (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###
+# @id UN_TAGMAP USH_866
+100    aTextové holdingy - základní bibliografická jednotka##TEXTUAL HOLDINGS--BASIC BIBLIOGRAPHIC UNIT (R) 
+200    ai1bField encoding level
+200    ai2bType of notation
+200    aabTextual string (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_867
+100    aTextové holdingy - doplňkový materiál##TEXTUAL HOLDINGS--SUPPLEMENTARY MATERIAL (R) 
+200    ai1bField encoding level
+200    ai2bType of notation
+200    aabTextual string (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_868
+100    aTextové holdingy - indexy##TEXTUAL HOLDINGS--INDEXES (R) 
+200    ai1bField encoding level
+200    ai2bType of notation
+200    aabTextual string (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (R) 
+###
+# @id UN_TAGMAP USH_876
+100    aInformace o jednotce - základní bibliografická jednotka##ITEM INFORMATION--BASIC BIBLIOGRAPHIC UNIT (R) 
+200    aabInternal item number (NR)
+200    abbInvalid or canceled internal item number (R)
+200    acbCost (R)
+200    adbDate acquired (R)
+200    aebSource of acquisition (R)
+200    ahbUse restrictions (R)
+200    ajbItem status (R)
+200    albTemporary location (R)
+200    apbPiece designation (R)
+200    arbInvalid or canceled piece designation (R)
+200    atbCopy number (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a3bBližší určení dokumentu##Materials specified (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###
+# @id UN_TAGMAP USH_877
+100    aInformace o jednotce - doplňkový materiál##ITEM INFORMATION--SUPPLEMENTARY MATERIAL (R) 
+200    aabInternal item number (NR)
+200    abbInvalid or canceled internal item number (R)
+200    acbCost (R)
+200    adbDate acquired (R)
+200    aebSource of acquisition (R)
+200    ahbUse restrictions (R)
+200    ajbItem status (R)
+200    albTemporary location (R)
+200    apbPiece designation (R)
+200    arbInvalid or canceled piece designation (R)
+200    atbCopy number (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a3bBližší určení dokumentu##Materials specified (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###
+# @id UN_TAGMAP USH_878
+100    aInformace o jednotce - indexy##ITEM INFORMATION--INDEXES (R) 
+200    aabInternal item number (NR)
+200    abbInvalid or canceled internal item number (R)
+200    acbCost (R)
+200    adbDate acquired (R)
+200    aebSource of acquisition (R)
+200    ahbUse restrictions (R)
+200    ajbItem status (R)
+200    albTemporary location (R)
+200    apbPiece designation (R)
+200    arbInvalid or canceled piece designation (R)
+200    atbCopy number (NR)
+200    axbNonpublic note (R)
+200    azbPublic note (R)
+200    a3bBližší určení dokumentu##Materials specified (NR)
+200    a6bPropojení polí v jiném písmu##Linkage (NR) 
+200    a8bPropojení souvisejících polí##Field link and sequence number (NR) 
+###

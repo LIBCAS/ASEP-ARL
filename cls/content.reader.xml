@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-20 14:04:45">
+<Class name="content.reader">
+<Description><![CDATA[
+<pre> Ctecka zabezpecenych dokumentu
+zatim pouze pdf
+
+20.04.23 ln; podpora vice repozitaru
+28.03.23 ln; metody regenerate a delThumbs
+07.10.21 ln; informovat o stavu ve zpracovani
+19.07.21 jk; nepouzivat novy zapis z duvodu starsi verze Cache na Eu
+09.07.21 ln; dui fronta pro zabezpecene soubory
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66584,50675.096268</TimeChanged>
+<TimeCreated>65605,36547.286953</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contreader</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("repo,key,idx")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("AJAX")=$$$GETREQVAR("st")="ajax"
+  s data("IDX")=$$$GETREQVAR("idx")
+  s data("REPO")=$$$GETREQVAR("repo")
+  s data("QUERY")=$$$GETREQVAR("q") // hledaný termín/text
+  s data("TYPE")=$$$GETREQVAR("type") // Typ zobrazení (pro ajax)
+  s data("KEY")=$$$GETREQVAR("key")
+  s data("SKEY")=$r(100000000000) // klíč pro předávání sezení, ochrana
+  s data("PAGE")=$$$GETREQVAR("page")
+  s data("LIST")=$$$GETREQVAR("list")
+  s data("CONT")=0
+  s data("FULL")=""
+  s data("PREV")=""
+  s data("NEXT")=""
+  
+  if '##class(content.api).engineRead(data("REPO"),data("KEY"),.array) {
+    s data("ERRORS")=data("ERRORS")_" "_..tx("ERRFILE")
+    q
+  }
+  
+  if (array("type")'="secure") && ($g(array("accession"))'="S") {
+    s data("ERRORS")=data("ERRORS")_" "_..tx("ERRTYPE")
+    q
+  }
+  
+  ; zobrazeni povoleno pouze pres ajax
+  if data("AJAX") && ($$$GETREQVAR("skey")'="") {
+    s checkedkey=$p($$$GETSESSVAR("fulltextkey"),"|")
+    if checkedkey=$$$GETREQVAR("skey") {
+      $$$SETSESSVAR("fulltextkey",data("SKEY")_"|"_checkedkey)
+    }
+  } else {
+    s checkedkey=""
+    $$$SETSESSVAR("fulltextkey",data("SKEY"))
+  }
+  
+  d:'data("AJAX") ..search(data("REPO"),data("KEY"),data("QUERY"))
+  
+  d ..fetch(.array)
+  
+  d ..getThumbs(.array)
+  
+  d ..eval(.data,.array,checkedkey)
+  
+  d ..userData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="eval">
+<Description><![CDATA[
+<pre> Naplneni uzlu CONT a navigace
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array,checkedkey]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("PGCOUNT")=$g(array("pgcount"))
+  if array("pgstate")="p" {
+    ; 07.10.21 ln; informovat o stavu ve zpracovani
+    s data("REPORTS")=data("REPORTS")_" "_..tx("INQUEUE")
+  }
+  elseif 'data("PGCOUNT") {
+    s data("REPORTS")=data("REPORTS")_" "_..tx("NOPAGE")
+  }
+  
+  if data("PAGE")'="" { 
+    if (data("PAGE")>data("PGCOUNT")) || '$d(array("pgprev",data("PAGE"))) {
+      s data("PAGE")=""
+    }
+  }
+  
+  s node="", seq=0
+  f { s node=$o(array("pgprev",node),1,val) q:node=""    
+    s data("CONT",node,"prev")=$zstrip(val,"*E'A'W'N",,".,@*")   ;$replace(val,$c(10),"<br/>")
+    s data("CONT",node,"thumb")=$g(array("pgthumb",node)) ; imageServer
+    s seq=seq+1    
+  }
+  s data("CONT")=seq
+  
+  q:'data("PAGE")
+  
+  
+  s data("FULL")=##class(content.csg2).getLink(data("REPO"),data("KEY"),1,"page="_data("PAGE")) //_"&skey="_checkedkey
+
+  // Predchozi a dalsi stranka
+  s page=data("PAGE")
+  s prev=$o(data("CONT",page),-1)
+  if (prev'="") && ($g(data("CONT",prev,"thumb"))'="") {
+      s data("PREV")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"repo="_data("REPO")_"&idx="_data("IDX")_"&skey="_data("SKEY")_"&key="_data("KEY")_"&page="_prev)
+  }
+  s next=$o(data("CONT",page))
+  if (next'="") && ($g(data("CONT",next),"thumb")'="") {
+      s data("NEXT")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"repo="_data("REPO")_"&idx="_data("IDX")_"&skey="_data("SKEY")_"&key="_data("KEY")_"&page="_next)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="getThumbs">
+<Description><![CDATA[
+<pre> Ziskani nahledu (pripadne vygenerovani)
+funguje i mimo session
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,size:%String="90",verbose:%Boolean=0]]></FormalSpec>
+<Implementation><![CDATA[
+  q:##class(i2.imageServer).getConfig(.imsconf)'="" ""
+  s node=""
+  f { s node=$o(imsconf(node)) q:node=""
+    q:$g(imsconf(node,"type"))="secure"
+  }
+  q:node=""
+  
+  s pgcount=$g(array("pgcount"))
+  q:'pgcount
+  
+  s repo=array("repository"), key=array("key")
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF,"b")
+  q:path=""
+  
+  s imsoutput(1,"key")=key
+  s imsoutput(1,"list")=repo
+  s imsoutput(1,"node")=node 
+  s imsoutput(1,"link")=""
+  s imsoutput(1,"label")=""
+  s prefix="T56    "_$c(31)_"a"_repo_$c(31)_"tsecure"
+  
+  s pathSep=##class(User.Util).getPathSepp()
+  s:$e(path,*)'=pathSep path=path_pathSep
+  s path=path_$e(array("key"),1,2)_pathSep  
+  
+  s page=""
+  f { s page=$o(array("pgprev",page)) q:page=""
+    s filename=$e(key,3,99)_pathSep_"secure-"_$tr($j(page,$normalize($zlog(pgcount),-1)+1)," ",0)_".jpg"
+    s data="file://"_$replace(path_filename,pathSep,"/")
+    s imsoutput(1)=prefix_$c(31)_"u"_data
+    w:verbose !,data
+    s array("pgthumb",page)=$lg(##class(i2.imageServer).thumbnail(.imsconf,.imsoutput,1,"secure",size),2)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="delThumbs">
+<Description><![CDATA[
+<pre> Pomocna metoda pro vymazani nahledu zabezpeceneho dokumentu
+volano z rep.zf.images.cleanRecordThumbnails
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>url:%String,verbose:%Boolean=0</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s start=$p(url,".",1,*-1)_"/"  
+  s startL=$l(start)
+  s node=start
+  for { s node=$o(^ImageServer("thumb",node)) q:node=""
+    q:$e(node,1,startL)'=start
+    ;w !,node
+    s ret=##class(rep.zf.images).deleteThumbnail(node,verbose)
+    return:ret'="" ret
+  }
+  
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="search">
+<Description><![CDATA[
+<pre> Vyhledavani stranek z jednoho souboru (bez diakritiky)
+19.07.21 jk; nepouzivat novy zapis z duvodu starsi verze Cache na Eu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String,query:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:repo=""
+  q:key=""
+  q:query=""  
+  
+  s q="(+repo_s:"_repo_") AND (+key_s:"_key_") AND ("_query_")"
+  ;s hits=##class(i2.solr).get(.R,"ws",q,"",1,1000,"F",0)
+  s urlpath=##class(i2.solr.util).prepare(.httprequest,"x",q,"F")
+  q:urlpath="" "prepare"
+  d httprequest.SetParam("sort","id asc")
+  q:$$$ISERR(httprequest.Get(urlpath)) "timeout"
+  
+  if (httprequest.HttpResponse.StatusCode'="200") {
+    ; nazacatku mezera, aby to nebylo nenulove cislo
+    q " "_httprequest.HttpResponse.StatusCode_" "_httprequest.HttpResponse.ReasonPhrase
+  }
+  s stream=httprequest.HttpResponse.Data
+  
+  try {
+    ; 19.07.21 jk; nepouzivat novy zapis z duvodu starsi verze Cache na Eu
+    //s dynall={}.%FromJSON(stream)
+    s dynall=##class(%DynamicAbstractObject).%FromJSON(stream)
+    
+  } catch {
+    return 0
+  }
+  
+  k ^$$$I2G($$$cI2GNodeSession,$$$GETSID,"full")
+  
+  s dya=dynall.response.docs
+  s itr=dya.%GetIterator(), seq=0
+  While itr.%GetNext(.key,.dyn) {
+    ;s dyn=dya.%Get(key)
+    s page=$p(dyn.id,"|",3), seq=seq+1
+    s ^$$$I2G($$$cI2GNodeSession,$$$GETSID,"full",page)=seq
+  }
+  ;s ^$$$I2G($$$cI2GNodeSession,$$$GETSID,"full")=seq
+  
+  q seq
+]]></Implementation>
+</Method>
+
+<Method name="fetch">
+<Description><![CDATA[
+<pre> filtrace stranek podle vyhledavani v ramci dokumentu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<Implementation><![CDATA[
+  if ($$$GETREQVAR("st")'="ajax") && ($$$GETREQVAR("q")="" ) {
+    k ^$$$I2G($$$cI2GNodeSession,$$$GETSID,"full")
+  }  
+  
+  q:'$d(^$$$I2G($$$cI2GNodeSession,$$$GETSID,"full"))
+  
+  s node=""
+  f { s node=$o(array("pgprev",node)) q:node=""
+    k:'$d(^$$$I2G($$$cI2GNodeSession,$$$GETSID,"full",node)) array("pgprev",node)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="task">
+<Description><![CDATA[
+<pre> Planovana uloha pro rozklad zabezpecenych dokumentu 
+d ##class(content.reader).task("cbvk")
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,repo=""</FormalSpec>
+<Implementation><![CDATA[
+  if ictx="" {
+    w !,"NO ICTX"
+    q
+  }
+  s ictx=$zcvt(ictx,"L")
+  s:repo="" repo=ictx_"repo"
+  s:ictx="cav" repo="crepo1"  
+  
+  ;s CbvkUsCat T001 = m0000211
+  d ##class(i2.init).batchinit(ictx)
+  ;w ##class(content.api).getBatch(.array,"cbvkrepo","52267801988")
+  ;s obj=##class(content.engine).open($g(array("repository")),$g(array("key")))
+  
+  &sql(DECLARE CR1 CURSOR FOR
+      SELECT ID, Repo, CKey
+      INTO :id, :repo, :key
+      FROM content.metadata
+      WHERE Repo = :repo AND Type = 'secure' AND Version is NULL
+      AND FOR SOME %ELEMENT(Array) (%KEY='pgstate' AND %VALUE = 'p')
+    )
+  
+  &sql(OPEN CR1)
+  &sql(FETCH CR1)
+  While (SQLCODE = 0)
+  {
+    ;d ##class(content.engine).deserial(.array,list)
+    continue:'##class(content.api).getBatch(.array,repo,key)
+    w !!,"============================"
+    w !,array("repository")_" "_array("key")
+    
+    s res=##class(content.engine).secure(.array,1)
+    w !,res
+    s:'res array("pgstate")="e" ; chyba
+    
+    s obj=##class(content.metadata).%OpenId(id)
+    continue:'$isobject(obj) ; pro jistotu, pristim prubehu se jiz nenajde
+    
+    k array2 ; set oddeli storage tedy pgprev 
+    m array2=array
+    d ##class(content.engine).set(.array,obj)
+    s res=obj.%Save()
+    w !,res
+    continue:'res
+    
+    ; predgenerovani nahledu
+    d ##class(content.reader).getThumbs(.array2,,1)
+    
+    &sql(FETCH CR1)
+  }
+  &sql(CLOSE CR1)
+  
+  ; vymaz full jadra solr
+  d ..erase(ictx)
+  
+  ; export vseho do solr
+  s total=..export(ictx,repo)
+  w !!,"export: "_total_" pages to solr"
+]]></Implementation>
+</Method>
+
+<Method name="erase">
+<Description><![CDATA[
+<pre> Vymaz celeho full sorl jadra]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx</FormalSpec>
+<Implementation><![CDATA[
+  s stream=##class(%GlobalBinaryStream).%New()
+  d stream.WriteLine("<delete><query>*:*</query></delete>")      
+  d stream.Rewind()
+  
+  s ret=##class(i2.solr).send(stream,"F",ictx,.core,1)
+  
+  if +ret=200 {
+    w !,core_": erased at "_$zdt($h,3)
+  } else {
+    w !,core_": ERROR in deleting: "_ret_" at "_$zdt($h,3)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="export">
+<Description><![CDATA[
+<pre> Export zabezpecenych dokumentu do solr
+TODO: silece verze
+
+w ##class(content.reader).export("cbvk")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,repo=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  if ictx="" {
+    q "NO ICTX"
+  }
+  s:repo="" repo=ictx_"repo"
+  s:ictx="cav" repo="crepo1" 
+  s basePath=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$zcvt(ictx,"W"),"b")
+  q:basePath="" "IMAGE_SERVER: "_repo_" is not set"
+  
+  s pathSep=##class(User.Util).getPathSepp()
+  s total=0
+  
+  &sql(DECLARE CR2 CURSOR FOR
+      SELECT ID, Array
+      INTO :id, :list
+      FROM content.metadata
+      WHERE Repo = :repo AND Type = 'secure' AND Version is NULL
+      AND FOR SOME %ELEMENT(Array) (%KEY='pgstate' AND %VALUE = 's')
+    )
+  
+  &sql(OPEN CR2)
+  for { &sql(FETCH CR2) q:SQLCODE
+    d ##class(content.engine).deserial(.array,list)
+    s res=..oneFile(.array,ictx,basePath)
+    w res
+    s total=total+res
+  }
+  &sql(CLOSE CR2)
+  
+  q total
+]]></Implementation>
+</Method>
+
+<Method name="oneFile">
+<Description><![CDATA[
+<pre> Export jednoho zabezpeceneho dokumentu do sorl
+indexuje se po souborech (vsetne vsech ostatnich indexu) i po strankach 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,ictx,basePath]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  s pathSep=##class(User.Util).getPathSepp()
+  w !,"  "_$g(array("class"),"x")_" "_$g(array("t001"),"x")_": "_array("key")_" = "    
+    
+  q:'$g(array("pgcount")) 0
+  q:'##class(User.MARC).readX(.handle,$g(array("class"),"x"),$g(array("t001"),"x")) 0
+    
+  s stream=##class(%GlobalBinaryStream).%New()
+  d stream.Write("<add>")
+  s streamR=##class(%GlobalBinaryStream).%New()
+  d streamR.Write("<add>")
+    
+  s path=basePath_$e(array("key"),1,2)_pathSep
+  s keyname=$e(array("key"),3,*)
+  s filename=keyname_"."_array("extension")
+  s dest=path_keyname
+    
+  s file=##class(%FileCharacterStream).%New()
+  s file.Filename=dest_".txt"
+  d file.TranslateTableSet("UTF8")
+    
+  s hid=$$$HandleId(handle)_"|"_array("repository")_"|"_array("key")
+  s handle("id")=hid
+  d ##class(i2.solr).index(.handle,streamR)
+    
+  s start=1, page=0, pos=##class(util.common).findS(file,##class(content.engine).#pageSeparator)
+  While pos {
+    s item=##class(util.common).extractS(file,start,pos-2)
+    ;s item=$zstrip($p($tr(item,$c(13)),$c(10),1,*-1),"<=>C",,$c(9)) ; last line complete
+    s item=$tr(item,"&<>"_$c(9,10,13,160),"       ") ; solr entity a bile znaky
+    s item=$zcvt($zstrip(item,"*C"),"O","UTF8")
+      
+    d:page stream.Write($$$CRLF_"</doc>")
+    d stream.Write($$$CRLF_"<doc>")
+    s page=page+1
+    d stream.Write($$$CRLF_"<field name=""id"">"_array("repository")_"|"_array("key")_"|"_page_"</field>")
+    d stream.Write($$$CRLF_"<field name=""repo_s"">"_array("repository")_"</field>")
+    d stream.Write($$$CRLF_"<field name=""key_s"">"_array("key")_"</field>")
+    d stream.Write($$$CRLF_"<field name=""full_txt"">"_item_"</field>")
+      
+    d streamR.Write($$$CRLF_"<field name=""full_txt"">"_item_"</field>")
+      
+    s start=pos
+    s pos=##class(util.common).findS(file,##class(content.engine).#pageSeparator,start)
+  }
+    
+  d:page stream.Write($$$CRLF_"</doc>")
+  d stream.Write($$$CRLF_"</add>")
+  s ret=##class(i2.solr).send(stream,"F",ictx,,10)
+  w:+ret'=200 "SEND "_array("repository")_"|"_array("key")_":"_ret,!
+  d streamR.Write($$$CRLF_"</doc>")
+  d streamR.Write($$$CRLF_"</add>")
+  s ret=##class(i2.solr).send(streamR,"F",ictx,,10)
+  w:+ret'=200 "SENDR "_array("repository")_"|"_array("key")_":"_ret,!
+  q:+ret=200 page
+    
+  q 0
+]]></Implementation>
+</Method>
+
+<Method name="audit">
+<Description><![CDATA[
+<pre> Audit stranky pro statistiku a analyzu vyuziti
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  q:$$$GETREQVAR("st")'="ajax" ; zde je jen ajax
+  
+  s auditUser=##class(i2.access).getLoginId() ; neprihlaseny ma ip adresu  
+  d ##class(i2.audit.storage).increment("ipac-stat",data("PAGEID")_"-"_data("KEY"),auditUser)
+]]></Implementation>
+</Method>
+
+<Method name="addMenuItem">
+<Description><![CDATA[
+<pre> Pridani vlastnich polozek na konec lokalniho menu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&menu]]></FormalSpec>
+<Implementation><![CDATA[
+  s idx=$$$GETREQVAR("idx")
+  if idx'="" {
+    s link=##class(i2.html.tpl).getLink("detail","idx="_idx,,"nav-link")
+    d ##class(i2.ui.menu).addMenuCustom(.menu,"nav1-detail",link,,"nav-item")
+  }
+  
+  s origQuery=$$$GETSESSVAR("q")
+  if origQuery'="" {
+    s url=##class(i2.html.tpl).getLinkURL("result","q="_origQuery)
+    s link="<a href="""_$$$BASEURL_url_""" title="""_..txg("QUERY_ORIG_TITLE")_""" class=""nav-link"">"_..txg("QUERY_ORIG")_"</a>"
+    d ##class(i2.ui.menu).addMenuCustom(.menu,"nav1-origresult",link,,"nav-item")
+  }
+]]></Implementation>
+</Method>
+
+<Method name="duiEnqueue">
+<Description><![CDATA[
+<pre> Vlozit zpracovani zabezpeceneho souboru do dui fronty
+ pri uploadu nebo zmene typu
+
+10.11.17 ln; dui fronta pro logy
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo,key</FormalSpec>
+<Implementation><![CDATA[
+  q:repo=""
+  q:key=""
+  s ^ChangeLog("readerqueue",repo_"|"_key)=""
+]]></Implementation>
+</Method>
+
+<Method name="duiProcess">
+<Description><![CDATA[
+<pre> Asynchronni zpracovani zabezpeceneho souboru
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>cid</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s repo=$p(cid,"|"), key=$p(cid,"|",2)
+  q:'##class(content.api).getBatch(.array,repo,key) "" ; vyradit z DUI
+  q:array("pgstate")'="p" "" ; jiz zpracovano
+  
+  s ictx=array("ictx")
+  d ##class(i2.init).batchinit(array("ictx"))
+  
+  s res=##class(content.engine).secure(.array,1)
+  w !,res
+  s:'res array("pgstate")="e" ; chyba
+  
+  s obj=##class(content.engine).open(repo,key)
+  q:'$isobject(obj) "" ; pro jistotu, pristim prubehu se jiz nenajde
+    
+  k array2 ; set oddeli storage tedy pgprev 
+  m array2=array
+  d ##class(content.engine).set(.array,obj)
+  s res=obj.%Save()
+  w !,res
+  q:'res "" ; vyradit z DUI
+    
+  ; predgenerovani nahledu
+  d ##class(content.reader).getThumbs(.array2)
+  
+  s basePath=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF,"b")
+  q:basePath="" ""
+  
+  s res=..oneFile(.array2,ictx,basePath)
+  w res
+  
+  q "" ; vyradit z DUI, opakovani resi planovana uloha
+]]></Implementation>
+</Method>
+
+<Method name="regenerate">
+<Description><![CDATA[
+<pre> Pregenerovani zabezpecenych souboru zaznamu v aktivnim selectu
+d ##class(content.reader).regenerate()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s rid=""
+  for { s rid=$o(^$$$ListsG($$$ListsActiveSel,$j,rid)) s id=rid q:id=""
+    s:$f(id,"*") id=$p(id,"*",2) ; sorted
+    s class=##class(User.MARC).getCLASS(id)
+    continue:class="CmRecycled"
+    s t001=##class(User.MARC).getT001(id)    
+    continue:'##class(User.MARC).readX(.handle,class,t001)
+    
+    d ##class(content.api).selectRecAll(.output,class,t001)
+    q:'$d(output)
+    
+    w !!,"============================"
+    w !,class_" "_t001
+    
+    s item="", seq=0
+    f { s item=$o(output(item),-1) q:item=""
+      s repo=output(item,"repository")   ; ziskame repository
+      s key=output(item,"key")           ; klice
+  
+      continue:'##class(content.api).getBatch(.array,repo,key)
+      s obj=##class(content.engine).open(repo,key)
+      continue:'$isobject(obj)
+      s type=$g(array("type")) ; TODO omezit select dotaz
+      continue:type'="secure"
+      
+      w !,"----------------------------"
+      w !,array("repository")_" "_array("key")
+      
+      s res=##class(content.engine).secure(.array,2)
+      w !,res
+      s:'res array("pgstate")="e" ; chyba
+      
+      k array2 ; set oddeli storage tedy pgprev 
+      m array2=array
+      d ##class(content.engine).set(.array,obj)
+      s res=obj.%Save()
+      w !,res
+      continue:'res
+      
+      w !,"--  vymaz vsech nahledu --"
+      d ##class(rep.zf.images).cleanRecordThumbnails(class,t001,1)
+      
+      w !,"--  predgenerovani vsech nahledu --"
+      d ##class(content.reader).getThumbs(.array2,,1)
+          
+      w !,"--  export do solr --" 
+      s ictx=array2("ictx")
+      s basePath=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF,"b")
+      if basePath="" {
+        w !," repository not configured"
+        q
+      }
+      s res=..oneFile(.array2,ictx,basePath)
+      w !,res
+    }
+  }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865U)" ts="2018-12-07 09:59:23">
+<Class name="content.generator">
+<Description><![CDATA[
+<pre> Prekladac pravidel contentServeru
+
+06.12.18 ln; podpora %% pro seznamy
+25.07.12 ln; oprava operatoru zacina/nezacina
+</pre>]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<TimeChanged>64988,41303.638365</TimeChanged>
+<TimeCreated>62186,32444.028896</TimeCreated>
+
+<Method name="generate">
+<Description>
+w ##class(content.generator).generate()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,name:%String,bTest:%Boolean=0</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:ictx="" "ictx"
+  q:name="" "empty name"
+  
+  s classT=##class(%Dictionary.ClassDefinition).%OpenId("content.generatedT")
+  if '$isobject(classT) {
+    s classT=##class(%Dictionary.ClassDefinition).%New("content.generatedT")
+    s classT.Description="test class for generated content credentials checker"
+    s classT.ProcedureBlock=1    
+  }
+  
+  s class=##class(%Dictionary.ClassDefinition).%OpenId("content.generated")
+  if '$isobject(class) {
+    s class=##class(%Dictionary.ClassDefinition).%New("content.generated")
+    s class.Description="class for generated content credentials checker"
+    s class.ProcedureBlock=1        
+  }  
+  
+  s record="CONTENT_"_$zcvt(name,"U")
+  s:bTest record=record_"_TEST"
+  w !,"record=",record
+  s name=ictx_name
+  w !,"method=",name
+  
+  q:'..implementation(.code,record) "generovani selhalo"
+  
+  
+  s index=classT.Methods.FindObjectId("content.generatedT||"_name)
+  if index {
+     s method=classT.Methods.GetAt(index)
+  } else {
+    s method=##class(%Dictionary.MethodDefinition).%New("content.generatedT:"_name)
+    s method.ClassMethod=1
+    s method.Description="generated content credentials checker"
+    ; select * from %Dictionary.MethodDefinition where parent = 'i2.ui.simpleSearch'
+    s method.FormalSpec="&array"
+    s method.ReturnType="%Boolean"
+  }  
+  s method.Implementation=code    
+  
+  d classT.Methods.Insert(method)
+  if 'classT.%Save() { 
+    //d $system.OBJ.Dump(method)
+    //d $system.OBJ.Dump(classT)
+    q "test ulozeni selhal"
+  }
+  s st=$system.OBJ.Compile("content.generatedT")
+  q:'st "testovaci preklad selhal"
+  q:bTest ""
+  
+  s index=class.Methods.FindObjectId("content.generated||"_name)
+  if index {
+     s method=class.Methods.GetAt(index)
+  } else {
+    s method=##class(%Dictionary.MethodDefinition).%New("content.generated:"_name)
+    s method.ClassMethod=1
+    s method.Description="generated content credentials checker"
+    s method.FormalSpec="&array"
+    s method.ReturnType="%Boolean"
+  }  
+  s method.Implementation=code  
+  
+  d class.Methods.Insert(method)
+  if 'class.%Save() { 
+    //d $system.OBJ.Dump(method)
+    //d $system.OBJ.Dump(class)
+    q "ulozeni selhalo"
+  }
+  
+  s st=$system.OBJ.Compile("content.generated")
+  q:'st "preklad selhal"
+  
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="implementation">
+<Description><![CDATA[
+<pre> tvorba tela genorovanych metod
+
+06.12.18 ln; podpora %% pro seznamy
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&code,record:%String]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s code=##class(%Stream.TmpCharacter).%New()
+  d code.WriteLine("  ; generated: "_$tr($zdt($h,4),"/","."))
+  //d code.WriteLine("  w ! zw array")
+  
+  if '##class(User.MARC).readX(.handle,$$$IPREF_"UnTablesd",record) {
+    d code.WriteLine("  ; cannot read record "_$$$IPREF_"UnTablesd "_record)
+    d code.WriteLine("  q 0")
+    q 0
+  }
+  
+  d code.WriteLine("  ; record: "_$$$IPREF_"UnTablesd "_record)  
+  d code.WriteLine("")
+  
+  s ret=1
+  s indent=1
+  
+  s bEndOfRec=0
+  f i=1:1:99999  ; zpracovani vsech poli
+  {
+	s line=##class(User.MARC).getLineX(.handle,i,.bEndOfRec)
+	q:bEndOfRec
+  
+    s tag=$e(line,1,3)
+    continue:tag'="300"    
+    
+    d code.WriteLine($j("",indent*2)_"; "_$tr(line,$c(31),"$"))
+    s subA=##class(User.MARC).getSubTagStr(.line,"a")
+    s subB=##class(User.MARC).getSubTagStr(.line,"b")
+    s subC=##class(User.MARC).getSubTagStr(.line,"c")
+    s subD=##class(User.MARC).getSubTagStr(.line,"d")    
+    if $e(subD,1,2)="%%" {
+      
+    }
+    
+    s cond="($d(array("""_subB_""")) && "
+    s neg=$e(subC)
+    s:neg'="'" neg=""
+    
+    if (subC="list") || (subC="'list") {
+      ; 06.12.18 ln; podpora %% pro seznamy
+      if $e(subD,1,2)'="%%" {
+        s cond="(($g(array("""_subB_"""))'="""") && "_neg_"$f("","_subD_","","",""_array("""_subB_""")_"","")) "
+      } else {
+        s cond="(($g(array("""_subB_"""))'="""") && "_neg_"$f("",""_$g(array("""_$e(subD,3,99)_"""))_"","","",""_array("""_subB_""")_"","")) "
+      }
+    }
+    elseif (subC="]") || (subC="']") {
+      s cond="(($g(array("""_subB_"""))'="""") && ($e(array("""_subB_"""),1,$l("""_subD_"""))"_neg_"="""_subD_""")) "
+    } else {
+      if $e(subD,1,2)'="%%" {
+	    s subDQuote=""""_subD_""""
+	    s:subD="%DATEYYYYMMDD%" subDQuote="$zd($h,8)"
+	    ;s:$f(subDQuote,"%DATEYYYYMMDD%") subDQuote="("_$replace(subDQuote,"%DATEYYYYMMDD%","""_$zd($h,8)_""")_")"
+	    s cond=cond_"(array("""_subB_""")"_subC_subDQuote_")) "
+      } else {
+        s cond=cond_"(array("""_subB_""")"_subC_"$g(array("""_$e(subD,3,99)_""")))) "
+      }
+    }
+    
+    if (subA="0") || +subA {      
+      d code.WriteLine($j("",indent*2)_"q:"_cond_subA)
+	} elseif subA="if" {
+	  s:subC="" cond="$d(array("""_subB_""")) "
+	  d code.WriteLine($j("",indent*2)_"if "_cond_"{")	  
+	  s indent=indent+1
+    } elseif subA="elseif" {
+	  s:subC="" cond="$d(array("""_subB_""")) "
+      d code.WriteLine($j("",indent-1*2)_"} elseif "_cond_"{")      
+    } elseif subA="else" {	  
+      d code.WriteLine($j("",indent-1*2)_"} else {")      
+	} elseif subA="end" {
+	  s indent=indent-1 
+	  d code.WriteLine($j("",indent*2)_"}")	  
+	} elseif (subA="set") && (subB'="") && (subD'="") {
+	  d code.WriteLine($j("",indent*2)_"s array(""CHANGED"","""_subB_""")=$g(array("""_subB_""")), array("""_subB_""")="""_subD_"""")
+	}	
+  }
+  
+  While indent>1 {	  
+	s indent=indent-1
+	d code.WriteLine($j("",indent*2)_"}")	  
+  }
+  
+  d code.WriteLine("")
+  d code.WriteLine("  q 0")
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="test">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  d ##class(i2.init).preinit("cbvk")
+  
+  s ret=..generate("cbvk","1",1)
+  if ret'="" {
+    w !,ret
+    q
+  } 
+  
+  s array("uzel1")="ahoj"
+  s array("uzel2")="julku"
+  
+  s ret=##class(content.generatedT).cbvk1(.array)
+  w !,"ret=",ret
+]]></Implementation>
+</Method>
+</Class>
+</Export>

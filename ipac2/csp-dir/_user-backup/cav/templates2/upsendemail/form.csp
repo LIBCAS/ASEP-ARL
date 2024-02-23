@@ -1,0 +1,66 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:form id="#(data("PAGEID"))#-f" action="#(..base())#" method="post">
+    <ipac:dtx param="FORM_UP"/>
+   
+    <csp:if condition=($g(data("EMAILA","Pocet"),0)=0)>
+<div class="alert alert-info"><ipac:tx param="AUTORI_NENALEZENO"/></div>
+    </csp:if>
+  <csp:if condition=($g(data("EMAILU","Pocet"),0)=0)>
+<div class="alert alert-info"><ipac:tx param="ZPRACOVATELE_NENALEZENO"/></div>
+  </csp:if>
+   
+<fieldset class="container">
+    <csp:if condition=($g(data("EMAILA","Pocet"),0)'=0)>
+ <legend><ipac:tx param="AUTORI"/></legend>
+    <csp:loop counter="i" from="1" to="#($g(data("EMAILA","Pocet"),0))#">
+<div class="row form-group">
+<label for="autor#(i)#" class="col-form-label">#(data("EMAILA",i,"T"))#: </label>
+<div class="half fv-row">
+<input type="email" class="form-control" id="autor#(i)#" name="autor" value="#(data("EMAILA",i))#" inputmode="email"
+data-fv-email-address="true" data-fv-email-address___message="#(..tx("ERROR_EMAIL"))#"/>
+</div>
+</div>
+    </csp:loop>
+    </csp:if>
+</fieldset>
+
+<fieldset class="container">
+  <csp:if condition=($g(data("EMAILU","Pocet"),0)'=0)>
+    <legend><ipac:tx param="ZPRACOVATELE"/></legend>
+    <csp:loop counter="i" from="1" to="#($g(data("EMAILU","Pocet"),0))#">
+<div class="row form-group">
+<label for="zprac#(i)#" class="col-form-label">#(data("EMAILU",i,"T"))#: </label>
+<div class="half fv-row">
+<input type="email" inputmode="email" class="form-control" id="zprac#(i)#" name="zprac" value="#(data("EMAILU",i))#" multiple="multiple"
+data-fv-email-address="true" data-fv-email-address___multiple="true" data-fv-email-address___separator="," data-fv-email-address___message="#(..tx("ERROR_EMAILS"))#"/>
+</div>
+</div>
+    </csp:loop>
+  </csp:if>
+</fieldset>
+
+<fieldset class="container">
+<legend><ipac:tx param="DALSI_EMAILY"/></legend>
+<div class="row form-group">
+<label for="emailsall" class="col-form-label"><ipac:tx param="DALSI_EMAILY"/>:</label>
+<div class="half fv-row">
+<textarea rows="2" cols="30" class="form-control" inputmode="email" id="emailsall" name="emailsall" aria-describedby="emailsall-desc"
+data-fv-email-address="true" data-fv-email-address___multiple="true" data-fv-email-address___separator="," data-fv-email-address___message="#(..tx("ERROR_EMAILSALL"))#">#(data("EMAILSALL"))#</textarea>
+<p class="form-text" id="emailsall-desc"><ipac:tx param="COMMENT"/></p>
+</div>
+</div>
+</fieldset>
+
+<div class="xsubmit">
+<button type="submit" class="btn btn-primary" id="btn-send" name="send" value="#(data("TXSEND"))#">#(data("TXSEND"))#</button>
+<button type="submit" class="btn btn-light" id="btn-dontsend" name="dontsend" value="#(data("DONTSEND"))#">#(data("DONTSEND"))#</button>
+<input type="hidden" name="op" value="#(data("OP_VALUE"))#"/>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="key" value="#(data("KEY"))#"/>
+<input type="hidden" name="repo" value="#(data("REPO"))#"/>
+<input type="hidden" name="emailsall" value="#(data("EMAILSALL"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+
+</ipac:form>

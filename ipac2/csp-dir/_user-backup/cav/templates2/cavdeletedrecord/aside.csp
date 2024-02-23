@@ -1,0 +1,5 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<ipac:aside>
+    <ipac:menu/>
+</ipac:aside>

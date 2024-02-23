@@ -1,0 +1,25 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+<script data-main="#(..cb(..script(1)_"conf."_data("PAGEID")_".js"))#" src="#(..cb(..script()_"require.js"))#"></script>
+
+<link rel="preconnect" href="https://cache2.obalkyknih.cz/" crossorigin="anonymous"/>
+<link rel="dns-prefetch" href="https://cache2.obalkyknih.cz/"/>
+
+<csp:if condition=(data("SRCTYPE")="L")>
+<ipac:link rel="alternate" op="result" param="st=feed&feed=rss#(data("URLSELF"))#" type="application/rss+xml" title="#(..tx("RSS_TITLE"))# - RSS 2.0"/>
+</csp:if>
+
+<csp:if condition=($$$I2isOp("LOGORESULT"))>
+<meta property="og:image" content="#(..img(1))#logo-result.jpg"/>
+</csp:if>
+
+  <ipac:loop param="PAGING">
+    <ipac:value param="rel" set/>
+    <csp:if condition='value="prev"'>
+<ipac:link rel="prev" title="#(..txg("PAGE_PREV"))#" op="result" param="iset=#(data("ISET"))#&pg=#(..v("page"))#" restore="iset,guide"/>
+<ipac:link rel="prerender" op="result" param="iset=#(data("ISET"))#&pg=#(..v("page"))#" restore="iset,guide"/>
+    <csp:elseif condition='value="next"'>
+<ipac:link rel="next" title="#(..txg("PAGE_NEXT"))#" op="result" param="iset=#(data("ISET"))#&pg=#(..v("page"))#" restore="iset,guide"/>
+<ipac:link rel="prerender" op="result" param="iset=#(data("ISET"))#&pg=#(..v("page"))#" restore="iset,guide"/>
+    </csp:if>
+  </ipac:loop>

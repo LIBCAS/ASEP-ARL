@@ -1,0 +1,196 @@
+@charset "UTF-8";
+@use "sass:math";
+////
+/// @group IPAC CAV
+/// # Hlavní stylopis IPACu založený na Bootstrapu 4 pro CAV
+/// <du>1</du>
+/// - Hlavní šablona pro načítaní subšablon
+/// - Používá se v šabloně `templates2/parts/head.csp` a `templates2/parts/sessionexp.csp`
+/// - Cosmotron https://www.cosmotron.cz
+////
+
+/// Cachebooster pro fonty
+/// @name cachebooster
+/// @type String
+$cachebooster: 2;
+
+/// Adresář fontů
+/// @name fonts-dir
+/// @type URL
+$fonts-dir: "../../../fonts/";
+
+/// Adresář s obrázkama hlavního skinu IPACu
+/// @name skin-dir
+/// @type URL
+$skin-dir: "../../../bs1/";
+
+/// Adresář s obrázky pro jquery
+/// @name jquery-dir
+/// @type URL
+$jquery-dir: "../../../bs1/jquery/";
+
+/// Adresář s obrázky pro jquery-file-upload
+/// @name jfupload-dir
+/// @type URL
+$upload-dir: "../../../bs1/jquery-file-upload/";
+
+/// Adresář s obrázkama zákaznického skinu IPACu
+/// @name skin-user-dir
+/// @type URL
+$skin-user-dir: "../bs1/";
+
+/// Adresář s obrázkama zákaznicka mimo hlavní skin
+/// @name img-user-dir
+/// @type URL
+$img-user-dir: "../img/";
+
+/// Adresář fontů zákaznika
+/// @name fonts-user-dir
+/// @type URL
+$fonts-user-dir: "../fonts/";
+
+@import "bskin1/bootstrap";
+@import "../../../../../sass/bskin1/_oldbs34";
+@import "../../../../../sass/plugins/mixins";
+@import "../../../../../sass/bskin1/icons";
+@import "../../../../../sass/plugins/stars-ratings";
+
+///	Pluginy třetích stran
+
+/// Plugin Jasny-Bootstrap
+@import "../../../../../sass/plugins/jasny-bootstrap/_fileinput";
+
+/// Našeptávač
+@import "../../../../../sass/plugins/autocomplete";
+
+/// BootstrapValidator
+@import "../../../../../sass/plugins/formvalidation/index";
+
+/// Bootstrap Table
+@import "../../../../../sass/plugins/bootstrap-table";
+
+/// Sticky navbar
+@import "../../../../../sass/plugins/sticky-navbar";
+
+/// Lightbox
+@import "../../../../../sass/plugins/ekko-lightbox";
+
+/// Kalendář
+@import "../../../../../sass/plugins/ab-datepicker/datepicker";
+
+/// WYSIWYG Editor Summernote
+@import "../../../../../sass/plugins/summernote/summernote-bs4";
+
+/// Bootstrap editable
+@import "../../../../../sass/plugins/bootstrap-editable";
+
+/// Bootstrap switch
+@import "../../../../../sass/plugins/bootstrap4-switch";
+
+/// jQuery UI
+@import "../../../../../sass/plugins/ui/theme";
+@import "../../../../../sass/plugins/ui/slider";
+
+/// Bootstrap Tags Input
+@import "../../../../../sass/plugins/bootstrap-tagsinput";
+
+/// Fileupload
+@import "../../../../../sass/plugins/jquery-file-upload/fileupload";
+@import "../../../../../sass/plugins/jquery-file-upload/fileupload-noscript";
+
+/// Tree
+@import "../../../../../sass/plugins/a11yTree";
+
+///	Hlavní části stránky
+@import "../../../../../sass/bskin1/aside";
+@import "bskin1/components";
+@import "../../../../../sass/bskin1/footer";
+@import "../../../../../sass/bskin1/forms";
+@import "bskin1/frame";
+@import "bskin1/header";
+@import "../../../../../sass/bskin1/language";
+@import "../../../../../sass/bskin1/menu";
+@import "../../../../../sass/bskin1/news";
+
+/// JEDNOTLIVÉ STRÁNKY
+@import "../../../../../sass/bskin1/page-admin";
+@import "../../../../../sass/bskin1/page-bookmark";
+@import "../../../../../sass/bskin1/page-contact";
+@import "../../../../../sass/bskin1/page-content-server";
+@import "../../../../../sass/bskin1/page-dashboard";
+@import "../../../../../sass/bskin1/page-events";
+@import "../../../../../sass/bskin1/page-favourite";
+@import "../../../../../sass/bskin1/page-fmaps";
+@import "../../../../../sass/bskin1/page-events";
+@import "../../../../../sass/bskin1/page-help";
+@import "../../../../../sass/bskin1/page-notify";
+@import "../../../../../sass/bskin1/page-pay";
+@import "../../../../../sass/bskin1/page-rating";
+@import "../../../../../sass/bskin1/page-result";
+@import "../../../../../sass/bskin1/page-search";
+@import "../../../../../sass/bskin1/page-smap";
+@import "../../../../../sass/bskin1/page-tagging";
+@import "../../../../../sass/bskin1/page-tsearch";
+@import "../../../../../sass/bskin1/page-uploader";
+
+@import "../../../../../sass/bskin1/pages";
+@import "bskin1/result-body";
+@import "../../../../../sass/bskin1/libindex";
+
+/// Ladenka
+@import "../../../../../sass/bskin1/debugger";
+
+#result-body .citace-pro .citace-inner {
+	padding: 0.3rem 0.3rem 0.3rem 0.9rem;
+
+	.citace-result {
+		padding: 0.9rem 0.9rem 0.3rem 0;
+		border-top: 1px solid silver;
+	}
+}
+
+#myasep #bside {
+	h2 {
+		margin-top: 0.6rem;
+		margin-bottom: 0.3rem;
+	}
+
+	li.list-group-item {
+		padding: 3px 0;
+		border: 0;
+	}
+}
+
+.icon-basket {
+	&::before {
+		content: "\F291" !important;
+	}
+}
+
+// Nahrat dataset
+.icon-uploader {
+	&::before {
+		content: "\F125" !important;
+	}
+}
+
+// Samazat dataset
+.icon-contser {
+	&::before {
+		content: "\F127" !important;
+		color: red;
+	}
+}
+
+// Publikace ASEP
+.icon-cavasep {
+	&::before {
+		content: "\E85C" !important;
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, lg)) {
+	.nav5 .flex-column {
+		flex-direction: row !important;
+	}
+}

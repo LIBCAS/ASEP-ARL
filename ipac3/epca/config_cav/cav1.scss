@@ -1,0 +1,23 @@
+@charset "UTF-8";
+@use "sass:math";
+$images-dir: "../images/";
+$fonts-dir: "../../icons/";
+$skin: default;
+$bgPanelBody: #dfe8f6;
+$LinkColor: #15428b;
+$extskin-dir: "../../extjs340/resources/images/#{$skin}/";
+
+// Ikony
+@import "../../icons/icons";
+
+// Nacteni hlavniho stylopisu/skinu
+@import "../sass/ext-all";
+
+// Zaplaty pro I3 apliakce drive user.css
+@import "../sass/fix";
+
+// Stylopis pro stranky EPCA  drive epca.css
+@import "../sass/epca";
+
+// Stylopis pro Designer formular FormsDesigner.css
+@import "../sass/FormsDesigner";

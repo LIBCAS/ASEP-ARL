@@ -1,0 +1,41 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream/><ipac:off><du>2</du></ipac:off>
+
+#(..stripHtml(..tx("EMAIL_TITLE")))# #($$$CRLF)#
+
+English version below#($$$CRLF)#
+#($$$CRLF)#
+Vážená paní/ vážený pane,#($$$CRLF)#
+#($$$CRLF)#
+do Institucionálního repozitáře ASEP AV ČR, který je spravován Knihovnou Akademie věd ČR, v. v. i. 
+byl uložen plný text práce, jejímž jste (spolu)autorem/autorkou.
+#($$$CRLF)#
+#(data("sZf"))#
+#($$$CRLF)#
+<ipac:off>Plný text práce bude dostupný u záznamu: #(data("sLinkRec"))#</ipac:off>
+Trvalý odkaz: #(data("sTC60a"))# #($$$CRLF)#
+#($$$CRLF)#
+S pozdravem#($$$CRLF)#
+#($$$CRLF)#
+Správa repozitáře: arl@lib.cas.cz#($$$CRLF)#
+URL: https:/asep.lib.cas.cz/i2/arl-cav/cs/#($$$CRLF)#
+#($$$CRLF)#
+#($$$CRLF)#
+#($$$CRLF)#
+#($$$CRLF)#
+Dear Sir or Madam,#($$$CRLF)#
+#($$$CRLF)#
+the fulltext of the bellow mentioned work of which you are the (co-)author has been archived 
+in the Institutional Repository of AS CR#($$$CRLF)#
+#($$$CRLF)#
+#(data("sZf"))#
+#($$$CRLF)#
+Permanent link: #(data("sTC60a"))# #($$$CRLF)#
+#($$$CRLF)#
+Yours faithfully#($$$CRLF)#
+#($$$CRLF)#
+The administration of The Institutional Repository: arl@lib.cas.cz#($$$CRLF)#
+URL: https:/asep.lib.cas.cz/arl-cav/en/expanded-search/#($$$CRLF)#
+#($$$CRLF)#
+
+#($$$CRLF)#
+<ipac:tpl version="mailfoottxt" page="parts"/>

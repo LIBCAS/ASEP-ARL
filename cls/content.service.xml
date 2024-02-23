@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1 (Build 209U)" ts="2023-08-09 09:00:44">
+<Class name="content.service">
+<Description><![CDATA[
+<pre> stranka pro spravu souboru jednoho zaznamu contentServeru
+
+09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
+06.11.22 kp; Doplnen data("DESCRIPTION")
+07.04.22 ln; hlavni volba CONTFIFO
+30.03.21 kp; uprava drobeckove navigace
+18.12.20 ln; preformatovat dayto
+12.12.18 ln; podpora contauthor
+26.09.14 ln; zrusena kontrola data v minulosti
+03.04.14 ln; oprava aplikace formatu dayfrom
+11.03.14 tt; pridana ORIG_QUERY kvuli zablone
+27.11.13 kp; Pridany parametry do restore
+18.10.13 ln; osetreni pole C52
+13.11.12 ln; zajistena dopredna kompatibilita s ipac31
+31.10.12 ln; podpora verzovani
+30.10.12 kp; Smazani internich JS.
+18.09.12 jk; zapojeny statistiky
+21.08.12 kp; doplněna data("PUREURL") 
+17.07.12 ln; plna metadata k dispozici pro sablonu
+02.04.12 kp; validace a pridani JS
+04.01.12 kp; parametr CurrentScripts
+18.11.11 tt; drobne zmeny ve tride
+11.11.11 ln; upraveno pro ipac3
+05.10.11 tt; upraveny texty ve tride, preformatovano na spravne
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66695,32431.3530587</TimeChanged>
+<TimeCreated>62188,30448.415066</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}
+contser]]></Description>
+<Default>contser</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>contser#contser#contser</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+
+12.12.18 ln; podpora contauthor
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  q:ret'="" ret
+  
+  if $$$GETREQVAR("change")'="" {
+    s params="repo="_$$$GETREQVAR("repo")_"&amp;key="_$$$GETREQVAR("key")_"&amp;idx="_$$$GETREQVAR("idx")_"&amp;status="_$$$GETREQVAR("status")
+    s %response.Redirect=$zcvt($$$BASEURL_##class(i2.html.tpl).getLinkURL("contchng",params),"I","HTML")
+  }
+  ; 12.12.18 ln; podpora contauthor
+  elseif ##class(i2.base.tpl).isPage("contauthor") && ($$$GETREQVAR("state")'="") {
+    s callBack=##class(i2.init).getCallBack($$$GETICTX,"contauthor")
+    if callBack'="" {
+      d $ZOBJCLASSMETHOD(callBack,"getData",.data)
+      if ($$$GETREQVAR("stateorig")=data("ORIGSTATE")) {
+        s state=##class(content.api).engineState($$$GETREQVAR("repo"),$$$GETREQVAR("key"),.array)
+        if state=data("FROMSTATE") {        
+          $$$SETREQVAR("op","contauthor")
+          s %response.ServerSideRedirect=##class(i2.entry).scriptName()
+        }
+      }
+    }
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("idx,status,iset,disprec")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre> Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
+
+09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
+07.04.22 ln; hlavni volba CONTFIFO
+18.10.13 ln; osetreni pole C52
+17.07.12 ln; plna metadata k dispozici pro sablonu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("DESCRIPTION")=""
+  s data("PUREURL") = $$$BASEPURE
+  s data("RECTITLE") = ""
+  s data("ORIG_QUERY")=$$$GETSESSVAR("q")
+  s rest = $$$GETREQVAR("st")="rest"
+  
+  if data("ERRORS")'="" {
+    s data("EXIT")=1 
+    q
+  }  
+  
+  s idx=$$$GETREQVAR("idx")
+  if (idx="") && 'rest {
+    s data("ERRORS")=..tx("CONTSERERR1")
+    s data("EXIT")=1
+    q
+  }
+  //if '##class(User.MARC).readLX(.handle,idx) {
+  if 'rest && '##class(i2.dblink).recordReadLX(.handle,idx,"T") {
+    s data("ERRORS")=..tx("CONTSERERR2")_": "_idx
+    s data("EXIT")=1
+    q
+  }
+  s data("IDX")=idx 
+
+  s rkey=$$$GETREQVAR("key")    
+  s set=$$$GETREQVAR("edit")'=""
+  s del=$$$GETREQVAR("delete")'=""
+  s state=$$$GETREQVAR("state")'=""
+  
+  if rest && 'set && 'del && 'state {
+    s data("ERRORS")="NOOPERATION"
+    q
+  }
+  s data("KEY")=rkey
+  
+  ; 11.03.14 tt; pridana ORIG_QUERY kvuli zablone
+  s data("ORIG_QUERY")=$$$GETSESSVAR("q")
+  
+  d ##class(i2.base.request).get(.request)
+  d ##class(i2.base.request).pure(.request)
+  d ##class(i2.base.request).purge(.request)
+  d ##class(i2.base.request).first(.request)
+  k request("idx"),request("key"),request("repo"),request("repository"),request("status")
+    ,request("edit"),request("delete"),request("state")
+  
+  if 'rest {
+    s class=$$$HandleClass(handle)
+    s t001=$$$HandleT001(handle)  
+    s data("RECTITLE")=##class(i2.data.layer).title(.handle)
+  }
+  s upload=##class(content.uploader).getPageID()
+  s data("UPLOAD")=##class(i2.html.tpl).getLink(upload,"idx="_idx)
+  s data("ODREC")=##class(i2.html.tpl).getPermalink2(idx,..tx("RECORD"))
+  
+  ; 07.04.22 ln; hlavni volba CONTFIFO
+  s isOrder=##class(i2.ui.menu).existMenuPage("contorder","contorder")
+  s direction=$$$I2isOp("CONTFIFO")
+ 
+  s status=$$$GETREQVAR("status")
+  s data("STATUS")=status
+  if status="" {  
+    if 'rest {
+      d ##class(content.api).selectRecAll(.output,class,t001)
+    } else {
+      s output(1,"key")=$$$GETREQVAR("key")
+      s output(1,"repository")=$$$GETREQVAR("repo")
+    }
+  } else {
+    d ##class(content.api).selectRecStatus(.output,class,t001,status)
+  }
+  
+  /* vypis pomocnych promennych
+  w !,"<pre>"
+  zw output
+  zw request
+  w !,"</pre>"
+  */
+  
+  s item="", seq=1
+  f { s item=$o(output(item)) q:item=""
+    s key=$g(output(item,"key"))
+    s repo=$g(output(item,"repository"))
+    
+    ; resi mimo jine pravo  uzivatele na repozitar
+    continue:'##class(content.api).engineRead(repo,key,.array)
+    ;continue:'##class(content.api).engineEdit(repo,key,.array)
+    //continue:$g(array("importer"))'=userT001 ; presunuto do engine    
+    s bEdit=##class(content.api).engineEdit(repo,key,.array)
+    m orig=array
+    
+    if set && bEdit && (rkey=key) {
+      m array=request
+      if (..applyEdit(.data,.array))
+      {
+        if ##class(content.api).update(.array) {
+          s data("REPORTS")=..tx("CONTSEROK1")_array("origname")
+          d ##class(content.stat).addEdit(.orig,1,.array)
+          ; 18.10.13 ln; osetreni pole C52
+          if ##class(content.engine).setC52(.handle,.array,$g(orig("status")),$g(orig("accession")),$g(orig("type"))) {
+            ; 09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
+            $$$NULLDEVStartProc
+            s sc=##class(User.MARC).writeX(.handle)
+            $$$NULLDEVStop
+            if $$$ISERR(sc) {
+              w !,"ERROR: (C52) write failed - "_$System.Status.GetErrorText(sc)
+            }
+          }
+          s bEdit=##class(content.api).engineEdit(repo,key,,.runtime)
+          continue:'##class(content.api).engineRead(repo,key,.array)
+        } else {
+          s data("ERRORS")=..tx("CONTSERERR3")_array("origname")
+          d ##class(content.stat).addEdit(.array,0)
+        }
+      }
+    }
+    
+    s bDel=##class(content.api).engineDelete(repo,key,,.runtime)
+    if del && bDel && (rkey=key) {
+      if ##class(content.api).delete(repo,key) {
+        s data("REPORTS")=..tx("CONTSEROK2")_array("origname")
+        d ##class(content.stat).addDel(.array,1)
+        ; 18.10.13 ln; osetreni pole C52
+        if ##class(content.engine).setC52(.handle,,$g(orig("status")),$g(orig("accession")),$g(orig("type"))) {
+          ; 09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
+          $$$NULLDEVStartProc
+          s sc=##class(User.MARC).writeX(.handle)
+          $$$NULLDEVStop
+          if $$$ISERR(sc) {
+            w !,"ERROR: (C52) write failed - "_$System.Status.GetErrorText(sc)
+          }
+        }
+        continue
+      } else {
+        s data("ERRORS")=..tx("CONTSERERR4")_array("origname")
+        d ##class(content.stat).addDel(.array,0)
+      }     
+    }
+    
+    s status=$g(array("status"))
+    s nextState=##class(content.api).engineState(repo,key,,.runtime)
+    if state && (rkey=key) && nextState && (nextState'=99) {
+      s array("status")=nextState
+      d ..applyState(.array,status)
+      if ##class(content.api).update(.array) {
+        s data("REPORTS")=..tx("CONTSEROK3")_array("origname")
+        d ##class(content.stat).addStatus(.array,1)
+        ; 18.10.13 ln; osetreni pole C52
+        if ##class(content.engine).setC52(.handle,.array,$g(orig("status")),$g(orig("accession")),$g(orig("type"))) {
+          ; 09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
+          $$$NULLDEVStartProc
+          s sc=##class(User.MARC).writeX(.handle)
+          $$$NULLDEVStop
+          if $$$ISERR(sc) {
+            w !,"ERROR: (C52) write failed - "_$System.Status.GetErrorText(sc)
+          }
+        }        
+        
+        continue:data("STATUS")'="" ; soubor uz nema pozadovany stav 
+        continue:'##class(content.api).engineRead(repo,key,.array)
+        ;continue:'##class(content.api).engineEdit(repo,key,,.runtime)        
+        
+        s bEdit=##class(content.api).engineEdit(repo,key,,.runtime)        
+        s status=nextState
+        s nextState=##class(content.api).engineState(repo,key,,.runtime)
+      } else {
+        s data("ERRORS")=..tx("CONTSERERR5")_array("origname")
+        d ##class(content.stat).addStatus(.array,0)
+      }
+    }   
+     
+    /*
+    w !,"<pre>"
+    zw array
+    w !,"</pre>"
+    */
+    
+    s origname=array("origname")
+    s:$g(array("nusl"))="true" origname=origname_" <b>"_..tx("NUSL")_"</b>"
+    s sDatum=$g(array("dayfrom"))
+    s:('$f(sDatum,".")) sDatum=##class(i2.ui.tools).convDate(sDatum, "DDMMYYYY")   
+    
+    ; 17.07.12 ln; plna metadata k dispozici pro sablonu
+    m data("CONTENT",seq)=array
+    
+    /*
+    s data("CONTENT",seq)=$lb(key,origname,$g(array("description")),bDel,nextState
+      ,$g(array("accession")),sDatum,$g(array("version"))
+      ,$g(array("type")),status,repo,bEdit)
+    */
+    
+    s data("CONTENT",seq,"isDelete")=bDel ; 4
+    s data("CONTENT",seq,"nextState")=nextState ; 5
+    s data("CONTENT",seq,"dayfrom")=sDatum ; 7
+    ;s data("CONTENT",seq,"status")=status ; 10
+    s data("CONTENT",seq,"isEdit")=bEdit ; 12    
+    
+    s bChange=##class(content.api).engineChange(repo,key,,.runtime)    
+    s data("CONTENT",seq,"isChange")=bChange    
+    
+    s seq=seq+1    
+  }
+  
+  s data("COUNT")=seq-1
+  ; 07.04.22 ln; hlavni volba CONTFIFO
+  s:isOrder&&direction data("COUNT")=-1
+  
+  if rest && (data("REPORTS")="") {
+    s data("ERRORS")="NOTPERM"
+  }
+  
+  d ..userData(.data,.handle)
+]]></Implementation>
+</Method>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi hlavne pro nacteni vsech ciselniku formulare
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+<Implementation><![CDATA[  s data("REPO")=$$$GETICTX_"repo"
+]]></Implementation>
+</Method>
+
+<Method name="applyEdit">
+<Description><![CDATA[
+<pre> Umoznuje modifikovat metadata pri editaci
+
+18.12.20 ln; preformatovat dayto
+26.09.14 ln; zrusena kontrola data v minulosti
+03.04.14 ln; oprava aplikace formatu dayfrom
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<ReturnType>%Library.Boolean</ReturnType>
+<Implementation><![CDATA[
+  s dayfrom=$g(array("dayfrom"))
+  if dayfrom'="" {
+     try { s dayfrom=$zd($zdh($tr(dayfrom,".","/"),4),8) } catch { }
+     /*if ($zd($h,8)>dayfrom) {
+      s data("ERRORS")=..tx("ERR_DATE") ; ERR_DATE_3
+      q 0
+    }*/
+    s array("dayfrom")=dayfrom
+  }
+  
+  ; 18.12.20 ln; preformatovat dayto
+  s dayto=$g(array("dayto"))
+  if dayto'="" {
+    try { s dayto=$zd($zdh($tr(dayto,".","/"),4),8) } catch { }
+    s array("dayto")=dayto
+  }
+  
+  if $g(array("Edited_by"))="" {
+    s array("Edited_by")=##class(i2.access).getLoginId()
+  }  
+  
+  if $g(array("Edited_on"))="" {
+    s array("Edited_on")=$tr($zdt($h,8)," :")
+  }  
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="applyState">
+<Description><![CDATA[
+<pre> Umoznuje modifikovat metadata pri zmene stavu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,prevState:%String]]></FormalSpec>
+</Method>
+
+<Method name="getBreadCrumb">
+<Description><![CDATA[
+<pre> vraci drobeckove menu
+
+10.09.20 ln; uzel BREADCRUMB predan pres data
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    d ##class(i2.ui.menu).getBreadCrumbIdx(.data,..#PageID)
+    q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

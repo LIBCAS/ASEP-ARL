@@ -1,0 +1,10 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+<ipac:aside>
+<ipac:asidepart title=#(..txg("RELATED_PAGES"))#>
+<li class="nav-item"><ipac:a class="nav-link active" op="upsendemail" restore><ipac:atext/></ipac:a></li>
+<li class="nav-item"><ipac:a class="nav-link" op="contser" restore><ipac:atext/></ipac:a></li>
+<li class="nav-item"><ipac:a class="nav-link" op="detail" restore><ipac:atext/></ipac:a></li>
+</ipac:asidepart>
+
+</ipac:aside>

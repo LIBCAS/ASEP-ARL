@@ -1,0 +1,243 @@
+﻿@charset "UTF-8";
+@use "sass:math";
+/* User CSS
+-------------------------------------------
+Author: Cosmotron (https://www.cosmotron.cz)
+*/
+
+$images: "../images/";
+
+body {
+    font-family: "Lucida Grande", Tahoma, Arial, sans-serif;
+    font-size: 11px;
+}
+
+noscript p {
+    font-size: 200%;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    margin: 30px 0;
+}
+
+a {
+    color: #15428b;
+}
+
+a:link, a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#header h1 {
+    font-size: 16px;
+    color: #fff;
+    font-weight: normal;
+    padding: 5px 10px;
+}
+
+/* messageboxy */
+.msg .x-box-mc {
+    font-size: 14px;
+}
+
+#msg-div {
+    position: absolute;
+    left: 35%;
+    top: 10px;
+    width: 250px;
+    z-index: 20000;
+}
+
+/* microedit record */
+.cs-fixed-font {
+    font: 13px Courier, sans-serif;
+}
+
+.x-menu-sep {
+    height: 1px;
+}
+
+/* ikonky v treepaneli */
+.settings {
+    background-image: url("#{$images}icons/fam/folder_wrench.png");
+}
+
+.nav {
+    background-image: url("#{$images}icons/fam/folder_go.png");
+}
+
+.blist {
+    background-image: url("#{$images}list-items.gif") !important;
+}
+
+.bmenu {
+    background-image: url("#{$images}menu-show.gif") !important;
+}
+
+/* ikona cerveny krizek (vypucjky) */
+.icon-cross {
+    background-image: url("#{$images}icons/cross.gif") !important;
+}
+
+/* ikona + a - */
+.icon-add {
+    background-image: url("#{$images}icons/fam/add.gif") !important;
+}
+
+.icon-copy {
+    background-image: url("#{$images}icons/copy.png") !important;
+}
+
+.icon-delete {
+    background-image: url("#{$images}icons/fam/delete.gif") !important;
+}
+
+/* ikona vystupu */
+.icon-report {
+    background-image: url("#{$images}icons/report.png") !important;
+}
+
+/* ikona pro kosik */
+.icon-basket {
+    background-image: url("#{$images}icons/basket.gif") !important;
+}
+
+/* ikona pro vymaz z kosiku */
+.icon-basket-delete {
+    background-image: url("#{$images}icons/basket_delete.gif") !important;
+}
+
+/* ikona pro vyrazeni podle seznamu */
+.icon-disp-list {
+    background-image: url("#{$images}icons/disp-list.png") !important;
+}
+
+/* ikona nahoru */
+.icon-up {
+    background-image: url("#{$images}icons/up.gif") !important;
+}
+
+/* ikona dolu */
+.icon-down {
+    background-image: url("#{$images}icons/down.gif") !important;
+}
+
+/* ikona spojeni (zaznamu) */
+.icon-join {
+    background-image: url("#{$images}icons/join.png") !important;
+}
+
+/* ikona refresh */
+.icon-refresh {
+    background-image: url("#{$images}icons/refresh.png") !important;
+}
+
+/* ikona ok */
+.icon-ok {
+    background-image: url("#{$images}icons/ok.png") !important;
+}
+
+/* ikona pro vyrazeni exemplare */
+.icon-dispose-book {
+    background-image: url("#{$images}icons/dispose_book.png") !important;
+}
+
+/* ikona novy a editovat */
+.icon-new-img {
+    background-image: url("#{$images}icons/new.gif") !important;
+}
+
+/* stahnout  */
+.icon-download {
+    background-image: url("#{$images}icons/download.png") !important;
+}
+
+/* ikona vyhledat */
+.icon-search-img {
+    background-image: url("#{$images}icons/search.png") !important;
+}
+
+/* tlacitko ulozit */
+button.icon-save {
+    background-image: url("#{$images}icons/save.png") !important;
+}
+
+.x-tab-panel-body {
+    background: transparent;
+}
+
+/* obrazky pre triggery, zatial skor na ukazku */
+.x-form-field-wrap .x-form-world-trigger {
+    background-image: url("#{$images}trigger-world.gif");
+}
+
+.x-form-field-wrap .x-form-color-trigger {
+    background-image: url("#{$images}trigger-color.gif");
+}
+
+/* ikona zamku tool panelu */
+.x-tool-csReadonly {
+    background: transparent url("#{$images}readonly.png");
+}
+
+.x-panel-header-readonly {
+    padding: 5px 3px 4px 0;
+    line-height: 15px;
+    background: transparent repeat-x 0 -1px;
+    background-image: url("#{$images}panel/white-top-bottom.gif");
+}
+
+.x-panel-tl .x-panel-header-readonly {
+    color: #15428b;
+    font: bold 11px tahoma, arial, verdana, sans-serif;
+}
+
+/* Zobrazovaci format tagovany */
+table.zfTF td {
+    vertical-align: top;
+}
+
+table.zfTF col.zf_prefix {
+    width: 90px;
+}
+
+table.zfTF col.zf_val {
+    width: 600px;
+}
+
+table.zfTF td.zf_prefix {
+    color: navy;
+    font-weight: bold;
+}
+
+/* tabulka holdingov */
+table.zfTF2 td {
+    vertical-align: top;
+    text-align: left;
+    padding-left: 7px;
+    width: 100px;
+}
+
+/* odliseni browse pole a dyntriggeru, ze jsou needitovatelne */
+.cs-x-trigger-noedit {
+    opacity: 0.6;
+    color: #808080;
+}
+
+/* vetsi vzdalenost mezi tlacitky toolbaru */
+.x-toolbar .xtb-sep {
+    width: 16px;
+    background-image: url("#{$images}grid-split.gif");
+}
+
+/* spravne zobrazeni kalendare v IE (konkretene v EPCA vstup, ale zrejme i jinde) */
+.x-date-menu {
+    width: 175px !important;
+}
+.x-form-field:focus-visible {
+  outline: none;
+}

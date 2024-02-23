@@ -1,0 +1,12 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<p>
+The record detail is displayed after "clicking" on the handle link of the searched record.
+The handle link is a persistent record link in ASEP, and if this link is used in a publication,
+the user will always see the record detail in the ASEP system.
+</p>
+
+
+<ipac:tpl version="operationsenglish" page="help"/>
+
+<ipac:tpl version="formatsenglish" page="help"/>

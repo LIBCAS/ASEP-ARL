@@ -1,0 +1,18 @@
+﻿/* COMPANY */
+Name: Cosmotron Bohemia, s.r.o.
+Web: http://www.cosmotron.cz
+Facebook: https://www.facebook.com/cosmotron.cz/
+Location: Hodonin, Czech Republic, Europe
+
+/* SITE */
+Last update: 2018/05/30
+Language: Slovak, Czech, English
+Doctype: HTML5
+Standards: HTML5, CSS3, WAI-ARIA, Microdata
+Components: jQuery.js, Bootstrap, JsRender
+Software: Cache studio, PSPad
+
+=====
+
+What is this file?
+http://humanstxt.org/CZ

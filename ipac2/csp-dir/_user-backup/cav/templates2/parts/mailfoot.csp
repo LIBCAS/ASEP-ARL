@@ -1,0 +1,43 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream/><ipac:off><du>1</du></ipac:off>
+
+#("</td></tr></tbody></table></center>")#
+
+<center style="width:100%;min-width:#(..txgn("EMAIL_WIDTH"))#;">
+<br>
+<table style="border-spacing:0;border-collapse:collapse;vertical-align:top;text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#;width:#(..txgn("EMAIL_WIDTH"))#;margin:0 auto;padding:10px 0;">
+<tbody>
+<tr align="#($CASE($$$GETLANGUAGE,6:"right",:"left"))#" style="vertical-align:top;text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#;padding:0;">
+<td valign="top" align="#($CASE($$$GETLANGUAGE,6:"right",:"left"))#" style="word-break:break-word;border-collapse:collapse!important;vertical-align:top;text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#;#(..txgn("FOOT_STYLE"))#">
+
+<p align="#($CASE($$$GETLANGUAGE,6:"left",:"right"))#" style="text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#">
+#(..txn("EMAIL_UNSUBSCRIBE"))# 
+<csp:if condition=(##class(i2.ui.tools).isHelp(data("PAGEID"))=1)> 
+  <csp:if condition=((data("PAGEID"))'="prereg")> 
+    <ipac:a op="help" param="key=#(data("PAGEID"))#">#(..txgn("PG_HELP_TEXT"))#</ipac:a>
+  </csp:if>
+</csp:if>
+</p>
+
+<p align="#($CASE($$$GETLANGUAGE,6:"left",:"right"))#" style="text-align:#($CASE($$$GETLANGUAGE,6:"left",:"right"))#;color:gray;margin:0;">
+<csp:if condition=(..txgn("MAIN_URL")'="")>
+		<csp:if condition=($g(data("EMAIL","NOI2HELP"))'="1")>
+<span itemscope="itemscope" itemtype="http://schema.org/Organization"><ipac:a style="color:gray;" target="_blank" itemprop="name url" href="#(..txg("MAIN_URL"))#">#(..txgn("MAIN_TITLE"))#</ipac:a></span>
+    </csp:if>
+	<csp:else>
+#(data("---","MAIN_TITLE"))#
+	</csp:if>
+</p>
+
+<p align="#($CASE($$$GETLANGUAGE,6:"left",:"right"))#" dir="ltr" style="text-align:#($CASE($$$GETLANGUAGE,6:"left",:"right"))#;color:gray;margin:0;">
+<small style="color:gray;font-size:80%;">
+#(..txgn("SYSTEMARL"))# <ipac:abbr lang="en-GB" title="Internet Public Access Catalog">IPAC</ipac:abbr>
+- <span dir="ltr" itemscope="itemscope" itemtype="http://schema.org/Organization">
+#(..txgn("BY"))# <a style="color:gray;" itemprop="name url" target="_blank" href="#(..txg("COSMOTRON_URL"))#">#(..txg("COSMOTRON_NAME"))#</a></span>
+</small>
+</p>
+
+<br>
+
+</td></tr></tbody></table></center>
+
+#("</body></html>")#

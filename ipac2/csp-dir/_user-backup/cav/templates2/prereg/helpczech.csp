@@ -1,0 +1,25 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+<p>
+Formulář předregistrace uživatele do Institucionálního repozitáře ASEP je určen autorům z pracovišť AV ČR, kteří si chtějí 
+sami ukládat datasety a přidávat plné texty ke svým bibliografickým záznamům. <a rel="external" class="external" target="_blank" href="https://www.lib.cas.cz/asep/pro-autory/uzivatelske-ucty/individualni-ucet/">Více…</a> 
+</p>
+<ipac:off>
+<ul>
+<li>Pokud předregistraci nepotvrdíte osobně 
+v <ipac:abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></ipac:abbr>,
+bude automaticky do 7 kalendářních dnů zrušena.</li>
+<li>Předvyplněné údaje budou ověřeny při registraci v
+<ipac:abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></ipac:abbr> na základě vašich dokladů.</li>
+<li>Adresa, telefonní číslo a e-mailová adresa jsou využívány k odesílání informací
+z <ipac:abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></ipac:abbr> (blížící se konec výpůjční lhůty,
+výzva k vyzvednutí rezervovaných dokumentů apod.).</li>
+</ul>
+</ipac:off>
+
+<h2>Jak se předregistrovat?</h2>
+<ol>
+<li>Navštivte stránku <ipac:a op="prereg"><ipac:atext/></ipac:a>.</li>
+<li>Vyplňte ve formuláři alespoň povinné položky označené hvězdičkou.</li>
+<li>Odešlete formulář.</li>
+</ol>

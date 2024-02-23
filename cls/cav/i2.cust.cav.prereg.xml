@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2023-05-22 20:08:24">
+<Class name="i2.cust.cav.prereg">
+<Description><![CDATA[
+<pre> Předregistrace - zákaznická úprava
+
+22.05.23 tt; zmena hlasky - po neuspesne validaci emailu
+22.05.23 tt; vyloucit vsechny emaily krome cz - cav - predregistrace - v mailu pouze cz - cs122246
+27.10.20 tt; pridany kontrola, aby email nebyl comn pripadne czn
+05.10.20 tt; přidána kontrola emailu, jestli je v něm .cz nebo .com
+09.10.19 jk; zmenena trida pro praci s emaily
+05.08.19 tt; upraveno ukladani hesla pro novy zpusob
+30.08.18 tt; provedena oprava linku na napovedu
+30.08.18 tt; zmena UT_WORKPLACE na UT_WORKPLACE_PREREG - specialni ciselnik pro pracoviste
+01.08.14 jk; pouziti email sablon
+10.11.11 tt; sendMail: upraveny predmet
+10.11.11 tt; zapojena kontrola na vyplneni ustavu
+09.11.11 tt; drobne zmeny
+04.11.11 tt; drobne zmeny
+02.11.11 tt; upravena metoda, dotana kontrola na duplicity 
+03.10.11 tt; drobne zmeny pro cav
+20.09.11 tt; zmeny v predregistracnim formulari
+19.08.11 kp; Vytvoření formuláře
+</pre>]]></Description>
+<Super>i2.ui.prereg</Super>
+<TimeChanged>66616,72494.973582375</TimeChanged>
+<TimeCreated>62322,39981.960126</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+ictx instituce</Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi pro odchylky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[  d ..getStable(.data,"UT_WORKPLACE_PREREG",1) ; ciselnik ustavu
+]]></Implementation>
+</Method>
+
+<Method name="save">
+<Description><![CDATA[
+<pre> Ulozeni zaznamu podle formulare
+Vraci pripadny text chyby
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sT600b=##class(User.MARC).getTagX(.handle,"600b")
+  q:(sT600b="") ..tx("ERR_SAVE")_" Ústav musí být vyplněný!"
+  
+  /// 27.10.20 tt; pridany kontrola, aby email nebyl comn pripadne czn
+  ; 05.10.20 tt; přidána kontrola emailu, jestli je v něm .cz nebo .com
+  s sT100e=(##class(User.MARC).getTagX(.handle,"100e")_"#")
+  ///q:'(($f(sT100e,".cz#"))||($f(sT100e,".com#"))) ..tx("ERR_SAVE")_" Požádejte prosím zpracovatele svého ústavu, aby Vaše údaje zadal do systému. Děkujeme."
+  ; 22.05.23 tt; vyloucit vsechny emaily krome cz - cav - predregistrace - v mailu pouze cz - cs122246
+  q:'($f(sT100e,".cz#")) ..tx("ERR_SAVE_REG")
+
+  ; udaje do minichronology   
+  if ##class(i2.access).isLoggedIn() {
+    s sUserT001=##class(i2.access).getLoginId()
+  } else {
+    s sUserT001=..#PageID
+  }
+  s sChronology="3"_$c(10)_"ipac2_"_sUserT001_$c(10)_##class(i2.common).getIP()
+  
+  s PomText=""                                           ; definice pomocnych promennych
+  s sT400=##class(User.MARC).getTagX(.handle,"400")
+  s sT400d=##class(User.MARC).getSubTagStr(.sT400,"d")
+  s sT400w=##class(User.MARC).getSubTagStr(.sT400,"w")
+  s sT400z=##class(User.MARC).getSubTagStr(.sT400,"z")
+
+  if (sT400d="")
+  { ; pridame datum zalozeni uzivatele
+    s:(sT400'="") sT400=##class(User.MARC).setSubTagStr(sT400,$c(31)_"d"_$e(##class(User.MARC).genT005(),1,8))    
+  }
+  ; 05.08.19 tt; upraveno ukladani hesla pro novy zpusob
+  if (sT400w'="")
+  { ; provedeme hash hesla
+   // s sT400w=$$$MD5(sT400w)
+    //s:(sT400'="") sT400=##class(User.MARC).setSubTagStr(sT400,$c(31)_"w"_sT400w)    
+   s sT400w=##class(util.sec.security).clientHash(sT400w,$$$GETICTX)
+   s sT400=##class(User.MARC).setSubTagStr(sT400,$c(31)_"w"_sT400w,"400")
+  }
+  ; 05.08.19 tt; pridano datum predregistrace
+  s:(sT400'="") sT400=##class(User.MARC).setSubTagStr(sT400,$c(31)_"z"_$e(##class(User.MARC).genT005(),1,8))    
+
+  
+  d:(sT400'="") ##class(User.MARC).setTagX(.handle,sT400)
+  d ##class(User.MARC).mergeX(.handleZal, .handle)     ; zazalohujeme si handle
+
+  s barc=""
+  for i=0:1:30
+  { ; cyklus na osetreni duplicity jmen
+    q:(barc'="")                                                 ; ukoncime, pokud jiz mam barcode
+    s PomText="",sT100aPrijmeni="",sPomNameUst=""                ; definice pomocnych promennych
+    s sT600b=##class(User.MARC).getTagX(.handle,"600b")
+    s sPomNameUst=$zcvt($p(sT600b,"-",1),"L")                    ; konverze na mala pismena a zacatka zkratky
+    s:(sPomNameUst'="") sPomNameUst=sPomNameUst_"-"     ; pridame pomlcku
+    s sHod600b=##class(User.Util).sXlate("UT_WORKPLACE_PREREG",sT600b,"N","Cav")
+    
+    s sT200m=##class(User.MARC).getTagX(.handle,"200m")          ; dotazeni mesta
+    s sT200m=""
+    s:((sHod600b'="")&&(sT200m'="")) sT200m=", "_sT200m     
+    s:((sHod600b'="")||(sT200m'="")) PomText=sHod600b_sT200m_" - "   ; formatovani
+  
+    s line=##class(User.MARC).getTagX(.handle,"100")             ; natazeni jmena
+    s subA=##class(User.MARC).getSubTagStr(.line,"a")
+    ; u jmena a prijmeni zkonvertujeme pocatecni pismena na velke a zbytek na male
+    s subA=$zcvt(subA,"W")   
+    s sT100aPrijmeni=##class(User.Util).diaTR($p(subA," ",1))    ; odstranime diakritiku
+    
+    s sCislo=""
+    s:(i>0) sCislo=$e($tr($j(i,2)," ",0),1,2)
+    
+    s barc=sPomNameUst_sT100aPrijmeni_sCislo
+    s barc1=$zcvt($zstrip(barc,"<>W"),"L")
+    if ($d(^ooDataTableI("CavIsUser","bc"," "_barc1))'=0)
+    { ; pokud mam jiz hodnotu, vratim handle k zpracovani a pokracuji
+      d ##class(User.MARC).mergeX(.handle,.handleZal)     ; zazalohujeme si handle
+      s barc=""
+      continue
+    }
+    
+    s subA=$$$strswap(subA," ",", ")  ; zmenime oddelovac na ", "
+        
+    s:(subA'="") line=##class(User.MARC).setSubTagStr(line,$c(31)_"a"_PomText_subA_sCislo)
+    s:((sPomNameUst'="")||(sT100aPrijmeni'="")) line=##class(User.MARC).setSubTagStr(line,$c(31)_"b"_barc)
+  
+    d ##class(User.MARC).setTagX(.handle,line) 
+  }
+  ; zapis zaznamu
+  s st=##class(User.MARC).writeX(.handle,,,,sChronology)
+  q:$$$ISERR(st) ..tx("ERR_SAVE")_$System.Status.GetErrorText(st)
+  
+  s data("REPORTS")=..tx("REPORT_SAVED")
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="sendMail">
+<Description><![CDATA[
+<pre>
+Zmeny oproti standard verzi:
+- pridano jmeno ISU_100b do tela emailu
+- v sablone CSP pridan text REPORT_H
+- email do knihovny se rozesila i zpracovatelum ustavu
+
+01.08.14 jk; pouziti email sablon
+10.11.11 tt; upraveny predmet
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    s mailbody=""
+    s ret=""
+
+    d ##class(i2.base.forms).getItemArray(.data,.array)    
+
+    s node=""
+    s sClass="even"
+    f i=1:1 { 
+      s node=$o(array(node),1,val) q:node=""
+      s tagsubtag=$p(val,$c(10),1)
+      ; neposilat v mailu heslo
+      continue:tagsubtag="400w"
+    
+      s label=$p(val,$c(10),2)
+      s value=$p(val,$c(10),3)
+      s data("MAIL_DATA",i)=$lb(label,value,sClass)
+      if sClass="even" {
+        s sClass="odd"
+      } else{
+        s sClass="even"
+      }
+    }
+    
+    ; uprava pro CAV - pridano jmeno
+    s s100b=##class(User.MARC).getTagX(.handle,"100b")
+    s data("EMAIL_DATA",i+1)=$lb(..tx("LOGNAME"),s100b)
+
+    ; na volbu PREREG-2 zobrazit docasne prihlasovaci jmeno - IctxIsUser 001
+    if ($$$I2getOpN("PREREG",1)="2") {
+        s s001=##class(User.MARC).getTagX(.handle,"001")
+        s data("MAIL_DATA",0)=$lb(..tx("TMPNAME"),s001)
+    }
+    
+    s data("REPORTS")=..tx("REPORT_OK")
+
+    s sMeno=##class(User.MARC).getTagX(.handle,"100a")
+
+    s subject=..tx("EMAIL_TITLE")
+    s subjectLib=subject_" :: "_sMeno
+ 
+    ; uprava CAV - odeslani emailu i pracovnikovi registrace 
+    ; ziskavaji se dynamicky takze nemohou byt zapsani v IctxUnTablesd EMAILS
+    s sT600b=$$$getTagX(.handle,"600b")
+    s sToLib=""
+    if (sT600b'="")
+    { ; ziskame emaily zpracovatelu
+      s sToLib=##class(User.CavS).FTgetZpracZaUstav(sT600b,2)
+    }
+    
+    d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emaillibhtml")
+    s bodyHtml=data("stream").Read()
+    s data("stream")=##class(%GlobalCharacterStream).%New()
+    d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emaillibtxt")
+    s bodyTxt=data("stream").Read()
+    /*    ; 30.08.18 tt; provedena oprava linku na napovedu
+    s bodyTxt=$$$strswap(bodyTxt,"<a href=""https://asep.lib.cas.cz/arl-cav/cs/napoveda/?key=prereg"" title=""Nápověda k online katalogu IPAC"" target=""_blank"" rel=""noopener"">Nápověda</a>","")
+    s bodyHtml=$$$strswap(bodyHtml,"<a href=""https://asep.lib.cas.cz/arl-cav/cs/napoveda/?key=prereg"" title=""Nápověda k online katalogu IPAC"" target=""_blank"" rel=""noopener"">Nápověda</a>","")
+    s bodyTxt=$$$strswap(bodyTxt,"Heslo zůstává stejné, jak jste si ho zadal/a do přihlašovacího formuláře.","")
+    s bodyHtml=$$$strswap(bodyHtml,"Heslo zůstává stejné, jak jste si ho zadal/a do přihlašovacího formuláře.","")
+   */
+    d ##class(util.emailgw).send($$$IPREF,bodyHtml,bodyTxt,.err,"ipac_prereglib",subjectLib,$$$GETLANGUAGE,,sToLib)
+    
+    ; uzivatelovi, kt. sa prave zaregistroval, ak je vyplneny mail
+    s toUser=##class(User.MARC).getTagX(.handle,"100e")
+    if (toUser'="") {       
+      d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailuserhtml")
+      s bodyHtml=data("stream").Read()
+      s data("stream")=##class(%GlobalCharacterStream).%New()
+      d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailusertxt")
+      s bodyTxt=data("stream").Read()
+          
+      /* ; 30.08.18 tt; provedena oprava linku na napovedu
+      s bodyTxt=$$$strswap(bodyTxt,"https://asep.lib.cas.cz/arl-cav/cs/napoveda/?key=prereg","https://www.lib.cas.cz/asep/pro-autory/uzivatelske-ucty/individualni-ucet/")
+      s bodyHtml=$$$strswap(bodyHtml,"https://asep.lib.cas.cz/arl-cav/cs/napoveda/?key=prereg","https://www.lib.cas.cz/asep/pro-autory/uzivatelske-ucty/individualni-ucet/")
+       */
+      d ##class(util.emailgw).send($$$IPREF,bodyHtml,bodyTxt,.err,"ipac_prereguser",subject,$$$GETLANGUAGE,,toUser)
+      s:err'="" ret=..tx("ERR_MAIL")_"<!-- "_err_" -->"
+    }
+
+    q ret
+]]></Implementation>
+</Method>
+</Class>
+</Export>

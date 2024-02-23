@@ -1,0 +1,57 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+<script language="cache" runat="server">
+ // Wide layout
+ s wideL=$f(..getOption("WIDE"),data("PAGEID"))
+ s:'wideL wideL=..isOption("WIDELAYOUT")
+</script>
+<div id="header" class="#($s(wideL:"container-fluid",1:"container"))#">
+	<header>
+		<div class="row #($s(wideL:"container-fluid",1:"container"))#">
+
+			<div id="brand" class="col-lg-9 col-md-7 col-sm-12 col-12">
+				<div class="#($s(wideL="1" :"row m-0",1:"row"))#">
+					<div class="col-md-3 col-sm-6 col-4">
+						<a class="container mt-1 mb-1" title="#(data("---","MAIN_TITLE"))#" href="#(..txg("MAIN_URL"))#">
+						<img height="120" class="logo" src="#(..img(1))#logo.webp" loading="lazy" alt="#(data("---","MAIN_TITLE"))#"></a>
+					</div>
+					<div class="col-md-9 col-sm-6 col-8">
+						<div class="container subtitle">
+							<ipac:txg param="MAIN_SUBTITLE_ABBR"/><br>
+							<ipac:txg param="MAIN_SUBTITLE"/>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="header-info-box" class="col-lg-3 col-md-5 col-sm-12 col-12 text-right">
+				<csp:if condition=(..isOption("MENULANG")=0)>
+					<ipac:tpl page="parts" version="languages"/>
+				</csp:if>
+
+
+				<p id="aboutdb">
+					<csp:if condition=($$$GETSESSVAR("language")=2)>
+						<a class="nav-link" target="_blank" href="https://www.lib.cas.cz/asep/">
+							<ipac:txg param="ABOUTDB"/>
+						</a>
+						<a class="nav-link" target="_blank"
+							href="https://asep-portal.lib.cas.cz/uvod-do-asep/datovy-repozitar/">
+							<ipac:txg param="ABOUTDATA"/>
+						</a>
+					</csp:if>
+					<csp:if condition=($$$GETSESSVAR("language")=3)>
+						<a class="nav-link" target="_blank" href="https://asep-portal.lib.cas.cz/basic-information/">
+							<ipac:txg param="ABOUTDB"/>
+						</a>
+						<a class="nav-link" target="_blank"
+							href="https://asep-portal.lib.cas.cz/basic-information/dataset-repository/">
+							<ipac:txg param="ABOUTDATA"/>
+						</a>
+					</csp:if>
+				</p>
+
+			</div>
+		</div>
+	</header>
+</div>
+<ipac:tpl page="parts" version="mainmenu" />

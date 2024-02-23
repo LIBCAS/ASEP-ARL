@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2015.2.3 (Build 855U)" ts="2018-05-21 19:06:09">
+<Class name="i2.cust.cav.deletedRecord">
+<Super>i2.ui.page</Super>
+<TimeChanged>64457,50067.88186</TimeChanged>
+<TimeCreated>62790,54963.673338</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+23.06.17 tt; vraci se http 404 kvuli chybejicim zaznamu v OAI set pro NUSL
+22.08.13 tt; pridany parametr pretty 
+29.11.12 tt; zalozena stranka vypis o infomraci o vymazanem zaznamu
+&op={PageID} cavdeletedrecord]]></Description>
+<Default>cavdeletedrecord</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>smazane-zaznamy#smazane-zaznamy#deleted-records</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s %response.Status="404 Not Found"
+  d %response.SetHeader("Status","404 Not Found")
+
+  q ##class(i2.ui.menu).accessPage(..#PageID)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

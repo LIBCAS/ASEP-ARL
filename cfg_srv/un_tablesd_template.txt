@@ -1,0 +1,200 @@
+# @id UN_TABLES A_UN_TABLESD_TEMPLATE_TXT
+100    aInfo zaznam pre un_tablesd_template.txt
+004    23.05.14 mj; vymaz MERGE_EBOOK_MAIL_EREADING
+004    17.04.14 mj; opraveno MERGE_EBOOK_MAIL_EREADING
+004    08.04.14 mj; doplneno MERGE_EBOOK_MAIL_EREADING
+004    ------------------------------
+###
+# @id UN_TABLES ARL_CACHE
+100    akonfiguracni zaznam arl kese
+002    $a - povinny, identifikator kese
+002    $a - povinny, max. velikost kese [MB], 1MB=500 000 znaku 
+002    $c - povinny, default_timeout - vyprseni platnosti kesovaneho zaznamu [min]
+002    $d - povinny, max. timeout - max. cas vyprseni platnosti kesovaneho zaznamu [min]
+002    $e - povinny, perioda spousteni garbage collectoru v SET metode [min]
+002    $f - povinny, max. casu behu GC, v jednom spusteni [ms]
+002    $x - nepovinny, vypnuti kesovani - pro hodnotu "1"
+002    -- konfiguracni zaznam arl kese
+200    aDEFAULTb10000c1440d10000e10f500
+002    -- kesovani CSP stranek 
+200    aI2b100c10000d10000e100f500
+###
+# @id UN_TABLES ARLDIR
+100    aARL adresáře - vzor podle ARL1
+200    aLOGbd:\arl\log
+200    aURL_LOGbhttps://www.library.sk/aRLlog/
+200    aREPORTSbd:\arl\log\reports
+200    aCREPbd:\arl\crep
+200    aCREP2bd:\arl\crep2
+200    aINbd:\arl\in
+200    aBACKUPbd:\arl\_backup
+200    aIMAGESbd:\arl\db_arl1\csp-dir\ims
+200    aURL_IMAGESbhttps://www.library.sk/i2/ims/
+200    aCURLbd:\arl\curl
+200    aCURL_RESPONSEbd:\arl\curl\response
+200    aURL_REPORTSbhttps://www.library.sk/aRLreports/
+200    aDB_SUBDIRbd:\arl_db\db_xxx pozor, na arl1 a arl4 to neni cesta do adresare databaze
+###
+# @id UN_TABLES ARLDIR
+100    aARL adresáře - vzor podle CBVK - linux
+200    aLOGb/home/cosmo/log
+200    aREPORTSb/home/cosmo/log/reports
+200    aURL_LOGbhttps://katalog.cbvk.cz/aRLlog/
+200    aINb/home/cosmo/in
+200    aBACKUPb/home/cosmo/_backup
+200    aCREPb/home/cosmo/crep
+200    aCREP2b/home/cosmo/crep2
+200    aIMAGESb/home/cosmo/db_cbvk/csp-dir/ims/
+200    aURL_IMAGESbhttps://katalog.cbvk.cz/i2/ims/###
+200    aURL_REPORTSbhttps://katalog.cbvk.cz/aRLreports/
+200    aDB_SUBDIRb/home/cosmo/arl_db/db_xxx pozor, na arl1 a arl4 to neni cesta do adresare databaze
+###
+# @id UN_TABLES TF_EXT_X1_UN_CAT
+002    06.01.15 jk; ZF pro XMLGW zdroje ohlasu ve formatu UNIMARC 
+200    ab_200
+200    ab_preklad_nazvu
+200    ab_autori_code_nodata
+200    acs_b_korpor
+200    ab_4xx-463-074-1
+200    acs_b_recenz_dok
+200    acs_b_vydav_udaje-D-1
+200    aub-T=205 PR=0048 ST=a ST=b STD=\s-\s
+200    acs_b_edice
+200    aub-T=010 PR=0137 D=\s ST=a ST=z STD=\s,\s
+200    acs_b_ISSN
+200    aub-T=230 PR=0400 ST=a
+200    acs_b_char_periodika
+200    ab_poznamky_3XX-321
+200    ab_4xx-410-0049-0
+200    ab_4xx-411-0142-0
+200    ab_4xx-421-0286-0
+200    ab_4xx-422-0354-0
+200    ab_4xx-423-0355-0
+200    ab_4xx-430-0147-0
+200    ab_4xx-431-0356-0
+200    ab_4xx-432-0357-0
+200    ab_4xx-433-0358-0
+200    ab_4xx-434-0359-0
+200    ab_4xx-435-0360-0
+200    ab_4xx-436-0361-0
+200    ab_4xx-437-0362-0
+200    ab_4xx-440-0363-0
+200    ab_4xx-441-0364-0
+200    ab_4xx-442-0298-0
+200    ab_4xx-443-0365-0
+200    ab_4xx-444-0366-0
+200    ab_4xx-445-0367-0
+200    ab_4xx-446-0302-0
+200    ab_4xx-447-0368-0
+200    ab_4xx-448-0369-0
+200    ab_4xx-451-0370-0
+200    ab_4xx-452-0371-0
+200    ab_4xx-453-0372-0
+200    ab_4xx-454-0373-0
+200    ab_4xx-488-0374-0
+200    aub-T=512 ST=a PR=0376 D=\s
+200    aub-T=514 ST=a PR=0377 D=\s
+200    aub-T=516 ST=a PR=0378 D=\s
+200    aub-T=517 ST=a PR=0379 D=\s
+200    aub-T=520 ST=a PR=0380 D=\s
+200    aub-T=530 ST=a PR=0381 D=\s
+200    aub-T=531 ST=a PR=0382 D=\s
+200    aub-T=532 ST=a PR=0383 D=\s
+200    aub-T=207 ST=a PR=0249 D=\s
+200    acs_b_roc_cis
+200    acs_b_status_per
+200    aub-T=326 ST=a PR=0250 D=\s
+200    aub-T=910 ST=r PR=0388 D=\s
+200    aub-T=910 ST=u PR=0389 D=\s
+200    ab_jazyk_nc
+200    ab_krajina_nc
+200    acs_b_610
+200    aub-T=330 ST=a STD=\s PR=0014 D=\s
+2xx    acs_b_openlink-0
+200    acs_b_kat_PC
+200    acs_b_kat_ohlasu
+200    aub-T=972 ST=a STD=\s PR=0387 D=\s
+200    acs_b_baza_dat
+200    acs_b_druh_dokum
+200    ab_url
+200    ab_holding_count
+200    ab_46x-0308-I2_TF_RECORD_KIND-xszp,xjcp,xzrp,xcla-xszp:xszp|xzrp|xjcp,xzrp:xszp|xcla,xjcp:xszp|xcla,xcla:xszp|xzrp|xjcp-25-2-1--
+200    ab_odkaz-308-xx-1-xx-xzrp,xjcp,xobj,xpca,xcla-1
+200    aub-T=T94 ST=a ST=3 STM=lupa-T001-3- PR=0417 D=\n:
+200    aub-T=TU1 ST=a PR=0110 D=\s
+200    aub-T=T34 M=if-Txxc-I2eScopus- PR=0013 ST=a STM=lupa-reftitle-a
+200    aub-T=T34 M=if-Txxc-I2eWos- PR=0013 ST=a STM=lupa-UT-a
+###
+# @id UN_TABLES TF_EXT_X1_US_CAT
+002    10.06.15 jk; ebsco link pro ipac
+002    06.01.15 jk; ZF pro XMLGW zdroje ohlasu ve formatu M21
+002    ---zahlavia---
+200    aub-T=245 PR=0856 ST=a ST=b ST=c ST=f ST=g ST=h ST=k ST=n ST=p ST=snÚdaje o názve: 245$a b c f g h k n p s [podpolia - v poradi v akom su v datach, oddelene interpunkciou z dat a medzerou]
+200    aub-T=100 PR=1211 M=if-i1-01 ST=a ST=q ST=b ST=c ST=d ST=4 STM=cis-UT_RELATOR_CODE_M21-1 STM=oddel-(-) ST=t ST=f ST=g ST=k ST=l ST=n ST=pnZáhlavie-meno: 100$a b c d f g k l n p q t (4) [podpolia - okrem $4 - v poradi v akom su v datach, oddelene interpunkciou z dat a medzerou; pole sa zobrazi len ak 1. ind. = 0 alebo 1, namiesto podpola 7 sa zobrazuje lupa, a podpole a je vo forme linku, podpole 4 sa rozpisuje podla ciselniku UT_RELATOR_CODE_M21]
+200    aub-T=700 PR=1216 D=\n: ST=a ST=q ST=b ST=c ST=d ST=4 STM=cis-UT_RELATOR_CODE_M21-1 STM=oddel-(-) ST=t ST=f ST=g ST=h ST=k ST=l ST=m ST=n ST=o ST=p ST=r ST=sn?al.zodpovednos?: 700$a b c d f g h k l m n o p r s q t (4) [podpolia - okrem $4 - v poradi v akom su v datach, oddelene interpunkciou z dat a medzerou; namiesto podpola 7 sa zobrazuje lupa, a podpole a je vo forme linku, podpole 4 sa rozpisuje podla ciselniku UT_RELATOR_CODE_M21]
+002    ---udaje o vydani---
+200    aub-T=250 PR=1039 ST=a ST=bnÚdaje o vydaní: 250$a b [podpolia su uvedene v takom poradi v akom su v zazname, oddelene interpunkciou zo zaznamu a medzerou]
+002    ---vydavatelske udaje---
+200    aub-T=260 PR=0047 D=\n: ST=3 ST=a ST=b ST=c ST=e ST=f ST=gnVyd.údaje: 260$a b c e f g [podpolia su uvedene v takom poradi v akom su v zazname, oddelene interpunkciou zo zaznamu a medzerou]
+002    ---fyzicky popis---
+200    aub-T=300 PR=1003 D=\n: ST=a ST=b ST=c ST=enFyz.popis: 300$a b c e[podpolia su uvedene v takom poradi v akom su v zazname, oddelenu su interpunciou zo zaznamu a medzerou]
+002    ---standardne cisla---
+200    aub-T=020 PR=0137 D=\n: ST=a ST=cnISBN: 020$a c[podpolia su uvedene v takom poradi v akom su v zazname, oddelenu su interpunciou zo zaznamu a medzerou]
+200    aub-T=022 PR=0138 D=\n: ST=anISSN: 022$a
+200    aub-T=024 PR=0677 D=\n: ST=2 STM=pref T=024 D=\n: PR=CONTINUE ST=a
+200    aub-T=028 PR=1107 D=\n: ST=a ST=b STD=.\s n?.nakladate?a: 028$a b [podpolia su oddelene . ]
+002    ---poznamky---
+200    aub-T=500 PR=0046 D=.\s ST=anPoznámka: 500$a
+200    aub-T=520 PR=0014 D=.\s ST=anAnotácia: 520$a
+002    ---in pre dokumenty mimo serialov, integracnych zdrojov a dielovych monografii---
+200    aub-T=773 M=if-T00a-xjcp,xzrp,xxdm,xzri-not M=if-i1-0- M=if-i2-8-not PR=2009 D=\n: M=lupa-T001-w---1 ST=a ST=t STM=if-a-- STD=.\s ST=t STM=if-a--not STD=\\\ ST=g STD=.\s-\s ST=w STM=if-a,t--not STM=text-\snIn: 773$a t [podpole t je oddelene bodkou a medzerou, z pola w je spravena lupa]
+200    aub-T=773 M=if-T00a-xjcp,xzrp,xxdm,xzri-not M=if-i1-0- M=if-i2-8- PR=$i*0074 D=\n: M=lupa-T001-w---1 ST=a ST=t STM=if-a-- STD=.\s ST=t STM=if-a--not STD=\\\ ST=g STD=.\s-\s ST=w STM=if-a,t--not STM=text-\sn$i: 773$a t [podpole t je oddelene bodkou a medzerou, z pola w je spravena lupa]
+002    ---vecne spracovanie---
+200    aub-T=650 PR=0024 D=\n: M=lupa-T001-7---1 ST=a ST=v STD=\s-\s ST=x STD=\s-\s ST=y STD=\s-\s ST=z STD=\s-\snPredmet.hesla: 650$a - v - x - y - z[v poradi v akom su v datach, oddelene interpunkciou z dat a medzerou, podpolia v, x, y, z su oddelene pomlckami namiesto podpola 7 sa zobrazuje lupa, a podpole a je vo forme linku]
+200    aub-T=653 PR=0097 D=\s*\s ST=a STD=\s*\snK?ú?.slová: 653$a[v poradi v akom su v datach, oddelene interpunkciou z dat a medzerou, podpolia v, x, y, z su oddelene pomlckami namiesto podpola 7 sa zobrazuje lupa, a podpole a je vo forme linku]
+002    ---jazyk, krajina---
+200    acs_b_m21_char_dok-41-UT_COUNTRIES_M21- * -\n: -044
+200    acs_b_m21_char_dok-39-UT_LANGUAGE- * -\n: -041-und-
+002    ---- externé zdroje
+200    ab_url-0
+002    ---- linky pro klienta
+200    aub-T=T34 M=if-Txxc-I2eScopus- PR=0013 ST=a STM=lupa-reftitle-a
+200    aub-T=T34 M=if-Txxc-I2eWos- PR=0013 ST=a STM=lupa-UT-a
+200    aub-T=T34 M=if-Txxc-I2eEbscosearch - PR=0011 ST=a STM=lupa-an-a
+002    ---- linky pro ipac
+200    aub-T=U02 M=if-U02b-I2eEbscosearch - PR=0011 ST=a STM=lupa-EBSCORETRIEVEAN-a
+###
+# @id UN_TABLES TF_ISU_GDPR
+002    05.03.18 jk; zalozeno pro vystup a export GDPR
+002                 https://cosmo2/wiki/index.php/Zclient:concepts_GDPR_report_and_export_presonal_data
+200    aub-T=001 PR=0420
+200    ab_xxx-100-p,i,a,v- | | |, -62-\n : --
+200    ax-100k-328
+200    ax-100c-103
+20x    ax-100b-63
+200    aub-T=100 PR=63 ST=b
+200    ax-100o-327
+200    ab_fmt_date-100d-21
+200    ax-100f-67
+200    ax-100e-324
+200    ab_xxx-200-a,p,m,s- |, |, |, -69-\n : --
+200    ab_xxx-210-a,p,m,s- |, |, |, -70-\n : --
+200    ax-300f-392
+200    ab_xxx-230-a,p,m,s- |, |, |, -72-\n : --
+200    ax-500a-329
+200    ais_time
+200    ax-T01a-330
+200    ax-T01d-333
+200    ax-T01i-337
+200    ax-T01b-331
+200    ax-T01c-332
+200    ax-T01f-334
+200    ax-T01g-335
+200    ax-T01h-336
+200    ax-T01j-338
+200    ax-T01e-339
+200    ax-T00x-404
+200    ais_plat_preukaz
+200    aub-T=005 M=if-T02- PR=MORE M=text-\s
+200    acs_user_trx-1-hcflji—1
+###

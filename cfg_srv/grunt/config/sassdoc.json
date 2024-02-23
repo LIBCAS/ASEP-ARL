@@ -1,0 +1,13 @@
+{
+	"theme": "default",
+	"dest": "../temp/sassdoc/myweb/",
+	"title": "Dokumentace SASS",
+	"homepage": "https://porn.dotek.info/",
+	"package": "../package.json",
+	"verbose": "true",
+	"version": "4",
+	"display": {
+		"alias": "true",
+		"watermark": "false"
+	}
+}

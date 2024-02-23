@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2024-01-09 13:10:04">
+<Class name="i2.cust.cav.bookmark">
+<Description>
+09.01.24 tt; provedena úprava plnění isbn o 463/010a
+03.01.24 tt; zalozena trida kvuli uprave linku do NK</Description>
+<Super>i2.ui.bookmark</Super>
+<TimeChanged>66848,47394.657047963</TimeChanged>
+<TimeCreated>63277,39766.723895</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+ictx instituce</Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi pro odchylky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+    
+   if ($g(data("IDX"))'="")
+   {
+     // osetreni logickych bazi
+     s sIdx=$p($p(data("IDX"),"-",1),"*",1)_"*"_$p(data("IDX"),"*",2)
+     if ##class(User.MARC).readLX(.handleTIT,sIdx)
+     {
+       
+       s data("ISBN")=$$$getTagX(.handleTIT,"010a")
+       s:(data("ISBN")="") data("ISBN")=$$$getTagX(.handleTIT,"463/010a")
+       //s ^TT($zh,"note01s")=$g(data("ISBN"))
+       s sDruh=$$$getTagX(.handleTIT,"970b")
+       if $f(",T,C,K,",","_sDruh_",")
+       {
+         s sName=$$$getTagX(.handleTIT,"463/200a")
+         s:(sName="") sName=$$$getTagX(.handleTIT,"200a")
+         s sName=$$$strswap(sName,"[Překlad]","")
+         s sName=$zstrip(sName,"<>W")
+         if ($f(sName,".i.")&&$f(sName,"./i."))
+         {
+            s sName=$$$strswap(sName,".i.","") 
+            s sName=$$$strswap(sName,"./i.","") 
+         }
+         
+         s data("NAME_URL")=##class(i2.html.base).encode(sName)         
+       }
+     }
+   }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

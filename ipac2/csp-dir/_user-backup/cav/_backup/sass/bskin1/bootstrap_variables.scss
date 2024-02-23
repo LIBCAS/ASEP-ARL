@@ -1,0 +1,104 @@
+/// Jine nastaveni oproti vychozimu
+/// <du>2</du>
+
+/// Černá barva
+/// @name black
+/// @type Color
+$black: #333;
+
+/// Hlavní barva
+/// @name primary
+/// @type Color
+$primary: #003a60;
+
+/// Tmavá barva
+/// @name dark
+/// @type Color
+$dark: #2e2e2e;
+
+/// Barva pro chyby
+/// @name danger
+/// @type Color
+$danger: #dc3545;
+
+/// Název rodiny fontů sans-serif
+/// @name font-family-sans-serif
+/// @type String
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+	Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+	"Noto Color Emoji";
+
+/// Základní velikost písma
+/// @name font-size-base
+/// @type String
+$font-size-base: 0.9rem;
+
+/// Velikost písma pro responzi lg
+/// @name font-size-lg
+/// @type String
+$font-size-lg: $font-size-base * 1.15;
+
+/// Velikost písma pro responzi sm
+/// @name font-size-sm
+/// @type String
+$font-size-sm: $font-size-base * 0.75;
+
+/// Velikost nadpisu h1
+/// @name h1-font-size
+/// @type String
+$h1-font-size: $font-size-base * 2.1;
+
+/// Velikost nadpisu h2
+/// @name h2-font-size
+/// @type String
+$h2-font-size: $font-size-base * 1.9;
+
+/// Velikost nadpisu h3
+/// @name h3-font-size
+/// @type String
+$h3-font-size: $font-size-base * 1.6;
+
+/// Velikost nadpisu h4
+/// @name h4-font-size
+/// @type String
+$h4-font-size: $font-size-base * 1.4;
+
+/// Velikost nadpisu h5
+/// @name h5-font-size
+/// @type String
+$h5-font-size: $font-size-base * 1.2;
+
+/// Barva textu placeholderu
+/// @name input-placeholder-color
+/// @type Color
+$input-placeholder-color: #ced4da;
+
+/// Navigace - odkaz - vnitřní okraj objektu - padding-y
+/// @name nav-link-padding-y
+/// @type String
+$nav-link-padding-y: 0.2rem;
+
+/// Navigace - odkaz - vnitřní okraj objektu - padding-x
+/// @name nav-link-padding-x
+/// @type String
+$nav-link-padding-x: 0.6rem;
+
+/// Stránkování - vnitřní okraj objektu - padding-x
+/// @name pagination-padding-x
+/// @type String
+$pagination-padding-x: 0.7rem;
+
+/// Stránkování - výška řádku
+/// @name pagination-line-height
+/// @type String
+$pagination-line-height: 1.2;
+
+/// Maximální šířka kontejneru
+/// @name container-max-widths
+/// @type String
+$container-max-widths: (
+	sm: 540px,
+	md: 720px,
+	lg: 960px,
+	xl: 1170px
+);

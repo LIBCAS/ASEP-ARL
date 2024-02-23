@@ -1,0 +1,58 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<h2>Zobrazovací formáty </h2>
+<p>
+Výsledky vyhledávání je možné zobrazit v několika formátech,
+které jsou vytvořeny dle požadavků pracovišť a jejichž nabídku určuje administrace ASEP (KNAV).
+</p>
+
+<p>
+U každého formátu se zobrazí odkazy do systému WOS, SCOPUS, PUBMED, DOI, RIV – pokud je uvedeny identifikace v záznamu.
+</p>
+
+<h3>Základní formát </h3>
+<ul>
+<li><strong>Záhlaví</strong> tvoří systémové číslo v ASEP, zkratka ústavu – vlastníka záznamu, který záznam vytvořil, rok sběru, informace o označení záznamu do RIV, země vydání, jazyk práce a druh dokumentu.</li>
+<li><strong>Bibliografický popis</strong> obsahuje informace dle druhu dokumentu.</li>
+<li><strong>Návaznost</strong> – za jaké finanční podpory výsledek vznikl – projekty CEP, projekty AV, zahraniční projekty, institucionální podpora apod.</li>
+<li><strong>Klasifikace</strong> - klíčová slova a obory OECD (FORD).</li>
+<li><strong>Trvalý odkaz</strong> handle.</li>
+<li> <strong>Plné texty a datasety</strong> – pokud jsou v záznamu uloženy informace o plných textech a datasetech,
+tak se v základním formátu zobrazují informace o zpřístupnění <strong>plných textů a datasetů</strong> v Repozitáři ASEP, případně na dalších úložištích.</li>
+</ul>
+
+<h3> Základní + anotace, Základní s citacemi</h3>
+<p>
+ Základní formát je obohacen o anotace v jazyce práce a překlad anotace do angličtiny, resp. údaji o citacích.
+</p>
+
+<h3>Citace - ČSN ISO 690, Citace ústavy AV zprávy, Citace autoři AV</h3>
+<ul>
+<li><strong>Citace ČSN ISO 690</strong> obsahuje údaje, které požaduje tato norma. Její použití je povinné v bakalářských, diplomových a doktorandských pracech.</li>
+<li><strong>Citace ústavy AV zprávy</strong> - zobrazení je shodné s normou ČSN ISO, příjmení a jména autorů jsou uvedena malým písmem.</li>
+<li><strong>Citace autoři AV</strong> - zobrazení je shodné s normou ČSN ISO, u autorů AV ČR je uvedeno celé jméno, nikoliv iniciála.</li>
+</ul>
+
+<h3>Tagovaný podrobný</h3>
+<ul>
+<li>Zobrazovací formát obsahuje odkazy (propojení) s autoritními záznamy v databázi ASEP. V databázi ASEP jsou autority autorů, zdrojových dokumentů (periodik a sborníků), konferencí, spolupracujících institucí a projektů. Propojení je označeno „lupou“ . (Např. u jména hlavního autora provede vyhledání a zobrazení autority daného autora.)</li>
+<li>U autority autora se zobrazují zkratky oddělení a odkazy do RID, ORCID a SCOPUS.</li>
+<li>Zobrazuje se informace o plném textu, pokud je přiložen a jeho zpřístupněn v Repozitáři ASEP.</li>
+</ul>
+
+<h3>Údaje pro RIV</h3>
+<p>Zobrazovací formát obsahuje údaje, které se u daného záznamu předávají do RIV.</p>
+
+
+<h3>Bez záhlaví a návaznosti, Bez záhlaví a návaznosti s citacemi</h3>
+<p>
+ Formáty jsou shodné se Základní formátem, nezobrazuje se záhlaví a návaznosti. (projekty, RVO).
+</p>
+
+<h3><ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> </h3>
+<p>
+Specializovaný formát, který zobrazuje záznam ve výměnném formátu 
+<ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> - 
+každý řádek zobrazuje jedno pole 
+<ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> záznamu.
+</p>

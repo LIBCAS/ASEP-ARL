@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1 (Build 209U)" ts="2023-01-19 09:59:30">
+<Class name="i2.cust.cav.archivelist">
+<Description><![CDATA[
+<pre>
+
+19.01.23 ln; hlaska PARTIAL
+15.01.19 ln; ikona pres font, odkaz do noveho tabu
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66493,35659.251762969</TimeChanged>
+<TimeCreated>64231,36027.593241</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>archlist</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>archlist#archlist#archlist</Default>
+</Parameter>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+
+19.01.23 ln; hlaska PARTIAL
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("CMD") = "" 
+  
+  s repo=$$$GETREQVAR("repo")
+  if repo="" {
+    s data("ERRORS")=..tx("NOREPO")
+    q
+  }
+  
+  s key=$$$GETREQVAR("key")
+  if key="" {
+    s data("ERRORS")=..tx("NOKEY")
+    q
+  }
+  
+  s pathrepo=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF,"b")
+  if pathrepo="" {
+    s data("ERRORS")="repo" ; tohle nepotrebuje prelozenou hlasku, jen pro sychr
+    q
+  }  
+  
+  if '##class(content.api).engineRead(repo,key,.array) {
+    s data("ERRORS")="PERM" 
+    q
+  }
+  
+  
+  s sPathSep=$$$PathSepp
+  if $e(pathrepo,$l(pathrepo))'=sPathSep { s pathrepo=pathrepo_sPathSep }  
+  s bigContent=$$$I2isOp("BIGCONTENT")  
+  
+  if 'bigContent {
+    s path=pathrepo_$e(key,1,2)_sPathSep_$e(key,3,99)
+  } else {
+    s path=path_$e(key,1,3)_sPathSep_$e(key,4,99)
+  }
+  s ext=array("extension")
+  s path=""""_path_"."_ext_""""
+  
+  ;s pathrepo="/media/vg1-lv1/repository1/contmp/"
+  ;s file="node_454721161_apache-solr-3.4.0.zip"  
+  ;s ext=$zcvt($p(file,".",$l(file,".")),"L")  
+  ;s path=""""_pathrepo_file_""""
+  
+  s cmd=$case(ext,
+    "zip":"unzip -l "_path,
+    "rar":"/home/cosmo/bin/unrar l "_path,
+    "gz":"tar -tvf "_path,
+    "tgz":"tar -tvf "_path,
+    "7z":"7za l "_path,
+    :"")  
+  s data("CMD")=cmd  
+  s:cmd="" data("REPORTS")="NOARCHIVE"    
+  
+  ;s cmd="unzip -l /media/vg1-lv1/repository1/contmp/node_454721161_apache-solr-3.4.0.zip"
+  d ##class(util.ie.cmd).pipe(.data,cmd,10000)
+  
+  ; 19.01.23 ln; hlaska PARTIAL
+  s count=$o(data("PIPE",""),-1)
+  s:count>10000 data("REPORTS")=..tx("PARTIAL")
+    
+  s node=""
+  f { s node=$o(data("PIPE",node),1,val) q:node=""
+    s:$f(val,pathrepo) data("PIPE",node)=$replace(val,pathrepo,"")
+  }
+  
+  d ..userData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="zfTabSymb">
+<Description><![CDATA[
+<pre> Symbolik pro tabulku souboru v zobrazovaku
+
+15.01.19 ln; ikona pres font, odkaz do noveho tabu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,nTagIter,psLine,psSubTag,param]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  $$$HandleOK(handle) ; kontrola handle
+  q:psLine="" "" ; povinna cast, vratit prazdny retezec pokud je bunka prazdna
+  
+  s ext=##class(User.MARC).getSubTagStr(.psLine,psSubTag)
+  q:$case(ext,"zip":0,"rar":0,"gz":0,"tgz":0,"7z":0,:1) ""
+  
+  s repo=##class(User.MARC).getSubTagStr(.psLine,"r")
+  s key=##class(User.MARC).getSubTagStr(.psLine,"k")
+  
+  ; 15.01.19 ln; ikona pres font, odkaz do noveho tabu
+  q ##class(i2.html.tpl).getLink("archlist","repo="_repo_"&key="_key,,"x"" rel=""external"" data-target=""_blank","icon-info")
+]]></Implementation>
+</Method>
+</Class>
+</Export>

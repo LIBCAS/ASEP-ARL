@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.1 (Build 380U)" ts="2024-01-24 11:29:53">
+<Class name="i2.cust.cav.uploader">
+<Super>content.uploader</Super>
+<TimeChanged>66863,41383.13307604</TimeChanged>
+<TimeCreated>62425,31868.699855</TimeCreated>
+
+<Parameter name="Ictx">
+<Description><![CDATA[
+<pre>
+24.01.24 ln; big data uploader je nyni /big
+24.08.23 tt; provedena zmena nacitani textu pro datove zaznamy 
+27.04.22 tt; runtime: dano osetreni na status - uzivatel nejakym zpusobem dokazal rozhodit funkcnost tak, ze status byl 2
+22.12.20 tt; provedeny upravy uploaderu - spatnych znaku a sherpa linku
+16.07.20 ln; big data uploader preveden na https
+23.01.19 tt; verze zaznamu smlouva musi byt vzdy A - archiv
+05.12.17 tt; pripraven seznam fulltextu k datovemu zaznamu
+08.11.16 tt; upravy kvuli velkym datum
+07.11.16 tt; pridano REC_970b
+03.04.15 tt; pridana funkcnost, aby archiv sel vzdy do stavu ulozen, na zadost pani Dolezelove
+24.03.15 tt; pridano generovani C52
+17.02.15 tt; pridano generovani fulltextu
+28.03.14 tt; pridana vyjimka, aby stav archiv sel zrovna pro zpracovatele do stavu ulozen
+14.02.13 jk; vymazan template()
+08.12.12 tt; getUseStat1: drobna uprava logiky
+05.10.12 tt; getUseStat1 a getUseStat2: zalozena metoda
+23.08.12 tt; pridana poznamka k embargu + pridano zobrazeni DOI
+22.08.12 tt; drobna zmena logiky, aby se brala i 0 hodnota embarga
+22.08.12 tt; pridano cteni a zobrazeni embarga
+23.05.12 tt; drobna uprava sablony
+</pre>
+ictx instituce]]></Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+
+24.01.24 ln; big data uploader je nyni /big
+09.12.21 ln; podpora vicejazycneho big data uploaderu
+16.07.20 ln; big data uploader preveden na https
+08.11.16 tt; upravy kvuli velkym datum
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  q:ret'="" ret
+  
+  s idx=$$$GETREQVAR("idx")
+  q:idx="" ret
+  q:'##class(i2.dblink).recordReadLX(.handle,idx) ret
+  q:$$$getTagX(.handle,"970b")'="DATA" ret
+  q:'..getCred(.data) ret
+  
+  s repo=..userRepo()
+  ;s nodeurl="https://asep.lib.cas.cz:8068"  
+  ;s %response.Redirect=nodeurl_"/uploader.html?ictx="_$$$GETICTX_"&lang="_$case($$$GETLANGUAGE,1:"sk",2:"cs",3:"en",:"")_"&repo="_repo_"&idx="_idx_"&user="_data("CREDUSER")_"&cred="_data("CRED")
+    
+  ; 24.01.24 ln; big data uploader je nyni /big
+  ; 09.12.21 ln; podpora vicejazycneho big data uploaderu
+  ; 16.07.20 ln; big data uploader preveden na https
+  s %response.Redirect="https://"_%request.CgiEnvs("HTTP_HOST")_"/big/uploader.html?ictx="_$$$GETICTX_"&lang="_$case($$$GETLANGUAGE,1:"sk",2:"cs",3:"en",:"")_"&repo="_repo_"&idx="_idx_"&user="_data("CREDUSER")_"&cred="_data("CRED")
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi hlavne pro nacteni vsech ciselniku formulare
+
+24.01.24 ln; big data uploader je nyni /big
+16.07.20 ln; big data uploader preveden na https
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+<Implementation><![CDATA[
+  d ##class(content.human).stable(.data,"UT_ASEP_ACCESS")
+  d ##class(content.human).stable(.data,"UT_ASEP_VERSION")
+  d ##class(content.human).stable(.data,"UT_ASEP_TYPE")
+  
+  s data("BACKURL")=$$$GETREQVAR("backurl")      
+  s data("REPO")=..userRepo()
+  s idx=data("IDX")
+
+  d ..getDataRec(.data)      ; dotazeni napoved a uzivatelskych dat
+  
+  s upload=##class(content.uploader).getPageID()
+  s data("UPLOAD")=##class(i2.html.tpl).getLink(upload,"idx="_idx)
+  
+  ;s uplnusl=##class(i2.cust.cav.uplnusl).getPageID()
+  ;s data("UPLNUSL")=##class(i2.html.tpl).getLink(uplnusl,"idx="_idx)
+  
+  s maintain=##class(content.service).getPageID()
+  s data("MAINTAIN")=##class(i2.html.tpl).getLink(maintain,"idx="_idx)
+  
+  s contlist=##class(content.list).getPageID()
+  s data("CONTLIST")=##class(i2.html.tpl).getLink(contlist,"idx="_idx)
+  
+  ;s data("RECTITLE_Z")=##class(User.Util).HTMLfixup($$$getTagX(.handle,"Tbca"))   
+  s data("RECTITLE_Z")=$$$getTagX(.handle,"Tbca")
+  s data("RECTITLE_Z")=$$$strswap(data("RECTITLE_Z"),"<em>","")
+  s data("RECTITLE_Z")=$$$strswap(data("RECTITLE_Z"),"</em>","")
+  s data("RECTITLE_Z")=##class(User.Util).HTMLfixup($p(data("RECTITLE_Z"),"\n",1))
+  s data("REC_970b")=$$$getTagX(.handle,"970b")
+  if (data("REC_970b")="DATA")
+  { ; 05.12.17 tt; pripraven seznam fulltextu k datovemu zaznamu
+    ; 24.08.23 tt; provedena zmena nacitani textu pro datove zaznamy 
+    s data("RECTITLE_Z")=$p($$$getTagX(.handle,"Tbca"),"\n",1)
+    s SeznamFullT=##class(User.CavUnEpca).getNameFT(.handle)
+    s:(SeznamFullT'="") data("RECTITLE_Z")=data("RECTITLE_Z")_"<br /> Datové soubory v ASEP: "_SeznamFullT
+  } 
+  
+  s data("T001z")=$$$HandleT001(handle)
+  
+  ; 16.07.20 ln; big data uploader preveden na https
+  ; s data("NODEURL")="https://asep.lib.cas.cz:8068"
+  ; 24.01.24 ln; big data uploader je nyni /big
+  s data("NODEURL")="https://"_%request.CgiEnvs("HTTP_HOST")_"/big"
+]]></Implementation>
+</Method>
+
+<Method name="userRepo">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q "crepo1"
+]]></Implementation>
+</Method>
+
+<Method name="apply">
+<Description><![CDATA[
+<pre> Umoznuje modifikovat metadata pred ulozenim
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s:'$d(array("accession")) array("accession")=""
+  
+  ; prevedeni datumu
+  s dayfrom=$g(array("dayfrom"))
+  if (dayfrom'="")
+  {
+    s dayfrom=$e(dayfrom,7,10)_$e(dayfrom,4,5)_$e(dayfrom,1,2)
+    s array("dayfrom")=dayfrom
+    if ($zd($h,8)>dayfrom)
+    {
+      s data("ERRORS")=..tx("ERR_DATE_3")
+      q 0
+    }
+  }
+  if ((array("accession")="E")&&(dayfrom=""))
+  { ; chyba, pokud mam embargo a nemam datum
+    s data("ERRORS")=..tx("ERR_E_DATE")
+    q 0
+  }
+  if ((array("accession")'="E")&&(dayfrom'=""))
+  { ; datum zadavam jen pro embargo
+    s data("ERRORS")=..tx("ERR_NE_DATE")
+    q 0
+  }
+  
+  /*
+  s nusl=$$$GETREQVAR("nusl")
+  if nusl="true" {
+    s data("REPO")="nusl"
+    s array("repository")="nusl"
+  } else {
+    s data("REPO")="crepo1"
+    s array("repository")="crepo1"
+  }
+  */
+  
+  if ($g(array("version"),"")="SML")
+  { ; 23.01.19 tt; verze zaznamu smlouva musi byt vzdy A - archiv
+    s array("accession")="A"
+  }  
+  
+  s array("supervisor")=##class(User.CavS).FTgetUstavR($p(data("IDX"),"*",2))
+  
+  d ##class(i2.dblink).recordReadLX(.handle,data("IDX"))
+  s sT969f=$$$getTagX(.handle,"969f")
+  if $zcvt(sT969f,"U")="D" {
+    s array("status")="1" ; zaznam nebyl odeslan do IPAC
+  } else {
+    s array("status")="2"  ; zaznam byl odeslan do IPAC
+    
+    ; 28.03.14 tt; pridana vyjimka, aby stav archiv sel zrovna pro zpracovatele do stavu ulozen
+    s user=##class(i2.access).getLoginId()  
+    s isSuper=##class(User.CavS).FTgetIsUser(user,data("T001z"))
+    //if ((array("accession")="A")&&(isSuper=2))
+    ; 03.04.15 tt; pridana funkcnost, aby archiv sel vzdy do stavu ulozen, na zadost pani Dolezelove
+    if (array("accession")="A")
+    {
+      s array("status")="4" 
+      ; 17.02.15 tt; pridano generovani fulltextu
+      d ##class(i2.cust.cav.approvalAuthor).genC52(.array,data("T001z"),"4",array("accession")) 
+    }  
+    else
+    { ; 24.03.15 tt; pridano generovani C52
+      d ##class(i2.cust.cav.approvalAuthor).genC52(.array,data("T001z"),array("status"),array("accession")) 
+    }  
+  }  
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="isSupervisor">
+<Description><![CDATA[
+<pre> Pokud je uzivatel supervizor contentServeru, vrati neprazdny retezec
+parametry: t001 uzivatele
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>t001:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q ##class(User.CavS).FTgetUstavU(t001,1)
+]]></Implementation>
+</Method>
+
+<Method name="runtime">
+<Description><![CDATA[
+<pre> Generovani runtime (promenlivych, neulozenych) dat do pole runtime
+parametry: class a t001 zaznamu
+
+27.04.22 tt; dano osetreni na status - uzivatel nejakym zpusobem dokazal rozhodit funkcnost tak, ze status byl 2
+08.11.16 tt; upravy kvuli velkym datum
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&runtime,class,t001]]></FormalSpec>
+<Implementation><![CDATA[
+  s user=##class(i2.access).getLoginId()
+  
+  s runtime("isSuper")=##class(User.CavS).FTgetIsUser(user,t001)
+  ;s runtime("isAuthor")=##class(User.CavS).FTgetIsAutor(user,t001)
+  s runtime("super")=##class(User.CavS).FTgetUstavR(t001)
+  s runtime("isDataStav")=##class(User.CavS).FTgetDataStav(user,t001)
+  
+  
+  ////////////////////////////////////////////////////////////////
+  ; 08.11.16 tt; upravy kvuli velkym datum
+  if ##class(User.MARC).readX(.handle,class,t001)
+  {
+    s sT970b=$$$getTagX(.handle,"970b")
+    if (sT970b="DATA") 
+    {
+      s runtime("accession")=$$$getTagX(.handle,"C81a")
+      s runtime("dayfrom")=$$$getTagX(.handle,"C81d")
+      s runtime("nusl")="false"
+      s runtime("hodnoceni")="false"
+      s runtime("recenze")="false"  
+      ; 27.04.22 tt; dano osetreni na status - uzivatel nejakym zpusobem dokazal rozhodit funkcnost tak, ze status byl 2
+      s:($$$getTagX(.handle,"969f")="") runtime("status")="4"
+    }
+  
+  }
+]]></Implementation>
+</Method>
+
+<Method name="getDataRec">
+<Description><![CDATA[
+<pre> Naplneni pole data doplnijicimi informacemi
+Parametry: data - byref pole pro ulozeni vysledku
+
+11.10.11 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data:%Binary]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet="", sClass="CavUnEpca",data("DK")=""
+  s sT001=$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")
+  s sHelpLink=..tx("HELPLINK")                     ; nactemesi odkaz na napovedu
+  s data("SHERPALINK")=""
+
+  if ##class(User.MARC).readX(.handle,sClass,sT001) 
+  { ; uspesne se podarilo otevrit
+    s sT970b=$$$getTagX(.handle,"970b")    
+    s data("DK")=$zcvt(sT970b,"U")         ; ulozime si druh dokumentu
+    if ($zcvt(sT970b,"U")="J")        
+    { ; pokud mame druh dokumentu J, zjistime issn
+      s t463=##class(User.MARC).getTagX(.handle,"463")
+      if $f(t463,$c(31)_"1001") 
+      { ; pokud mame 001, nacteme 4xx odkazovany handl
+        if ##class(User.MARC).read4xxX(.handlel1,t463,"T") 
+        { ; nacteme si odkazovany zaznam
+          s data("ISSN")=$$$getTagX(.handlel1,"011a")   ; zjisteni ISSN
+          s:(data("ISSN")="") data("ISSN")=$$$getTagX(.handlel1,"011e")
+          s data("SHERPALINK")=1
+          ; 22.08.12 tt; pridano cteni a zobrazeni embarga
+          s data("463EMBARGO")=$$$getTagX(.handlel1,"C58b")
+          //s:(data("463EMBARGO")="0") data("463EMBARGO")=""
+          ; 23.08.12 tt; pridana poznamka k embargu  
+          s data("POZNEMBARGO")=$$$getTagX(.handlel1,"C58c")   
+          s:($tr(data("POZNEMBARGO"),"a","")="") data("POZNEMBARGO")=""              
+        }
+      }
+    }
+    s data("DOI")="<div>&nbsp;&nbsp;&nbsp;&nbsp;"_##class(User.CavUnEpca).getDOIlink(.handle,"class")_"</div>"
+    // po upgradu odkomentovat
+    /// s data("DOI")=$$$strswap(data("DOI"),"<img src=""user/cav/doi-ikona.gif"" alt=""DOI"" />","<span class=""icon-doi"" aria-hidden=""true""></span>")
+  }
+  else
+  { ; vypis chyby
+    s sRet=sRet_"Error: read handle in (i2.cust.cav.uploader).getDataRec"
+  }
+  
+  s data("HELPLINK")="<a rel=""external"" href="""_sHelpLink_"#"_data("DK")_""">"_..tx("HELPLINK_T")_"</a>"
+  
+  if ($g(data("RECTITLE_Z"),"")'="")
+  { ; rozprostreni na vice casti vysledku
+    s sRecT1="<p>"_##class(User.Util).HTMLfixup($p(data("RECTITLE_Z"),"\n",1))_"</p>"
+    ; s sRecT2="<ul><li>"_$$$strswap($p(data("RECTITLE_Z"),"\n",2,999),"\n","</li><li>")_"</li></ul>"
+    ; s:(sRecT2="<ul><li></li></ul>") sRecT2=""    
+    s data("RECTITLE_Z")=sRecT1
+  }
+  
+  s data("ODREC")=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_$$$HandleT001(handle),..tx("RECORD"))
+  
+  q sRet
+]]></Implementation>
+</Method>
+
+<Method name="getUseStat1old">
+<Description><![CDATA[
+<pre> Naplneni uzivatelske polozky c.1 statistik. Ustavy uzivatele, pripadne prilozene
+podle IP adresy
+https://cosmo2/wiki/index.php/Cav-full_text_upload_25/content_statistiky
+
+08.12.12 tt; drobna uprava logiky
+05.10.12 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,operation:%String,succes:%Boolean]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet=""                ; definijeme si promennou na navrat
+  s userIdx=##class(User.Util).objectName2lname(##class(i2.access).getLoginClassName())_"*"_##class(i2.access).getLoginId()
+  s:userIdx="*" userIdx=""
+  if (($tr(userIdx," *")'="")&&($f(userIdx,"cav_is_user")))
+  { ; pokud se nam podarilo ziskat uzivatele v CavIsUser
+    if ##class(User.MARC).readLX(.handleU,userIdx)
+    { ; pokud se poradi nacist uzivatele, pokracuji
+      s sUT600b=$$$getTagX(.handleU,"600b")          ; ustav uzivatele 
+      s:(sUT600b'="") sRet=sUT600b
+    }  
+  }
+  
+  s sUstavyIP=##class(User.CavS).FTgetIntranetUstav() ; ziskame ustavy podle IP adresy
+  ; pokud nejsou ustavy podle ip prazdne a 
+  s:((sUstavyIP'="")&&('$f(","_$tr(sUstavyIP,"_ ","")_",",","_$tr(sRet,"_ ","")_","))) sRet=sRet_","_sUstavyIP
+  
+  s:($e(sRet,1)=",") $e(sRet,1)="" ; osetreni carky na zacatku seznamu
+  q sRet
+]]></Implementation>
+</Method>
+
+<Method name="getUseStat1">
+<Description><![CDATA[
+<pre> Naplneni uzivatelske polozky - zjisteni vsech ustavu i vcetne spolupracujicich
+https://cosmo2/wiki/index.php/Cav-full_text_upload_25/content_statistiky
+Navrat - seznam pracovist - vlastnik + spolupracujici
+
+25.06.14 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,operation:%String,succes:%Boolean]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet=""
+  s sT001=array("t001")                               ; nacteme si pomocne informace
+  s sClass=array("class")
+  
+  if ((sT001'="")&&(sClass'=""))
+  { ; pokud mame vyplnene hodnoty k zaznamu
+    if ##class(User.MARC).readX(.handle,sClass,sT001) 
+    { ; pokud jde otevrit zaznam katalogu, muzeme pokracovat ve zpracovani
+      s c=0      ; . prochazeni zaznamu podle .c    
+      d {
+         s sT70X=$$$getTagXC(.handle,"70*",.c) ; vsechny autori musime projit
+         continue:(sT70X="")
+         if (sT70X'="")
+         { ; pokud mame vyplnene data, muzeme provadet akce 
+           s sT70Xp=$$$getSubTagStr(sT70X,"p")
+           if (sT70Xp'="")
+           { ; pokud mame zadane pracoviste, pridame jej do seznamu
+             s:('$f(sRet,sT70Xp)) sRet=sRet_","_sT70Xp ; postupne seskladame vysledek - jen pokud tam uz neni
+           }    
+         }
+       } while (c'=0)    
+       s sC26e=$$$getTagX(.handle,"C26e")
+       s:('$f(sRet,sC26e)) sRet=sRet_","_sC26e         ; postupne seskladame vysledek
+    }
+  }
+  s sRet=$e(sRet,2,*)             ; vratime retezec bez prvniho ,
+  
+  q sRet
+]]></Implementation>
+</Method>
+
+<Method name="fixStat1">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String="crepo1",test=1</FormalSpec>
+<Implementation><![CDATA[
+  s count=0, fixed=0, saved=0
+
+  &sql(DECLARE CM1 CURSOR FOR
+    SELECT ID
+    INTO :id
+    FROM content.stat
+    WHERE Repo = :repo
+  )
+  
+  &sql(OPEN CM1)
+  for { &sql(FETCH CM1) q:SQLCODE  
+    s count=count+1
+    w !,"id=",id
+    s stat=##class(content.stat).%OpenId(id)
+    continue:'$isobject(stat)
+    //d $system.OBJ.Dump(stat)
+    
+    s meta=##class(content.engine).open(repo,stat.CKey)
+    continue:'$isobject(meta)
+    continue:meta.T001=""
+    //d $system.OBJ.Dump(meta)
+    
+    d meta.getArray(.array)
+    w !,", "_array("t001")
+    s stat.UserVal1=..getUseStat1(.array,stat.Operation,stat.Result)
+    w ", "_stat.UserVal1
+    //d $system.OBJ.Dump(stat)      
+    s fixed=fixed+1
+    
+    if 'test && (stat.%Save()) {
+      s saved=saved+1
+    }    
+  }
+  &sql(CLOSE CM1)
+  
+  w !!,"count=",count,", fixet=",fixed,", saved=",saved
+]]></Implementation>
+</Method>
+
+<Method name="getUseStat2">
+<Description><![CDATA[
+<pre> Naplneni uzivatelske polozky c.2 statistik - stav zaznamu. Zatim obsazene hodnoty:
+0 - nevystaveny zaznam v IPACu (969f "D")
+1 - vystaveny zaznam v IPACu (969f "" nebo "A")
+2 - jina hodnota
+https://cosmo2/wiki/index.php/Cav-full_text_upload_25/content_statistiky
+
+05.10.12 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,operation:%String,succes:%Boolean]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet=""
+  s sT001=array("t001")                               ; nacteme si pomocne informace
+  s sClass=array("class")
+  
+  if ((sT001'="")&&(sClass'=""))
+  { ; pokud mame vyplnene hodnoty k zaznamu
+    if ##class(User.MARC).readX(.handle,sClass,sT001) 
+    { ; pokud jde otevrit zaznam katalogu, muzeme pokracovat ve zpracovani
+       ; odeslani zaznamu - 969f - "D" - neodeslan/ "" nebo "A" odeslany zaznam zverejneny v ipac2 
+      s sT969f=$$$getTagX(.handle,"969f")            ; 969f katalogovoaho zaznamu 
+      if (sT969f="D") { s sRet=0 }                    ; nevystaven v ipacu
+      elseif ((sT969f="")||(sT969f="A")) { s sRet=1 } ; vystaven v ipacu
+      else { s sRet=2 }                               ; nepredvidana hodnota
+    }
+  }
+  
+  q sRet
+]]></Implementation>
+</Method>
+</Class>
+</Export>

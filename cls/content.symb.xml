@@ -1,0 +1,1071 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-20 14:00:24">
+<Class name="content.symb">
+<Description><![CDATA[
+<pre> Globalni upravy nad contentServerem
+
+20.04.23 ln; podpora vice repozitaru
+28.03.23 ln; metoda setAratio2All
+13.02.23 ln; metoda setAratio
+13.04.22 ln; osetrena diakritika v ceste pro import
+24.09.21 ln; podpora pro debuging
+15.02.19 ln; modernizace importu pres imageServer
+23.03.18 ln; duplicita na zaklade kontrolniho souctu
+02.03.17 ln; select symbolik missingFile
+10.05.16 ln; import z imageServeru rozsiren o moznost smazat orginaly
+06.11.15 ln; hromadna oprava upload statistik
+07.01.15 ln; hromadna oprava Downloaded / count podle statisktiky
+04.03.14 ln; hromadna oprava formatu dayfrom
+04.03.14 ln; hromadny import z imageServeru do contentServeru
+</pre>]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<TimeChanged>66584,47305.8410529</TimeChanged>
+<TimeCreated>63111,35718.137273</TimeCreated>
+
+<Method name="byObjs">
+<Description><![CDATA[
+<pre> globalni uprava metadat kontent serveru a/nebo zaznamu na ktere jsou napojeny
+where je SQL cast, ke ktere se pridava "AND Class = class"
+  priklad: "T001 = '0000145'"
+vhodne pro upravu C52, recordSymb se spusti pro kazdy objekt
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class,where:%String="",metaSymb:%String="",recordSymb:%String="",test:%Boolean=1</FormalSpec>
+<Implementation><![CDATA[
+  q:class=""
+  
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s ictx=$zcvt(ipref,"L")
+  
+  if (metaSymb'="") && '##class(%Dictionary.MethodDefinition).%ExistsId("content.generated||"_ictx_metaSymb) {
+    w !,"ERROR: contset - "_metaSymb_" not compiled!"
+    q
+  }
+  
+  if (recordSymb'="") && '##class(%Dictionary.MethodDefinition).%ExistsId("i2.symb."_ictx_"Generated||"_recordSymb) {
+    w !,"ERROR: symbset - "_recordSymb_" not compiled!"
+    q
+  }
+  
+  s language=+##class(User.Util).getServerLanguage(ipref)
+  d ##class(i2.init).batchinit(ictx,language)
+  s callBack=##class(i2.init).getCallBack(ictx,"uploader")
+  s total=0, metaErr=0, metaChanged=0, metaSaved=0, recErr=0, recChanged=0, recSaved=0
+    
+  
+  s:where'="" where=where_" AND "
+  s where=where_"Class = '"_class_"' AND Version IS NULL"
+  s sql="SELECT ID, Array FROM content.metadata WHERE "_where
+  w !,"SQL=",sql
+  
+  s rset=##class(%ResultSet).%New("%DynamicQuery:SQL")
+  s sc=rset.Prepare(sql)
+  if $$$ISERR(sc) {
+    w !,"ERROR: SQL prepare - "_$System.Status.GetErrorText(sc)
+    q
+  }
+  
+  s sc=rset.Execute()
+  if $$$ISERR(sc) {
+    w !,"ERROR: SQL execute - "_$System.Status.GetErrorText(sc)
+    q
+  }
+  
+  While rset.%Next(.sc) {
+    if $$$ISERR(sc) {
+      w !,"ERROR: SQL next - "_$System.Status.GetErrorText(sc)
+      q
+    }   
+  
+    s id=rset.Data("ID")
+    s list=rset.Data("Array")
+    d ##class(content.engine).deserial(.meta,list)    
+    s t001=$g(meta("t001"))
+    w !,!,"id=",id,", t001=",t001
+    s total=total+1
+    
+    if metaSymb'="" {
+      s ret=..callMeta(.meta,id,metaSymb,test)  
+      if ret=-1 {
+        s metaErr=metaErr+1
+      }
+      elseif ret=1 {
+        s metaChanged=metaChanged+1
+      } 
+      elseif ret=2 {
+        s metaChanged=metaChanged+1
+        s metaSaved=metaSaved+1
+      }
+    }
+    
+    if (recordSymb'="") && (t001'="") && ##class(User.MARC).readX(.handle,class,t001) {      
+      k array
+      s array("test")=test
+      s array("accession")=$g(meta("accession"))
+      s array("status")=$g(meta("status"))
+      s array("type")=$g(meta("type"))
+      if callBack'="" {
+        s array("custom")=$ZOBJCLASSMETHOD(callBack,"getCustom",.handle,.meta)
+      } else {
+        s array("custom")=""
+      }
+      
+      s ret=..callRec(.handle,.array,recordSymb)
+      if ret=1 {
+        s recChanged=recChanged+1      
+        
+        if test {        
+          w !,"  test only"          
+        } else {
+          s sc=##class(User.MARC).writeX(.handle)
+          if $$$ISERR(sc) {
+            w !,"ERROR: (record) write failed - "_$System.Status.GetErrorText(sc)
+            s recErr=recErr+1
+          } else {          
+            s recSaved=recSaved+1          
+          }
+        }
+      } 
+      elseif ret<0 {
+        s recErr=recErr+1
+      }
+    }
+  }
+  
+  w !!,"total=",total
+  w !,"metaErr=",metaErr
+  w !,"metaChanged=",metaChanged
+  w !,"metaSaved=",metaSaved
+  w !,"recErr=",recErr
+  w !,"recChanged=",recChanged
+  w !,"recSaved=",recSaved
+]]></Implementation>
+</Method>
+
+<Method name="byRec">
+<Description><![CDATA[
+<pre> globalni uprava zaznamu a/nebo metadat napojenych objektu
+vhodne pro prechod od 856, umoznuje hromadne nahrani souboru do contentServeru
+recordSymb se spusti jednou pro kazdy zaznam
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class,t001,recordSymb:%String="",metaSymb:%String="",test:%Boolean=1</FormalSpec>
+<Implementation><![CDATA[
+  q:class=""
+  q:t001=""  
+  q:'##class(User.MARC).readX(.handle,class,t001)
+  w !,!,"class=",class,", t001=",t001
+  
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s ictx=$zcvt(ipref,"L")  
+  
+  if (recordSymb'="") && '##class(%Dictionary.MethodDefinition).%ExistsId("i2.symb."_ictx_"Generated||"_recordSymb) {
+    w !,"ERROR: symbset - "_recordSymb_" not compiled!"
+    q
+  }
+  
+  if (metaSymb'="") && '##class(%Dictionary.MethodDefinition).%ExistsId("content.generated||"_ictx_metaSymb) {
+    w !,"ERROR: contset - "_metaSymb_" not compiled!"
+    q
+  }
+  
+  s language=+##class(User.Util).getServerLanguage(ipref)
+  d ##class(i2.init).batchinit(ictx,language)
+  s sum("metaErr")=0, sum("metaChanged")=0, sum("metaSaved")=0, sum("recErr")=0, sum("recChanged")=0, sum("recSaved")=0
+  
+  d ..byRec1(.sum,.handle,recordSymb,metaSymb,test)        
+    
+  w !!,"recErr=",sum("recErr")
+  w !,"recChanged=",sum("recChanged")
+  w !,"recSaved=",sum("recSaved")
+  w !,"metaErr=",sum("metaErr")
+  w !,"metaChanged=",sum("metaChanged")
+  w !,"metaSaved=",sum("metaSaved")
+]]></Implementation>
+</Method>
+
+<Method name="bySelect">
+<Description><![CDATA[
+<pre> globalni uprava zaznamu a/nebo metadat napojenych objektu
+podle aktivniho selectu nad jednou tridou/databazi
+vhodne pro prechod od 856, umoznuje hromadne nahrani souboru do contentServeru
+recordSymb se spusti jednou pro kazdy zaznam
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>recordSymb:%String="",metaSymb:%String="",test:%Boolean=1</FormalSpec>
+<Implementation><![CDATA[
+  q:'##class(User.Util).XcheckActiveList()
+  
+  s id=$o(^$$$ListsG($$$ListsActiveSel,$j,""))
+  q:id=""
+  s class=##class(User.MARC).getCLASS(id)
+  q:class="CmRecycled"  
+    
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s ictx=$zcvt(ipref,"L")  
+  
+  if (recordSymb'="") && '##class(%Dictionary.MethodDefinition).%ExistsId("i2.symb."_ictx_"Generated||"_recordSymb) {
+    w !,"ERROR: symbset - "_recordSymb_" not compiled!"
+    q
+  }
+  
+  if (metaSymb'="") && '##class(%Dictionary.MethodDefinition).%ExistsId("content.generated||"_ictx_metaSymb) {
+    w !,"ERROR: contset - "_metaSymb_" not compiled!"
+    q
+  }
+  
+  s language=+##class(User.Util).getServerLanguage(ipref)
+  
+  d ##class(i2.init).batchinit(ictx,language)
+  s sum("metaErr")=0, sum("metaChanged")=0, sum("metaSaved")=0, sum("recErr")=0, sum("recChanged")=0, sum("recSaved")=0
+  
+  s id="", total=0
+  f { s id=$o(^$$$ListsG($$$ListsActiveSel,$j,id)) q:id=""
+    s class=##class(User.MARC).getCLASS(id)
+    continue:class="CmRecycled"
+    s t001=##class(User.MARC).getT001(id)    
+    continue:'##class(User.MARC).readX(.handle,class,t001)
+    w !,!,"class=",class,", t001=",t001
+    
+    d ..byRec1(.sum,.handle,recordSymb,metaSymb,test) 
+    s total=total+1
+  }
+  
+  w !!,"total=",total
+  w !,"recErr=",sum("recErr")
+  w !,"recChanged=",sum("recChanged")
+  w !,"recSaved=",sum("recSaved")
+  w !,"metaErr=",sum("metaErr")
+  w !,"metaChanged=",sum("metaChanged")
+  w !,"metaSaved=",sum("metaSaved")
+]]></Implementation>
+</Method>
+
+<Method name="byRec1">
+<Description><![CDATA[
+<pre> pomocna metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&sum,&handle,recordSymb:%String,metaSymb:%String,test:%Boolean]]></FormalSpec>
+<Implementation><![CDATA[
+  if (recordSymb'="") {      
+    s array("accession")=""
+    s array("status")=""
+    s array("type")=""
+    s array("custom")=""
+    s array("test")=test
+    
+    s ret=..callRec(.handle,.array,recordSymb)
+    if ret=1 {
+      s sum("recChanged")=sum("recChanged")+1      
+    
+      if test {        
+        w !,"  test only"          
+      } else {
+        s sc=##class(User.MARC).writeX(.handle)
+        if $$$ISERR(sc) {
+          w !,"ERROR: (record) write failed - "_$System.Status.GetErrorText(sc)
+          s sum("recErr")=sum("recErr")+1
+        } else {          
+          s sum("recSaved")=sum("recSaved")+1          
+        }
+      }
+    } 
+    elseif ret<0 {
+      s sum("recErr")=sum("recErr")+1
+    }
+  }
+  
+  if metaSymb'="" {
+    s class=$$$HandleClass(handle)
+    s t001=$$$HandleT001(handle)
+    
+    &sql(DECLARE C1 CURSOR FOR
+      SELECT ID, Array
+      INTO :id, :list
+      FROM content.metadata
+      WHERE Class = :class AND T001 = :t001
+    )
+  
+    &sql(OPEN C1)
+    &sql(FETCH C1)
+    While (SQLCODE = 0)
+    {   
+      s ret=..callMeta(.meta,id,metaSymb,test)  
+      if ret=-1 {
+        s sum("metaErr")=sum("metaErr")+1
+      }
+      elseif ret=1 {
+        s sum("metaChanged")=sum("metaChanged")+1
+      } 
+      elseif ret=2 {
+        s sum("metaChanged")=sum("metaChanged")+1
+        s sum("metaSaved")=sum("metaSaved")+1
+      }
+      
+      &sql(FETCH C1)
+    }
+    &sql(CLOSE C1)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="callMeta">
+<Description><![CDATA[
+<pre> pomocna metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&meta,id,metaSymb:%String,test:%Boolean=1]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  s ret=0
+  
+  try {
+    d $ZOBJCLASSMETHOD("content.generated",$$$GETICTX_metaSymb,.meta)
+    if '$d(meta("CHANGED")) {
+      w !,"  meta: notching changed"
+    } else {           
+      ;s metaChanged=metaChanged+1
+      s ret=1
+      w !,"  meta:"
+      s node=""
+      f { s node=$o(meta("CHANGED",node),1,val) q:node=""
+        w !,"    "_node_": "_val_" -> "_meta(node)
+      }
+  
+      if test {          
+        w !,"  test only"
+      } else {
+        if ##class(content.api).update(.meta) {
+          s ret=2
+        } else {
+          w !,"ERROR: (meta) save failed"
+          s ret=-1
+        }     
+      }
+    }
+  } catch {
+    w !,"ERROR: (meta) selhalo volani content.generated."_$$$GETICTX_metaSymb
+    ;s metaErr=metaErr+1
+    s ret=-1
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="callRec">
+<Description><![CDATA[
+<pre> pomocna metoda
+
+24.09.21 ln; podpora pro debuging
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,&array,recordSymb:%String]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  d ##class(User.MARC).mergeX(.origh,.handle)
+  d ##class(i2.symb.generator).indexHadle(.handle,.array)
+  s array("ictx")=$$$GETICTX
+  s array("ipref")=$$$IPREF
+  s array("lang")=$$$GETLANGUAGE
+  s array("name")=$zcvt(recordSymb,"L")
+  s array("lname")=##class(User.Util).objectName2lname($$$HandleClass(handle))
+  s array("t001")=$$$HandleT001(handle)
+  s test=$s(array("test")=2:2,1:0)
+  
+  ; 24.09.21 ln; podpora pro debuging
+  s ret=##class(i2.symb.generator).call(.array,$$$GETICTX,recordSymb,test)
+  if ret=0 {
+    w !,"  record: notching changed"
+  }
+  elseif ret=1 {
+    ;s recChanged=recChanged+1
+    d ##class(i2.symb.generator).serialize(.handle,.array)
+    d ##class(User.MARC).sortLinesX(.handle)
+        
+    w !,"  record:"
+    d ##class(util.compare).MARCcompare(.handle,.origh,.changes,3)
+    k changes("trans")
+    if '$d(changes) {
+      w " notching changed"
+      q 0
+    }
+        
+    s node=""
+    f { s node=$o(changes(node),1,val) q:node=""
+      s val=$tr(val,$c(31),"$")
+      w !,"    ("_$p(node,",")_") "
+      
+      if $p(node,",",2)'="X" {
+        w $p(val,$c(10),1)_" -> "_$p(val,$c(10),2)
+      } 
+      else {
+        w "-> "_val
+      } 
+    }        
+    ;w !,##class(i2.html.base).escape($replace($replace(handle("Rec",1),$c(31),"$$"),$c(10),$$$CRLF))
+  } 
+  elseif ret<0 {
+    s className="i2.symb."_$$$GETICTX_"Generated"
+    s metodName=recordSymb
+    w !,"ERROR: (record) selhalo volani "_className_"."_metodName
+    ;s recErr=recErr+1
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="import">
+<Description><![CDATA[
+<pre> metoda volana ze symboliku generovaneho pres symb.generator
+take z ..importPath
+
+13.04.22 ln; osetrena diakritika v ceste pro import
+15.02.19 ln; modernizace importu pres imageServer
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,idx:%String,test:%Boolean=1]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  if idx="" {
+    w:test !,"call ret=record"
+    q "record"
+  }
+  s class=##class(User.Util).lname2objectName($p($p(idx,"*"),"-"))
+  s t001=$p(idx,"*",2)
+  
+  if test {    
+    s array("TEST")=1
+    w:$isobject($g(%request)) !,"<pre>"
+    w !,"call idx=",idx    
+    
+    w !
+    zw array    
+  }
+  s path=$g(array("file"))
+  s:path="" path=$g(array("origname"))
+  k array("file")
+    
+  s:$g(array("importer"))="" array("importer")="sys"
+  s origname=$g(array("origname"))
+  if origname="" {
+	if $f(origname,"\") {
+	  s origname=$p(path,"\",$l(path,"\"))
+	} else {
+	  s origname=$p(path,"/",$l(path,"/"))
+	}
+  }  
+  s array("origname")=origname
+  ; 13.04.22 ln; osetrena diakritika v ceste pro import
+  s path=$zcvt(path,"O","UTF8")
+  
+  s ret=##class(content.api).importFile(class,t001,array("repository"),path,.array)
+  if ret="" {
+    w !,"  object: ("_origname_": "_array("key")_") "
+    if test {
+      w "successful test"
+    } else {
+      w "saved"
+    }
+  } else {
+    w !,"ERROR: (object: "_origname_") ",ret  
+  }
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="fixWater">
+<Description><![CDATA[
+<pre> Hromadne dogenerovani watermarku / vodotisku
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class:%String,watermark="true",clear:%Boolean=0</FormalSpec>
+<Implementation><![CDATA[
+  q:class=""
+  q:watermark=""
+  
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s ictx=$zcvt(ipref,"L")
+ 
+  s language=+##class(User.Util).getServerLanguage(ipref)
+  
+  d ##class(i2.init).batchinit(ictx,language)  
+  
+  
+  &sql(DECLARE C2 CURSOR FOR
+    SELECT ID, Array
+    INTO :id, :list
+    FROM content.metadata
+    WHERE Class = :class AND Version is NULL AND
+    FOR SOME %ELEMENT(Array) (%KEY='watermark' AND %VALUE = :watermark)
+  )
+  
+  &sql(OPEN C2)
+  &sql(FETCH C2)
+  While (SQLCODE = 0)
+  {
+    d ##class(content.engine).deserial(.array,list)
+    w !!,"id=",id,", key=",array("key")
+    if 'clear {
+      d ##class(content.api).watermark(.array,1)
+    } else {
+      d ##class(content.api).watermark(.array,2)
+    }
+    
+    &sql(FETCH C2)
+  }
+  &sql(CLOSE C2)
+]]></Implementation>
+</Method>
+
+<Method name="importPath">
+<Description><![CDATA[
+<pre> Nacteni souboru do contentServeru pres imageServer (tocont)
+
+15.02.19 ln; modernizace importu pres imageServer
+10.05.16 ln; import z imageServeru rozsiren o moznost smazat orginaly
+04.03.14 ln; hromadny import z imageServeru do contentServeru
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx,repo,test=1</FormalSpec>
+<Implementation><![CDATA[
+  q:ictx=""
+  s ictx=$zcvt(ictx,"L")
+  q:repo=""
+  
+  ; jazyk je potreba jen inicializovat, nevyuziva se
+  d ##class(i2.init).batchinit(ictx)
+  
+  s list="tocont"
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",list,"N",$$$IPREF,"b")
+  q:path=""
+  s mode=##class(User.Util).sXlate("IMAGE_SERVER",list,"N",$$$IPREF,"c")
+  s augment=##class(User.Util).sXlate("IMAGE_SERVER",list,"N",$$$IPREF,"f")
+  if augment'="" {
+    f i=1:1:$l(augment,"|") {
+	  s line=$p(augment,"|",i) 
+	  s meta=$p(line,",")
+	  continue:meta=""
+      
+      f j=2:1:$l(line,",") {
+        s part=$p(line,",",j)
+        s value=$p(part,"=",2)
+        w !,meta_": ",part        
+      
+        s part=$p(part,"=")
+        f k=1:1:$l(part,"+") {        
+          s sourceID=$p(part,"+",k)
+          continue:sourceID=""
+        
+          s aug(sourceID,meta)=value
+        }
+      }
+    }
+  }
+  
+  w !,##class(i2.imageServer).getConfig(.conf)
+  
+  ; je potreba dat lomitko na konec cesty, pokud chybi
+  s pathSep=$$$PathSepp
+  s:$e(path,$l(path))'=pathSep path=path_pathSep
+  w "path=",path,!
+  
+  k ^ImageServer("run",ictx,list)
+  d ##class(i2.imageServer).importPath1(.conf,list,1,path,path)
+  w !
+  
+  s node=""
+  f { s node=$o(^ImageServer("run",ictx,list,1,node),1,val) q:node=""    
+    s class=$p(val,$c(10),1)
+    s lname=##class(User.Util).objectName2lname(class)
+    continue:lname=""
+    s t001=$p(val,$c(10),2), label=$p(val,$c(10),7)
+    
+    w !,node,", ",lname_"*"_t001    
+    k array
+    s array("repository")=repo
+    s array("type")=$p(val,$c(10),6)
+    s array("file")=node
+    s origname=$p(node,pathSep,$l(node,pathSep))
+    s array("origname")=origname    
+    if augment'="" {
+      s sourceID=$p(val,$c(10),3)
+      m array=aug(sourceID)
+    }
+    s:label'="" array("translation")=label, array("label")=label
+    
+    continue:..import(.array,lname_"*"_t001,test)'=""
+
+    if mode="deldir" {
+      ; 10.05.16 ln; import z imageServeru rozsiren o moznost smazat orginaly
+      ; import nove vyuziva importFile ktery soubory presunuje, staci odmazat adresar
+      s dirpath=$p(node,pathSep,1,$l(node,pathSep)-1)
+      d:'test ##class(%File).RemoveDirectory(dirpath)
+    }
+  }
+  
+  k ^ImageServer("run",ictx,list)
+]]></Implementation>
+</Method>
+
+<Method name="fixDayfrom">
+<Description><![CDATA[
+<pre>
+04.03.14 ln; hromadna oprava formatu dayfrom
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>test=1</FormalSpec>
+<Implementation><![CDATA[
+  s count=0, fixed=0, saved=0
+
+  &sql(DECLARE C3 CURSOR FOR
+    SELECT ID
+    INTO :id
+    FROM content.metadata
+    WHERE FOR SOME %ELEMENT(Array) (%KEY='dayfrom' AND %VALUE [ '.')
+  )
+  
+  &sql(OPEN C3)
+  for { &sql(FETCH C3) q:SQLCODE
+    s count=count+1
+    w !,"id=",id
+    s obj=##class(content.metadata).%OpenId(id)
+    continue:'$isobject(obj)
+    ;d $system.OBJ.Dump(obj)
+    s dayfrom=obj.Array.GetAt("dayfrom")
+    try { 
+      s dayfrom=$zd($zdh($tr(dayfrom,".","/"),4),8) 
+      d obj.Array.SetAt(dayfrom,"dayfrom")
+      ;d $system.OBJ.Dump(obj)      
+      s fixed=fixed+1
+      if 'test && (obj.%Save()) {
+        s saved=saved+1
+      }
+    } catch { }    
+  }
+  &sql(CLOSE C3)
+  
+  w !!,"count=",count,", fixed=",fixed,", saved=",saved
+]]></Implementation>
+</Method>
+
+<Method name="setupElement">
+<Description><![CDATA[
+<pre> vsem souborum jednu polozku metadat pokud nema hodnotu nastavit na praznou
+hodi se pro dayfrom
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,element:%String,test=1</FormalSpec>
+<Implementation><![CDATA[
+  s count=0, fixed=0, saved=0
+  s element="%"_element_"%"
+
+  &sql(DECLARE C4 CURSOR FOR
+    SELECT ID
+    INTO :id
+    FROM content.metadata
+    WHERE Repo = :repo AND NOT Array LIKE :element
+  )
+  
+  &sql(OPEN C4)
+  for { &sql(FETCH C4) q:SQLCODE  
+    s count=count+1
+    w !,"id=",id
+    s obj=##class(content.metadata).%OpenId(id)
+    continue:'$isobject(obj)
+    //d $system.OBJ.Dump(obj)
+    d obj.getArray(.array)
+    continue:$d(array("dayfrom"))
+    
+    s array("dayfrom")=""
+    d obj.setArray(.array)
+    //d $system.OBJ.Dump(obj)      
+    s fixed=fixed+1
+    if 'test && (obj.%Save()) {
+      s saved=saved+1
+    }    
+  }
+  &sql(CLOSE C4)
+  
+  w !!,"count=",count,", fixed=",fixed,", saved=",saved
+]]></Implementation>
+</Method>
+
+<Method name="fixDownloaded">
+<Description><![CDATA[
+<pre> hromadna oprava Downloaded / count podle statisktiky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,test=1</FormalSpec>
+<Implementation><![CDATA[
+  q:repo=""
+  
+  s count=0, fixed=0, saved=0
+  
+  &sql(DECLARE C5 CURSOR FOR
+    SELECT ID, CKey, Downloaded
+    INTO :id, :key, :downloaded
+    FROM content.metadata
+    WHERE Repo = :repo AND Class is NOT NULL AND Version is NULL AND Downloaded > '0'
+  )
+  
+  &sql(OPEN C5)
+  for { &sql(FETCH C5) q:SQLCODE
+    s count=count+1 
+    w !,"id=",id
+    s obj=##class(content.metadata).%OpenId(id)
+    ;d $system.OBJ.Dump(obj)
+    continue:'$isobject(obj)
+
+    &sql(SELECT count(*) 
+        INTO :scount 
+        FROM content.stat 
+        WHERE Repo = :repo AND Ckey = :key AND Operation = 'read' AND Result = '1'
+    )
+    
+    if scount'=downloaded {
+      w ", class: "_obj.Class_
+        ", t001:"_obj.T001_
+        ", origname: "_obj.Array.GetAt("origname")_
+        ", "_downloaded_"->"_scount
+      
+      s obj.Downloaded=scount
+      d obj.Array.SetAt(scount,"count")
+      ;d $system.OBJ.Dump(obj)
+      s fixed=fixed+1
+      if 'test && (obj.%Save()) {
+        s saved=saved+1
+      }
+    }
+  }
+  &sql(CLOSE C5)  
+  w !!,"count=",count,", fixed=",fixed,", saved=",saved
+]]></Implementation>
+</Method>
+
+<Method name="fixStats">
+<Description><![CDATA[
+<pre> Oprava statistik podle metadat, zatim jen pro upload
+bSys = 1 zaplne vlozeni statistiky i pro na pozadi importovane zaznamy
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,bSys:%Boolean=0,test=1,repo=""</FormalSpec>
+<Implementation><![CDATA[
+  q:ictx=""
+  
+  s:repo="" repo=ictx_"repo"
+  s:ictx="cav" repo="crepo1"
+  s operation="upload"  
+  s count=0, fixed=0, saved=0  
+  s categs="", sum="" ; zvyrazneno jako nedefinovane
+  
+  &sql(DECLARE C6 CURSOR FOR
+    SELECT ID, CKey, Uploader, UploadDate, Class, T001, Status, Array
+    INTO :id, :key, :uploader, :uploadDate, :class, :t001, :status, :array
+    FROM content.metadata
+    WHERE Repo = :repo AND Class is NOT NULL
+  )
+  
+  &sql(OPEN C6)
+  for { &sql(FETCH C6) q:SQLCODE
+    s count=count+1 
+    w !,"id=",id
+    
+    &sql(SELECT count(*) 
+        INTO :scount 
+        FROM content.stat 
+        WHERE Repo = :repo AND Ckey = :key AND Operation = :operation AND Result = '1'
+    )
+    
+    continue:scount 
+        
+    w ",",uploader,":",uploadDate   
+    
+    s:uploader'="" uploader=ictx_"_is_user*"_uploader
+    s:uploadDate'="" uploadDate=$zdt($zdh(uploadDate,8),3,2,1)
+    s categ="", login=1, origname=""
+    
+    s obj=##class(content.metadata).%OpenId(id)
+    continue:'$isobject(obj)
+    
+    s stat=##class(content.stat).%New()
+    s stat.Repo=repo
+    s stat.CKey=key    
+    s stat.Stamp=uploadDate
+    s stat.Operation=operation
+    s stat.Ictx=ictx
+    s stat.RecClass=class
+    s stat.RecT001=t001
+    s stat.Result=1
+    s stat.Status=status
+    
+    
+    ;s from=$f(array,"origname")
+    ;s:from origname=$e(array,from+2,$f(array,$c(1),from+2)-3)
+    s stat.FileName=obj.Array.GetAt("origname")
+    
+    if (class'="") && (t001'="") && ##class(User.MARC).readX(.handle,class,t001) {
+      s stat.RecKind=##class(User.MARC).getTagX(.handle,"970b")
+    }
+    
+    if (uploader'="") {
+      s categ=$g(categs(uploader))
+      if categ="" {
+        if '##class(User.MARC).readLX(.handle,uploader) {
+          s categ="NOUSER"        
+        } else {
+          s categ=##class(User.MARC).getTagX(.handle,"100k")
+          s:categ="" categ="EMPTY"
+        }
+        s categs(uploader)=categ
+      }   
+    }
+    
+    if (categ="NOUSER") && 'bSys {
+      ; uzivatele sys a podobni jsou timto vylouceni
+      continue
+    }
+    s:uploader'="" sum(uploader)=$g(sum(uploader))+1    
+    s:categ="NOUSER" categ="", uploader="", login=""
+    s:categ="EMPTY" categ=""
+    s stat.Idx=uploader
+    s stat.Category=categ
+    s stat.Login=login
+  
+    //d $system.OBJ.Dump(stat)  b    
+    s fixed=fixed+1    
+    
+    if 'test && (stat.%Save()) {
+      s saved=saved+1
+    }    
+  }
+  &sql(CLOSE C6)  
+  w !!,"count=",count,", fixed=",fixed,", saved=",saved
+  w !!
+  zw sum
+  w !
+  zw categs
+]]></Implementation>
+</Method>
+
+<Method name="missingFile">
+<Description><![CDATA[
+<pre> select symbolik pro kontrolu existence souboru na disku pro dany zaznam
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,all:%Boolean=0]]></FormalSpec>
+<Implementation><![CDATA[
+  s class=$$$HandleClass(handle)
+  s t001=$$$HandleT001(handle)
+  q:class="CmRecycled"
+  
+  s sPathSep=##class(User.Util).getPathSepp(), repo="", path=""
+  
+  s rset = ##class(%ResultSet).%New()
+  s rset.ClassName = "content.metadata"
+  if 'all {
+    s rset.QueryName = "RecAll"
+  } else {
+    s rset.QueryName = "RecAllTrue"
+  }
+  d rset.Execute(class,t001)
+  
+  While (rset.Next(.sc)) {	
+    q:'$SYSTEM.Status.IsOK(sc)
+      
+    s from=$f(rset.Data("Array"),"key")
+    s key=$li($e(rset.Data("Array"),from,from+10))
+    
+    if repo="" {
+      s from=$f(rset.Data("Array"),"repository")
+      s repo=$li($e(rset.Data("Array"),from,from+10))
+      s ipref=##class(User.Util).getClassPrefixParam(class)
+      s path=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",ipref,"b")
+      q:path="" ; TODO
+      s:$e(path,*)'=sPathSep path=path_sPathSep
+    }
+    
+    s from=$f(rset.Data("Array"),"extension")
+    s ext=$li($e(rset.Data("Array"),from,from+500))     
+    s dest=path_$e(key,1,2)_sPathSep_$e(key,3,99)_"."_ext
+    
+    if '##class(%File).Exists(dest) {
+       d ##class(User.MARC).recordSetupModifiedX(.handle,1)
+       w !,"  "_t001_": "_key
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="checksum">
+<Description><![CDATA[
+<pre> Kontrola kontrolniho souctu (pripadne vygenerovani) vsem souborum daneho ictx
+
+23.03.18 ln; duplicita na zaklade kontrolniho souctu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,test=1,repo=""</FormalSpec>
+<Implementation><![CDATA[
+  q:ictx=""
+  
+  s start=$zh
+  w !,"start at "_$zdt($h,3),!
+  s:repo="" repo=ictx_"repo"
+  s:ictx="cav" repo="crepo1"
+  s (count,created,saved,errors)=0  ; TODO fixed=0
+  s basePath=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$zcvt(ictx,"W"),"b")
+  s sPathSep=$$$PathSepp
+  s:$e(basePath,*)'=sPathSep basePath=basePath_sPathSep  
+  
+  &sql(DECLARE C7 CURSOR FOR
+    SELECT ID
+    INTO :id
+    FROM content.metadata
+    WHERE Repo = :repo AND Class is NOT NULL AND Version is NULL
+  )
+  
+  &sql(OPEN C7)
+  for { &sql(FETCH C7) q:SQLCODE    
+    s obj=##class(content.metadata).%OpenId(id)
+    continue:'$isobject(obj)
+
+    s count=count+1
+    w:'(count#100) " "_count
+    s key=obj.CKey
+    s sizeO=obj.Array.GetAt("size")
+    s checksumO=obj.Array.GetAt("checksum")
+    continue:(test=2)&&checksumO
+    s info=obj.Class_","_obj.T001_","_repo_","_key_"("_id_")"_" "    
+    s version=obj.Array.GetAt("ver")
+    s:version=1 version=""
+    
+    s path=basePath_$e(key,1,2)_sPathSep_$e(key,3,99)
+    s:version path=path_"_"_version
+    s path=path_"."_obj.Array.GetAt("extension")
+    
+    s file=##class(%FileBinaryStream).%New()
+    s file.Filename=path
+    s sizeF=file.Size
+    if 'sizeF {
+      w !,info_"not found: "_path
+      s errors=errors+1
+      continue
+    }    
+    if sizeO'=sizeF {
+      w !,info_"size: "_sizeF_"<>"_sizeO
+      s errors=errors+1
+      continue
+    }
+    
+    s checksumF=0
+    While 'file.AtEnd {
+      s checksumF=checksumF+$zcrc(file.Read(32000),0)    
+    }
+    
+    if 'checksumO {
+      s created=created+1
+      d obj.Array.SetAt(checksumF,"checksum")
+      w !,info_"new: "_sizeF_"-"_checksumF
+      
+      if 'test && (obj.%Save()) {
+        s saved=saved+1
+      }
+    }
+    elseif checksumF'=checksumO {
+      w !,info_"not match: "_checksumF_"<>"_checksumO
+      continue
+    }
+  }
+  &sql(CLOSE C7)
+  
+  s stop=$zh-start
+  w !!,"end at "_$zdt($h,3)_" ("_$zt(stop#86400)_$s(stop\86400:" "_(stop\86400)_" days",1:"")_")"
+  w !,"count=",count,", created=",created,", saved=",saved,", errors=",errors
+]]></Implementation>
+</Method>
+
+<Method name="setAratio">
+<Description><![CDATA[
+<pre> Hromadne dogenerovani aratio
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,test=1,repo=""</FormalSpec>
+<Implementation><![CDATA[
+  q:ictx=""
+  d ##class(i2.init).preinit(ictx,2)
+  
+  s start=$zh
+  w !,"start at "_$zdt($h,3),!
+  s:repo="" repo=ictx_"repo"
+  s:ictx="cav" repo="crepo1"
+  s (count,created,saved,errors)=0  ; TODO fixed=0
+  s basePath=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$zcvt(ictx,"W"),"b")
+  if basePath="" {
+    w !," repository not configured"
+    q
+  }  
+  s sPathSep=$$$PathSepp
+  s:$e(basePath,*)'=sPathSep basePath=basePath_sPathSep  
+  
+  &sql(DECLARE C8 CURSOR FOR
+    SELECT ID
+    INTO :id
+    FROM content.metadata
+    WHERE Repo = :repo AND Class is NOT NULL AND Version is NULL
+  )
+  
+  &sql(OPEN C8)
+  for { &sql(FETCH C8) q:SQLCODE    
+    s obj=##class(content.metadata).%OpenId(id)
+    continue:'$isobject(obj)
+    s count=count+1
+    
+    continue:obj.Array.GetAt("aratio")'=""
+    s ext=obj.Array.GetAt("extension")
+    if (ext'="jpg") && (ext'="jpeg") && (ext'="gif") && (ext'="png") && (ext'="tif") continue
+    s created=created+1
+    w:'(created#100) " "_created
+    
+    s key=obj.CKey    
+    s path=basePath_$e(key,1,2)_sPathSep_$e(key,3,99)_"."_ext
+    d obj.getArray(.array)    
+    d ##class(content.engine).aratio(.array,path)
+    d obj.setArray(.array)
+    
+    if 'test && (obj.%Save()) {
+      s saved=saved+1
+    }
+  }
+  &sql(CLOSE C8)
+  
+  s stop=$zh-start
+  w !!,"end at "_$zdt($h,3)_" ("_$zt(stop#86400)_$s(stop\86400:" "_(stop\86400)_" days",1:"")_")"
+  w !,"count=",count,", created=",created,", saved=",saved,", errors=",errors
+]]></Implementation>
+</Method>
+
+<Method name="setAratio2All">
+<Description><![CDATA[
+<pre> Hromadne dogenerovani aratio vsem relevantnim souborum vsech ictx
+d ##class(content.symb).setAratio2All()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s sListUnTabd=##class(util.conv.base).getAllTablesd()
+
+ ; cyklus pres vsechny Ictx podle nalezenych untablesd konfiguraci
+  s nCnt=$l(sListUnTabd,$c(10))
+  for i=1:1:nCnt {
+    s sUnTablesd=$p(sListUnTabd,$c(10),i)
+    s ipref=##class(User.Util).getClassPrefixParam(sUnTablesd)
+    s ictx=$zcvt(ipref,"L")
+    w !!,"========= "_ictx_ " ========="
+    
+    d ..setAratio(ictx,0)
+  }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

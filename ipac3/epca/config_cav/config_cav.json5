@@ -1,0 +1,145 @@
+﻿{
+  "data" : [{ "id": "ictx",
+   "value": "Cav" 
+},{ "id": "dbCat",
+   "value": "CavUnEpca" 
+},{ "id": "dbAuth",
+   "value": "CavUnAuth" 
+},{ "id": "dbEpca",
+   "value": "CavUnEpca" 
+},{ "id": "dbTab",
+   "value": "CavUnTablesd" 
+},{ "id": "otherDbList",
+   "value": [["I2eWos", "UN"], ["I2eClwos", "UN"], ["I2eScopus", "UN"], ["CavUnOhlCat", "UN"]]
+},{ "id": "dbCatFmt",
+   "value": "UN" 
+},{ "id": "dbAuthFmt",
+   "value": "UNA" 
+},{ "id": "dbEpcaFmt",
+   "value": "UN" 
+},{ "id": "LinkDbCat",
+   "value": "cav_un_epca" 
+},{ "id": "LinkDbAuth",
+   "value": "cav_un_auth" 
+},{ "id": "DbNameCat",
+   "value": "UN_EPCA" 
+},{ "id": "DbNameAuth",
+   "value": "UN_AUTH" 
+},{ "id": "displayFmt",
+   "value": "UN_BASIC" 
+},{ "id": "displayFmtAuth",
+   "value": "TF_UNA_BASIC_I3" 
+},{ "id": "defaultCatForm",
+   "value": "test" 
+},{ "id": "defaultAuthForm",
+   "value": "EPCA_FORM_A_skoleni_1301648856" 
+},{ "id": "xwebformURLrest",
+   "value": "/i2/ws.WebForm.cls" 
+},{ "id": "tablesdCache",
+   "value": "EPCA_FLDLIST_AUT,EPCA_FLDLIST_AUT_1,EPCA_FLDLIST_AUT_2,EPCA_FLDLIST_AUT_3,EPCA_FLDLIST_AUT_4,EPCA_FLDLIST_AUT_5,EPCA_FLDLIST_AUT_6,EPCA_FLDLIST_AUT_7,EPCA_FLDLIST_AUT_8,EPCA_FLDLIST_AUT_9,EPCA_FLDLIST_AUT_10,EPCA_ZFLIST_AUT,EPCA_FLDLIST_BIB,EPCA_FLDLIST_BIB_1,EPCA_FLDLIST_BIB_2,EPCA_FLDLIST_BIB_3,EPCA_FLDLIST_BIB_4,EPCA_FLDLIST_BIB_5,EPCA_FLDLIST_BIB_6,EPCA_FLDLIST_BIB_7,EPCA_FLDLIST_BIB_8,EPCA_ZFLIST_BIB,EPCA_ZFLIST_BIB_1,IS_RETURN_CODE"
+},{ "id": "loginHelp",
+   "value": "V případě problémů nebo ztráty hesla kontaktujte teplik@cosmotron.cz#V případě problémů nebo ztráty hesla kontaktujte teplik@cosmotron.cz#In case of problems or loss of password, contact teplik@cosmotron.cz".ls()
+},{ "id": "IsUserAuth",
+   "value": "." 
+},{ "id": "helpURL",
+   "value": "http://www.lib.cas.cz/asep/pro-zpracovatele/manual/popis-poli/#" 
+}, { "id": "helpURLCze",
+   "value": "http://www.lib.cas.cz/asep/pro-zpracovatele/manual/popis-poli/#" 
+}, { "id": "helpURLEng",
+   "value": "http://www.lib.cas.cz/asep/pro-zpracovatele/manual/popis-poli-eng/#" 
+},{ "id": "ShowCheckRecordBtnFn",
+   "value": "true",
+   "param": ".",
+   "param2": "Zkontrolovat záznam#Zkontrolovat záznam#Check the record".ls()
+},{
+  "id": "ShowUsername",
+  "value" : "true"
+},{
+  "id": "ForceAsciiSearch",
+  "value" : "true"
+},{
+  "id": "appHeader",
+  "value" : "ASEP"
+},{ 
+  "id": "FnClear969f",
+  "value": "N#D",
+  "param" : "Do IPAC#Do IPAC#To IPAC".ls(),
+  "param2" : "Odeslat (zobrazit v IPAC)#Odeslat (zobrazit v IPAC)#Submit (view in IPAC)".ls(),
+  "param3" : "B#E"
+},{ "id": "HideMainSearch",
+   "value": "false" 
+},{ "id": "ShowCopyRecordBtnFn",
+   "value": "true",
+   "param" : ".",
+   "param2" : "Vytvoriť kópiu záznamu#Vytvořit kopii záznamu#Create a copy of the record".ls(),
+   "param3" : "N",
+   "param5" : "A#B#C#D"
+},{ "id": "ShowContentServerBtnFn",
+   "value": "true",
+   "param" : ".",
+   "param2" : "Nahrát přílohu#Nahrát přílohu#Upload attachment".ls(),
+   "param3" : "B#E"
+},{ 
+  "id": "FnSet969f",
+  "value": "N#D" ,
+  "param" : "z IPAC#z IPAC#from IPAC".ls(),
+  "param2" : "Vrátit z IPAC#Vrátit z IPAC#Return from IPAC".ls(),
+  "param3" : "B"
+},{
+  "id" : "CheckRightsToRecord",
+  "value" : "true"
+}, {
+  "id" : "ShowURLBtn",
+  "value" : "/arl-cav/cs/my-asep/",
+  "param" : ".",
+  "param2" : "MyAsep"
+}, {
+  "id" : "HideLoginDialog",
+  "value" : "true",
+  "param" : "<center><font size=\"3\">Byli jste odhlášeni z formulářů ASEP a IPAC. <br>Krásný den.</font></center>"
+}, {
+   "id": "NewBtnText",
+   "param": ".",
+   "param2": "Nový#Nový#New".ls()
+}, {
+   "id": "PrintBtnText",
+   "param": ".",
+   "param2": "Tisk#Tisk#Print".ls()
+}, {
+   "id": "SaveBtnText",
+   "param": ".",
+   "param2": "Uložit#Uložit#Save".ls()
+}, {
+   "id": "LogoutBtnText",
+   "param": ".",
+   "param2": "Odhlásit se#Odhlásit se#Log out".ls()
+},{ 
+   "id": "CheckboxPhrase",
+   "value": "false"
+},{ 
+   "id": "HideColumnID",
+   "value": "true"
+}, { 
+  "id": "CAVMainSearch",
+  "value": "true" 
+}, { 
+  "id": "HideMainSearch",
+  "value": "true" 
+}, { 
+  "id": "AddNewFieldsetRepetition",
+  "value": "true",
+  "param": "1"
+}, { 
+  "id": "HideTooltipInCombobox",
+  "value": "true" 
+}, { 
+  "id": "ShowWosScopusBtn",
+  "value": "I2eClwos#Wos|I2eScopus#Scopus,EPCA_FLDLIST_BIB_3|EPCA_FLDLIST_BIB_4,EPCA_ZFLIST_BIB,TF_UN_BASIC_I3,HIDESCAN#HIDECHBBROWSE#HIDECHBASCII|HIDESCAN#HIDECHBBROWSE#HIDECHBASCII,DFLTI_EPCA_CZ_WOSSCOPUS",
+  "param" : ".",
+  "param2" : "Import WOS/SCOPUS",
+  "param3" : "B#C#D"
+}, {
+  "id": "UseNewSE",
+  "value": "false"
+}]
+}

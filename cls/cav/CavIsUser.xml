@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1.4 (Build 505_1U)" ts="2021-11-12 08:39:15">
+<Class name="User.CavIsUser">
+<Description><![CDATA[
+<pre>
+
+09.11.21 jk; zmena na ProcedureBlock
+10.10.20 tt; pridane osetreni, aby se pri obnove zaznam z chronologie obnovil
+09.10.19 jk; zmenena trida pro praci s emaily
+01.03.19 tt; allowSaveEx: upraveno logika o login kontext - aby se pridala login kategorie
+30.01.19 tt; pridan login kontext kontrola
+24.02.27 tt; uprave emailu vcetne odesilatele pri registraci
+23.02.17 tt; pridana metoda postSaveEx
+08.12.16 tt; upraveno porovnani anonymniho uzivatele - jsou vovoleny cisla, ktere se pri porovnani odfiltruji
+05.10.16 tt; allowSaveEx: pridana automaticky 610 k existujicim uzivatelum
+18.11.15 tt; allowSaveEx: zmena skupiny uzivatele v cmconfig z cavgrpuser na cavgrp_form 
+09.10.15 tt; allowSaveEx: pridane login kontextu podle typu uzivatele
+12.08.15 tt; allowSaveEx: dopracovani funkcnosti pro ulozeni uzivatele do security
+12.08.15 tt; allowDeleteEx: zalozena metoda pro vymaz uzivatelu z CmSecurity - musi mit 610bSAFE
+05.02.15 jk; prefix instituce do mail metody
+26.06.13 jk; v indexparams smazany modifikatory tridy
+01.04.12 tt; allowSaveEx: zmena textu emailu
+03.02.12 tt; RightCHUser: zapojena metoda na hlidani prav zapisu uzivatelu
+02.11.11 tt; allowSaveEx: zmena logiky superuzivatele
+18.11.11 tt; allowSaveEx: uprava emailu
+10.11.11 tt; allowSaveEx: uprava emailu
+09.11.11 tt; drobne zmeny
+05.11.11 tt; allowSaveEx: zalozeno kvuli rozesilani emailu
+12.10.11 tt; ixIndexValuesEx: pridany hodnoty stavu uzivatele
+23.09.11 tt; ixIndexValuesEx: doplneni indexu stav uzivatele a pracoviste
+12.12.07 rs; zrusene volby: noCheckRecordX#noAllowSave#noAllowDelete
+11.05.06 rs; pridane newfmt kvoli Txx tagom
+14.03.06 ??; ixIndexValuesEx - doplneni indexu pro rodne jmeno
+19.09.05 jj; symSupervisorFind() - symbolik na doplneni 600b pro zaznamy supervizoru
+             ixIndexValuesEx() - zalozeni a zapojeni
+16.02.04 jr; pridany param asciiIndex-gx
+21.02.03 lp; volani dflt. metod pres INDEXPARAMS
+04.12.02 lp; prehodene na dflt.indexy
+</pre>]]></Description>
+<ClassType>persistent</ClassType>
+<Super>User.DataTable</Super>
+<TimeChanged>66060,31142.763778</TimeChanged>
+<TimeCreated>59563,76063.673917</TimeCreated>
+
+<Parameter name="INDEXPARAMS">
+<Description><![CDATA[
+Toto su parametre pre indexovaciu rutinu.
+viz. ..ixUpdate(), ixIndexValues(), ixIndexValuesEx()
+a tiez ##class(SPIndex).ixIndexValues()<br><br>
+
+Popis obsahu parametrov viz. desciption u SpIndex.ixIndexValues()<br><br>
+
+
+POZOR: i ked je tento param pomenovany INDEXPARAMS
+sluzi aj pre getDATA,allowSave,allowDelete a mozno neskor
+aj dalsie callbacky. 
+
+23.01.03 rs; prva verzia<br>]]></Description>
+<Final>0</Final>
+<Default>U</Default>
+</Parameter>
+
+<Method name="classNameX">
+<Description>
+return current class unlike %ClassName this is a class method</Description>
+<Final>0</Final>
+<ClassMethod>1</ClassMethod>
+<CodeMode>code</CodeMode>
+<FormalSpec/>
+<Private>0</Private>
+<ReturnType>%Library.String</ReturnType>
+<SqlProc>0</SqlProc>
+<Implementation><![CDATA[ quit "CavIsUser"
+]]></Implementation>
+</Method>
+
+<Method name="symSupervisorFind">
+<Description><![CDATA[
+19.09.05 jj; symbolik na doplneni 600b pro zaznamy supervizoru<br>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>handle:%Library.Binary</FormalSpec>
+<Implementation><![CDATA[
+ s t600a=##class(MARC).getTagX(.handle,"600a")
+ if t600a="" q
+ if ##class(MARC).readLX(.handleW,t600a) d  
+ . s t600b=##class(MARC).getTagX(.handleW,"600b")
+ . ; v zaznamech bude bud 600b, nebo 600 nebude
+ . if t600b'="" q
+ . s t100b=##class(MARC).getTagX(.handleW,"100b")
+ . if t100b="" q
+ . s t600b="600    "_$c(31)_"b"_t100b
+ . d ##class(MARC).setTagX(.handleW,t600b)
+ . ; pozor - writeX => nepouzivat gs, pouze ls
+ . s sc=##class(MARC).writeX(.handleW)
+ . if $$$ISERR(sc) w !, "Nezdaril se zapis zaznamu s kodem: """_$p(t600a,"*",2)_""""
+   
+ q
+]]></Implementation>
+</Method>
+
+<Method name="ixIndexValuesEx">
+<Description><![CDATA[
+<pre> Indexacni metoda uzivatelu cav
+12.10.11 tt; pridany hodnoty stavu uzivatele
+23.09.11 doplneni indexu stav uzivatele a pracoviste
+19.09.05 jj; zalozeni
+19.09.05 jj; zapojeni indexu sup
+14.03.06 doplneni indexu pro rodne jmeno
+</pre>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pnGIdx:%Library.Integer,handle:%Library.Binary</FormalSpec>
+<Implementation><![CDATA[
+ s lsClass=##class(User.MARC).recordClassX(.handle),lnId=##class(User.MARC).recordIdX(.handle)
+
+ s t600a=$$$getTagX(.handle,"600a")
+ if (t600a="")
+ {
+   s t100a=$$$getTagX(.handle,"100a")
+   if (t100a'="")
+   {
+     s t100a=$$$trim(t100a)
+     d $$$addIDX("sup",t100a,"b")
+   }
+ }
+
+ ; 14.03.06 doplneni indexu pro rodne jmeno
+ s t100c=$$$getTagX(.handle,"100c")
+ if (t100c'="") 
+ {
+   s t100c=$$$trim(t100c)
+   d $$$addIDX("rod",t100c,"b")
+ }
+
+ ; 23.09.11 doplneni indexu stav uzivatele a pracoviste
+ s sT600b=$$$getTagX(.handle,"600b")
+ if (sT600b'="")
+ { ; muzeme indexovat pracoviste
+   d $$$addIDX("pra",sT600b,"b")
+   ; doplnime jmeno
+   s sPrmeno=##class(User.SPIndex).ixGetPracName(lsClass,sT600b)
+   d:(sPrmeno'="") $$$addIDX("pra",sPrmeno,"b")
+ }
+ 
+ ;; Indexovani stavu uzivatele
+ ; 23.09.11 doplneni indexu stav uzivatele a pracoviste
+ s sT100k=$$$getTagX(.handle,"100k")    ; nactu si kategorii ctenare
+ if (sT100k=0)
+ { ; mame neregistrovaneho uzivatele
+   d $$$addIDX("stu","nu","b")          ; pridame hodnotu neregistrovany uzivatel
+ }
+ elseif (sT100k=1)
+ { ; mame registovaneho uzivatele 
+   d $$$addIDX("stu","ru","b")          ; pridame hodnotu registrovany uzivatel
+ }
+ else
+ { ; neni vyplnena kategorie uzivatele
+   d $$$addIDX("stu","nd","b")          ; pridame hodnotu nedefinovano
+ }   
+ s sT620a=$$$getTagX(.handle,"620a")    ; nactu si link na autoritu
+ if (sT620a'="")
+ { ; existuje link na autoritu
+   d $$$addIDX("stu","el","b")          ; pridame hodnotu ze existuje link
+   d $$$addIDX("aut",sT620a,"b")        ; pridame hodnotu ze existuje link
+ }
+ else
+ { ; neexistuje link  na autoritu
+   d $$$addIDX("stu","nl","b")          ; pridame hodnotu nedefinovano   
+ }
+ 
+ ; 12.10.11 tt; pridany hodnoty stavu uzivatele
+ ; 02.11.11 tt; zmena logiky superuzivatele
+ if (sT100k="2")
+ { ; superuzivatel
+   d $$$addIDX("stu","su","b")    
+ }
+ elseif ((sT600b'="")&&(t600a'=""))
+ { ; pokud je uzivatel autor, ulozime hodnotu 
+   d $$$addIDX("stu","au","b")    
+ }
+ elseif ((sT600b'="")&&(t600a=""))
+ { ; zpracovatel  
+   d $$$addIDX("stu","zp","b")    
+ }
+]]></Implementation>
+</Method>
+
+<Method name="allowSaveEx">
+<Description><![CDATA[
+<pre>Kontroly pred ulozenim zaznamu; ochrana zaznamu pred prepisanim v niektorych 
+specialnych pripadoch.
+Navrat:
+ pri chybe "|ERR..." jinak prazdne nebo nejake info (INF, WARN, text)
+ 
+01.03.19 tt; upraveno logika o login kontext - aby se pridala login kategorie
+05.10.16 tt; pridana automaticky 610 k existujicim uzivatelum
+09.10.15 tt; pridane login kontextu podle typu uzivatele
+12.08.15 tt; dopracovani funkcnosti pro ulozeni uzivatele do security
+05.02.15 jk; prefix instituce do mail metody
+01.04.12 tt; zmena textu emailu
+10.11.11 tt; uprava emailu
+05.11.11 tt; zalozeno kvuli rozesilani emailu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary]]></FormalSpec>
+<PublicList>gnDEBUG</PublicList>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  ///// rozeslani emailu pri zmene z predregistrace na registraci
+  s ret=""
+  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  s sClass=$$$HandleClass(handle)     ; ziskani tridy
+  if (sT001'="new")
+  {
+    if '##class(User.MARC).readX(.handleUS,sClass,sT001)
+    {
+      s ret="|ERR999#(User.CavIsUser).allowSaveEx sending email failed."
+      ; 10.10.20 tt; pridane osetreni, aby se pri obnove zaznam z chronologie obnovil
+      s isID=""
+      s isID=$o(^ooDataTableI("CmChronology","src"," cav_un_epca*"_sT001,isID),-1)
+      q:(isID'="") ""
+      q ret
+    }
+    s t100kn=$$$getTagX(.handle,"100k")
+    s t100a=$$$getTagX(.handle,"100a")
+    s t100b=$$$getTagX(.handle,"100b")
+    s t100ko=$$$getTagX(.handleUS,"100k")
+    s t100b=$$$getTagX(.handle,"100b")                      ; prihlasovaci jsmeno
+    s sEmail=##class(User.CavS).FTgetEmailHandle(.handle)   ; ziskame email
+    if ((t100ko=0)&&(t100kn>0))
+    { ; pokud probehla registrace, odeslu uzivateli email
+  
+      ;zasilame email
+      ; 24.02.27 tt; uprave emailu vcetne odesilatele pri registraci
+      ; 05.02.15 jk; prefix instituce do mail metody
+      s from="arl@lib.cas.cz"
+      s copyTo="asep_repozitar@knav.cz"
+      s subject="Registrace: "_t100b
+      s body="Dobrý den,"_$c(10)_"Vaše registrace byla potvrzena. Nyní již můžete svůj účet plně využívat."_$c(10)_"Přihlašovací jméno:"_t100b_$c(10)_"Heslo zůstává stejné, jak jste si ho zadal/a do přihlašovacího formuláře."_$c(10)_$c(10)
+                       _"Vyzkoušejte přihlášení do svého uživatelského účtu a v případě problému napište na arl@lib.cas.cz."_$c(10)_$c(10)_"Pěkný den"_$c(10)_"Správce dat ASEP"
+      ; 09.10.19 jk; zmenena trida pro praci s emaily
+      d ##class(util.emailgw).send("Cav",,body,.sRet,"default",subject,,from,sEmail,copyTo)  
+
+      if (sRet'="")
+      { ;chyba pri zasilani emailu
+        s ret="|ERR999#(User.CavIsUser).allowSaveEx sending email failed."
+      }
+    }
+  }
+  
+  s retRight=""  
+  s retRight=..RightCHUser(.handle) 
+  s t610b=$$$getTagX(.handle,"610b")
+  s t100k=$$$getTagX(.handle,"100k")
+  
+  if ((t100k>0)&&(t610b=""))
+  { ; 05.10.16 tt; pridana automaticky 610 k existujicim uzivatelum 
+    d ##class(User.MARC).setTagX(.handle,"610    "_$c(31)_"bSAFE")
+  }
+  
+  /*
+  if ((retRight="")&&(t100k>0)&&(t610b="SAFE"))
+  { ; 12.08.15 tt; dopracovani funkcnosti pro ulozeni uzivatele do security
+    if ##class(User.MARC).readX(.hSU,"CmSecurity","SECURITY_USERS","S") 
+    {           
+     s bChange=0,bFind=0,sIDUser="CavISU"_sT001
+     s t600b=$tr($zcvt($$$getTagX(.handle,"600b"),"U")," -/","")
+     
+     s nC=##class(User.MARC).recordLineCountX(.hSU) ; ziskani poctu radku v zaznamu 
+     f i=1:1:nC 
+     { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
+       s lsLine=##class(User.MARC).getLineX(.hSU,i) continue:lsLine="" 
+       s sTag=$e(lsLine,1,3)
+       if (sTag="200")
+       {
+         s sT200a=$$$getSubTagStr(lsLine,"a")
+         if (sT200a=sIDUser)
+         { ; pokud je aktualni radek nas uzivatel - upravime a zkontrolujeme zmenu
+           ; $$aCavISU0000098$$dcavgrp_form$$eCAV$$rcav_is_user*0000098
+           s bFind=1
+           s lsLineOld=lsLine   ;zaloha puvodni
+           s lsLine=$$$setSubTagStr(lsLine,$c(31)_"dcavgrp_form")
+           s lsLine=$$$setSubTagStr(lsLine,$c(31)_"e"_t600b)
+           ; ze by byla T001 new by nemelo ve vetsine pripadu dojit
+           s:(sT001'="new") lsLine=$$$setSubTagStr(lsLine,$c(31)_"rcav_is_user*"_sT001)
+
+           if (lsLineOld'=lsLine) 
+           { ; ulozime zmenu a zapisem priznak zmeny
+             d ##class(User.MARC).setLineX(.hSU,i,lsLine) ; zapsani to radku
+             s bChange=1 ; priznak zmeny + ze byl nalezen uzivatel
+           }
+         }
+       }
+     }
+     
+     if ((bFind=0)&&(sT001'="new"))
+     { ; nenalezen uzivatel, pridame
+       d ##class(User.MARC).appendLineX(.hSU,"200    "_$c(31)_"a"_sIDUser_$c(31)_"dcavgrp_form"_$c(31)_"e"_t600b_$c(31)_"rcav_is_user*"_sT001)
+       s bChange=1
+     }    
+     
+     if (bChange=1)
+     { ; pokud probehla zmena, ulozime handle a vypiseme pripadnou hlasku
+       s st=##class(User.MARC).writeX(.hSU,1,1,0,"","S") 
+       if $$$ISERR(st) 
+       { ; pokud mame chybu, vypiseme ji - pri ukladani       
+         s ret=ret_"|ERR999#(User.CavIsUser).allowSaveEx - neulozen zaznam CmSecurity - user - "_##class(User.Util).status2str(st)
+       }
+     }
+    } 
+  }
+   */
+   
+  ; 09.10.15 tt; pridane login kontextu podle typu uzivatele
+  s t100b=$$$getTagX(.handle,"100b")
+  s t600a=$$$getTagX(.handle,"600a")
+  s sLonginKU=""
+  ; I3UG_AN - anonymni
+  ; 08.12.16 tt; upraveno porovnani anonymniho uzivatele - jsou vovoleny cisla, ktere se pri porovnani odfiltruji
+  s sUT100btest=$tr(t100b,"0123456789","")
+  s:(($e(sUT100btest,($l(sUT100btest)-1),$l(sUT100btest))="-A")&&(t600a'="")) sLonginKU="I3UG_AN" ; osetreni pro anonymni uzivatele
+  ; I3UG_SU - superuzivatel  
+  s:(t100k="2") sLonginKU="I3UG_SU"    ; ziskam superuzivatele
+  s s600=$$$getTagXC(.handle,"600",-1) 
+  s:$f(s600,$c(10)) ret=ret_"|ERR999#(User.CavIsUser).allowSaveEx - nedovolene opakovani tagu 600. Uzivatel:_"_sT001
+  if (s600'="")
+  {
+    s s600a=$$$getSubTagStr(s600,"a")
+    s s600b=$$$getSubTagStr(s600,"b")
+    s s600i=$$$getSubTagStr(s600,"i")
+    s s600iOld=s600i
+    ; 30.01.19 tt; pridan login kontext kontrola
+    ; 01.03.19 tt; upraveno logika o login kontext - aby se pridala login kategorie
+    s:((s600b="KONTROLA")||($f(s600i,"KONTROLA"))) sLonginKU="I3UG_KONT"
+    ;I3UG_IN - individualni
+    s:((s600a'="")&&(s600b'="")&&(sLonginKU="")) sLonginKU="I3UG_IN"
+    ;I3UG_ZP - zpracovatel
+    s:((s600a="")&&(s600b'="")&&(sLonginKU="")) sLonginKU="I3UG_ZP"
+    
+    ; upravime 600i
+    if (s600i'="")
+    {
+      s s600i=$$$strswap(s600i,"I3UG_IN","")
+      s s600i=$$$strswap(s600i,"I3UG_ZP","")
+      s s600i=$$$strswap(s600i,"I3UG_AN","")
+      s s600i=$$$strswap(s600i,"I3UG_SU","")
+      s s600i=$$$strswap(s600i,"I3UG_KONT","")
+    }
+    s s600iNew=""
+    f i=1:1:$l(s600i,",")
+    {  ; pres vsechny opakovani 600i
+       s s600i1=$p(s600i,",",i)
+       continue:(s600i1="")
+       s s600iNew=s600iNew_","_s600i1          
+    }
+    s:(sLonginKU'="") s600iNew=s600iNew_","_sLonginKU    ; pridame novou login kategorii
+    s $e(s600iNew,1)=""                                  ; odstranime prvni ","
+
+    if ((s600iNew'="")&&(s600iNew'=s600iOld))  
+    { ; pokud se nam zmenila 600i, ulozime do handlu
+      s s600=$$$setSubTagStr(s600,$c(31)_"i"_s600iNew)
+      d ##class(User.MARC).setTagX(.handle,s600)
+    }    
+  }
+
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="postSaveEx">
+<Description>
+post save handler - toto je metoda volana po uspesnom zapise zaznamu
+(vcetne pripadneho updateindexov)
+Navrat:
+ "" nebo nejaka informace (text, return code), nerozlisuje se jestli jde o chybu nebo info,
+
+23.02.17 tt; pridana metoda postSaveEx</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s retRight="",ret=""  
+  s retRight=..RightCHUser(.handle) 
+  s t610b=$$$getTagX(.handle,"610b")
+  s t100k=$$$getTagX(.handle,"100k")
+  s sT001=$$$HandleT001(handle)
+  
+  if ((retRight="")&&(t100k>0)&&(t610b="SAFE"))
+  { ; 12.08.15 tt; dopracovani funkcnosti pro ulozeni uzivatele do security
+    if ##class(User.MARC).readX(.hSU,"CmSecurity","SECURITY_USERS","S") 
+    {           
+     s bChange=0,bFind=0,sIDUser="CavISU"_sT001
+     s t600b=$tr($zcvt($$$getTagX(.handle,"600b"),"U")," -/","")
+     
+     s nC=##class(User.MARC).recordLineCountX(.hSU) ; ziskani poctu radku v zaznamu 
+     f i=1:1:nC 
+     { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
+       s lsLine=##class(User.MARC).getLineX(.hSU,i) continue:lsLine="" 
+       s sTag=$e(lsLine,1,3)
+       if (sTag="200")
+       {
+         s sT200a=$$$getSubTagStr(lsLine,"a")
+         if (sT200a=sIDUser)
+         { ; pokud je aktualni radek nas uzivatel - upravime a zkontrolujeme zmenu
+           ; $$aCavISU0000098$$dcavgrp_form$$eCAV$$rcav_is_user*0000098
+           s bFind=1
+           s lsLineOld=lsLine   ;zaloha puvodni
+           s lsLine=$$$setSubTagStr(lsLine,$c(31)_"dcavgrp_form")
+           s lsLine=$$$setSubTagStr(lsLine,$c(31)_"e"_t600b)
+           ; ze by byla T001 new by nemelo ve vetsine pripadu dojit
+           s:(sT001'="new") lsLine=$$$setSubTagStr(lsLine,$c(31)_"rcav_is_user*"_sT001)
+
+           if (lsLineOld'=lsLine) 
+           { ; ulozime zmenu a zapisem priznak zmeny
+             d ##class(User.MARC).setLineX(.hSU,i,lsLine) ; zapsani to radku
+             s bChange=1 ; priznak zmeny + ze byl nalezen uzivatel
+           }
+         }
+       }
+     }
+     
+     if ((bFind=0)&&(sT001'="new"))
+     { ; nenalezen uzivatel, pridame
+       d ##class(User.MARC).appendLineX(.hSU,"200    "_$c(31)_"a"_sIDUser_$c(31)_"dcavgrp_form"_$c(31)_"e"_t600b_$c(31)_"rcav_is_user*"_sT001)
+       s bChange=1
+     }    
+     
+     if (bChange=1)
+     { ; pokud probehla zmena, ulozime handle a vypiseme pripadnou hlasku
+       s st=##class(User.MARC).writeX(.hSU,1,1,0,"","S") 
+       if $$$ISERR(st) 
+       { ; pokud mame chybu, vypiseme ji - pri ukladani       
+         s ret=ret_"|(User.CavIsUser).allowSaveEx - neulozen zaznam CmSecurity - user - "_##class(User.Util).status2str(st)
+       }
+     }
+    } 
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="RightCHUser">
+<Description>
+Metoda pro kontrolu prav upravy uzivatelu. Mohou upravovat svoje uzivatele
+jen lide z jejich ustavu. Ustav nje v 200e v CmConfig*SECURITY_USER
+
+https://cosmo2/wiki/index.php/Cust:CAV/Uzivatele
+
+03.02.12 tt; zapojena metoda</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  q:(sT001="new") ""                  ; pokud mame novy handle, ukoncime zrovna
+  
+  ; nadefinujeme si chybu
+  s sRet="|ERR999#(User.CavIsUser).allowSaveEx - User does not have the right to change." 
+  s sUser=##class(i2.ws).getUserName()
+  s sClass=$$$HandleClass(handle)
+  ; pokud je uzivatel superuzivatel, muze ukladat zaznamu
+  q:(##class(User.CavUnEpca).userIsAdmin()=1) ""  
+  q:(sUser="arl") ""
+    
+  ; ustavy prihlaseneho, format "ustav1"_$c10_"ustav2"
+  s s200e=##class(util.sec.security).securityGet(sUser,$$$secWorkgroup)
+  if (s200e'="")
+  { ; kontolujeme na ustavy
+    ; pokud je ustav prihlaseneho "KNAVK" (knihovna), nevyhodi chybu
+    s:($f($c(10)_s200e_$c(10),$c(10)_"KNAVK"_$c(10))) sRet=""
+    s s600b=$tr($$$getTagX(.handle,"600b"),"- ,.","")     ; ziskame si ustav z uzivatele bez pomlcek    
+    s:($f($c(10)_s200e_$c(10),$c(10)_s600b_$c(10))) sRet=""
+  }
+  else
+  { ; pokud nemame ustav, nechame projit
+    s sRet=""
+  } 
+  q sRet
+]]></Implementation>
+</Method>
+
+<Method name="allowDeleteEx">
+<Description><![CDATA[
+<pre> Doplnena metoda allowDeleteEx
+12.08.15 tt; zalozena metoda pro vymaz uzivatelu z CmSecurity - musi mit 610bSAFE 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>id:%Integer</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  ; potrebujeme handle
+  if '##class(MARC).getDATAX(.handle,id) 
+  {  ; ked nejde precitat zrejme neexistuje kasleme na  to
+     q ""
+  }
+  
+  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  s sClass=$$$HandleClass(handle)     ; ziskani tridy
+
+  s t610b=$$$getTagX(.handle,"610b")  
+  s t100k=$$$getTagX(.handle,"100k")
+  if ((t100k>0)&&(t610b="SAFE"))
+  { ; 12.08.15 tt; dopracovani funkcnosti pro ulozeni uzivatele do security
+    if ##class(User.MARC).readX(.hSU,"CmSecurity","SECURITY_USERS","S") 
+    {           
+     s bChange=0,bFind=0,sIDUser="CavISU"_sT001
+     s t600b=$tr($zcvt($$$getTagX(.handle,"600b"),"U")," -/","")
+     
+     s nC=##class(User.MARC).recordLineCountX(.hSU) ; ziskani poctu radku v zaznamu 
+     f i=1:1:nC 
+     { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
+       s lsLine=##class(User.MARC).getLineX(.hSU,i) continue:lsLine="" 
+       s sTag=$e(lsLine,1,3)
+       if (sTag="200")
+       {
+         s sT200a=$$$getSubTagStr(lsLine,"a")
+         if (sT200a=sIDUser)
+         { ; pokud je aktualni radek nas uzivatel - upravime a zkontrolujeme zmenu
+           ; $$aCavISU0000098$$dcavgrp_form$$eCAV$$rcav_is_user*0000098
+           s $e(lsLine,1,3)="2xx"    ; zakomentujeme
+  
+           ; ulozime zmenu a zapisem priznak zmeny
+           d ##class(User.MARC).setLineX(.hSU,i,lsLine) ; zapsani to radku
+           s bChange=1 ; priznak zmeny + ze byl nalezen uzivatel           
+         }
+       }
+     }  
+     
+     if (bChange=1)
+     { ; pokud probehla zmena, ulozime handle a vypiseme pripadnou hlasku
+       s st=##class(User.MARC).writeX(.hSU,1,1,0,"","S") 
+       if $$$ISERR(st) 
+       { ; pokud mame chybu, vypiseme ji - pri ukladani       
+         q "(User.CavIsUser).allowDeleteEx - neulozen zaznam CmSecurity - user - "_##class(User.Util).status2str(st)
+       }
+     }
+    } 
+  }  
+  q ""
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+</Storage>
+</Class>
+</Export>

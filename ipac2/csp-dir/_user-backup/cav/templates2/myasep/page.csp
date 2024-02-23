@@ -1,0 +1,5 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+<ipac:layout1 notitle="1">
+	<ipac:tpl version="lists"/>
+</ipac:layout1>

@@ -1,0 +1,607 @@
+# @id UN_TABLES AA_UN_TABLES_EPCA_TXT
+002    Pokud bude potreba, je mozne pro ceske instituce naimportovat primo do IctxUnTablesd
+002    Napr: d ^X("im class-UnTablesd un_tables_epca.txt")
+002    -
+002    popis k číselníkům:https://cosmo2/wiki/index.php?title=RIV/RIV2018
+002    21.02.18 tt;  založeno
+###
+# @id UN_TABLES EPCA_OECD
+200    a10000b1. Natural Sciencesy''
+200    a20000b2. Engineering and Technologyy''
+200    a30000b3. Medical and Health Sciencesy''
+200    a40000b4. Agricultural and veterinary sciencesy''
+200    a50000b5. Social Sciencesy''
+200    a60000b6. Humanities and the Artsy''
+###
+# @id UN_TABLES EPCA_OECD_1
+200    a10100b1.1 Mathematicsy''
+200    a10200b1.2 Computer and information sciencesy''
+200    a10300b1.3 Physical sciencesy''
+200    a10400b1.4 Chemical sciencesy''
+200    a10500b1.5. Earth and related environmental sciencesy''
+200    a10600b1.6 Biological sciencesy''
+200    a10700b1.7 Other natural sciencesy''
+###
+# @id UN_TABLES EPCA_OECD_2
+200    a20100b2.1 Civil engineeringy''
+200    a20200b2.2 Electrical engineering, Electronic engineering, Information engineeringy''
+200    a20300b2.3 Mechanical engineeringy''
+200    a20400b2.4 Chemical engineeringy''
+200    a20500b2.5 Materials engineeringy''
+200    a20600b2.6 Medical engineeringy''
+200    a20700b2.7 Environmental engineeringy''
+200    a20800b2.8 Environmental biotechnologyy''
+200    a20900b2.9 Industrial biotechnologyy''
+200    a21000b2.10 Nano-technologyy''
+200    a21100b2.11 Other engineering and technologiesy''
+###
+# @id UN_TABLES EPCA_OECD_3
+200    a30100b3.1 Basic mediciney''
+200    a30200b3.2 Clinical mediciney''
+200    a30300b3.3 Health sciencesy''
+200    a30400b3.4 Medical biotechnologyy''
+200    a30500b3.5 Other medical sciencesy''
+###
+# @id UN_TABLES EPCA_OECD_4
+200    a40100b4.1 Agriculture, Forestry, and Fisheriesy''
+200    a40200b4.2 Animal and Dairy sciencey''
+200    a40300b4.3 Veterinary sciencey''
+200    a40400b4.4 Agricultural biotechnologyy''
+200    a40500b4.5 Other agricultural sciencesy''
+###
+# @id UN_TABLES EPCA_OECD_5
+200    a50100b5.1 Psychology and cognitive sciencesy''
+200    a50200b5.2 Economics and Businessy''
+200    a50300b5.3 Educationy''
+200    a50400b5.4 Sociologyy''
+200    a50500b5.5 Lawy''
+200    a50600b5.6 Political sciencey''
+200    a50700b5.7 Social and economic geographyy''
+200    a50800b5.8 Media and communicationsy''
+200    a50900b5.9 Other social sciencesy''
+###
+# @id UN_TABLES EPCA_OECD_6
+200    a60100b6.1 History and Archaeologyy''
+200    a60200b6.2 Languages and Literaturey''
+200    a60300b6.3 Philosophy, Ethics and Religiony''
+200    a60400b6.4 Arts (arts, history of arts, performing arts, music)y''
+200    a60500b6.5 Other Humanities and the Artsy''
+###
+# @id UN_TABLES EPCA_OECD_1_1
+200    a10101bPure mathematics
+200    a10102bApplied mathematics
+200    a10103bStatistics and probability
+###
+# @id UN_TABLES EPCA_OECD_1_2
+200    a10201bComputer sciences, information science, bioinformathics (hardware development to be 2.2, social aspect to be 5.8)
+###
+# @id UN_TABLES EPCA_OECD_1_3
+200    a10301bAtomic, molecular and chemical physics (physics of atoms and molecules including collision, interaction with radiation, magnetic resonances, Mössbauer effect)
+200    a10302bCondensed matter physics (including formerly solid state physics, supercond.)
+200    a10303bParticles and field physics
+200    a10304bNuclear physics
+200    a10305bFluids and plasma physics (including surface physics)
+200    a10306bOptics (including laser optics and quantum optics)
+200    a10307bAcoustics
+200    a10308bAstronomy (including astrophysics,space science)
+###
+# @id UN_TABLES EPCA_OECD_1_4
+200    a10401bOrganic chemistry
+200    a10402bInorganic and nuclear chemistry
+200    a10403bPhysical chemistry
+200    a10404bPolymer science
+200    a10405bElectrochemistry (dry cells, batteries, fuel cells, corrosion metals, electrolysis)
+200    a10406bAnalytical chemistry
+###
+# @id UN_TABLES EPCA_OECD_1_5
+200    a10501bHydrology
+200    a10502bOceanography
+200    a10503bWater resources
+200    a10504bMineralogy
+200    a10505bGeology
+200    a10506bPaleontology
+200    a10507bVolcanology
+200    a10508bPhysical geography
+200    a10509bMeteorology and atmospheric sciences
+200    a10510bClimatic research
+200    a10511bEnvironmental sciences (social aspects to be 5.7)
+###
+# @id UN_TABLES EPCA_OECD_1_6
+200    a10601bCell biology
+200    a10602bBiology (theoretical, mathematical, thermal, cryobiology, biological rhythm), Evolutionary biology
+200    a10603bGenetics and heredity (medical genetics to be 3)
+200    a10604bReproductive biology (medical aspects to be 3)
+200    a10605bDevelopmental biology
+200    a10606bMicrobiology
+200    a10607bVirology
+200    a10608bBiochemistry and molecular biology
+200    a10609bBiochemical research methods
+200    a10610bBiophysics
+200    a10611bPlant sciences, botany
+200    a10612bMycology
+200    a10613bZoology
+200    a10614bBehavioral sciences biology
+200    a10615bOrnithology
+200    a10616bEntomology
+200    a10617bMarine biology, freshwater biology, limnology
+200    a10618bEcology
+200    a10619bBiodiversity conservation
+200    a10620bOther biological topics
+###
+# @id UN_TABLES EPCA_OECD_2_1
+200    a20101bCivil engineering
+200    a20102bConstruction engineering, Municipal and structural engineering
+200    a20103bArchitecture engineering
+200    a20104bTransport engineering
+###
+# @id UN_TABLES EPCA_OECD_2_2
+200    a20201bElectrical and electronic engineering
+200    a20202bCommunication engineering and systems
+200    a20203bTelecommunications
+200    a20204bRobotics and automatic control
+200    a20205bAutomation and control systems
+200    a20206bComputer hardware and architecture
+###
+# @id UN_TABLES EPCA_OECD_2_3
+200    a20301bMechanical engineering
+200    a20302bApplied mechanics
+200    a20303bThermodynamics
+200    a20304bAerospace engineering
+200    a20305bNuclear related engineering
+200    a20306bAudio engineering, reliability analysis
+###
+# @id UN_TABLES EPCA_OECD_2_4
+200    a20401bChemical engineering (plants, products)
+200    a20402bChemical process engineering
+###
+# @id UN_TABLES EPCA_OECD_2_5
+200    a20501bMaterials engineering
+200    a20502bPaper and wood
+200    a20503bTextiles
+200    a20504bCeramics
+200    a20505bComposites (including laminates, reinforced plastics, cermets, combined natural and synthetic fibre fabrics
+200    a20506bCoating and films
+###
+# @id UN_TABLES EPCA_OECD_2_6
+200    a20601bMedical engineering
+200    a20602bMedical laboratory technology (including laboratory samples analysis
+###
+# @id UN_TABLES EPCA_OECD_2_7
+200    a20701bEnvironmental and geological engineering, geotechnics
+200    a20702bPetroleum engineering (fuel, oils)
+200    a20703bMining and mineral processing
+200    a20704bEnergy and fuels
+200    a20705bRemote sensing
+200    a20706bMarine engineering, sea vessels
+200    a20707bOcean engineering
+###
+# @id UN_TABLES EPCA_OECD_2_8
+200    a20801bEnvironmental biotechnology
+200    a20802bBioremediation, diagnostic biotechnologies (DNA chips and biosensing devices) in environmental management
+200    a20803bEnvironmental biotechnology related ethics
+###
+# @id UN_TABLES EPCA_OECD_2_9
+200    a20901bIndustrial biotechnology
+200    a20902bBioprocessing technologies (industrial processes relying on biological agents to drive the process) biocatalysis, fermentation
+200    a20903bBioproducts (products that are manufactured using biological material as feedstock) biomaterials, bioplastics, biofuels, bioderived bulk and fine chemicals, bio-derived novel materials
+###
+# @id UN_TABLES EPCA_OECD_2_10
+200    a21001bNano-materials (production and properties)
+200    a21002bNano-processes (applications on nano-scale)
+###
+# @id UN_TABLES EPCA_OECD_2_11
+200    a21101bFood and beverages
+###
+# @id UN_TABLES EPCA_OECD_3_1
+200    a30101bHuman genetics
+200    a30102bImmunology
+200    a30103bNeurosciences (including psychophysiology
+200    a30104bPharmacology and pharmacy
+200    a30105bPhysiology (including cytology)
+200    a30106bAnatomy and morphology (plant  science  to  be  1.6)
+200    a30107bMedicinal chemistry
+200    a30108bToxicology
+200    a30109bPathology
+###
+# @id UN_TABLES EPCA_OECD_3_2
+200    a30201bCardiac and Cardiovascular systems
+200    a30202bEndocrinology and metabolism (including diabetes, hormones)
+200    a30203bRespiratory systems
+200    a30204bOncology
+200    a30205bHematology
+200    a30206bOtorhinolaryngology
+200    a30207bOphthalmology
+200    a30208bDentistry, oral surgery and medicine
+200    a30209bPaediatrics
+200    a30210bClinical neurology
+200    a30211bOrthopaedics
+200    a30212bSurgery
+200    a30213bTransplantation
+200    a30214bObstetrics and gynaecology
+200    a30215bPsychiatry
+200    a30216bDermatology and venereal diseases
+200    a30217bUrology and nephrology
+200    a30218bGeneral and internal medicine
+200    a30219bGastroenterology and hepatology
+200    a30220bAndrology 
+200    a30221bCritical care medicine and Emergency medicine
+200    a30223bAnaesthesiology
+200    a30224bRadiology, nuclear medicine and medical imaging
+200    a30225bAllergy
+200    a30226bRheumatology
+200    a30227bGeriatrics and gerontology
+200    a30229bIntegrative and complementary medicine (alternative practice systems)
+200    a30230bOther clinical medicine subjects
+###
+# @id UN_TABLES EPCA_OECD_3_3
+200    a30301bSocial biomedical sciences (includes family planning, sexual health, psycho-oncology, political and social effects of biomedical research)
+200    a30302bEpidemiology
+200    a30303bInfectious Diseases
+200    a30304bPublic and environmental health
+200    a30305bOccupational health
+200    a30306bSport and fitness sciences
+200    a30307bNursing
+200    a30308bNutrition, Dietetics
+200    a30309bTropical medicine
+200    a30310bParasitology
+200    a30311bMedical ethics
+200    a30312bSubstance abuse
+###
+# @id UN_TABLES EPCA_OECD_3_4
+200    a30401bHealth-related biotechnology
+200    a30402bTechnologies involving the manipulation of cells, tissues, organs or the whole organism (assisted reproduction)
+200    a30403bTechnologies involving identifying the functioning of DNA, proteins and enzymes and how they influence the onset of disease and maintenance of well-being (gene-based diagnostics and therapeutic interventions (pharmacogenomics, gene-based therapeutics)
+200    a30404bBiomaterials (as related to medical implants, devices, sensors)
+200    a30405bMedical biotechnology related ethics
+###
+# @id UN_TABLES EPCA_OECD_3_5
+200    a30501bForensic science
+200    a30502bOther medical science
+###
+# @id UN_TABLES EPCA_OECD_4_1
+200    a40101bAgriculture
+200    a40102bForestry
+200    a40103bFishery
+200    a40104bSoil science
+200    a40105bHorticulture, viticulture
+200    a40106bAgronomy, plant breeding and plant protection
+###
+# @id UN_TABLES EPCA_OECD_4_2
+200    a40201bAnimal and dairy science
+200    a40202bPets
+200    a40203bHusbandry
+###
+# @id UN_TABLES EPCA_OECD_4_3
+200    a40301bVeterinary science
+###
+# @id UN_TABLES EPCA_OECD_4_4
+200    a40401bAgricultural biotechnology and food biotechnology
+200    a40402bGM technology (crops and livestock), livestock cloning, marker assisted selection, diagnostics (DNA chips and biosensing devices for the early/accurate detection of diseases) biomass feedstock production technologies, biopharming
+200    a40403bAgricultural biotechnology related ethics
+###
+# @id UN_TABLES EPCA_OECD_5_1
+200    a50101bPsychology (including human - machine relations)
+200    a50102bPsychology, special (including therapy for learning, speech, hearing, visual and other physical and mental disabilities)
+200    a50103bCognitive sciences
+###
+# @id UN_TABLES EPCA_OECD_5_2
+200    a50201bEconomic Theory
+200    a50202bApplied Economics, Econometrics
+200    a50203bIndustrial relations
+200    a50204bBusiness and management
+200    a50205bAccounting
+200    a50206bFinance
+###
+# @id UN_TABLES EPCA_OECD_5_3
+200    a50301bEducation, general; including training, pedagogy, didactics [and education systems]
+200    a50302bEducation, special (to gifted persons, those with learning disabilities)
+###
+# @id UN_TABLES EPCA_OECD_5_4
+200    a50401bSociology
+200    a50402bDemography
+200    a50403bSocial topics (Women´s and gender studies
+200    a50404bAntropology, ethnology
+###
+# @id UN_TABLES EPCA_OECD_5_5
+200    a50501bLaw
+200    a50502bCriminology, penology
+###
+# @id UN_TABLES EPCA_OECD_5_6
+200    a50601bPolitical science
+200    a50602bPublic administration
+200    a50603bOrganisation theory
+###
+# @id UN_TABLES EPCA_OECD_5_7
+200    a50701bCultural and economic geography
+200    a50702bUrban studies (planning and development)
+200    a50703bTransport planning and social aspects of transport (transport engineering to be 2.1)
+200    a50704bEnvironmental sciences (social aspects)
+###
+# @id UN_TABLES EPCA_OECD_5_8
+200    a50801bJournalism
+200    a50802bMedia and socio-cultural communication 
+200    a50803bInformation science (social aspects)
+200    a50804bLibrary science
+###
+# @id UN_TABLES EPCA_OECD_5_9
+200    a50901bOther social sciences
+200    a50902bSocial sciences, interdisciplinary
+###
+# @id UN_TABLES EPCA_OECD_6_1
+200    a60101bHistory (history of science and technology to be 6.3, history of specific sciences to be under the respective headings)
+200    a60102bArchaeology
+###
+# @id UN_TABLES EPCA_OECD_6_2
+200    a60201bGeneral language studies
+200    a60202bSpecific languages
+200    a60203bLinguistics
+200    a60204bGeneral literature studies
+200    a60205bLiterary theory
+200    a60206bSpecific literatures
+###
+# @id UN_TABLES EPCA_OECD_6_3
+200    a60301bPhilosophy, History and Philosophy of science and technology
+200    a60302bEthics (except ethics related to specific subfields)
+200    a60303bTheology
+200    a60304bReligious studies
+###
+# @id UN_TABLES EPCA_OECD_6_4
+200    a60401bArts, Art history
+200    a60402bArchitectural design
+200    a60403bPerforming arts studies (Musicology, Theater science, Dramaturgy)
+200    a60404bFolklore studies
+200    a60405bStudies on Film, Radio and Television
+###
+# @id UN_TABLES EPCA_OECDALL_2
+200    a10100b1.1 Mathematics
+200    a10200b1.2 Computer and information sciences
+200    a10300b1.3 Physical sciences
+200    a10400b1.4 Chemical sciences
+200    a10500b1.5. Earth and related environmental sciences
+200    a10600b1.6 Biological sciences
+200    a10700b1.7 Other natural sciences
+200    a20100b2.1 Civil engineering
+200    a20200b2.2 Electrical engineering, Electronic engineering, Information engineering
+200    a20300b2.3 Mechanical engineering
+200    a20400b2.4 Chemical engineering
+200    a20500b2.5 Materials engineering
+200    a20600b2.6 Medical engineering
+200    a20700b2.7 Environmental engineering
+200    a20800b2.8 Environmental biotechnology
+200    a20900b2.9 Industrial biotechnology
+200    a21000b2.10 Nano-technology
+200    a21100b2.11 Other engineering and technologies
+200    a30100b3.1 Basic medicine
+200    a30200b3.2 Clinical medicine
+200    a30300b3.3 Health sciences
+200    a30400b3.4 Medical biotechnology
+200    a30500b3.5 Other medical sciences
+200    a40100b4.1 Agriculture, Forestry, and Fisheries
+200    a40200b4.2 Animal and Dairy science
+200    a40300b4.3 Veterinary science
+200    a40400b4.4 Agricultural biotechnology
+200    a40500b4.5 Other agricultural sciences
+200    a50100b5.1 Psychology and cognitive sciences
+200    a50200b5.2 Economics and Business
+200    a50300b5.3 Education
+200    a50400b5.4 Sociology
+200    a50500b5.5 Law
+200    a50600b5.6 Political science
+200    a50700b5.7 Social and economic geography
+200    a50800b5.8 Media and communications
+200    a50900b5.9 Other social sciences
+200    a60100b6.1 History and Archaeology
+200    a60200b6.2 Languages and Literature
+200    a60300b6.3 Philosophy, Ethics and Religion
+200    a60400b6.4 Arts (arts, history of arts, performing arts, music)
+200    a60500b6.5 Other Humanities and the Arts
+###
+# @id UN_TABLES EPCA_OECDALL_3
+200    a10101bPure mathematics
+200    a10102bApplied mathematics
+200    a10103bStatistics and probability
+200    a10201bComputer sciences, information science, bioinformathics (hardware development to be 2.2, social aspect to be 5.8)
+200    a10301bAtomic, molecular and chemical physics (physics of atoms and molecules including collision, interaction with radiation, magnetic resonances, Mössbauer effect)
+200    a10302bCondensed matter physics (including formerly solid state physics, supercond.)
+200    a10303bParticles and field physics
+200    a10304bNuclear physics
+200    a10305bFluids and plasma physics (including surface physics)
+200    a10306bOptics (including laser optics and quantum optics)
+200    a10307bAcoustics
+200    a10308bAstronomy (including astrophysics,space science)
+200    a10401bOrganic chemistry
+200    a10402bInorganic and nuclear chemistry
+200    a10403bPhysical chemistry
+200    a10404bPolymer science
+200    a10405bElectrochemistry (dry cells, batteries, fuel cells, corrosion metals, electrolysis)
+200    a10406bAnalytical chemistry
+200    a10501bHydrology
+200    a10502bOceanography
+200    a10503bWater resources
+200    a10504bMineralogy
+200    a10505bGeology
+200    a10506bPaleontology
+200    a10507bVolcanology
+200    a10508bPhysical geography
+200    a10509bMeteorology and atmospheric sciences
+200    a10510bClimatic research
+200    a10511bEnvironmental sciences (social aspects to be 5.7)
+200    a10601bCell biology
+200    a10602bBiology (theoretical, mathematical, thermal, cryobiology, biological rhythm), Evolutionary biology
+200    a10603bGenetics and heredity (medical genetics to be 3)
+200    a10604bReproductive biology (medical aspects to be 3)
+200    a10605bDevelopmental biology
+200    a10606bMicrobiology
+200    a10607bVirology
+200    a10608bBiochemistry and molecular biology
+200    a10609bBiochemical research methods
+200    a10610bBiophysics
+200    a10611bPlant sciences, botany
+200    a10612bMycology
+200    a10613bZoology
+200    a10614bBehavioral sciences biology
+200    a10615bOrnithology
+200    a10616bEntomology
+200    a10617bMarine biology, freshwater biology, limnology
+200    a10618bEcology
+200    a10619bBiodiversity conservation
+200    a10620bOther biological topics
+200    a20101bCivil engineering
+200    a20102bConstruction engineering, Municipal and structural engineering
+200    a20103bArchitecture engineering
+200    a20104bTransport engineering
+200    a20201bElectrical and electronic engineering
+200    a20202bCommunication engineering and systems
+200    a20203bTelecommunications
+200    a20204bRobotics and automatic control
+200    a20205bAutomation and control systems
+200    a20206bComputer hardware and architecture
+200    a20301bMechanical engineering
+200    a20302bApplied mechanics
+200    a20303bThermodynamics
+200    a20304bAerospace engineering
+200    a20305bNuclear related engineering
+200    a20306bAudio engineering, reliability analysis
+200    a20401bChemical engineering (plants, products)
+200    a20402bChemical process engineering
+200    a20501bMaterials engineering
+200    a20502bPaper and wood
+200    a20503bTextiles
+200    a20504bCeramics
+200    a20505bComposites (including laminates, reinforced plastics, cermets, combined natural and synthetic fibre fabrics
+200    a20506bCoating and films
+200    a20601bMedical engineering
+200    a20602bMedical laboratory technology (including laboratory samples analysis
+200    a20701bEnvironmental and geological engineering, geotechnics
+200    a20702bPetroleum engineering (fuel, oils)
+200    a20703bMining and mineral processing
+200    a20704bEnergy and fuels
+200    a20705bRemote sensing
+200    a20706bMarine engineering, sea vessels
+200    a20707bOcean engineering
+200    a20801bEnvironmental biotechnology
+200    a20802bBioremediation, diagnostic biotechnologies (DNA chips and biosensing devices) in environmental management
+200    a20803bEnvironmental biotechnology related ethics
+200    a20901bIndustrial biotechnology
+200    a20902bBioprocessing technologies (industrial processes relying on biological agents to drive the process) biocatalysis, fermentation
+200    a20903bBioproducts (products that are manufactured using biological material as feedstock) biomaterials, bioplastics, biofuels, bioderived bulk and fine chemicals, bio-derived novel materials
+200    a21001bNano-materials (production and properties)
+200    a21002bNano-processes (applications on nano-scale)
+200    a21101bFood and beverages
+200    a30101bHuman genetics
+200    a30102bImmunology
+200    a30103bNeurosciences (including psychophysiology
+200    a30104bPharmacology and pharmacy
+200    a30105bPhysiology (including cytology)
+200    a30106bAnatomy and morphology (plant  science  to  be  1.6)
+200    a30107bMedicinal chemistry
+200    a30108bToxicology
+200    a30109bPathology
+200    a30201bCardiac and Cardiovascular systems
+200    a30202bEndocrinology and metabolism (including diabetes, hormones)
+200    a30203bRespiratory systems
+200    a30204bOncology
+200    a30205bHematology
+200    a30206bOtorhinolaryngology
+200    a30207bOphthalmology
+200    a30208bDentistry, oral surgery and medicine
+200    a30209bPaediatrics
+200    a30210bClinical neurology
+200    a30211bOrthopaedics
+200    a30212bSurgery
+200    a30213bTransplantation
+200    a30214bObstetrics and gynaecology
+200    a30215bPsychiatry
+200    a30216bDermatology and venereal diseases
+200    a30217bUrology and nephrology
+200    a30218bGeneral and internal medicine
+200    a30219bGastroenterology and hepatology
+200    a30220bAndrology 
+200    a30221bCritical care medicine and Emergency medicine
+200    a30223bAnaesthesiology
+200    a30224bRadiology, nuclear medicine and medical imaging
+200    a30225bAllergy
+200    a30226bRheumatology
+200    a30227bGeriatrics and gerontology
+200    a30229bIntegrative and complementary medicine (alternative practice systems)
+200    a30230bOther clinical medicine subjects
+200    a30301bSocial biomedical sciences (includes family planning, sexual health, psycho-oncology, political and social effects of biomedical research)
+200    a30302bEpidemiology
+200    a30303bInfectious Diseases
+200    a30304bPublic and environmental health
+200    a30305bOccupational health
+200    a30306bSport and fitness sciences
+200    a30307bNursing
+200    a30308bNutrition, Dietetics
+200    a30309bTropical medicine
+200    a30310bParasitology
+200    a30311bMedical ethics
+200    a30312bSubstance abuse
+200    a30401bHealth-related biotechnology
+200    a30402bTechnologies involving the manipulation of cells, tissues, organs or the whole organism (assisted reproduction)
+200    a30403bTechnologies involving identifying the functioning of DNA, proteins and enzymes and how they influence the onset of disease and maintenance of well-being (gene-based diagnostics and therapeutic interventions (pharmacogenomics, gene-based therapeutics)
+200    a30404bBiomaterials (as related to medical implants, devices, sensors)
+200    a30405bMedical biotechnology related ethics
+200    a30501bForensic science
+200    a30502bOther medical science
+200    a40101bAgriculture
+200    a40102bForestry
+200    a40103bFishery
+200    a40104bSoil science
+200    a40105bHorticulture, viticulture
+200    a40106bAgronomy, plant breeding and plant protection
+200    a40201bAnimal and dairy science
+200    a40202bPets
+200    a40203bHusbandry
+200    a40301bVeterinary science
+200    a40401bAgricultural biotechnology and food biotechnology
+200    a40402bGM technology (crops and livestock), livestock cloning, marker assisted selection, diagnostics (DNA chips and biosensing devices for the early/accurate detection of diseases) biomass feedstock production technologies, biopharming
+200    a40403bAgricultural biotechnology related ethics
+200    a50101bPsychology (including human - machine relations)
+200    a50102bPsychology, special (including therapy for learning, speech, hearing, visual and other physical and mental disabilities)
+200    a50103bCognitive sciences
+200    a50201bEconomic Theory
+200    a50202bApplied Economics, Econometrics
+200    a50203bIndustrial relations
+200    a50204bBusiness and management
+200    a50205bAccounting
+200    a50206bFinance
+200    a50301bEducation, general; including training, pedagogy, didactics [and education systems]
+200    a50302bEducation, special (to gifted persons, those with learning disabilities)
+200    a50401bSociology
+200    a50402bDemography
+200    a50403bSocial topics (Women´s and gender studies; Social issues; Family studies; Social work)
+200    a50404bAntropology, ethnology
+200    a50501bLaw
+200    a50502bCriminology, penology
+200    a50601bPolitical science
+200    a50602bPublic administration
+200    a50603bOrganisation theory
+200    a50701bCultural and economic geography
+200    a50702bUrban studies (planning and development)
+200    a50703bTransport planning and social aspects of transport (transport engineering to be 2.1)
+200    a50704bEnvironmental sciences (social aspects)
+200    a50801bJournalism
+200    a50802bMedia and socio-cultural communication 
+200    a50803bInformation science (social aspects)
+200    a50804bLibrary science
+200    a50901bOther social sciences
+200    a50902bSocial sciences, interdisciplinary
+200    a60101bHistory (history of science and technology to be 6.3, history of specific sciences to be under the respective headings)
+200    a60102bArchaeology
+200    a60201bGeneral language studies
+200    a60202bSpecific languages
+200    a60203bLinguistics
+200    a60204bGeneral literature studies
+200    a60205bLiterary theory
+200    a60206bSpecific literatures
+200    a60301bPhilosophy, History and Philosophy of science and technology
+200    a60302bEthics (except ethics related to specific subfields)
+200    a60303bTheology
+200    a60304bReligious studies
+200    a60401bArts, Art history
+200    a60402bArchitectural design
+200    a60403bPerforming arts studies (Musicology, Theater science, Dramaturgy)
+200    a60404bFolklore studies
+200    a60405bStudies on Film, Radio and Television
+###

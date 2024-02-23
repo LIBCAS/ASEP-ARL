@@ -1,0 +1,7 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+<csp:if condition=(data("AJAX")'="")>
+    <ipac:tpl version="jsmodal"/>
+<csp:else>
+    <ipac:tpl version="page"/>
+</csp:if>

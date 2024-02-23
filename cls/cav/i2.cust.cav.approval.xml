@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="22" zv="Cache for Windows (x86-64) 2009.1.3 (Build 704U)" ts="2013-02-14 10:15:18">
+<Class name="i2.cust.cav.approval">
+<Description>
+Souhlas uzivatele s podminkami pro zobrazeni fulltextu</Description>
+<Super>content.approval</Super>
+<TimeChanged>62867,36879.483491</TimeChanged>
+<TimeCreated>62753,50826.214161</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+14.02.13 jk; vymazan template()
+23.10.12 tt; zalozena trida
+ictx instituce</Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi pro odchylky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s idx=$$$GETREQVAR("idx")
+  s data("IDX")=idx
+  s repo=$$$GETREQVAR("repo")
+  s data("REPO")=repo
+  s key=$$$GETREQVAR("key")
+  s data("KEY")=key  
+  s sT001=$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")
+
+  s data("ODREC")=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_sT001,..tx("RECORD"))
+    
+  s maintain=##class(content.approval).getPageID()
+  s data("MAINTAIN")=##class(i2.html.tpl).getLink(maintain,"idx="_idx)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

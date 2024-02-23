@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865_3U)" ts="2022-04-08 14:37:19">
+<Class name="content.api">
+<Description><![CDATA[
+<pre> Api pro praci s contentServerem
+pouzivat tyto funkce a ne primo content.engine
+
+07.04.22 ln; CRank generovat vzdy
+16.02.22 ln; podpora CRank
+23.03.18 ln; duplicita na zaklade kontrolniho souctu
+05.06.15 ln; importStream a editFile nastavuji C52
+11.12.14 ln; metody diff, editFile, changeFile
+04.09.14 ln; metoda importFile
+17.10.13 ln; podpora pro watermark
+31.10.12 ln; podpora verzovani
+26.09.12 ln; aktualizace imageServeru pri zmene typu 
+</pre>]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<TimeChanged>66206,48579.161192</TimeChanged>
+<TimeCreated>62300,30441.455262</TimeCreated>
+
+<Method name="isEnabled">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[  q ##class(%Dictionary.MethodDefinition).%ExistsId("content.generated||"_ictx_"Read")
+]]></Implementation>
+</Method>
+
+<Method name="engineBatch">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,&runtime]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  k array
+  d ##class(content.engine).runtime(.array)
+  m array=runtime
+  q ##class(content.engine).call(.array,"Read")
+]]></Implementation>
+</Method>
+
+<Method name="increment">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[repo:%String,key:%String,&array,version=""]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  q:key="" 0
+  q:'##class(content.engine).get(.array,repo,key,version,1) 0
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="engineRead">
+<Description>
+array je vstupne/vystupni parametr</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[repo:%String,key:%String,&array,&runtime]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  q:key="" 0  
+  
+  q:'##class(content.engine).get(.array,repo,key,$g(runtime("oldversion"))) 0
+  m array=runtime   
+  q ##class(content.engine).call(.array,"Read")
+]]></Implementation>
+</Method>
+
+<Method name="engineUpload">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[repo:%String,&array,&runtime]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  k array
+  d ##class(content.engine).runtime(.array)
+  m array=runtime
+  s array("repository")=repo
+  s array("ictx")=$$$GETICTX  
+  
+  q ##class(content.engine).call(.array,"Upload")
+]]></Implementation>
+</Method>
+
+<Method name="engineToUpload">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,&runtime]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  k array
+  d ##class(content.engine).runtime(.array)
+  m array=runtime
+  s array("ictx")=$$$GETICTX
+  ;w !,"up"
+  q ##class(content.engine).call(.array,"Upload")
+]]></Implementation>
+</Method>
+
+<Method name="engineEdit">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[repo:%String,key:%String,&array,&runtime]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  q:key="" 0
+  
+  q:'##class(content.engine).get(.array,repo,key) 0  
+  m array=runtime  
+  q ##class(content.engine).call(.array,"Edit")
+]]></Implementation>
+</Method>
+
+<Method name="engineToEdit">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,&runtime]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  k array
+  d ##class(content.engine).runtime(.array)
+  m array=runtime
+  s array("ictx")=$$$GETICTX
+  ;w !,"ed"
+  q ##class(content.engine).call(.array,"Edit")
+]]></Implementation>
+</Method>
+
+<Method name="engineChange">
+<Description><![CDATA[
+<pre> kontrola prav na nahrazeni (zmenu verze) souboru
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[repo:%String,key:%String,&array,&runtime]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  q:key="" 0
+  
+  q:'##class(content.engine).get(.array,repo,key) 0  
+  m array=runtime
+  q ##class(content.engine).call(.array,"Change")
+]]></Implementation>
+</Method>
+
+<Method name="engineDelete">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[repo:%String,key:%String,&array,&runtime]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  q:key="" 0
+  
+  q:'##class(content.engine).get(.array,repo,key) 0  
+  m array=runtime
+  q ##class(content.engine).call(.array,"Delete")
+]]></Implementation>
+</Method>
+
+<Method name="engineState">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[repo:%String,key:%String,&array,&runtime]]></FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  q:key="" 0
+  
+  q:'##class(content.engine).get(.array,repo,key) 0  
+  m array=runtime  
+  q ##class(content.engine).call(.array,"State")
+]]></Implementation>
+</Method>
+
+<Method name="selectRecAll">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&output,class:%String,t001:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  q:class=""
+  q:t001=""  
+  d ##class(content.engine).select(.output,"",class,t001)
+]]></Implementation>
+</Method>
+
+<Method name="selectRecStatus">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&output,class:%String,t001:%String,status:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  q:class=""
+  q:t001=""
+  q:status=""  
+  d ##class(content.engine).select(.output,"",class,t001,status)
+]]></Implementation>
+</Method>
+
+<Method name="selectRecRepo">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&output,repo:%String,class:%String,t001:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  q:repo=""
+  q:class=""
+  q:t001=""  
+  d ##class(content.engine).select(.output,repo,class,t001)
+]]></Implementation>
+</Method>
+
+<Method name="selectUserAll">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&output,t001:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  q:t001=""  
+  d ##class(content.engine).select(.output,"","",t001)
+]]></Implementation>
+</Method>
+
+<Method name="selectUserStatus">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&output,t001:%String,status:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  q:t001=""
+  q:status=""
+  d ##class(content.engine).select(.output,"","",t001,status)
+]]></Implementation>
+</Method>
+
+<Method name="import">
+<Description><![CDATA[
+<pre> Ulozeni souboru predaneho v parametru stream
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[idx:%String,stream,&array]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q ##class(content.engine).import(idx,stream,.array)
+]]></Implementation>
+</Method>
+
+<Method name="change">
+<Description><![CDATA[
+<pre> Nahrazeni (zmenu verze) souboru, predan v parametru stream
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[idx:%String,stream,&array,batch:%Boolean=0]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s repo=$g(array("repository"))
+  s key=$g(array("key"))
+  
+  q:'##class(content.engine).get(.array2,repo,key,,,batch) "get"
+  
+  s ret=##class(content.engine).change(.array2)
+  q:ret'="" ret
+  
+  s obj=##class(content.engine).open(repo,key)  
+  q:'$isobject(obj) "open"
+
+  s array2("ver")=array2("ver")+1
+  k array("ver")
+  m array2=array
+
+  k array
+  m array=array2
+  
+  q ##class(content.engine).import(idx,stream,.array,obj)
+]]></Implementation>
+</Method>
+
+<Method name="update">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[  q ##class(content.engine).update(.array)
+]]></Implementation>
+</Method>
+
+<Method name="delete">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  q:key="" 0
+  q ##class(content.engine).delete(repo,key)
+]]></Implementation>
+</Method>
+
+<Method name="get">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,repo:%String,key:%String,version=""]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0 
+  q:key="" 0
+  q ##class(content.engine).get(.array,repo,key,version)
+]]></Implementation>
+</Method>
+
+<Method name="getBatch">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,repo:%String,key:%String]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0 
+  q:key="" 0
+  q ##class(content.engine).get(.array,repo,key,,,1)
+]]></Implementation>
+</Method>
+
+<Method name="setApproval">
+<Description><![CDATA[
+<pre> Ulozeni souhlasu s podminkami pro read do session
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String</FormalSpec>
+<Implementation><![CDATA[
+  q:repo=""
+  s ^$$$I2G($$$cI2GNodeSession,$$$GETSID,"contapproval",repo)=$h
+]]></Implementation>
+</Method>
+
+<Method name="isApproval">
+<Description><![CDATA[
+<pre> Overeni souhlasu s podminkami pro read v ramci session
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" 0
+  q $d(^$$$I2G($$$cI2GNodeSession,$$$GETSID,"contapproval",repo))
+]]></Implementation>
+</Method>
+
+<Method name="watermark">
+<Description><![CDATA[
+<pre> Vygeneruje watermark/vodoznak, pokud je potreba
+je to obrazek a array("watermark") neni prazdny/0/false
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,verbose:%Boolean=0]]></FormalSpec>
+<Implementation><![CDATA[  d ##class(content.engine).watermark(.array,verbose)
+]]></Implementation>
+</Method>
+
+<Method name="moveAll">
+<Description><![CDATA[
+<pre> Presun souboru navazanych na t001 k zaznamu handle
+info - vrati pole s infem o presunutych souborech
+  info(1)=repo_$c(10)_key_$c(10)_origname
+  ...
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,t001:%String,&info]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+ 
+  q:t001="" 0
+  s class=$$$HandleClass(handle)
+  q:class="" 0
+  q:class="CmRecycled" 0
+  s t001To=$$$HandleT001(handle)
+  q:t001To="" 0
+  k info
+  
+  q ##class(content.engine).moveAll(class,t001,class,t001To,.info)
+]]></Implementation>
+</Method>
+
+<Method name="importFile">
+<Description><![CDATA[
+<pre> Vstupni bod pro import souboru
+predpokladem je minimalne preinit
+zabrani nahrad jednomu zaznamu dva soubory stejneho jmena a velikosti
+
+do pole input se davaji volitelna metadata, neni modifikovano az na
+input("key") obsahujici v pripade uspechu vysledny klic:
+  input("importer") je defaultne "BATCH", vlozit pripadne t001 uzivatele
+  input("type") je defaultne "content"
+  ...
+  input("TEST")=1 - simulace
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[class:%String,t001:%String,repo:%String,path:%String,&input]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:path="" "file"
+  
+  s file=##class(%FileBinaryStream).%New()
+  s file.Filename=path
+  s size=file.Size
+  q:'size "size0"  
+  
+  if $g(input("origname"))="" {
+	s sPathSep=$$$PathSepp
+	s origname=$p(path,sPathSep,$l(path,sPathSep))
+  } else {
+    s origname=input("origname")
+  }
+  
+  q ..importStream(class,t001,repo,file,origname,.input)
+]]></Implementation>
+</Method>
+
+<Method name="importStream">
+<Description><![CDATA[
+<pre> Vstupni bod pro import stramu
+predpokladem je minimalne preinit
+zabrani nahrad jednomu zaznamu dva soubory stejneho jmena a velikosti
+
+do pole input se davaji volitelna metadata, neni modifikovano az na
+input("key") obsahujici v pripade uspechu vysledny klic:
+  input("importer") je defaultne "BATCH", vlozit pripadne t001 uzivatele
+  input("type") je defaultne "content"
+  ...
+  input("TEST")=1 - simulace
+
+07.04.22 ln; CRank generovat vzdy
+16.02.22 ln; podpora CRank
+23.03.18 ln; duplicita na zaklade kontrolniho souctu
+05.06.15 ln; importStream a editFile nastavuji C52
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[class:%String,t001:%String,repo:%String,stream:%BinaryStream,origname:%String,&input]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:class="CmRecycled" "class"
+  s lname=##class(User.Util).objectName2lname(class)
+  q:lname="" "class"
+  q:t001="" "t001"
+  q:'##class(User.MARC).existsT001(class,t001) "record0"  
+  q:repo="" "repo0"
+  
+  s size=stream.Size, checksum=0
+  d stream.Rewind()
+  While 'stream.AtEnd {
+    s checksum=checksum+$zcrc(stream.Read(32000),0)    
+  }
+  d stream.Rewind()
+  
+  s duplicity=$g(input("DUPLICITY"))
+  s:duplicity="" duplicity="S"
+  s SQLCODE=-1, count=0
+  
+  if duplicity="S" {
+    &sql(SELECT count(ID)
+       INTO :count
+       FROM content.metadata
+       WHERE Class = :class AND T001 = :t001  AND Version IS NULL AND
+       FOR SOME %ELEMENT(Array) (%KEY='checksum' AND %VALUE = :checksum) AND
+       FOR SOME %ELEMENT(Array) (%KEY='size' AND %VALUE = :size)
+    ) 
+  }  
+  elseif duplicity="O" {
+    &sql(SELECT count(ID)
+       INTO :count
+       FROM content.metadata
+       WHERE Class = :class AND T001 = :t001  AND Version IS NULL AND
+       FOR SOME %ELEMENT(Array) (%KEY='origname' AND %VALUE = :origname)
+    )
+  }
+   
+  if (SQLCODE=0) && count {
+    q "duplicity"
+  }
+  
+  s extension=$zcvt($p(origname,".",$l(origname,".")),"L") 
+  s mime=##class(User.Util).sXlate("CONTENT_MIME",extension,"N",$$$IPREF,"b")
+  s:mime="" mime="application/octet-stream"
+  
+  m array=input
+  s array("checksum")=checksum
+  s array("FILE")=1
+  s array("repository")=repo
+  s:$g(array("importer"))="" array("importer")="BATCH"
+  s array("origname")=origname
+  s array("size")=size
+  s array("ctype")=mime
+    
+  s test=$g(array("TEST"))
+  s ret=##class(content.engine).import(lname_"*"_t001,stream,.array)
+  s:ret="" input("key")=array("key")
+  
+  q:test ret
+  
+  d ##class(content.stat).addUpload(.array,ret="")
+  
+  ; 05.06.15 ln; importStream a editFile nastavuji C52
+  if ret="" {
+	d ##class(User.MARC).readX(.handle,class,t001)
+	if ##class(content.engine).setC52(.handle,.array) {
+	  s sc=##class(User.MARC).writeX(.handle)
+	}
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="diff">
+<Description><![CDATA[
+<pre> Porovnani dvou metadat, vraci 0/1, jestli jsou stejne/ruzne
+porovnava se pouze array, nikoli storage
+pole musi byt ocistena o zakaznicka runtime metadata
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array1,&array2]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  m old=array1
+  m new=array2
+  
+  d ##class(content.engine).pure(.old)
+  d ##class(content.engine).split(.old,.olds)
+  d ##class(content.engine).pure(.new)
+  d ##class(content.engine).split(.new,.news)
+  
+  s node=""
+  f { s node=$o(old(node),1,val) q:node=""
+    if $d(new(node)) && (new(node)=val) {
+      k old(node)
+      k new(node)
+    }
+  }
+  
+  q:$d(old)>1 1
+  q:$d(new)>1 1
+  q 0
+]]></Implementation>
+</Method>
+
+<Method name="editFile">
+<Description><![CDATA[
+<pre> Vstupni bod pro programovou zmenu metadat bez kontroly prav
+predpokladem je minimalne preinit
+pokud se metadata nelisi, ke zmene nedojde
+
+Parametry: orig - metadata ulozeneho souboru
+           new  - nova zmenena metadata
+           path - volitelne pro nahradu jmena souboru, koncovky a mimetype
+
+05.06.15 ln; importStream a editFile nastavuji C52
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&orig,&new,path:%String=""]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  ; spojeni
+  m array=orig
+  m array=new
+  
+  if path'="" {
+    s sPathSep=$$$PathSepp
+    s origname=$p(path,sPathSep,$l(path,sPathSep))
+    s extension=$zcvt($p(origname,".",$l(origname,".")),"L") 
+    s mime=##class(User.Util).sXlate("CONTENT_MIME",extension,"N",$$$IPREF,"b")
+    s:mime="" mime="application/octet-stream"
+    s array("origname")=origname
+    s array("extension")=extension
+  }
+  
+  q:'..diff(.orig,.array) "same"
+     
+  s ret=##class(content.api).update(.array)
+  s:'ret ret="update"
+  
+  d ##class(content.stat).addEdit(.orig,ret,.array)  
+  
+  ; 05.06.15 ln; importStream a editFile nastavuji C52
+  if ret {
+	d ##class(User.MARC).readX(.handle,array("class"),array("t001"))
+	if ##class(content.engine).setC52(.handle,.array) {
+	  s sc=##class(User.MARC).writeX(.handle)
+	}
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="changeFile">
+<Description><![CDATA[
+<pre> Vstupni bod pro nahrani nove verze souboru bez kontroly prav
+predpokladem je minimalne preinit
+nahrada neprobehne, pokud soubor ma stejnou delku
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String,path:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:path="" "file"
+  
+  s file=##class(%FileBinaryStream).%New()
+  s file.Filename=path
+  s size=file.Size
+  q:'size "size0"
+  
+  s sPathSep=$$$PathSepp
+  s origname=$p(path,sPathSep,$l(path,sPathSep))
+  
+  q ..changeStream(repo,key,file,origname)
+]]></Implementation>
+</Method>
+
+<Method name="changeStream">
+<Description><![CDATA[
+<pre> Vstupni bod pro nahrani nove verze streamu bez kontroly prav
+predpokladem je minimalne preinit
+nahrada neprobehne, pokud soubor ma stejnou delku
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String,stream:%BinaryStream,origname:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:'##class(content.api).getBatch(.array,repo,key) "get"
+  s class=$g(array("class"))
+  s t001=$g(array("t001"))
+  s idx=##class(User.Util).objectName2lname(class)_"*"_t001  
+  
+  s size=stream.Size
+  q:size=array("size") "same"
+  
+  s extension=$zcvt($p(origname,".",$l(origname,".")),"L") 
+  s mime=##class(User.Util).sXlate("CONTENT_MIME",extension,"N",$$$IPREF,"b")
+  s:mime="" mime="application/octet-stream"
+    
+  m orig=array
+  s array("FILE")=1
+  s array("importer")="BATCH"
+  s array("origname")=origname
+  s array("size")=size
+  s array("ctype")=mime
+  s array("Changed_on")=$tr($zdt($h,8)," :")
+  
+  s ret=..change(idx,stream,.array,1)  
+  d ##class(content.stat).addChange(.orig,ret="",.array)
+  
+  q ret
+]]></Implementation>
+</Method>
+</Class>
+</Export>

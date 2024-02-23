@@ -1,0 +1,1099 @@
+# @id UN_TABLES BASE_INDEXES_TXT
+002    12.01.24 tt; pridana indexace qais - 2570
+002    28.11.22 jk; pridana index price do BASE_INDEXES_H
+002    29.09.22 tt; pridan index cskpc
+002    08.08.22 tt; pridan index qjci
+002    20.07.22 ln; fix solr indexu 'full' a 'ti2'
+002    17.06.22 ln; fix solr indexu 'si' a 'ti1' pro C i C2
+002    09.02.22 dk; v BASE_INDEXES_H, indexy 'tr' a 'tr0' zmenena hodnota podpole $s na 'N'
+002    27.01.22 tt; pridany indexy s atributem 2561 - 2566 do katalogů
+002    12.08.21 ln; do BASE_INDEXES_A2 pridany indexy pro DKO 2323,2326,2329-2339
+002    02.02.21 oi; do BASE_INDEXES_T doplneny index dttvg
+002    04.01.21 oi; pridan index qjcrsjror do C a C2
+002    -
+002    dokumentace: https://cosmo2/wiki/index.php/Concepts/%C4%8C%C3%ADseln%C3%ADk_indexov#N.C3.A1vrh_na_pou.C5.BEitie_zoznamu_indexov
+###
+# @id UN_TABLES BASE_INDEXES_C
+002    29.09.22 tt; pridan index cskpc
+002    08.08.22 tt; pridan index qjci
+002    27.01.22 tt; pridany indexy s atributem 2561 - 2566
+002    04.01.21 oi; pridan index qjcrsjror
+002    katalog
+002    ----------
+002    prirazeni atributu
+002       standartni marc od 0 do 2000
+002       uzivatelske od 2500 do 2000 (smerem dolu) - nazev indexu zacina na "z"
+002       nove standartni indexy od 2500  
+002    ----------
+200    aT001b12cKód záznamu#Kód záznamu#Local number nkod zaznamu z tagu 001o001sASCII,COMP,EXACT
+200    aacqb2487cAkvizícia - ISBN, ISSN#Akvizice - ISBN, ISSNdxnakvizice - ISBN, ISSNnakvizice - nazvove udajenakvizice - vydavatelske udajenakvizice - autorske udajeo010-a 011-a; (969f="a")o200-acdei; (969f="a")o210-acg; (969f="a")o7XX-abcdf; (969f="a")sASCII,COMP,EXACT,LEFT,PHR
+200    aaub1003cAutorské údaje#Autorské údaje#Authordxnautor vstupny prvok, obsahuje i hodnoty indexu "au" odkazovane autorityo4XX-70Xabcdfs(3)o4XX-71Xabcdfs(3)o7XX-abcdf(3)oC20-abcdf(3)sASCII,COMP,EXACT,LEFT,PHR,SORT
+200    aau1b1cb2466cPrvý autor (pre triedenie)#První autor (pro třídení)nprvni autor (pro trideni)o700-abcd nebo 701-abcdsASCII,COMP,EXACT,LEFT,PHR,SORT
+200    aauab3b1006cAkcia/konferencia #Akce/konference#Conference namecAkcia/konferencia #Akce/konference#Author-name conferencedxnautority akcie, obsahuje i hodnoty indexu "au" odkazovane autoritynautority akcieo4XX-71X-abcdf(3) ak ind1=1o71X-abcdf(3) ak ind1=1oC20-abcdf(3) ak ind1=1oviz . atribut 3sASCII,COMP,EXACT,LEFT,PHR
+200    aaua1b2465cPrvá autorita akcie#První autorita akcenprvni autorita akceo71X-abcdf (ak ind1=1)
+200    aauadb2411cAkcia/konferencia #Akce/konference#Conference namecAkcia/konferencia ##dxnautority akcieo71X-abcdf(3) ak ind1=1oC20-abcdf(3) ak ind1=1sASCII,COMP,EXACT,LEFT,PHR
+200    aaucb2b1005cKorporácia#Korporace#Corporate namecKorporácia##cKorporácia#Korporace#Author-name corporate dxnautority korporacie, obsahuje i hodnoty indexu "au" odkazovane autoritynkorporacieo4XX-71X-abcdf(3) ak ind1=0o71X-abcdf(3) ak ind1=0oC20-abcdf(3) ak ind1=0oviz . atribut 2sASCII,COMP,EXACT,LEFT,PHR
+200    aaucdb2410cKorporácia#Korporace#Corporate namedxnautority korporacie (len 7xx bez 4xx/7xx)o71X-abcdf(3) ak ind1=0oC20-abcdf(3) ak ind1=0sASCII,COMP,EXACT,LEFT,PHR
+200    aaudkb2408cKód autority#Kód autority#Authority/format id             nkod odkazovanej autorityo7XX-3oC20-3sASCII,EXACT
+200    aaukb1013cKód autority#Kód autority#Authority/format id             cKód autority##cKód autority#Kód autority#Authority/format id             cKód autority##cKód autority#Kód autority#Authority/format id             c xzsp a xzrp# xzsp a xzrp#nkod odkazovanej autority alebo ineho odkazovaneho zaznamu (aj bibliografickeho)nkod odkazovanej autoritynlink na skupinu zarizeninkod odkazovanej autoritynPokud jsou v katalogove tride zapojeny modifikatory aukSZP a aukZRP, tak ze zaindexuji do zaznamu clanku nadrazene zaznamy souborneho katalogu a svazaneho rocniku.o4XX-001o70X-3o928-3oC17-3oC18-3oC19-3oC20-3oC25-3o4XX-500-3, 4XX-501-3o4XX-7XX-3o500-3, 501-3o604-500-3, 604-501-3o604-7XX-3o6xx-3o001 na zaklade 461, 462, 463 a modifikatoru - aukSZP a aukZRPsCODE
+200    aauk1b2479cOdkazový index#Odkazový indexnodkazovy index, toto je specialny index pre odkazovanie medzi zaznamami. Vyhladavaci termin sa konstruuje v zobrazovacom formate.on/a - auk*dk ( spojene indexy auk, dk oddelene *)sCODE
+200    aauk2b2397cautori#autori#autorin4 subtag z 4xx(70x), 70x , 60x na modifikator "T04f"oako auk1 + rola autora 
+200    aaukdzb2396ckód odkazované autority pro dezideráta#kód odkazované autority pro dezideráta#kód odkazované autority pro deziderátankód odkazované autority pro deziderátao7**-3, 604-3, 610-3, 928-3, c07-3, c20-3, c31-3ij pro dezideráta, zapojeno na modif. "noadd"
+200    aaukpcb2401ckód odkazované autority pro epca#kód odkazované autority pro epca#kód odkazované autority pro epcankód odkazované autority pro epcao70*-3 na zaklade hodnoty 970a a role podpole 4 z 70X (konkretni rozpis viz kod) se  urci, jestli se ma dana autorita v podpoli 3 indexovat. zapojeno na modif. auk_epca 70*-4="" se bere jako 70*-4="070" .pokud neni 970a, indexuje se 70*-3 jen pro autora
+200    aaupb1b1004cOsobné meno#Osobní jméno#Personal namecOsobné meno#Osobní jméno#Author-name personaldxnautority personalne, obsahuje i hodnoty indexu "au" odkazovane autorityo4XX-70Xabcdfs(3)o70X-abcdf(3)oviz . atribut 1sASCII,COMP,EXACT,FACET,LEFT,PHR
+200    aaupdb2409cOsobné meno#Osobní jméno#Personal namedxnautor dokumentuo70Xabcdfs(3)sASCII,COMP,EXACT,LEFT,PHR
+200    aavailb2435cPrístupnosť##npredbezne obsahuje hodnoty "f"-existuje aspon jedn evolny holding, "p" - aspon jeden je prezencne, "a" dokument je v spracovani (t.j. ma bud "a" alebo "k"  pripadne inu hodnotu podla modifikatora dokVSpracovani).; Ak zaznam obsahuje tag 856 "i"  ( pristupnost na internete); Viz. tiez indexy avail a t001f v holdingu.on/a - stav holdingu podla roznych udajovsCODE
+200    aavailpb2513c#Přístupnost dokumentu podle poboček#nZapina se modifikatorem INDEXPARAMS AVAILpob.indexuji se stejne hodnoty jako do indexu avail, ale podle pobocek, wiki:https://cosmo2/wiki/index.php/Pobo%C4%8Dkov%C3%BD_index_stav_dokumentu_availpoviz. index availsCODE
+200    abarb1063c#Všechny čárové kódy připojených holdingů. Vychází z indexu bc u holdingů.#Čárový kód holdingunIndex se zapojí na modifikátor „hodlBarC“očárový kód holdingů ke katalogovému záznamu 100b
+200    abarvb2535cFarba zbierkového predmetu#Barva sbírkového předmětunbarva sbírkového předmětuoM06a
+200    abrchb2514c#Vyuziva se v ipac3 limite Pobocky v kombinaci s dostupnosti availp#nZapina se modifikatorem INDEXPARAMS AVAILpob.indexuji se stejne hodnoty jako do indexu avail, ale podle pobocek, wiki:https://cosmo2/wiki/index.php/Pobo%C4%8Dkov%C3%BD_index_stav_dokumentu_availpopobocky z T04a holdingusCODE
+200    ac51ab2505cIdentifikační kód záznamu o výsledku#Identifikační kód záznamu o výsledku#nHodnota C51a pro vyhledávání.oC51a
+200    ac51bb2506cKontrolní kód pro odstranění záznamu#Kontrolní kód pro odstranění záznamu#nHodnota C51b pro vyhledávání.oC51b
+200    ac51db2507cRok odstranění#Rok odstranění#nHodnota C51d pro vyhledávání.oC51d
+200    ac51eb2508cPříznak pro odstranění/opravu#Příznak pro odstranění/opravu#nHodnota C51e pro vyhledávání.oC51e
+200    ac51fb2509cKontrola odstranění#Kontrola odstranění#nHodnota C51f pro vyhledávání.oC51f
+200    acab2394cCitovaný autor#Citovaný autor#nindexuje 70Xa zo zaznamu na kt. je link 910xo910x (70Xa)
+200    aclb2449cČíslo seriálu#Číslo seriáluncislo serialuo915-b
+200    aclclb2420cČíslo časopisu#Číslo časopisudxnčíslo časopisu (napr. č. 52)  *jr 9.2.04 upraveno zarovnani indexu na 3 mista (052) - pouze u *xo915b    ; T00a=xjcp
+200    aclsrb2416cČíslo zviataného ročníka#Číslo svázaného ročníkudxnčíslo svázaného ročníku   *jr 9.2.04 upraveno zarovnani indexu na 3 mista (002) - pouze u *xo915b  T00a=xzrp
+200    acnb2395cCitovaný názov#Citovaný název#nindexuje 200ae zo zaznamu na kt. je link 910xo910x í200ae)
+200    acnbcČíslo národnej bibliografie#Číslo národní bibliografie#National bibliography numbero020anzatim bez atributu, vyuzito jako identifikator zaznamu
+200    acstb2452cObsadenie (interpretácia) pre hudobniny#Obsazení (interpretace) pro hudebninydxnobsazeni (interpretace) pro hudebninyo500-r
+200    actb55cKrajina vydania#Země vydání#Code--geographic area nkrajina vydania - zkratka a preklad z ciselniku. Doplneni modifikatoru „Zahr“, ktery jine nez zeme za nim uvedene indexuje pod „xzah“; napr. “Zahr-CZ“, “Zahr-CZ-SK“.o102-a UT_COUNTRIESsCODE
+200    adezb2486cDezideráta - ISBN, ISSN#Dezideráta - ISBN, ISSNdxndeziderata - ISBN, ISSNndeziderata - nazvove udajendeziderata - vydavatelske udajendeziderata - autorske udajeo010-a 011-a; (969f="d")o200-acdei; (969f="d")o210-acg; (969f="d")o7XX-abcdf; (969f="d") alebo 969f="d1"sASCII,COMP,EXACT,LEFT,PHR
+200    adez10b2501cDielová monografia - ISBN, ISSN#Dílova monografie - ISBN, ISSNdxndilova monografie - ISBN, ISSNndilova monografie - nazvove udajendilova monografie - vydavatelske udajendilova monografie - autorske udajeo010-a 011-a; (969f="dm")o200-acdei; (969f="dm")o210-acg; (969f="dm")o7XX-abcdf ak 969f="dm"
+200    adez2b2431cDezideráta - ISBN, ISSN#Dezideráta - ISBN, ISSNdxndeziderata - ISBN, ISSNndeziderata - nazvove udajendeziderata - vydavatelske udajendruhy subkatalog deziterat alebo inych oddelenenych titulovo010-a 011-a; (969f="d2")o200-acdei; (969f="d2")o210-acg; (969f="d2")o7XX-abcdf ak 969f="d2"
+200    adez3b2430cDezideráta - ISBN, ISSN#Dezideráta - ISBN, ISSNdxndeziderata - ISBN, ISSNndeziderata - nazvove udajendeziderata - vydavatelske udajentreti subkatalog deziterat alebo inych oddelenenych titulovo010-a 011-a; (969f="d3")o200-acdei; (969f="d3")o210-acg; (969f="d3")o7XX-abcdf ak 969f="d3"
+200    adez3_dkb2511cD3-AIS Druh dokumentu##nindex na modifikator "dez3"o970b (969f=D3)
+200    adez3_dt1b2503cD3-AIS Dátum vytvorenia záznamu#D3-AIS Datum vytvoření zázmu#nindex na modifikator "dez3"o999d (969f=D3)
+200    adez3_prab2502cD3-AIS Pracovisko#D3-AIS Pracovistě#nindex na modifikator "dez3"o712b (969f=D3)
+200    adez3_rvb2510cD3-AIS Rok vydania##nindex na modifikator "dez3"o210d (969f=D3)
+200    adez4b2429cDezideráta - ISBN, ISSN#Dezideráta - ISBN, ISSNdxndeziderata - ISBN, ISSNndeziderata - nazvove udajendeziderata - vydavatelske udajenstvrty subkatalog deziterat alebo inych oddelenenych titulovo010-a 011-a; (969f="d4")o200-acdei; (969f="d4")o210-acg; (969f="d4")o7XX-abcdf ak 969f="d4"
+200    adez_ipacb2512cDezideráta z IPAC#Dezideráta z IPACdxndeziderata z IPAC3ojako index dez  (969f = di)
+200    adextb2539cDáta získané z externých zdrojov#Data získaná z externích zdrojůndata external, data získaná z externích zdrojů, hodnota "sdtoc" pro doručování obsahů periodiko"sdtoc" - 969fSDTOCsCODE
+200    adflb2524cIndex určený pre defaultné zobrazenie záznamu v IPACu bez vyhľadávania.#Index určený pro defaultní zobrazení záznamu v IPACu bez vyhledávání.nIndex urceny pro defaultni zobrazeni zaznamu v IPACu bez vyhledavani. Neindexuji se deziderata. Datum prijeti prvniho holdingu (UNH_400a) ma format „bYYYYMMDD“, datum vytvoreni zaznamu (UN_100a) „aYYYYMMDD“oUNH_400a nebo UN_100a prvnich 8 znakusSORT,CODE
+200    adib2391cDislokácia#Dislokacenindex sa zapája na modifikátor „lo“odislokácia 100d z holdingu
+200    adkb1031b2432cDruh dokumentu#Druh dokumentu#Material-typecBáza dát##n((ak je pritomne pole 463 alebo 461) && (110 je prazdne)) alebo (970b zacina na "r"), urobena uprava na modifikator CLA v UnCat ak je zapojeny algoritmus vyhodnocovania clankov je nasledovny (110 je prazdne)) a (970b zacina na "r")nak 110,461su neprazdne a zaroven 915b nezacina na "("nak 110,461su neprazdne a zaroven 915b zacina na "("; POZN. toto plati len pre serialy z RL vystavene v aRL; serialy spracovavane v aRl nemaju neprijate cislanak 110 je neprazdne a zaroven nebola splnena ziadna ina podminka uvednena v "xzrp,xjcp,xjcp0"nAk nebol zaradeny podla uzivatelskeho algoritmu. Tento moze byt pre kazdu kniznicu iny. Pozn. rs 5.9.03: xxxx sa vygeneruje len vtedy ak nebol prideleny ziaden generovany kod a zaroven nie je ani nic v 970bnak 110,461 su neprazdne a zaroven 969f ="zrp"ndruh dokumentuo"xcla"o"xjcp"o"xjcp0"o"xszp"o"xxxx"o"xzrp"o970-boviz . attribut 1031sSORT,CODE
+200    adk2b2494cDruh dokumentu#Druh dokumentu#Material-typendruh dokumentu - zkratka z 970b a preklad z ciselniku UN_KODDOC_ALL_XXXo970-b; UN_KODDOC_ALL_XXXsSORT,CODE
+200    adk3b2383cDruh dokumentu#Druh dokumentu#Material-typendruh dokumentu - zkratka z 970bo970-bsSORT
+200    adkfb2029b2406cFormulár#Formulár#Data sheetnpovodne nespravne priradeny atribut pre 'dkf' - oprava 23.3.05 rsnkod formulara v ktorom bude zaznam otvoreny - povodne mal nespravne priradeny atribut 2029oviz . atribut 2406oC99dsCODE
+200    adocdkb1032cgenerovany podle metody i2.data.layer.kindoLEN SOLR, cfsindex typu GsG,CODE
+200    adoicDOIo017 - a (ak i1="7" a i2=" " a 2 = "doi")nDOI zatim bez atributu, vyuzito jako identifikator zaznamu
+200    adsb2492cĎalšie  spracovanie#Další zpracování#ndalsie spracovanie v ratane deziderato969-fsCODE
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamu, teda datum poslednej modifikacie zaznamu, vklada aj dezideratao005sN
+200    adt1b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#ndatum vytvorenia zaznamu ( prvy datum v 999-d),  vklada aj dezideratao999-d ( vo formate yyyymmdd)sN,SORT
+200    adtexb2555cDátum pre export cez OAI-PMH#Datum pro export přes OAI-PMH#Date for export by OAI-PMHnrizene predavani zaznamu napr. do souborneho katalogu pres OAI-PMH (neni vhodny datum posledni modifikace)o969-gsN
+200    adtrb2478cDátum príjmu prvého exemplára#Datum příjmu prvního exemplářendatum prijmu prveho exemplaraounh_400-a (prve 4, 6 a 8 znakov)sN
+200    aeancEANo073anEAN zatim bez atributu, vyuzito jako identifikator zaznamu
+200    aedb5cEdícia#Edice#Title series  dxnediciao225-adefhivxo410-200,500ainsASCII,COMP,EXACT,LEFT,PHR
+200    aerrb2427cZoznam chýb#Seznam chybnobsahuje opakovatelny zoznam chyb najdenych pri indexacii zaznamu. Popis chyby je orezeny na 80 zn. A je mozne, ze neobsahuje vsetky chyby (ak je ich pocet pre aktualny zaznam privelky)orozne chybove stavy
+200    afakib2556cInterné čísla faktúr#Interní čísla faktur#nlen ak j v indexparam parameter fakiidxo400-q u vsetkych holdingov
+200    afaktb2417cČísla faktúr#Čísla faktur#nlen ak j v indexparam parameter faktidxopodla 400-h dotiahnutie z invoice 200a u vsetkych holdingov
+200    afautb2385cPrvý domáci autor.#První domácí autor#dxnPrvý domáci autor (ak 70X-y = SK a existuje 970a, resp. 70X-y = CZ a existuje C26d) zo 70Xa,b (poradie 70X je podľa zápisu v zázname).o70X-a,bsASCII,COMP,EXACT,LEFT,PHR
+200    afprab2384cPrvé domáce pracovisko#První domácí pracoviště#dxnPrvé domáce pracovisko (ak 70X-y = SK a existuje 970a, resp. 70X-y = CZ a existuje C26d) zo 70X-p (poradie 70X je podľa zápisu v zázname).o70X-psASCII,COMP,EXACT,LEFT,PHR
+200    aftxtb2386cURL#URL#URLdxnindex je zapojen na modifikátor "fulltext"o856-u
+200    afullb2600cFulltext zabezpečeného dokumentuovlastní solr jádro (neindexuje se online)sCOMP,WORDS
+200    agrab2405cČíslo projektu/grantu#Číslo projektu/grantu#ncislo projektu/grantuoC12a
+200    agragb2404cGrantová agentúra#Grantová agentura#ngrantova agentura (posk. CEP)oC12b
+200    agxb0b62b63b1010b1016b1035c##Abstractc##NotecVšetky polia##Body of textcVšetky polia#Všechna pole#Any nvsetky poliaoviz . atribut 1016o01x,2XX,3XX,4XX,5XX,6XX,7XX-abcdefghijklmnrsuvvxyz345 +964 podla obsahu modifikatora t964+856u+135a_1(text podla cislenika)oviz . atribut 1016sY,ASCII,COMP,EXACT,LEFT,PHR
+200    ahisb2491cTabuľka * kód pôvodného záznamu#Tabulka * kód původního záznamunpro historii: tabulka * kod puvodniho zaznamuohis d*k
+200    ahlob2530cHĺbka zbierkového predmetu v mm#Hloubka sbírkového předmětu v mmnhloubka sbírkového předmětu v mmoM02c, M02b=h
+200    ahmotb2532cHmotnosť zbierkového predmetu#Hmotnost sbírkového předmětunhmotnost sbírkového předmětuoM03c
+200    ahndnetcHandle.netoC60anIndexuje se jen samotné id bez URL. Zatim bez atributu, vyuzito jako identifikator zaznamu
+200    aimpb2455cImpact faktor pre EPCA#Impact faktor pro EPCAnimpact faktor pro EPCA - pridany modifikator imp_yev (vid Indexparams). modif. EPC_IF_CAV: IF z roku článku, není-li tak z roku článku-1o463/461 -> zdroj serialsN
+200    aiownb2407cVlastník záznamu v ipacu#Vlastník záznamu v ipacu#Ipac ownero999-e
+200    aisbnb7cISBN#ISBN#ISBNnISBNo010-az (s pomlčkami i bez pomlček)sASCII,COMP,EXACT,PHR
+200    aisbn2b2480cISBN a ISSN#ISBN a ISSN#ISBN and  ISSNcPridane informace  ISMN a ISRC#Pridane informace  ISMN a ISRC#Pridane informace  ISMN a ISRCnspojeny index ISBN/ISSNnPridane informace  ISMN a ISRCo010-a (s pomlčkami i bez pomlček)o011-a (s pomlčkami i bez pomlček)o013a a 016asASCII,COMP,EXACT,PHR
+200    aismnb2440cISMN#ISMNnISMNo013-a (s pomlčkami i bez pomlček)sASCII,COMP,EXACT,PHR
+200    aissnb8cISSN#ISSN#ISSNnISSNo011-ayz (s pomlčkami i bez pomlček)o225-xo520-xsASCII,COMP,EXACT,PHR
+200    ajsysidcZákaznícke/Iné systémové číslo#Zákaznické/Jiné systémové číslo#Customer/Other system numbero024a - a (ak 2 = "wos")nJiné kontrolní číslo nežli je obsaženo v 001, 010, 016. Zapisují se zde také zákaznická čísla, zdroj čísla je upřesněn v závorce před číslem např. (OCoLC)53372470, zatim bez atributu, vyuzito jako identifikator zaznamu
+200    akakb2437cKategória dokumentov AK#Kategorie dokumentů AK#nkategoria dokumentov AK - skratka+ popis podla cislenika  "UN_KATDOK_AK"  v UnTablesdo970-jsASCII,COMP,EXACT,PHR
+200    akareb2454cKarentovanosť pre EPCA#Karentovanost pro EPCAnkarentovanost pro EPCAo463/461 -> zdroj serial
+200    akatob2458cKategória ohlasu#Kategorie ohlasunkategorie ohlasuo971-4sCOMP,EXACT,LEFT
+200    akatub2459cKategória účasti na akcii#Kategorie účasti na akcinkategorie ucasti na akcio970-k
+200    akodvb2460cKód vedného odboru#Kód vědního oborunkod vedniho oboruo970-c
+200    akpcb2461cKód publikačnej činnosti pre EPCA#Kód publikační činnosti pro EPCAnkod publikacni cinnosti pro EPCAo970-a (nebo "xxx" pokud v Epca neni 970a)sSORT,CODE
+200    aksercČíslo a dátum z C03a#Číslo a datum z C03aninterni index pro serialy - cislo a datum z C03aninterni index pro serialy - cisloninterni index pro serialy - prilohaninterni index pro serialy - souborny zaznamninterni index pro serialy - svazany rocniko461: "scld#"_461-001_#YYYYMMDD; (110<>"") && (461<>"") && (969f<>"zrp")o461: "sercl#"_461-001; "serclpr#"_461-001; (110<>"") && (461<>"") && (969f<>"zrp")o461: "serpr#"_461-001; "serclpr#"_461-001; "serprx#"_422-001; (110<>"") && (422<>"")o461: "sersz#"; (110<>"") && (461="") && (462="")o461: "serzr#"_461-001; (110<>"") && (461<>"") && (969f="zrp")
+200    akskb2378cSkupina konspektu#Skupina konspektu#o615-nsCODE
+200    akspkb2379cPredmetová kategória#Předmětová kategorie#o615-9sCODE
+200    algb54cKód jazyka#Kód jazyka#Code--language njazyky (neobsahuje 101c jazyk originalu) - zkratka a preklad z ciselnikuo101-abdefg UT_LANGUAGEsCODE
+200    algob2438cJazyk originálu diela#Jazyk originálu díla#nJazyk originálu diela - skratka+ popis podla cislenika  "UT_LANGUAGE" v UnTablesdo101-csCODE
+200    algrb2398cJazyk resumé diela#Jazyk resumé díla#Language of work resumenJazyk resumé díla - zkratka+ popis podle číselníku  "UT_LANGUAGE" v UnTablesdo101-d
+200    algtb2415cJazyk textu#Jazyk textu popisné jednotky#Language of Text Soundtrack etcnjazyk textu samostatneo101-a UT_LANGUAGEsCODE
+200    alob2392cLokácia#Lokacenindex sa zapája na modifikátor „lo“olokácia 100l z holdingu
+200    alocb2400cLokácia#Lokace#Locationnlokacie kniznic, ktore maju stiahnuty zaznamo999-b
+200    alodib2393cLokácia a dislokácia#Lokace a dislokacenindex sa zapája na modifikátor „lo“olokácia 100l a dislokácia 100d z holdingu (100l_100d)
+200    amatb2533cMateriál zbierkového predmetu#Materiál sbírkového předmětunmateriál sbírkového předmětuoM04a
+200    amdtb14cMDT#MDT#UDC codenMDT (obycajne vybrane znaky MDT) na modifikator "mdt-1" je mozne zapnut indexovanie aj podla oddelovacov +:()""nMDT (obycajne vybrane znaky MDT)o675-a o962-asCODE
+200    amrab2489cAutor akcia/konferencia miesto#Autor akce/konference místo#cAutor akcia/konferencia miesto##nmiesto konania akcie. Toto je specialny index pre akcie, ktory indexuje polia akcie v obratenom poradi ako normalny index akcii (aua). Niekedy to moze byt vyhodne.o71X-efa (format:"e.f.a")  (ak ind1=1) spoji subtagy do jedneho retazcaoC20-efa (format:"e.f.a")  (ak ind1=1) spoji subtagy do jedneho retazca
+200    aoaiidcPoužívateľský kód záznamu pre OAI#Uživatelský kód záznamu pro OAI#User code for OAIrnapř NIDsCODE
+200    aplb59cMiesto vydania#Místo vydání#Publication place   dxnmiesto vydanianmiesto vydania zdrojoveho dokumentuo210-aeo463/461 210-aesASCII,COMP,EXACT,LEFT,PHR
+200    apopxb2536cPopis zbierkového predmetu#Popis sbírkového předmětunpopis sbírkového předmětuoM07a, M07b, M07p
+200    aprab2462cPracovisko autora#Pracoviště autoradxnpracoviste autora, nazov pracoviska dotiahnuty z autorit; 26.4.05 rs; zrusena indexacia podpole 9 do "pra"o7XX-p; C26esASCII,COMP,EXACT,FACET,LEFT,PHR
+200    apran1b2463cNázov pracoviska prvého autora#Název pracoviště prvního autorannazev pracoviste prvniho autoraouna_210a podle kodu z 70X-p sASCII,COMP,EXACT,LEFT,PHR,SORT
+200    apravb2402cpracovisko vykazovanie#pracovisko vykazovanie#npracovisko vykazovanieoC26e
+200    aprumb2531cPriemer zbierkového predmetu v mm#Průměr sbírkového předmětu v mmnprůměr sbírkového předmětu v mmoM02c, M02b=p
+200    apub1018cVydavateľ#Vydavatel#Publisher dxnvydavatelnvydavatel zdrojoveho dokumentunvydavatelo210-cgo463/461 210-cgo928-abcdfsASCII,COMP,EXACT,FACET,LEFT,PHR
+200    apucb2483cKombinovaný index - ISBN#Kombinovaný index - ISBNdxnkombinovany index - ISBNnkombinovany index - ISSNnkombinovany index - vydavatelske udajenkombinovany index - vydavatelske udaje zdrojoveho dokumentuo010-ao011-ao210-acdefgho463/461 210-acefgo928-abcdfsASCII,COMP,EXACT,LEFT,PHR
+200    aqgrpb2399cSkupiny zariadeni#Skupiny zarizeni#Groups of equipmentsnnazev skupiny zarizeni (pro modul evidence zarizeni)o200-a (pokud C24x = 1)
+200    arecdab2497cAutor recenzovaného dokumentu#Autor recenzovaného dokumentu#dxnrec.dok.autoro470-70XabcdfssASCII,COMP,EXACT,LEFT,PHR
+200    arecdnb2498cRecenzovaný dokument#Recenzovaný dokument#dxnrecenzovany dok. nazovo470-200aesASCII,COMP,EXACT,LEFT,PHR
+200    aregb2453cRegion#Regióndxnregion podle ciselniku (prevzate z KL)nodkazovany region (prevzate z KL)o660a  vyraz prelozeny podla tabulky UT_660Aouna_915a podle odkazu z 607-3
+200    arivdb2504cPříznak odstranění záznamu o výsledku z RIV#Příznak odstranění záznamu o výsledku z RIV#nindex pro zjištění stavu pro RIV. Pokud je vyplněn C51a i C514b, má hodnotu 1. Pokud není vyplněno C51a i C514b, má hodnotu 0. Pokud je jen vyplněno C51b, má hodnotu b. To samé platí pro podpole a. ostav z tagu C51
+200    as461b2447cSeriály - odkaz na súborný záznam#Seriály - odkaz na souborný záznamnserialy - odkaz na souborny zaznamo461-001; (110<>"")
+200    as462b2446cSeriály - odkaz na zviazaný ročník#Seriály - odkaz na svázaný ročníknserialy - odkaz na svazany rocniko462-001; (110<>"")
+200    as600b2469cPredmetové heslo - osobná autorita#Předmětové heslo - osobní autoritadxnpredmetove heslo - pers.autorita vcetne hodnot indexu "au" odkazovanych heselo600-abcdfxyz(3)sASCII,COMP,EXACT,LEFT,PHR
+200    as601b2471cPredmetové heslo - akcia/korporácia#Předmětové heslo - akce/korporacedxnpredmetove heslo - akcia/korp. vcetne hodnot indexu "au" odkazovanych heselo601-abcdfxyz(3)sASCII,COMP,EXACT,LEFT,PHR
+200    as602b2470cPredmetové heslá#Předmětová hesladxn vcetne hodnot indexu "au" odkazovanych heselo602-abcdfxyz(3)sASCII,COMP,EXACT,LEFT,PHR
+200    as604b2439cPredmetové heslá#Předmětová hesla#Subject heading dxnvsetky predmetove hesla vcetne hodnot indexu "au" odkazovanych heselo604/200-a,500-a,7XX-abcdfs(3)sASCII,COMP,EXACT,LEFT,PHR
+200    as605b2473cPredmetové heslá#Předmětová hesladxn vcetne hodnot indexu "au" odkazovanych hesel, pred subtagom k je pridana mezera kvoli radeniu cisiel pred pismenao605-akxyz(3)
+200    as606b2472cPredmetové heslá#Předmětová hesladxn vcetne hodnot indexu "au" odkazovanych heselo606-axyz(3)sASCII,COMP,EXACT,LEFT,PHR
+200    as606tb2484cPredmetové heslá (celé termíny)#Předmětová hesla (celé termíny)ncele terminy z jednotlivych podpoli neroztrhane na slova; v zavislosti na parametru "606terms"o606-axyz
+200    as607b2468cPredmetové heslá - geografické#Předmětová hesla - geografickádxnpredmetove heslo - geograficke vcetne hodnot indexu "au" odkazovanych heselo607-axyz(3)sASCII,COMP,EXACT,LEFT,PHR
+200    as608b2474cFormy a žánre#Formy a žánry#dxnformalne deskriptory vcetne hodnot indexu "au" odkazovanych heselo608-axyz(3)sASCII,COMP,EXACT,LEFT,PHR
+200    as610b2475cDeskriptor#Předmětový termín#Subject Termdxnpredmetove hesla/kluc.slova vcetne hodnot indexu "au" odkazovanych heselo610-axyz(3)sASCII,COMP,EXACT,LEFT,PHR
+200    as615b2476cText vstupného prvku predmetovej kategórie#Text vstupního prvku předmětové kategorie#dxn vcetne hodnot indexu "au" odkazovanych heselo615-axyz(3)
+200    as686b2477cKlasifikačný znak#Klasifikačný znakdxnklasifikacni znak podle ciselnikuo686-a  vyraz prelozeny podla tabulky UT_686A
+200    ascpidcScopus IDo014a - a (ak 2 = "scopus")nzatim bez atributu, vyuzito jako identifikator zaznamu
+200    asekcKód zdrojového dokumentu pre EPCA#Kód zdrojového dokumentu pro EPCAnkod zdrojoveho dokumentu pro EPCAo463/461 001
+200    asib2481cSignatúra#Signaturansignatury vsech exemplaru daneho zaznamu; v zavislosti na parametru "sigidx"nsignatura suborneho zaznamuounh_100-soC08asCOMP,WORDS
+200    asigab2436cČíslo archívnej kópie##nčíslo archívnej kópieo972-asASCII,COMP,EXACT,PHR
+200    asirb2529cŠírka zbierkového predmetu v mm#Šířka sbírkového předmětu v mmnšířka sbírkového předmětu v mmoM02c, M02b=s
+200    askpccSkupina kategórie publikačnej činnosti##nSkupina kategorie publikacnej cinnosti. Algoritmicky vyhodnoteny index na zaklade pola 970a. Popis viz. vzor vystupu pre MSSR v internej.dok EPCA vystupov.o970a zgrupovane algoritmom
+200    asmrab2488cAutor akcia/konferencia miesto  predmet#Autor akce/konference místo predmet#nmiesto konania akcie. Toto je specialny index pre akcie, ktory indexuje polia akcie v obratenom poradi ako normalny index akcii (aua). Niekedy to moze byt vyhodne.o601-efa (format:"e.f.a")  (ak ind1=1) spoji subtagy do jedneho retazca
+200    asrcb2499cZdrojový dokument#Zdrojový dokument#dxnzdrojovy dokument nazovo463/461 200aesASCII,COMP,EXACT,LEFT,PHR
+200    asrc1b2464cNázov prvého zdrojového dokumentu#Název prvního zdrojového dokumentunprvni zdrojovy dokument nazovo463/461 200asASCII,COMP,EXACT,LEFT,PHR,SORT
+200    asrcab2496cAutori zdrojového dokumentu#Autoři zdrojového dokumentudxnzdroj dok autorio463/461 70XabcdfssASCII,COMP,EXACT,LEFT,PHR
+200    asrccb2433cČíslo zdrojového dokumentu##nvyselektovane z retazca iba cislo periodikao461/463 200vsASCII,COMP,EXACT,LEFT,PHR
+200    asrcdb2495cDátum zdrojového seriálu#Datum zdrojového seriálu#cDátum zdrojového dokumentu,+E177#Datum zdrojového dokumentu#ndatum zdroj serialu, toto je aktualne len pre institucie, kt. korektne u clankov vyplnaju 100; inak standardne sa indexuje datum clanku z pola 463; formaty YYYYMMDD,YYYYMM,YYYY; teda kazdy datum sa indexuje 3x; viz. tiez index ye; (prevzate z KL)ndatum zdrojoveho dokumentu; formaty YYYYMMDD,YYYYMM,YYYY; teda kazdy datum sa indexuje 3x; viz. tiez index yeo100a (pokud existuje parametr "dt100")o463/461 001->210d inak 200v 
+200    asub21b29cPredmetové heslá#Předmětová hesla#Subject heading c##Local subject indexdxnvsetky predmetove hesla vcetne hodnot indexu "au" odkazovanych heselnklasifikacni znak - zkratka a preklad z ciselnikunpredmetove hesla pre institucie kt. toto pole pouzivaju parametrem "parse964" se da zapnout rozklad hesel oddelenych znakem " - "npridany parameter :no625su", pokial sa prida do triedy katalogu, nebude sa cely tag 615 pridavat do indexu suo600,601,602-abcdfxyz(3)o604/200-a,500-a,7XX-abcdfs(3)o605-akxyz(3)o606,607,608,610,615-axyz(3)o620,626,660,661-abcxyz(3)o686-a UT_686A_XXXo964-aono615suoviz.21sASCII,COMP,EXACT,FACET,LEFT,PHR
+200    at001ab2434cKód záznamu z centrálneho katalógu##nkod zaznamu z centalneho katalogu (napr. NKP a pod.; cislo atributu zvolene tak, aby bolo rovnake pre bazu autorit aj akatalogu a pre vsetky institucie)oC99-a
+200    at001cb2451cAlternatívne T001#Alternativní T001#Alternative T001oC99-c
+200    at001nb2426ckod zaznamu##nkod c000125, v indexe c000125 a c125, su v nom aj deziderataoT001 bez vodiacich nulsCODE
+200    atagb2500cTág UNIMARC#Tág UNIMARC#Tag UNIMARCntoto je servisny index pre katalogizatoraovsetky cisla tagov a tag_subtagov daneho zaznamu sCODE
+200    atechb2534cTechnika použitá pri výrobe zbierkového predmetu#Technika použitá při výrobě sbírkového předmětuntechnika použitá při výrobě sbírkového předmětuoM05a
+200    atib4cNázvové údaje#Názvové údaje#Title cnazov nesamostatnej prilohy#nazov nesamostatnej prilohy#nazov nesamostatnej prilohydxnnazvove udajennazov nesamostatnej prilohyo200-acdehi pokud je modif "ti200ab", pripoji k 200a 200bo4XX-200,500acdeio500-aio510,530,532,540,541-ao512,516,517-aeoC09asY,ASCII,COMP,EXACT,LEFT,PHR,SORT
+200    ati1b2412cPrvý názov (pre triedenie)#První název (pro třídění)nprvni nazev pro tridenio200-asCOMP,WORDS
+200    ati1yeb2493cPrvý názov s dátumom (pre triedenie)#První název s datem (pro třídění)nprvni nazev s datem pro tridenio200-a, 210d; zapojení modifikátorem "ti1ye"
+200    ati2b2467cprvy nazov, leb b index bez odstranenia clenov#prvy nazov, leb b index bez odstranenia clenov#nprvy nazov, leb b index bez odstranenia clenovnindexuju sa aj dezideratao200-asCOMP,WORDS
+200    ati3b4ccNázvové údaje#Názvové údaje#Title nhlavní název nestačí pro třídění vícesvazkových děl. Index jen pro třídění.rpodpolia zretazene - oddelovac medzerasSORT
+200    atiaclb2413cSeriály - všetky názvové údaje#Seriály - všechny názvové údajenvsechny nazvove udaje (serialy, jcp); zapina se modifikatorem "jcpTI", dále musí být splněno: (tag110'="") && (tag461'="") && (969 není "fzrp"))o200-acdei, 4XX-200,500acde, 500-ai, 510,530,532,540,541-a, 512,517-ae, T00a=xjcp
+200    atiasb2425cSeriály - názvové údaje všetkých typov seriálových záznamov#Seriály - názvové údaje všech typů seriálových záznamůdxnnázvové údaje všech typů ser.záznamůo200-acdei; 4XX-200,500acde; 500-ai; 510,530,532,540,541-a; 512,517-ae; (110<>"")
+200    atiasrb2423cSeriály - názvové údaje zviazaného ročníka#Seriály - názvové údaje svázaného ročníkudxnnázvové údaje svázaného rocníkuo200-acdei, 4XX-200,500acde, 500-aim 510,530,532,540,541-a; 512,517-ae , C09a ;     T00a=xzrp
+200    atiaszb2424cSeriály - názvové údaje súborného záznamu#Seriály - názvové údaje souborného záznamudxnnázvové údaje souborného záznamu per.o200-acdei; 4XX-200,500acde; 500-ai; 510,530,532,540,541-a; 512,517-ae; T00a=xszp
+200    aticlb2442cSeriály - názov pre jednotlivé číslo alebo prílohu#Seriály - název pro jednotlivé číslo nebo přílohudxnserialy - nazev pro jednotlive cislo nebo prilohuo200-a; (110<>"") && (461<>"") && (969f<>"zrp")--- pridana hodnota ticl ze zaznamu v odkazu 422
+200    aticldb2441cSeriály - názov a očakávaný dátum čísla alebo prílohy#Seriály - název a očekávané datum čísla nebo přílohydxnserialy - nazev a ocekavany datum cisla nebo prilohyo200-a_"-"_C03-a; (110<>"") && (461<>"") && (969f<>"zrp")
+200    aticlrb2414cNázov periodika rok číslo#Název periodika rok číslo#nak je to jednotlive cislo periodika, tak tam vlozi uvedene polia spojene do jedneho retazca pricom su oddellene pomlckouo200a_"-"_915c_"-"_915b (110<>"") && (461<>"") && (969f<>"zrp") --- pridana hodnota ticlr ze zaznamu v odkazu 422
+200    atikb33cklucovy nazov##dxnneimplementovano, viz katalogM21 atribut 33o530a b
+200    atisb2445cSeriály - názov#Seriály - názevdxnserialy - nazevo200-a
+200    atisrb2443cSeriály - názov pre zviazaný ročník#seriály - název pro svázaný ročníkdxnserialy - nazev pro svazany rocnik periodikao200-a; (110<>"") && (461<>"") && (969f="zrp")
+200    atiszb2444cserialy - nazev pro souborny zaznam#serialy - nazev pro souborny zaznam#serialy - nazev pro souborny zaznamdxnserialy - nazev pro souborny zaznamo200-a,5xx-a; (110<>"") && (461="") && (462="")o5xx tagy aesASCII,COMP,EXACT,LEFT,PHR
+200    atocb2376cgenerovany, fulltext obsahu z okczoLEN SOLR, cfsindex typu GsG,FULL
+200    atrb2482cPrírastkové číslo#Přírůstkové číslonprirustkova cisla vsech exemplaru daneho zaznamu; v zavislosti na parametru "tridx"ounh_100-tsASCII,COMP,EXACT,PHR
+200    aupsb2350cInformácia o fulltexte#Informace o fulltextu#Information about fulltextnIdexace informací o ukládání fulltextů. Indexuje se podpole a i b. Pokud je nejaka hodnota, ulozi se tam FoC52sCODE
+200    aurcb2537cKto zbierkový predmet určil#Kdo sbírkový předmět určilnkdo sbírkový předmět určiloM08a
+200    aurcdb2538cKedy bol zbierkový predmet určený#Kdy byl sbírkový předmět určennkdy byl sbírkový předmět určenoM08d
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmddsCODE
+200    aveb2418cdodavatel#dodavatel#dxnpodla C07 v zazname dotiahnuty zaznam dodavatela z autority a z neho tag 210o210abcdefghxyz
+200    avolb2450cRočník seriálu#Ročník seriálunrocnik serialuo915-a
+200    avolclb2419cRočník časopisu - jednotlivých čísiel#Ročník časopisu - jednotlivých číseldxnročník časopisu-jednotliv.čísel (napr Roč.2002)   *jr 9.2.04 upraveno zarovnani indexu na 3 mista (012) - pouze u *xo915a  ; T00a=xjcp
+200    avolsrb2421cRočník zviazaného ročníka#Ročník svázaného ročníkudxnročník svázanéh ročníku   * jr 9.2.04 upraveno zarovnani indexu na 3 mista (052) - pouze u *xo915a  ; T00a=xzrp
+200    avyrb2525cVýrobca#VýrobcenvýrobceoM01a
+200    avyrdob2527cRok výroby výrobku do#Rok výroby výrobku donrok výroby výrobku dooM01d
+200    avyrodb2526cRok výroby výrobku od#Rok výroby výrobku odnrok výroby výrobku odoM01r
+200    avysb2528cVýška zbierkového predmetu v mm#Výška sbírkového předmětu v mmnvýška sbírkového předmětu v mmoM02c, M02b=v
+200    avyzb2403cvyzkumny zamer#vyzkumny zamer#nvyzkumny zameroC13a
+200    awosidcWoS IDo014a - a (ak 2 = "wos")nzatim bez atributu, vyuzito jako identifikator zaznamu
+200    ayeb30b31cDátum#Datum#DatecDátum vydania#Datum vydání#Date of publicationdxnviz. srcd (prevzate z KL)ndatum vydania, odfiltruje znaky [ ]cpndatum vydania, indexuje sa v tvare YYYYMMDD,YYYYMM a YYYY (podla toho aky presny datum je k dispozicii)nviz. poznamku u 461/463 200v vlozi 210d ak zaznam nie je xclandatum zdrojoveho dokumentu; formaty YYYYMMDD,YYYYMM,YYYY; teda kazdy datum sa indexuje 3x; indexuje sa len ak nie je vyplneny tag 110 (nie je to serial), alebo ak druh dokumentu zacina na R (clanok).  Ak existuje tag 001  a ide o JCP tak zo zanamu s tymto kodom zaindexuje 210d, inak 200vndatum vydania, index pre zviazane rocniky a cisla periodik - aby sa dostali do datumoveho indexu.ndatum vydania, toto su roky z kalendara v subornom zazname. Hlavne kvoli tomu aby sa pri triedeni suborny zaznam dostal na zaciatok a tiez aby sa nasiel, ak sa da limita datumu vydania (rs. 5.9.03)ndatum ocakavania JCP - vsetky formaty datumu YYYYMMDD,YYYYMM,YYYYo100a (pokud existuje tag 463 a parametr "dt100")o210-dho461/463 210do463/461 001->210d inak 200v o915-coC02-a prve 4 znaky=rokoC03-aoviz . atribut 30sN,SORT,FACET
+200    ayeob2457cRok ohlasu#Rok ohlasunrok ohlasuo971-dsN
+200    ayeovb2370cRok vykázania ohlasu#Rok vykázania ohlasunrok vykázania ohlasunIndexuje sa ak existuje modifikátor vykohl-no971-vsN
+200    ayeocb2428cDátum očakávania JCP#Datum očekávání JCPdxndatum ocakavania JCP - vsetky formaty datumu YYYYMMDD,YYYYMM,YYYYoC03-asN
+200    ayesb2448cRok vydania seriálu#Rok vydání seriálunrok vydani serialuo915-csN
+200    ayesrb2422cRok zviazaného ročníka#Rok svázaného ročníkunrok svázaného ročníkuo915c  ; T00a=xzrp
+200    ayevb2456cRok vykazovania#Rok vykazovánínrok vykazovaniao985-r; C26dsN,SORT,FACET
+200    adtcladkb2022cDátum vytvorenia (článok)nDátum vytvorenia článku v digitálnej kronikeo210d
+200    aobvyb2377cOblasť výskumu#Oblast výzkumu#o970-q
+200    asnkpcb2541cNový index skupina kategórie publikačnej činnost (od roku 2015)nIndexuje se skpc podle čísleníku EPCA_N_SNKPC_INDEX. Nastavuje se v INDEXPARAMS SkpcNew.o970a přeloženo přes číselník do skupiny
+200    asukpcb2540cUživatelský index pro skupinu kategorie publikační činnostinIndexuje se skpc podle čísleníku EPCA_U_SUKPC_INDEX. Nastavuje se v INDEXPARAMS SkpcUser.o970a přeloženo přes číselník do skupiny
+200    aciob2542cIndex pro databázi ohlasu.nIndexují se všechny opakování podpole c v 971o971c
+200    acidb2545cIndex pro databázi dokumentu.nIndexují se všechny opakovánia podpole 2 v 014o0142
+200    aisbnab2543cPlatné ISBN#Platné ISBNnPlatne ISBNo010a
+200    aqjcrb2546cJCR kvartil#JCR kvartilnJCR kvartilnze zdojového dokumentu indexace 9787 (hodnota stejná jako T167)o9787 ze zdrojového dokumenusCODE
+200    aqsjrb2547cSJR Best Quartile#SJR Best QuartilenSJR Best Quartilenze zdojového dokumentu indexace 9784 (hodnota stejná jako T164). Indexuje jen číslo (v podpoli $4 máme napr. Q1 takže indexované bude jen 1)o9784 ze zdrojového dokumenusCODE
+200    akucb2548cKategória umeleckej činnosti#Kategorie umělecké činnostinKategória umeleckej činnosti#Kategorie umělecké činnostio970osCODE
+200    aucdrb2549cDruh umeleckej činnosti#Druh umělecké činnostinDruh umeleckej činnosti#Druh umělecké činnostioC45bsCODE
+200    aucvyb2550cVýstup a druh výstupu umelecké činnosti#Výstup a druh výstupu umělecké činnostinVýstup a druh výstupu umelecké činnosti#Výstup a druh výstupu umělecké činnostioC45d_C45esCODE
+200    aucteb2551cTeritorialita umeleckej činnosti#Teritorialita umělecké činnostinTeritorialita umeleckej činnosti#Teritorialita umělecké činnostioC43bsCODE
+200    aucmub2552cMiera účasti na umeleckej činnosti#Míra účasti na umělecké činnostinMiera účasti na umeleckej činnosti#Míra účasti na umělecké činnostioC43dsCODE
+200    auphb2553cPoužívateľské štítky (generovaný index)#Uživatelské štítky (generovaný index)#User tags (generated index)nPoužívateľské štítky (generovaný index)#Uživatelské štítky (generovaný index)#User tags (generated index)oLEN SOLR, cfsindex typu GsG,FULL
+200    apoub2556cPoužívateľské určenien100$a/17-19 (indexovaná každá pozíciu osobitne), len ak je písmenooPoužívateľské určenie
+200    aimbb2557cImpact faktor pre EPCA 0-neexistuje/1-existuje#Impact faktor pro EPCA 0-neexistuje/1-existujenimpact faktor pro EPCA - indexovane jako imp (ixIndexValuesIF)o463/461 -> zdroj serialsCODE
+200    aqjcrsjrb2558cKvartily JCR a SJR#Kvartily JCR a SJR#JCR and SJR Quartilenkvartily jcr a sjr dohromady v jenom; hodnoty (cisla) jsou rozlisena sufixem "jcr" nebo "sjr" napr. 3jcr; ze zdojového dokumentu indexace 9784 (hodnota stejná jako T164); vyuziva se v EpcaReports pro pole AND a ORo9784 ze zdrojového dokumenumzapina se na paramter quartileJcrSjr ($b) modifikatoru xclaHodKrit ($a) tj. primo souvisi s indexy qjcr a qsjr
+200    aqjcrsjrorb2560cKvartily JCR a SJR#Kvartily JCR a SJR#JCR and SJR Quartilenhodnoty kvartilu jcr a sjr kazdy zvlast se sufixem kvartilu ; hodnoty (cisla) jsou rozlisena sufixem "jcr" nebo "sjr" napr. 3jcr; ze zdrojového dokumentu indexace 9784,7 (hodnota stejná jako T164,7); vyuziva se v EpcaReportso978 ze zdrojového dokumenumzapina se na paramter quartileJcrSjr ($b) modifikatoru xclaHodKrit ($a) tj. primo souvisi s indexy qjcr a qsjr a qjcrsjr
+200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2
+200    ackpcb2561cKategória publikácie od 2022o976ak976anECPA CREPC - hodnota pole 976a - vsechny opakovani podle a podpole (EPCA_CREPC_KATC)sCODE
+200    actvpb2562cTyp výstupu publikačnej činnosto976bk976bnECPA CREPC - hodnota pole 976b - vsechny opakovani podle a podpole (EPCA_CREPC_TYPD)sCODE
+200    acstob2563cŠtudijný odboro976ck976cnECPA CREPC - hodnota pole 976c - vsechny opakovani podle a podpole (EPCA_CREPC_STUDO)sCODE
+200    ackucb2564cKategória umeleckej činnosti od 2022o976ok976onECPA CREPC - hodnota pole 976o - vsechny opakovani podle a podpole (EUCA_CREUC_KAT)sCODE
+200    ackohb2565o9716k9716cECPA CREPC - Kategória ohlasu od 2022sCODE
+200    acdzob2566o971lk971lcECPA CREPC - Domáci/zahraničný ohlas - STABLE_EPCA_CREPC_DZOHsCODE
+200    acdzrb2567o976lk976lcECPA CREPC - Domáca/zahraničná publikácia - STABLE_EPCA_CREPC_DZPsCODE
+200    aqjcib2568cJCI kvartil#JCI kvartilnJCI kvartilnze zdojového dokumentu indexace 978N (hodnota stejná jako T16N)o978N ze zdrojového dokumenusCODE
+200    acskpcb2569cKategória publikácie od 2022 pro tridenio976anspecialni poradi pro trideni podle vyznamnosti V1, V2, V3, P1, P2, O1, O2, O3, U1, U2, U3, D1, I1, I2, I3sCODE
+200    aqaisb2570cAIS kvartil#AIS kvartilnAIS kvartilnze zdojového dokumentu indexace 978D (hodnota stejná jako T16D)o978D ze zdrojového dokumenusCODE
+###
+# @id UN_TABLES BASE_INDEXES_C2
+002    29.09.22 tt; pridan index cskpc
+002    08.08.22 tt; pridan index qjci
+002    27.01.22 tt; pridany indexy s atributem 2561 - 2566
+002    04.01.21 oi; pridan index qjcrsjror
+002    06.04.20 oi; pridan index qjcrsjr - 2558 - kvartily Epca
+002    18.02.20 rn; pridaný index doi - 2559
+002    26.11.19 js; doplneny index cykl
+002    18.11.19 tt; pridany index imb
+002    18.11.19 js; doplnene fakt a faki, kare, imp
+002    22.10.19 js; doplneny cid
+002    09.09.19 oi; oprava atributu indexu "pou" z 2555 na 2556
+002    13.04.18 js; pridany index t001cr2
+002    04.04.18 js; oprava duplicity čísla indexu pou
+002    15.03.18 rn; doplneny index pou
+002    19.02.18 js; doplneny index suoh
+002    02.10.17 lo; doplneny index pre uzivatelske stitky
+002    25.08.17 js; opraveny preklep nazvu indexu ucum na ucmu
+002    22.07.17 js; doplnene standardne indexy EUCA
+002    29.09.16 js; doplnene a upravene popisy a nazvy indexov
+002    11.04.16 js; upravena definicia indexov yeo a yeov
+002    08.04.16 js; doplneny index yeov
+002    08.10.15 jj; doplnen index isbna 2543
+002    26.02.15 jk; zmenen index snkpc na atribut 2541 z duvodu duplicity
+002    27.01.15 rn; pridaný index 2377
+002    27.11.14 rn; pridané indexy pre digitálnu kroniku - 2300 - 2318
+002    katalog M21
+002    ----------
+002    prirazeni atributu
+002       standartni marc od 0 do 2000
+002       uzivatelske od 2500 do 2000 (smerem dolu) - nazev indexu zacina na "z"
+002       nove standartni indexy od 2500  
+002    ----------
+200    aacqb2487cAkvizičné záznamy#Akviziční záznamy#Acquisitiondxnakvizice - ISBN, ISSN; autorske udaje; nazvove udaje; vydavatelske udajeo020 - a, 022 - a; isACQo1XX,700,71X,720,730,740,75X - a,b,c,d; isACQo245 a,b,c,k,p; isACQo260 a,b,e,f; isACQsASCII,COMP,EXACT,LEFT,PHR
+200    aaub1003cAutorské údaje#Autorské údaje#Authordxmnoaddauth (bez hodnot z odkazovanej autority); authBr (odstrani text v zatvorke v podpoli a)nautor vstupny prvok, obsahuje i hodnoty indexu "au" odkazovane autorityo100,700 - a,q,b,c,d,(7)o110,710 - a,b,d,c,(7)o111,711 - a,q,e,n,d,c,(7)o76X,77X,78X - a,(w) ak 76X,77X,78X 7 (pozicia 00) = p ~ c ~ moc20 - a,b,c,d,f,(3)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR,SORT
+200    aau1b2466cHlavný autor - osobné meno (pre triedenie)#Hlavní autor - osobní jméno (pro třídění)#Main author - personal name (for sorting)nprvni autor (pro trideni)o100 - a,q,b,c,drpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR,SORT
+200    aauab3b1006cAkcia/konferencia #Akce/konference#Conference namedxmnoaddauth (bez hodnot z odkazovanej autority)nautority akcie, obsahuje i hodnoty indexu "au" odkazovane autorityo111, 711 - a,q,e,n,d,c,(7)o76X,77X,78X - a,(w) ak 76X,77X,78X 7 (pozicia 00) = mrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aaua1b2465cHlavný autor - akcia (pre triedenie)#Hlavní autor - akce (pro třídění)#Main author - event (for sorting)nprvni autorita akceo111 - a,q,e,n,d,crpodpolia zretazene - oddelovac medzera
+200    aauadb2411cAkcia/konferencia #Akce/konference#Conference namedxnautority akcieo111,711 - a,q,e,n,d,c,(7)sASCII,COMP,EXACT,LEFT,PHR
+200    aaucb2b1005cKorporácia#Korporace#Corporate namedxmnoaddauth (bez hodnot z odkazovanej autority); authBr (odstrani text v zatvorke v a)nautority korporacie, obsahuje i hodnoty indexu "au" odkazovane autorityo110, 710 - a,b,d,c,(7)o76X,77X,78X - a,(w) ak 76X,77X,78X podpole 7 (pozicia 00) = crpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aaucdb2410cKorporácia#Korporace#Corporate namedxmauthBr (odstrani text v zatvorke v podpoli a)nautority korporacie (len 1XX a 7XX)o110,710 - a,b,d,c,(7)sASCII,COMP,EXACT,LEFT,PHR
+200    aaudkb2408cKód autority#Kód autority#Authority/format idnkod odkazovanej autorityo1XX,700,71X,720,730,740,75X - 7oc20 - 3sASCII,EXACT
+200    aauhlb2393cHlavný autor#Hlavní autor#Main authordxmnoaddauth (bez hodnot z odkazovanej autority); authBr (odstrani text v zatvorke v a)nhlavny autoro100 - a,q,b,c,d,(7)o110 - a,b,d,c,(7)o111 - a,q,e,n,d,c,(7)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aaukb1013cKód odkazovaného záznamu#Kód odkazovaného záznamu#ID of linked recordmaukSZP; aukZRPnkod odkazovanej autority alebo ineho odkazovaneho zaznamu (aj bibliografickeho); Pokud jsou v katalogove tride zapojeny modifikatory aukSZP a aukZRP, tak ze zaindexuji do zaznamu clanku nadrazene zaznamy souborneho katalogu a svazaneho rocniku.o1XX,700,71X,720,730,740,75X - 7o76X,77X,78X - wo928 - 7o981 - 7oc20 - 3oc25 - 3o800,810,811,830,440 - 7o6XX - 7o773sCODE
+200    aauk1b2479cKód odkazovaného záznamu + druh dokumentu#Kód odkazovaného záznamu + druh dokumentu#ID of linked record + type of documentnodkazovy index, toto je specialny index pre odkazovanie medzi zaznamami. Vyhladavaci termin sa konstruuje v zobrazovacom formate.oauk*dkrspojene indexy "auk" a "dk" - oddelovac hviezdicka "*"; auk*dksCODE
+200    aauk2b2397cKód odkazovaného záznamu + kód vzťahui#Kód odkazovaného záznamu + kód vztahu#ID of linked record + relation codemT04fn4 subtag z 100,110,111,700,710,711,600,610,611 na modifikator "T04f"oako auk1 + rola autora 4
+200    aaukdzb2396cKód odkazovaného záznamu pre dezideráta#Kód odkazovaného záznamu pro dezideráta#ID of linked record for desideratamnoaddnkód odkazované autority pro dezideráta, zapojeno na modif. "noadd"o1XX - 7, 6XX - 7, 928 - 3, c07 - 3, c20 - 3, c31 - 3,i,j, 700, 71X, 720, 730, 740, 75X, 440, 800, 810, 811, 830 - 7
+200    aaupb1b1004cOsobné meno#Osobní jméno#Personal namedxmnoaddauth (bez hodnot z odkazovanej autority)nautority personalne, obsahuje i hodnoty indexu "au" odkazovane autorityo100, 700 - a,q,b,c,d,(7)o76X,77X,78X - a,(w) ak 76X,77X,78X 7 (pozicia 00) = prpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,FACET,LEFT,PHR
+200    aaupdb2409cOsobné meno#Osobní jméno#Personal namedxnautor dokumentuo100,700 - a,q,b,c,d,(7)sASCII,COMP,EXACT,LEFT,PHR
+200    aautcladkb2301cAutor (pre digitálnu kroniku)#Autor (pro digitální kroniku)#Author (for digital chronicle)mdigkro100a ak 980X = D a je to článok
+200    aavailb2435cDostupnosť dokumentu#Dostupnost dokumentu#Availability of documentnpredbezne obsahuje hodnoty "f"-existuje aspon jedn evolny holding, "p" - aspon jeden je prezencne, "a" dokument je v spracovani (t.j. ma bud "a" alebo "k"  pripadne inu hodnotu podla modifikatora dokVSpracovani).; Ak zaznam obsahuje tag 856 "i"  ( pristupnost na internete); Viz. tiez indexy avail a t001f v holdingu.sCODE
+200    aavailpb2513cDostupnosť dokumentu podľa pobočiek#Dostupnost dokumentu podle poboček#Availability of title according to branchesmAVAILpobnindexuji se stejne hodnoty jako do indexu avail, ale podle pobocek, wiki:https://cosmo2/wiki/index.php/Pobo%C4%8Dkov%C3%BD_index_stav_dokumentu_availpoviz. index availsCODE
+200    abarb1063cČiarový kód exemplára#Čárový kód exempláru#Barcode of itemmhodlBarCnVšechny čárové kódy připojených holdingů. Vychází z indexu bc u holdingů.očárový kód holdingů ke katalogovému záznamu 100b
+200    abrchb2514cDostupnosť dokumentu podľa pobočiek#Dostupnost dokumentu podle poboček#Availability of title according to branchesnindexuji se stejne hodnoty jako do indexu avail, ale podle pobocek, wiki:https://cosmo2/wiki/index.php/Pobo%C4%8Dkov%C3%BD_index_stav_dokumentu_availpopobocky z T04a holdingusCODE
+200    acidb2545cIndex pro databázi dokumentu.nIndexují se všechny opakovánia podpole 2 v 014o0142
+200    aciob2542cDatabáza ohlasu#Databáze ohlasu#Citation databasenIndexují se všechny opakování podpole c v 971o971c
+200    aclb2449cČíslo časopisu#Číslo časopisu#Number of itemncislo serialuo915b
+200    aclclb2420cČíslo časopisu - záznam čísla#Číslo časopisu - záznam čísla#Item number - item recorddxnčíslo časopisu (napr. č. 52)  *jr 9.2.04 upraveno zarovnani indexu na 3 mista (052) - pouze u *xo915b; isJCP
+200    aclsrb2416cČíslo časopisu - záznam zväzku#Číslo časopisu - záznam svazku#Item number - volume recorddxnčíslo svázaného ročníku   *jr 9.2.04 upraveno zarovnani indexu na 3 mista (002) - pouze u *xo915a; ak T00 = xzrp
+200    acnbb2544cČíslo národnej bibliografie#Číslo národní bibliografie#National bibliography numbero015asASCII,COMP,EXACT,LEFT,PHR
+200    acstb2452cObsadenie pre hudobné diela#Obsazení pro hudební díla#Medium of performance for musicdxnobsazeni (interpretace) pro hudebninyo240m
+200    actb55cKrajina vydania#Země vydání#Country of publishingnkrajina vydania z kodovanych udajov - zkratka a preklad z ciselniku; odfiltrovat znaky pomlcky (-) na 2 a 3 poziciio044a; UT_COUNTRIES_M21o008 (pozicia 15 - 17); UT_COUNTRIES_M21sCODE
+200    acyklb2330cNázov cykludxo787t ak 787i obsahuje "z cyklu"sASCII,COMP,EXACT,LEFT,PHR,FACET
+200    adextb2539cOznačenie pre doručovanie obsahov#Označenie pro doručování obsahů#Mark for content deliveryndata external, data získaná z externích zdrojů, hodnota "sdtoc" pro doručování obsahů periodikosdtoc - 969fSDTOCsCODE
+200    adezb2486cDezideráta#Deziderata#Desideratadxndeziderata - ISBN, ISSN; autorske udaje; nazvove udaje; vydavatelske udajeo020a, 022a; isDEZo1XX,700,71X,720,730,740,75X a,b,c,d; isDEZo245 a,b,c,k,p; isDEZo260 a,b,c,e,f,g; isDEZsASCII,COMP,EXACT,LEFT,PHR
+200    adez_ipacb2512cDezideráta z IPAC#Deziderata z IPAC#Desiderata from IPACdxndeziderata - zadane cez IPACojako index dez  (969f = di)
+200    adez10b2501cDielové monografie#Dílové monografie#Part documentsdxndilova monografie - ISBN, ISSN; autorske udaje; nazvove udaje; vydavatelske udajeo020 - a, 022 - a; ak 969 f = dmo1XX,700,71X,720,730,740,75X - a,b,c,d; ak 969 f = dmo245 a,b,c,k,p; ak 969 f = dmo260 a,b,e,f; ak 969 f = dm
+200    adez2b2431cDezideráta (druhý subkatalóg)#Deziderata (druhý subkatalog)#Desiderata (second subcatalog)dxndeziderata - druhy subkatalog deziterat alebo inych oddelenenych titulov - ISBN, ISSN; autorske udaje; nazvove udaje; vydavatelske udajeo020 - a, 022 - a; ak 969 f = d2o1XX,700,71X,720,730,740,75X - a,b,c,d; ak 969 f = d2o245 a,b,c,k,p; ak 969 f = d2o260 a,b,e,f; ak 969 f = d2
+200    adez3b2430cDezideráta (tretí subkatalóg)#Deziderata (třetí subkatalog)#Desiderata (third subcatalog)dxndeziderata - treti subkatalog deziterat alebo inych oddelenenych titulov - ISBN, ISSN; autorske udaje; nazvove udaje; vydavatelske udajeo020 - a, 022 - a; ak 969 f = d3o1XX,700,71X,720,730,740,75X - a,b,c,d; ak 969 f = d3o245 a,b,c,k,p; ak 969 f = d3o260 a,b,e,f; ak 969 f = d3
+200    adez4b2429cDezideráta (štvrtý subkatalóg)#Deziderata (čtvrtý subkatalog)#Desiderata (fourth subcatalog)dxndeziderata - stvrty subkatalog deziterat alebo inych oddelenenych titulov - ISBN, ISSN; autorske udaje; nazvove udaje; vydavatelske udajeo020 - a, 022 - a; ak 969 f = d4o1XX,700,71X,720,730,740,75X - a,b,c,d; ak 969 f = d4o245 a,b,c,k,p; ak 969 f = d4o260 a,b,e,f; ak 969 f = d4
+200    adflb2524cDátum prijatia prvého exemplára alebo dátum vytvorenia záznamu#Datum přijetí prvního exempláře nebo datum vytvoření záznamu#Date of accessing first item or date of record creationnIndex urceny pro defaultni zobrazeni zaznamu v IPACu bez vyhledavani. Neindexuji se deziderata. Datum prijeti prvniho holdingu (UNH_400a) ma format „bYYYYMMDD“, datum vytvoreni zaznamu (US_999d) „aYYYYMMDD“oUNH_400a nebo US_999d první datumsSORT,CODE
+200    adib2380cDislokácia#Dislokace#Dislocationmindex sa zapája na modifikátor „lo“odislokácia 100d z holdingu
+200    adkb1031b2432cDruh dokumentu#Druh dokument#Document typendruh dokumentu; clanok; cislo periodika; suborny zaznam periodika; zviazany rocnik periodika. Ak nebol zaradeny podla uzivatelskeho algoritmu. Tento moze byt pre kazdu kniznicu iny. Pozn. rs 5.9.03: xxxx sa vygeneruje len vtedy ak nebol prideleny ziaden generovany kod a zaroven nie je ani nic v 970boxcla ; isCLAoxjcp; isJCPoxszp; isSZPoxzrp; isZRPoxxxxo970bsSORT,CODE
+200    adk2b2494cDruh dokumentu (zapísaný + preklad kódu)#Druh dokumentu (zapsaný + překlad kódu)#Document type (insert + translation of code)ndruh dokumentu - zkratka z 970b a preklad z ciselniku UN_KODDOC_ALL_XXXo970b; UN_KODDOC_ALL_XXXsSORT,CODE
+200    adk3b2383cDruh dokumentu (zapísaný)#Druh dokumentu (zapsaný)#Document type (insert)ndruh dokumentu - zkratka z 970bo970-bsSORT
+200    adkfb2029b2406cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otvoreny - povodne mal nespravne priradeny atribut 2029oc99dsCODE
+200    adocdkb1032cDruh dokumentu pre IPAC#Druh dokumentu pro IPAC#Document type for IPACngenerovany podle metody i2.data.layer.kindoLEN SOLR, cfsindex typu GsG,CODE
+200    adsb2492cĎalšie  spracovanie#Další zpracování#Next processingndalsie spracovanie v ratane deziderato969fsCODE
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamu, teda datum poslednej modifikacie zaznamu, vklada aj dezideratao005sN
+200    adt1b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#Date of record creatingndatum vytvorenia zaznamu ( prvy datum v 999-d),  vklada aj dezideratao999dsN,SORT
+200    adtcladkb2302cDátum vydania (pre digitálnu kroniku)#Datum vydání (pro digitální kroniku)#Date (for digital chronicle)mdigkro260c ak 980X = D a je to článok
+200    adtexb2555cDátum pre export cez OAI-PMH#Datum pro export přes OAI-PMH#Date for export by OAI-PMHnrizene predavani zaznamu napr. do souborneho katalogu pres OAI-PMH (neni vhodny datum posledni modifikace)o969-gsN
+200    adtrb2478cDátum prijatia prvého exemplára#Datum přijetí prvního exempláře#Date of accessing first itemndatum prijmu prveho exemplarasN
+200    aeancEANo024a (ak i1=3)nEAN zatim bez atributu, vyuzito jako identifikator zaznamu
+200    aedb5cEdícia#Edice#Title series  dxnediciao440 - a,n,p,v,xo490 - a,v,xo800 - a,q,b,c,d,e,to810 - a,b,to811 - a,q,d,c,e,to830 - a,tsASCII,COMP,EXACT,LEFT,PHR
+200    aerrb2427cChyby v zázname#Chyby v záznamu#Errors in recordnobsahuje opakovatelny zoznam chyb najdenych pri indexacii zaznamu. Popis chyby je orezeny na 80 zn. A je mozne, ze neobsahuje vsetky chyby (ak je ich pocet pre aktualny zaznam privelky)
+200    afakib2556cInterné čísla faktúr#Interní čísla faktur#nlen ak j v indexparam parameter fakiidxo400-q u vsetkych holdingov
+200    afaktb2417cČísla faktúr#Čísla faktur#nlen ak j v indexparam parameter faktidxopodla 400-h dotiahnutie z invoice 200a u vsetkych holdingov
+200    afautb2385cXdxnPoužité iba v UNIMARC.
+200    afprab2384cXdxnPoužité iba v UNIMARC.
+200    afullb2600cFulltext zabezpečeného dokumentuovlastní solr jádro (neindexuje se online)sCOMP,WORDS
+200    agcladkb2304cVšetky polia (pre digitálnu kroniku)#Všechna pole (pro digitální kroniku)#All fields (for digital chronicle)mdigkroak 980X = D a je to článok, indexy DK - 2300 - 2303
+200    agrab2405cČíslo projektu/grantu#Číslo projektu/grantu#Project/grant numberncislo projektu/grantuoc12a
+200    agragb2404cGrantová agentúra#Grantová agentura#Grant agencyngrantova agentura (posk. CEP + posk. ostatni)oc12 b,c
+200    agxb0b62b63b1010b1016b1035cVšetky polia#Všechna pole#All fieldsnvsetky poliao01X(okrem 04X),1XX,2XX,3XX,4XX,5XX,6XX,7XX,8XXsY,ASCII,COMP,EXACT,LEFT,PHR
+200    ahisb2491cDatabáza a kód záznamu pre chronológiu#Databáze a kód záznamu pro chronologii#Database and ID for chronologynpro historii: tabulka * kod puvodniho zaznamuohis d*k
+200    ahndnetcHandle.netoC60anIndexuje se jen samotné id bez URL. Zatim bez atributu, vyuzito jako identifikator zaznamu
+200    aifib2525cImpakt faktor#Impakt faktor#Impact factormifinIndexace, existuje-li hodnota IF v poli 978c. Indexuje se hodnota „1“.o978c
+200    aifzdrb2526cDatabáza indexácie časopisu#Databáze indexace časopisu#Database of serial indexingmifzdrnIndexace zdroje z pole 978d. Indexují se hodnoty „w“ pro Wos a „s“ pro Scopus.o978d
+200    aimpb2455cImpact faktor pre EPCA#Impact faktor pro EPCAo463/461 -> zdroj serialsN
+200    aiownb2407cVlastník záznamu z webových formulárov#Vlastník záznamu z webových formulářů#Record owner from web formsnpro hodnotu z holdingu 100b se predrazuje "xxx_is_user*", kde xxx je prefix daneho zakaznikao999e, UNH_100b
+200    aisbnb7cISBN#ISBN#ISBNmwholeStNum (neodstrani z podpole a text v zatvorkach - doplnok)nISBNo020,902 - a,zsASCII,COMP,EXACT,PHR
+200    aisbn2b2480cŠtanardné čísla (ISBN, ISSN, ISMN, ISRC)#Stanardní čísla (ISBN, ISSN, ISMN, ISRC)#Standard numbers (ISBN, ISSN, ISMN, ISRC)mwholeStNum (neodstrani z podpole a text v zatvorkach - doplnok)nspojeny index ISBN/ISSN; ISMN (ak je prvý indikátor = 2); ISRC (ak je prvý indikátor = 0)o020a (s pomlckami i bez pomlciek)o022a (s pomlckami i bez pomlciek)o028a (s pomlckami i bez pomlciek)o024a; ak I1 = 2o024a; ak I1 = 0o902a,z (s pomlckami i bez pomlciek)sASCII,COMP,EXACT,PHR
+200    aisbnab2543cPlatné ISBN#Platné ISBN#Valid ISBNnPlatne ISBNo020a
+200    aismnb2440cISMN#ISMN#ISMNnISMN (ak je prvý indikátor = 2)o024a; ak I1 = 2sASCII,COMP,EXACT,PHR
+200    aissnb8cISSN#ISSN#ISSNmwholeStNum (neodstrani z podpole a text v zatvorkach - doplnok)nISSNo022 - a,y,zo247 - xo440,490 - xsASCII,COMP,EXACT,PHR
+200    ajsysidcZákaznícke/Iné systémové číslo#Zákaznické/Jiné systémové číslo#Customer/Other system numbero024a - a (ak 2 = "wos")nJiné kontrolní číslo nežli je obsaženo v 001, 010, 016. Zapisují se zde také zákaznická čísla, zdroj čísla je upřesněn v závorce před číslem např. (OCoLC)53372470, zatim bez atributu, vyuzito jako identifikator zaznamu 
+200    akakb2437cKategória dokumentov podľa AK (pre SR)#Kategorie dokumentov podle AK (pro SR)#Category of document according to AC (for SR)nkategoria dokumentov AK - skratka+ popis podla cislenika  "UN_KATDOK_AK"  v UnTablesdo970 - j; UN_KATDOK_AKsASCII,COMP,EXACT,PHR
+200    akareb2454cKarentovanosť pre EPCA#Karentovanost pro EPCAnkarentovanost pro EPCAo463/461 -> zdroj serial
+200    akatob2458cKategória ohlasu#Kategorie ohlasu#Category of citationnkategorie ohlasuo9714
+200    akatub2459cKategória účasti na akcii (pre SR)#Kategorie účasti na akci (pre SR)#Category of event participation (for SR)nkategorie ucasti na akcio970k
+200    akodvb2460cKód vedného odboru (pre SR)#Kód vědního oboru (pro SR)#Code of research subject (for SR)nkod vedniho oboruo970c
+200    akpcb2461cKategória publikačnej činnosti (pre SR)#Kategorie publikační činnosti (pro SR)#Category of publication activitynkod publikacni cinnosti pro EPCAo970asCODE
+200    aksercSeriály - špecifické údaje (interný index)#Seriály - specifické data (interní index)#Item number - specific data (internal index)ninterni index pro serialy - cislo a datum z C03a; priloha; souborny zaznam; svazany rocnikoscld#_773w_"#"_C03a59 isJCPoscld#_773w; "serclpr#"_773w; isJCPoserpr#_773w; "serclpr#"_773w; "serprx#"_770w; ak 000 (pozicia 07) = "s"osersz#; isSZPosersz#_773w; isZRP
+200    akskb2378cSkupina konspektu#Skupina konspektu#Conspectus categoryo072-asCODE
+200    akspkb2379cPredmetová kategória#Předmětová kategorie#Subject categoryo072-9sCODE
+200    algb54cJazyk dokumentu#Jazyk dokumentu#Languagenjazyky (neobsahuje 041h jazyk originalu) - zkratka a preklad z ciselniku; jazyk z kodovanych udajov - zkratka a preklad z ciselnikuo041 - a,b,d,e,f,g; UT_LANGUAGEo008 (pozicia 35 - 37); UT_LANGUAGEsCODE
+200    algob2438cJazyk originálu dokumentu#Jazyk originálu dokumentu#Language of originnJazyk originálu diela - skratka+ popis podla cislenika  "UT_LANGUAGE" v UnTablesdo041hsCODE
+200    algrb2398cJazyk resumé dokumentu#Jazyk resumé dokumentu#Language of work resumenJazyk resumé díla - zkratka+ popis podle číselníku  "UT_LANGUAGE" v UnTablesdo041b; UT_LANGUAGE
+200    algtb2415cJazyk textu#Jazyk textu#Language of textnjazyk textu samostatneo041a; UT_LANGUAGEsCODE
+200    alob2381cLokácia#Lokace#Locationmindex sa zapája na modifikátor „lo“olokácia 100l z holdingu
+200    alocb2400cSkupina vlastníka záznamu#Skupina vlastníka záznamu#Group of record ownernlokacie kniznic, ktore maju stiahnuty zaznamo999bsASCII,EXACT,LEFT,PHR
+200    alodib2382cLokácia_dislokácia#Lokace_dislokace#Location_dislocationmindex sa zapája na modifikátor „lo“olokácia 100l a dislokácia 100d z holdingu (100l_100d)
+200    amdtb14cMDT#MDT#UDC codenMDT (obycajne vybrane znaky MDT) na modifikator "mdt-1" je mozne zapnut indexovanie aj podla oddelovacov +:()""o080asCODE
+200    amdtkb2502cMDT a konspekt#MDT a konspekt#UDC and conspectusnMDT znaky aj z konspektuo080ao072asCODE
+200    amrab2489cAkcia/konferencia (opačné poradie podpolí)#Akcia/konferencia (opačné pořadí podpolí)#Event/conference (inverted order of subfields)nSpecialny index pre akcie, ktory indexuje polia akcie v obratenom poradi ako normalny index akcii (aua). Niekedy to moze byt vyhodne.o111 - c,d,aoC20 - e,f,arpodpolia zretazene - oddelovac medzera
+200    aoaiidcPoužívateľský kód záznamu pre OAI#Uživatelský kód záznamu pro OAI#User code for OAIrnapř NIDsCODE
+200    aobvyb2377cOblasť výskumu (pre SR)#Oblast výzkumu (pro SR)#Research field (for SR)do970-q
+200    aplb59cMiesto vydania#Místo vydání#Publication place   dxnmiesto vydania; miesto vydania zdrojoveho dokumentuo260 - a,eo773 - d (vybrat udaj - miesto vydania a miesto vyroby - z retazca: miesto vydania : vydavatel, rok (miesto vyroby : vyrobca, rok vyroby))sASCII,COMP,EXACT,LEFT,PHR
+200    aprab2462cPracovisko autora#Pracoviště autora#Author's workplacedxnfunkčnost nahrazena indexací 100u a 700u kvůli správné funkci epca výstupůo1XX - u  Nově 100u a 700usASCII,COMP,EXACT,FACET,LEFT,PHR
+200    apran1b2463cNázov pracoviska prvého autora#Název pracoviště prvního autora#Name of workplace of first authornnazev pracoviste prvniho autoraopodla 1XX - u zo zaznamu autority pracoviska pole 110 - a
+200    apravb2402cPracovisko pre vykazovanie (pre ČR)#Pracovisko pro vykazování (pro ČR)#Workplace for submiting (for CR)npracovisko vykazovanieoc26 - e
+200    apub1018cVydavateľ#Vydavatel#Publisher dxnvydavatel (na konci terminu odstranene vybrane znaky*); vydavatel zdrojoveho dokumentu (na konci terminu odstranene vybrane znaky*)o260 - b,fo773 - d (vybrat udaj - vydavatel a vyrobca - z retazca: miesto vydania : vydavatel, rok (miesto vyroby : vyrobca, rok vyroby))o928 - a,b,c,d,fsASCII,COMP,EXACT,FACET,LEFT,PHR
+200    apucb2483cVydavateľské údaje + ISBN, ISSN#Údaje o vydavateli + ISBN, ISSN#Publishing information + ISBN, ISSNdxmwholeStNum (neodstrani z podpole a text v zatvorkach - doplnok)nkombinovany index - ISBN, ISSN, vydavatelske udaje, vydavatelske udaje zdrojoveho dokumentuo020ao022ao260 - a,b,c,e,f,go773d (retazec: miesto vydania : vydavatel, rok (miesto vyroby : vyrobca, rok vyroby))o928 - a,b,c,d,fsASCII,COMP,EXACT,LEFT,PHR
+200    aregb2453cPredmet - geografický termín - oblasť#Předmět - geografický termín - oblast#Subject - geographical term - areadxnodkazovany region (prevzate z KL)opodla 6517 zo zaznamu autority pole 915asASCII,COMP,EXACT,LEFT,PHR
+200    as461b2447cKód odkazu na súborný záznam#Kód odkazu na souborný záznam#ID of linked main recordnserialy - odkaz na souborny zaznamo773w; ak 000 (pozicia 07) = "s" && 7737 (pozicia 03) = "s" && 7733 <> "zrp"
+200    as462b2446cKód odkazu na zviazaný ročník#Kód odkazu na svázaný ročník#ID of linked volume recordnserialy - odkaz na svazany rocniko773w; ak 000 (pozicia 07) = "s" && 7737 (pozicia 03) = "s" && 7733 = "zrp"
+200    as600b2469cPredmet - osobné meno#Předmět - osobní jméno#Subject - personal namedxmnoaddauth (bez hodnot z odkazovanej autority)npredmetove heslo - pers.autorita vcetne hodnot indexu "au" odkazovanych heselo600 - a,q,b,c,d,v,x,y,z,(7)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    as600rb2470cPredmet - rodina/rod#Předmět - rodina/rod#Subject - familydxmnoaddauth (bez hodnot z odkazovanej autority)n vcetne hodnot indexu "au" odkazovanych heselo600 - a,q,b,c,d,v,x,y,z,(7); ak I1 = 3rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    as610b2471cPredmet - korporácia#Předmět - korporace#Subject - corporationdxmnoaddauth (bez hodnot z odkazovanej autority); authBr (odstrani text v zatvorke v a)npredmetove heslo - akcia/korp. vcetne hodnot indexu "au" odkazovanych heselo610 - a,b,v,x,y,z,(7)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    as630b2473cPredmet - unifikovaný názov#Předmět - unifikovaný název#Subject - titledxmnoaddauth (bez hodnot z odkazovanej autority)n vcetne hodnot indexu "au" odkazovanych hesel, pred subtagom k je pridana mezera kvoli radeniu cisiel pred pismenao630 - a,g,h,n,p,v,x,y,z,(7)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    as650b2472cPredmet - predmetové heslo#Předmět - věcný termín#Subject - subject termdxmnoaddauth (bez hodnot z odkazovanej autority)n vcetne hodnot indexu "au" odkazovanych heselo650 - a,b,c,d,v,x,y,z,(7)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    as650acladkb2303cPredmetové heslá (pre digitálnu kroniku)#Předmětová hesla (pro digitální kroniku)#Subject headings (for digital chronicle)mdigkro650a ak 980X = D a je to článok
+200    as650tb2484cPredmet - predmetový reťazec#Předmět - předmětový řetězec#Subject - subject full termm650termsncele terminy z jednotlivych podpoli neroztrhane na slova; v zavislosti na parametru "650terms"o650 - a,b,c,d,v,x,y,zrpodpolia zretazene - oddelovac medzera
+200    as651b2468cPredmet - geografický termín#Předmět - geografický termín#Subject - geographical termdxmnoaddauth (bez hodnot z odkazovanej autority)npredmetove heslo - geograficke vcetne hodnot indexu "au" odkazovanych heselo651 - a,v,x,y,z,(7)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    as653b2475cPredmet - kľúčové slová#Předmět - klíčová slova#Subject - keywordsdxnpredmetove hesla/kluc.slova vcetne hodnot indexu "au" odkazovanych heselo653 - a,(7 - nemalo by sa vyskytovat)sASCII,COMP,EXACT,LEFT,PHR
+200    as655b2474cPredmet - forma a žáner#Předmět - forma a žánr#Subject - gendre, formdxmnoaddauth (bez hodnot z odkazovanej autority)nformalne deskriptory vcetne hodnot indexu "au" odkazovanych heselo655 - a,b,c,v,x,y,z,(7)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    asaub1ccAutor (pre triedenie)#Autor (pro třídění)#Author (for sorting)oCFS kompatibilitasY,SORT
+200    ascpidcScopus IDo024a - a (ak 2 = "scopus")nzatim bez atributu, vyuzito jako identifikator zaznamu
+200    asekcKód zdrojového dokumentu#Kód zdrojového dokumentu#ID of source recordnkod zdrojoveho dokumentu pro EPCAo773 - w
+200    asib2481cSignatúry exemplárov#Signatúry exemplářů#Call numbers of itemsmsigidxnsignatury vsech exemplaru daneho zaznamu; v zavislosti na parametru "sigidx"nsignatura suborneho zaznamuounh_100soC08asCOMP,WORDS
+200    asigab2436cČíslo archívnej kópie (pre SR)#Číslo archivní kopie (pro SR)#Archive copy number (for SR)nčíslo archívnej kópieo972asASCII,COMP,EXACT,PHR
+200    askpccSkupina kategórie publikačnej činnosti (pre SR)#Skupina kategorie publikační činnosti (pro SR)#Group of publication activity category (for SR)nSkupina kategorie publikacnej cinnosti. Algoritmicky vyhodnoteny index na zaklade pola 970a. Popis viz. vzor vystupu pre MSSR v internej.dok EPCA vystupov.o970a zgrupovane algoritmom
+200    asmrab2488cPredmet - akcia/konferencia (opačné poradie podpolí)#Předmět - akce/konferencie (opačné pořadí podpolí)#Subject - event/conference (inverted order of subfields)nSpecialny index pre akcie, ktory indexuje polia akcie v obratenom poradi ako normalny index akcii (aua). Niekedy to moze byt vyhodne.o611 - c,d,arpodpolia zretazene - oddelovac medzera
+200    asnkpcb2541cSkupina kategórie publikačnej činnosti (pre SR - od roku 2015)#Skupina kategorie publikační činnosti (pro SR - od roku 2015)#Group of publication activity category (for SR from 2015)nIndexuje se skpc podle čísleníku EPCA_N_SNKPC_INDEX. Nastavuje se v INDEXPARAMS SkpcNew.o970a přeloženo přes číselník do skupiny
+200    asrcb2499cZdrojový dokument#Zdrojový dokument#Source documentdxnzdrojovy dokument nazovo773tsASCII,COMP,EXACT,LEFT,PHR
+200    asrc1b2464cNázov zdrojového dokumentu#Název zdrojového dokumentu#Title of source recordnprvni zdrojovy dokument nazovo773tsASCII,COMP,EXACT,LEFT,PHR,SORT
+200    asrcab2496cZdrojový dokument - autori#Zdrojový dokument - autoři#Source document - authorsdxnzdroj dok autorio773asASCII,COMP,EXACT,LEFT,PHR
+200    asrccb2433cČíslo zdrojového dokumentu#Číslo zdrojového dokumentu#Number od source documentnvyselektovane z retazca iba cislo periodikao773g (cislo periodika)sASCII,COMP,EXACT,LEFT,PHR
+200    asrcdb2495cDátum zdrojového dokumentu#Datum zdrojového dokumentu#Date of source documentndatum zdrojoveho dokumentu; formaty YYYYMMDD,YYYYMM,YYYY; teda kazdy datum sa indexuje 3x; viz. tiez index yeo773d (vybrat udaj - datum - z retazca: miesto vydania : vydavatel, rok), alebo 773g (vybrat datum v retazca: Rocnik, cislo (datum))
+200    asub21b29cPredmetové heslá#Předmětová hesla#Subject headings dxmnoaddauth (bez hodnot z odkazovanej autority); authBr (odstrani text v zatvorke v podpole a)nvsetky predmetove hesla vcetne hodnot indexu "au" odkazovanych heselo600 - a,q,b,c,d,v,x,y,z,(7)o610 - a,b,v,x,y,z,(7)o611 - a,q,d,c,e,v,x,y,z,(7)o630 - a,g,h,n,p,v,x,y,z,(7)o648 - a,v,x,y,z,(7)o650 - a,b,c,d,v,x,y,z,(7)o651 - a,v,x,y,z,(7)o653 - a,(7 - nemalo by sa vyskytovat)o654 - a,b,c,v,x,y,z,(7)o655 - a,b,c,v,x,y,z,(7)o656 - a,k,v,x,y,z,(7)o657 - a,v,x,y,z,(7)o658 - a,b,c,(7)rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,FACET,LEFT,PHR
+200    asukpcb2540cSkupina kategórie publikačnej činnosti (pre SR - používateľská)#Skupina kategorie publikační činnosti (pro SR - uživatelská)#Group of publication activity category (for SR - individual)nIndexuje se skpc podle čísleníku EPCA_U_SUKPC_INDEX. Nastavuje se v INDEXPARAMS SkpcUser.o970a přeloženo přes číselník do skupiny
+200    aT001b12cKód záznamu#Kód záznamu#Local number nkod zaznamu z tagu 001o001sASCII,COMP,EXACT
+200    at001ab2434cKód pôvodného záznamu#Kód původního záznamu#ID of origin recordnkod zaznamu z centalneho katalogu (napr. NKP a pod.; cislo atributu zvolene tak, aby bolo rovnake pre bazu autorit aj akatalogu a pre vsetky institucie)oc99 - a
+200    at001nb2426cKód záznamu bez vodiacich núl#Kód záznamu bez vodících nul#ID of record withou leading zeronkod c000125, v indexe c000125 a c125, su v nom aj deziderataoT001 bez vodiacih nulsCODE
+200    atagb2500cPole záznamu#Pole záznamu#Field of recordntoto je servisny index pre katalogizatoraovsetky cisla tagov a tag_subtagov daneho zaznamusCODE
+200    atib4cNázvové údaje#Názvové údaje#Title dxmno773 (nezaindexuje 773); ti430 (idnexuje polia 430 z odkazovaného záznamu)nnazvove udaje( na konci terminu orezane vybrane znaky*); nazov nesamostatnej prilohy( na konci terminu orezane vybrane znaky*); nazvove udaje - nazov + cislo casti ( na konci terminu orezane vybrane znaky*); nazov casti dokumentu; souvisejici neovereny nazev; dotiahne podla tagu 2407 autoritu z nej precita vsetky 4xxt a doplni do indexu; 430a z autority naviazanej v 1307 na modifikator ti430o130 - a,d,f,g,n,po76X,77X,78X - to210,222 - ao240, 243 - a,g,h,s,l,n,po242 - a,b,h,n,po245 - a,b,h,n,po246,247 - a,b,g,h,n,poc09 - ao245 - a,no505 - to700,710,711 - to740 - a,po4**t z autority podla linku v 2407o430a z autority naviazanej v 1307 na modifikator ti430rpodpolia zretazene - oddelovac ". "sY,ASCII,COMP,EXACT,LEFT,PHR,SORT
+200    ati1b2412cHlavný názov (pre triedenie)#Hlavní název (pro třídění)#Main title (for sorting)nprvni nazev pro trideni (odstranene vybrane znaky na konci *)o245 - asCOMP,WORDS
+200    ati1yeb2493cHlavný názov a rok vydania#Hlavní název a rok vydání#Main title and year of publishingmti1yenprvni nazev s datem pro tridenio245 - a, 260 - c
+200    ati2b2467cHlavný názov#Hlavní název#Main titlenprvy nazov, leb b index bez odstranenia clenovo245 - asCOMP,WORDS
+200    ati3b4ccHlavný názov s rozlišovacími údajmi#Hlavní název s rozlišovacími údaji#Main title with other detailsnhlavní název nestačí pro třídění vícesvazkových děl. Index jen pro třídění. 245a se doplní o pole 245b (pokud je na konci 245a ":"), 245n, 245p - ze všech těchto podpolí (včetně 245a) je odstraněna interpunkce z konce pole. Pokud je složený řetězec delší než 90 znaků, tak se 245a zkrátí na maximum a 245b, 245n, 245p se zkrátí na čtyři znaky. o245a_" "_245b_" "_245n_" "_245prpodpolia zretazene - oddelovac medzerasSORT
+200    atiaclb2413cSeriály - všetky názvové údaje pre čísla#Seriály - všechny názvové údaje pro čísla#Serials - all titles for itemsmjcpTI (vytvara sa intex "tiacl")nvsechny nazvove udaje (serialy, jcp); zapina se modifikatorem "jcpTI"nvsechny nazvove udaje (serialy, jcp); zapina se modifikatorem "jcpTI" (na konci kazdeho podpola orezane vybrane znaky*)o245 - a,b,c,k,p; 210 - a,b; 222 - a,b; 240,242,243,247 - a,p; C09 - a; ak isJCP (viz katalogM21-poznamky)o245 - a,b,c,k,p; 210 - a,b; 222 - a,b; 240 - a,p; 242 - a,b,p; 243 - a,p; 246 - a,b,p; 247 - a,b,p; isJCP
+200    atiaib2387cIntegračné zdroje - názvové údaje#Integrační zdroje - názvové údaje#Integrating resources - titledxnintegracne zdroje - nazvove udaje (na konci kazdeho podpola orezane vybrane znaky*)o245 - a,b,c,k,p; isINTEGo210 - a,b; 222 - a,b; 240 - a,p; 242 - a,b,p; 243 - a,p; 246 - a,b,p; 247 - a,b,p; isINTEG
+200    atiaisb2388cIntegračné zdroje - názvové údaje pre súborné záznamy#Integrační zdroje - názvové údaje pro souborné záznamy#Integrating resources - title for main recorddxnintegracne zdroje - nazvove udaje pre suborne zaznamy (na konci kazdeho podpola orezane vybrane znaky*)o245 - a,b,c,k,p; isSZIo210 - a,b; 222 - a,b; 240 - a,p; 242 - a,b,p; 243 - a,p; 246 - a,b,p; 247 - a,b,p; isSZI
+200    atiaizb2389cIntegračné zdroje - názvové údaje pre záznamy zväzkov#Integrační zdroje - názvové údaje pro záznamy svazků#Integrating resources - title for volumedxnintegracne zdroje - nazvove udaje zaznamy zvazkov (na konci kazdeho podpola orezane vybrane znaky*)o245 - a,b,c,k,p; isZRIo210 - a,b; 222 - a,b; 240 - a,p; 242 - a,b,p; 243 - a,p; 246 - a,b,p; 247 - a,b,p; isZRI
+200    atiasb2425cSeriály - názvové údaje#Seriály - názvové údaje#Serials - titledxnnázvové údaje všech typů ser.záznamů (na konci kazdeho podpola orezane vybrane znaky*)o245 - a,b,c,k,p; isSERIALo210 - a,b; 222 - a,b;240 - a,p; 242 - a,b,p; 243 - a,p; 246 - a,b,p; 247 - a,b,p; C09 - a; isSERIAL
+200    atiasrb2423cSeriály - názvové údaje pre zviazané ročníky#Seriály - názvové údaje pro svázané ročníky#Serials - title for volumesdxnnázvové údaje svázaného rocníku (na konci kazdeho podpola orezane vybrane znaky*)o245 - a,b,c,k,p; isZRPo210 - a,b; 222 - a,b; 240 - a,p; 242 - a,b,p; 243 - a,p; 246 - a,b,p; 247 - a,b,p; C09 - a; isZRP
+200    atiaszb2424cSeriály - názvové údaje pre súborné záznamy#Seriály - názvové údaje pro souborné záznamy#Serials - title for main recorddxnnázvové údaje souborného záznamu per. (na konci kazdeho podpola orezane vybrane znaky*)o245 - a,b,c,k,p; C09 - a; isSZPo210 - a,b; 222 - a,b; 240 - a,p; 242 - a,b,p; 243 - a,p; 246 - a,b,p; 247 - a,b,p; isSZP
+200    aticlb2442cSeriály - názvové údaje pre čísla#Seriály - názvové údaje pro čísla#Serials - title for itemsdxnserialy - nazev pro jednotlive cislo nebo prilohu (na konci terminu sa orezu vybrane znaky*)o245 - a; isJCP
+200    aticladkb2300cNázov (pre digitálnu kroniku)#Název (pro digitální kroniku)#Title (for digital chronicle)mdigkro245ab ak 980X = D a je to článok
+200    aticldb2441cSeriály - názov čísla a dátum očakávania#Seriály - název čísla a datum očekávání#Serials - item title and date of expectingdxnserialy - nazev a ocekavany datum cisla nebo prilohy (na konci podpole a sa orezu vybrane znaky*)o245 - a_"-"_C03 - a; isJCP
+200    aticlrb2414cNázov periodika rok číslo#Název periodika rok číslo#nak je to jednotlive cislo periodika, tak tam vlozi uvedene polia spojene do jedneho retazca pricom su oddellene pomlckou (na konci podpole a sa orezu vybrane znaky)o245a_"-"_915c_"-"_915b; isZRP
+200    atiib2392cIntegračné zdroje - hlavný názov#Integrační zdroje - hlavní název#Integrated resources - main titledxnintegracne zdroje - nazov (na konci terminu orezane vybrane znaky*)o245 - a; isINTEG
+200    atiisb2391cIntegračné zdroje - hlavný názov pre súborné záznamy#Integrační zdroje - hlavní název pro souborné záznamy#Integrating resources - main title for main recorddxnintegracne zdroje - nazov pro suborny zaznam (na konci terminu orezane vybrane znaky*)o245 - a; isSZI
+200    atiizb2390cIntegračné zdroje - hlavný názov pre záznamy zväzkov#Integrační zdroje - hlavní název pro záznamy svazků#Integrating resources - main title for volumesdxnintegracne zdroje - nazov pre zvazky integracnych zdrojov (na konci terminu orezane vybrane znaky*)o245 - a; isZRI
+200    atikb33cKľúčový názov seriálu#Klíčový název seriálu#Key titledxnklucovy nazovo222 - a bsY,ASCII,COMP,EXACT,LEFT,PHR
+200    atisb2445cSeriály - hlavný názov#Seriály - hlavní název#Serials - main titledxnserialy - nazev (na konci terminu orezane vybrane znaky*)o245 - a; isSERIAL
+200    atisrb2443cSeriály - hlavný názov pre zviazané ročníky#Seriály - hlavní název pro svázané ročníky#Serials - main title for volumesdxnserialy - nazev pro svazany rocnik periodika (na konci terminu orezane vybrane znaky*)o245 - a; isZRP
+200    atiszb2444cSeriály - hlavný názov pre súborné záznamy#Seriály - hlavní název pro souborné záznamy#Serials - main title for main recorddxnserialy - nazev pro souborny zaznam (na konci terminu orezane vybrane znaky*)o245 - a; isSZP
+200    atocb2376cFulltext z OKCZ (generovaný index)#Fulltext z OKCZ (generovaný index)#Fulltext from OKCZ (generated index)oLEN SOLR, cfsindex typu GsG,FULL
+200    atrb2482cPrírastkové čísla exemplárov#Přírustková čísla exemplářů#Track number of itemsmtridxnprirustkova cisla vsech exemplaru daneho zaznamu; v zavislosti na parametru "tridx"ounh_100 - t
+200    aupsb2350cInformácia o fulltexte#Informace o fulltextu#Information about fulltextnIdexace informací o ukládání fulltextů. Indexuje se podpole a ,b. Pokud je nejaka hodnota, ulozi se tam FoC52sCODE
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmddsCODE
+200    aveb2418cDodávateľ (pre seriály)#Dodavatel (pro seriály)#Vendor (for serials)dxnpodla C07 v zazname dotiahnuty zaznam dodavatela z autority a z neho tag 110opodla c07 3 polia z autority dodavatela: 110 - a,b
+200    avolb2450cRočník časopisu#Ročník časopisu#Volumenrocnik serialuo915 - a
+200    avolclb2419cRočník časopisu - záznam čísla#Ročník časopisu - záznam čísla#Volume - item recorddxnročník časopisu-jednotliv.čísel (napr Roč.2002)   *jr 9.2.04 upraveno zarovnani indexu na 3 mista (012) - pouze u *xo915 - a; isJCP
+200    avolsrb2421cRočník časopisu - záznam zväzku#Ročník časopisu - záznam svazku#Volume - record of volumedxnročník svázanéh ročníku   * jr 9.2.04 upraveno zarovnani indexu na 3 mista (052) - pouze u *xo915 - a; isZRP
+200    avyzb2403cVyskumný zámer#Vyzkumný zaměr#Research intentionsnvyzkumny zameroc13 - a
+200    awosidcWoS IDo024a - a (ak 2 = "wos")nzatim bez atributu, vyuzito jako identifikator zaznamu
+200    ayeb30b31cDátum vydania#Datum vydání#Date of publicationdxnviz. srcd (prevzate z KL); datum vydania, odfiltruje znaky [ ]cp; indexuje sa v tvare YYYYMMDD,YYYYMM a YYYY (podla toho aky presny datum je k dispozicii); datum vydania, index pre zviazane rocniky a cisla periodik - aby sa dostali do datumoveho indexu; datum vydania, toto su roky z kalendara v subornom zazname. Hlavne kvoli tomu aby sa pri triedeni suborny zaznam dostal na zaciatok a tiez aby sa nasiel, ak sa da limita datumu vydania (rs. 5.9.03); datum ocakavania JCP - vsetky formaty datumu YYYYMMDD,YYYYMM,YYYYo008 (pozicia 07-10 a 11-14)o260 - c,go915 - aoC02 - a (prve 4 znaky=rok)oC03 - asN,SORT,FACET
+200    ayeob2457cRok ohlasu#Rok ohlasu#Year of citationnrok ohlasuo971-dsN
+200    ayeocb2428cDátum očakávania čísla#Datum očekávání čísla#Date of item expectingdxndatum ocakavania JCP - vsetky formaty datumu YYYYMMDD,YYYYMM,YYYYoC03 - asN
+200    ayeovb2370cRok vykázania ohlasu#Rok vykázání ohlasu#Year of citation evidencemvykohl-nnrok vykázania ohlasu; Indexuje sa ak existuje modifikátor vykohl-no971-vsN
+200    ayesb2448cRok vydania časopisu#Rok vydania časopisu#Year of publication of serialnrok vydani serialuo915 - csN
+200    ayesrb2422cRok vydania časopisu pre zväzky#Rok vydania časopisu pro svazky#Year of publication of serial for volumesnrok svázaného ročníkuo915 - c; isZRP
+200    ayevb2456cRok vykazovania#Rok vykazování#Year of submitionnrok vykazovaniao985 - r; c26 - dsN,SORT,FACET
+200    aqjcrb2546cJCR kvartil#JCR kvartilnJCR kvartilnze zdojového dokumentu indexace 9787 (hodnota stejná jako T167)o9787 ze zdrojového dokumenusCODE
+200    aqsjrb2547cSJR Best Quartile#SJR Best QuartilenSJR Best Quartilenze zdojového dokumentu indexace 9784 (hodnota stejná jako T164). Indexuje jen číslo (v podpoli $4 máme napr. Q1 takže indexované bude jen 1)o9784 ze zdrojového dokumenusCODE
+200    aucdrb2549cDruh umeleckej činnosti#Druh umělecké činnostinDruh umeleckej činnosti#Druh umělecké činnostioC45bsCODE
+200    aucvyb2550cVýstup a druh výstupu umelecké činnosti#Výstup a druh výstupu umělecké činnostinVýstup a druh výstupu umelecké činnosti#Výstup a druh výstupu umělecké činnostioC45d_C45esCODE
+200    aucteb2551cTeritorialita umeleckej činnosti#Teritorialita umělecké činnostinTeritorialita umeleckej činnosti#Teritorialita umělecké činnostioC43bsCODE
+200    aucmub2552cMiera účasti na umeleckej činnosti#Míra účasti na umělecké činnostinMiera účasti na umeleckej činnosti#Míra účasti na umělecké činnostioC43dsCODE
+200    auphb2553cPoužívateľské štítky (generovaný index)#Uživatelské štítky (generovaný index)#User tags (generated index)nPoužívateľské štítky (generovaný index)#Uživatelské štítky (generovaný index)#User tags (generated index)oLEN SOLR, cfsindex typu GsG,FULL
+200    asuohb2554dxcObsadenie hudobného diela#Obsazení hudebního díla#Medium of PerformancenIndexuje sa celá spojená 382, aj samostne jednotlivé častio382,925asASCII,COMP,EXACT,LEFT,PHR
+200    apoub2556cPoužívateľské určenien100$a/17-19 (indexovaná každá pozíciu osobitne), len ak je písmenooPoužívateľské určenie
+200    aimbb2557cImpact faktor pre EPCA 0-neexistuje/1-existuje#Impact faktor pro EPCA 0-neexistuje/1-existujenimpact faktor pro EPCA - indexovane jako imp (ixIndexValuesIF)o463/461 -> zdroj serialsCODE
+200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2
+200    aqjcrsjrb2558cKvartily JCR a SJR#Kvartily JCR a SJR#JCR and SJR Quartilenkvartily jcr a sjr dohromady v jenom; hodnoty (cisla) jsou rozlisena sufixem "jcr" nebo "sjr" napr. 3jcr; ze zdojového dokumentu indexace 9784 (hodnota stejná jako T164); vyuziva se v EpcaReports pro pole AND a ORo9784 ze zdrojového dokumenumzapina se na paramter quartileJcrSjr ($b) modifikatoru xclaHodKrit ($a) tj. primo souvisi s indexy qjcr a qsjr
+200    aqjcrsjrorb2560cKvartily JCR a SJR#Kvartily JCR a SJR#JCR and SJR Quartilenhodnoty kvartilu jcr a sjr kazdy zvlast se sufixem kvartilu ; hodnoty (cisla) jsou rozlisena sufixem "jcr" nebo "sjr" napr. 3jcr; ze zdrojového dokumentu indexace 9784,7 (hodnota stejná jako T164,7); vyuziva se v EpcaReportso978 ze zdrojového dokumenumzapina se na paramter quartileJcrSjr ($b) modifikatoru xclaHodKrit ($a) tj. primo souvisi s indexy qjcr a qsjr a qjcrsjr
+200    adoib2559cDOInDOIo024 - a (ak i1="7" a i2=" " a 2 = "doi")sCODE
+200    ackpcb2561cKategória publikácie od 2022o976ak976anECPA CREPC - hodnota pole 976a - vsechny opakovani podle a podpole (EPCA_CREPC_KATC)sCODE
+200    actvpb2562cTyp výstupu publikačnej činnosto976bk976bnECPA CREPC - hodnota pole 976b - vsechny opakovani podle a podpole (EPCA_CREPC_TYPD)sCODE
+200    acstob2563cŠtudijný odboro976ck976cnECPA CREPC - hodnota pole 976c - vsechny opakovani podle a podpole (EPCA_CREPC_STUDO)sCODE
+200    ackucb2564cKategória umeleckej činnosti od 2022o976ok976onECPA CREPC - hodnota pole 976o - vsechny opakovani podle a podpole (EUCA_CREUC_KAT)sCODE
+200    ackohb2565o9716k9716cECPA CREPC - Kategória ohlasu od 2022sCODE
+200    acdzob2566o971lk971lcECPA CREPC - Domáci/zahraničný ohlas - STABLE_EPCA_CREPC_DZOHsCODE
+200    acdzrb2567o976lk976lcECPA CREPC - Domáca/zahraničná publikácia - STABLE_EPCA_CREPC_DZPsCODE
+200    aqjcib2568cJCI kvartil#JCI kvartilnJCI kvartilnze zdojového dokumentu indexace 978N (hodnota stejná jako T16N)o978N ze zdrojového dokumenusCODE
+200    acskpcb2569cKategória publikácie od 2022 pro tridenio976anspecialni poradi pro trideni podle vyznamnosti V1, V2, V3, P1, P2, O1, O2, O3, U1, U2, U3, D1, I1, I2, I3sCODE
+200    aqaisb2570cAIS kvartil#AIS kvartilnAIS kvartilnze zdojového dokumentu indexace 978D (hodnota stejná jako T16D)o978D ze zdrojového dokumenusCODE
+###
+# @id UN_TABLES BASE_INDEXES_A
+002    13.04.18 js; pridany index t001cr2
+002    27.11.14 rn; pridané indexy pre digitálnu kroniku - 2300 - 2318
+002    autority
+200    aT001b12cKód záznamu#Kód záznamu#Local number nkod zaznamuo001-sASCII,COMP,EXACT
+200    aa200db2300cOsobné autority DK#Osobné autority DKdxnosobné autority DKo200abcdfx ak 980x = D
+200    aa210acKorporácie a akcie#Korporace a akcenkorporacie+akcie, ktore su oznacene 980x=a alebo nemaju ziadne oznacenie v 980x (mimo eventualne 0 (nula)), 510 pokud existuje modifikator "au5xx" Toto su teda korporacie+akcie kt. nie su napr. dodavatel/vydavatel viz. tiez auc,aua,aucao210,410(,510)-abcdfst (pro 980x="a" alebo prazdne)
+200    aa210db2301cAkcie DK#Akce DKdxnakcie DKo210abcdef ak 980x = D
+200    aa210ob2302cKorporácie DK#Korporace DKdxnkorporácie DKo210abcdef ak 980x = O
+200    aa210pcVydávateľ#Vydavatel#Publishern(vydavatel (publisher)) nevytvara sa, obsah ide do aucpo.
+200    aa210vcDodávateľ#Dodavatel#Vendorn(dodavatel (vendor)) nevytvara sa, obsah ide do aucvo.
+200    aa210wcPracovisko#Pracovištěn(pracovisko) nevytvara sa, obsah ide do aucwo.
+200    aa215b58b2481c Geografické meno#Geografické jméno#Name geographic   dxnaut.geo.nazov, 515 pokud existuje modifikator "au5xx"o215,415(,515)-abcxyzoviz . atribut 58sASCII,COMP,EXACT,LEFT,PHR
+200    aa215db2303cGeografická autorita DK#Geografická autorita DKdxngeografické autority DKo215axyz ak 980x = D
+200    aa220b2483cAutorita rodu 520#Aurotita rodu 520dxnvstupny prvok autorit rodu, 520 pokud existuje modifikator "au5xx"o220,420(,520)-abcxyzsASCII,COMP,EXACT,LEFT,PHR
+200    aa230b2484cFilm názvové údaje#Film názvové údaje#dxnfilm nazvove udaje, 530 pokud existuje modifikator "au5xx",  pred subtagom k je pridana mezera kvoli radeniu cisiel pred pismenao230,430(,530)-akhisASCII,COMP,EXACT,LEFT,PHR
+200    aa230cb2464ccitacie pre tag 810#citacie pre tag 810#dxncitacie pre tag 810o230,430 pro 980x=CsASCII,COMP,EXACT,LEFT,PHR
+200    aa230db2304cSúťaž#Soutěždxnsutazo230abhims ak 980x = D
+200    aa230eb2466cEdice##dxnedice - zapojeni modifikatoru "authuser230"o230,430(,530)-akhi                     pro 980x=EsASCII,COMP,EXACT,LEFT,PHR
+200    aa230fb2465ccitacie pre tag C13#citacie pre tag C13#dxncitacie pre tag C13o230,430 pro 980x=FsASCII,COMP,EXACT,LEFT,PHR
+200    aa230gb2491cprojekty/granty#projekty/granty#projects/grantsdxnprojekty/grantyo230,430 pro 980x=G
+200    aa235b2428cskupinovy unifikovany nazov#skupinovy unifikovany nazov#dxnvstupny prvok autorit skupinovy unifikovany nazov, 535 pokud existuje modifikator "au5xx"o235,435-aekxyzsASCII,COMP,EXACT,LEFT,PHR
+200    aa240b2467cAutorita rodu 540#Autorita rodu 540dxnvstupny prvok autorit rodu, 540 pokud existuje modifikator "au5xx"o240,440(,540)-asASCII,COMP,EXACT,LEFT,PHR
+200    aa245b2429cmeno skupinovy nazov#meno skupinovy nazov#nvstupny prvok autorit meno skupinovy nazov, 545 pokud existuje modifikator "au5xx"o245,445-1asASCII,COMP,EXACT,LEFT,PHR
+200    aa250b2480cVecná téma#Věcné téma#dxnhesla 250 a 450niba ak je nastaveny parameter "aut960a"o250,450-abctxo960asASCII,COMP,EXACT,LEFT,PHR
+200    aa250db2482cHeslá#Hesladxnhesla - jen deskriptorynpri zapnutom modifikatore "aux50axyz" indexuje zretazene subtagy do jedneho retazca oddelene ". "o250-abcto250,450-axyzsASCII,COMP,EXACT,LEFT,PHR
+200    aa250kb2418cklucove slova#klucove slova#dxnak 980x=Ko250-acsASCII,COMP,EXACT,LEFT,PHR
+200    aa250ub2419cmdt-slovny popis#mdt-slovny popis#dxnak 980x=Uo250-acsASCII,COMP,EXACT,LEFT,PHR
+200    aa285b2433cformalne deskriptory#formalne deskriptory#dxnvstupny prvok autorit formalne deskriptory, 585 pokud existuje modifikator "au5xx"nvstupny prvok autorit formalne deskriptory, 580 pokud existuje modifikator "au5xx"o285,485-ao280,480-asASCII,COMP,EXACT,LEFT,PHR
+200    aa290b2432cskupina konspektu#skupina konspektu#dxnvstupny prvok autorit skupina konspektu, 590 pokud existuje modifikator "au5xx"o290,490-axsASCII,COMP,EXACT,LEFT,PHR
+200    aa290rb2430cpredmetova kategoria##dxnvstupny prvok autorit skupina Predmetova kategoria , 590 pokud existuje modifikator "authuser290"o290,490-ax & 980x=RsASCII,COMP,EXACT,LEFT,PHR
+200    aa290sb2431cskupina konspektu##dxnvstupny prvok autorit skupina konspektu, 590 pokud existuje modifikator "authuser290"o290,490-ax & 980x=SsASCII,COMP,EXACT,LEFT,PHR
+200    aa2XXYcdxnIndexy ktore zavisia od obsahu 980x, modifikatora authuser2XX - byvaju vytvarane pre kazdu instituciu inak podla potreby uzivatelskych autorit. Niektore napr. a230e su zapojene pre vsetky institucie totozne. Vymnku tvoria indexy a210v,a210p,a210w ktore sa nevytvaraju - resp vytvaraju pod inym nazvom - aucv,aucp,aucr - kvoli kompatibilite.o2xx-abcdfxyzt,4xx-abcdfxyzt,5xx-...,980x
+200    aa960b2494cHeslo anglicky#Heslo anglicky#dxnanglicky ekvivalent hesla. Len niektore instalacie.o960-asASCII,COMP,EXACT,LEFT,PHR
+200    aaub4b1003cVstupný prvok#Vstupní prvek#Entry elementcVstupný prvok#Vstupný prvok#cVstupný prvok#Vstupní prvek#Entry elementcVstupný prvok#Vstupný prvok#cVstupný prvok#Vstupní prvek#Entry elementcVstupný prvok#Vstupný prvok#cAutorské údaje#Autorské údaje#Authordxnvstupny prvok autority, 500 pokud existuje modifikator "au5xx"nvstupny prvok autority, 510 pokud existuje modifikator "au5xx"nvstupny prvok autority, 515 pokud existuje modifikator "au5xx"nvstupny prvok autority, 520 pokud existuje modifikator "au5xx"nvstupny prvok autority, 530 pokud existuje modifikator "au5xx"nvstupny prvok autority, 590 pokud existuje modifikator "au5xx"nvstupny prvok autority, 540 pokud existuje modifikator "au5xx"nvstupny prvok autority, 590 pokud existuje modifikator "au5xx"nvstupny prvok autority, 550 pokud existuje modifikator "au5xx"nvstupny prvok autority, 585 pokud existuje modifikator "au5xx"nvstupny prvok autority, 590 pokud existuje modifikator "au5xx"nobsah celeho indexu au zavisi od obsahu 980x=0 viz. poznamka u INDEXPARAMSnpri zapnutom modifikatore "aux50axyz" indexuje zretazene subtagy do jedneho retazca oddelene ". "o200,400(,500)-abcdfo210,410(,510)-abcdfo215,415(,515)-abcxyzo220,420(,520)-abcxyzo230,430(,530)-akhio235,435(,535)-ao240,440(,540)-1ao245,445(,545)-1ao250,450(,550)-abco285,485(,585)-ao290,490(,590)-ao980-xo250,450-axyzoviz . atribut 4sASCII,COMP,EXACT,LEFT,PHR
+200    aauab3b1006cAkcia/konferencia #Akce/konference#Conference namecAkcia/konferencia #Akce/konference#Author-name conferencedxnakcie, 510 pokud existuje modifikator "au5xx"o#VALUE!oviz . atribut 3sASCII,COMP,EXACT,LEFT,PHR
+200    aaucb2b1005cKorporácia#Korporace#Corporate namecKorporácia#Korporace#Author-name corporatedxnkorporacie, 510 pokud existuje modifikator "au5xx" tento idnex obsahuje vsetky 210 s prislusnym indikatorom, bez ohladu na obsah 980x (teda vcetne dodavatelov a vydavatelov); neobsahuje zaznamy oznacene 980x=0nkorporacie (vsetky bez ohladu na 980x) mimo oznacenych 980x=0o210,410(,510)-abcdfsto210,410(,510)-abcdfst  ( ak je to korporacia , ind1=0)oviz . atribut 2sASCII,COMP,EXACT,LEFT,PHR
+200    aaucacKorporácie bez dodávateľov a vydávateľov#Korporace bez dodavatelů a nakladatelůnkorporacie neoznacene 980x alebo oznacene 980x=a - toto su "ciste" korporacie bez dodavatelov a vydavatelov vytvara sa len ak je modifikator "indexAuca"o210,410(,510)-abcdfst (pro 980x="a" alebo prazdne) ind1=0
+200    aaucpb2488cKorporácie - vydávateľ#Korporace - vydavateldxnkorporace - vydavatel, 510 pokud existuje modifikator "au5xx"o210,410(,510)-abcdfst a 980b (pro 980x="p")sASCII,COMP,EXACT,LEFT,PHR
+200    aaucrb2498b2499cNázov a kód pracoviska#Název a kód pracovištědxnnazev a kod pracoviste totozne s atributom 2499 kvoli kompatibilite so starymi nastaveniaminnazov a kod pracoviste; povodne tu bol index aucrk, kt. obsahoval len kod pracoviska; tento bol 7.11 zruseny; pozor v indexe aucr su vsetky 210+410 (+event 510) zo zaznamov kde 980x=W pricom odkazy zo 410 su so suffixom " (o)" - t.j. odkaz totozne s atributom 2498 kvoli kompatibilite so starymi nastaveniami zmena 7.11.03 rs,lpo210,410-abcdfst (pro 980x="w") pripadne 510 podla modif.sASCII,COMP,EXACT,LEFT,PHR
+200    aaucvb2487cKorporácia - dodávateľ#Korporace - dodavateldxnkorporace - dodavatel, 510 pokud existuje modifikator "au5xx"o210,410(,510)-abcdfst (pro 980x="v")sASCII,COMP,EXACT,LEFT,PHR
+200    aaukb1013cKód autority#Kód autority#Authority/format idckod autority#kod autority#cKód autority#Kód autority#Authority/format idckod autority#kod autority#cKód autority#Kód autority#Authority/format idcKód autority#kod autority#ckod autority (epca)#kod autority (epca)#Authority/format idnkod autoritynkod autority (epca)o200,400,500,700-3o210,410,510,710-3 o215,415,515,715-3o220,420,520,720-3o230,430,530,730-3o235,435,535,735-3o240,440,540,740-3o245,445,545,745-3o250,450,550,750-3o285,485,585-3o290,490,590-3oC023,C033,C043,C083,C103,C113,C133,C143,C153,C233,C243,C333,C343,C353, C493, C024,C084, C23i,C487sCODE
+200    aauk1b2479cOdkazový index#Odkazový indexnodkazovy index, toto je specialny index pre odkazovanie medzi zaznamami. Vyhladavaci termin sa konstruuje v zobrazovacom formate. "auk1" index obsahuje konstantu "x" pre zaznamy, kde sa vyskytla aspon jedna chyba referencnej integrity (neexistujuci odkazovany zaznam).oretazec (format  "auk*dk") auk,dk su hodnoty indexov totozneho menasCODE
+200    aaumb2471cMiesto akcie/konferencie##dxnMiesto akcie/konferencieo210-esASCII,COMP,EXACT,LEFT,PHR
+200    aaupb1b2417cOsobné meno#Osobní jméno#Personal namecOsobné meno (kompletné)#Osobní jméno (kompletní)#Personal name (complete)dxnosobne meno, 500 pokud existuje modifikator "au5xx"nosobne meno, 520 pokud existuje modifikator "au5xx"o200,400(,500)-abcdfto220,420(,520)-abcxyztoviz atribut 1.sASCII,COMP,EXACT,LEFT,PHR
+200    aaup2b2486cOsobná autorita#Osobná autoritadxnvstupny prvok u osobnej autority bez poli 400 (teda bez odkazov viz.)o200-abcdftsASCII,COMP,EXACT,LEFT,PHR,SORT
+200    aaupwb2399cOsobné meno#Osobní jméno#Personal namenjmeno autora bez diakritiky pro import ohlasu z WoSo400a (pokud je 4005 = "W")sASCII,COMP,EXACT,LEFT,PHR
+200    aausrb4ccAutorita (pre triedenie)#Autorita (pro třídění)nindex obsahujuci vstupny prvok autority vytvoreny hlavne za ucelom triedenia autorit umoznuje triedenie vsetkych typov autorito2xx-abcdfxyztsSORT
+200    aauvsb2474c. . w !, "refag rgm, rgo ",lsLine#Edice #dxo200-xyzsASCII,COMP,EXACT,LEFT,PHR
+200    actb55cKrajina#Země#Code--geographic area nkrajina vydania - zkratka a preklad z ciselnikuo102-a9 UT_COUNTRIES
+200    adelnkb2525cpříznak, že záznam je už zrušený z NK#příznak, že záznam je už zrušený z NK#npříznak, že záznam je už zrušený z NKoC90 a
+200    adflb2524cIndex určený pre defaultné zobrazenie záznamu v IPACu bez vyhľadávania.#Index určený pro defaultní zobrazení záznamu v IPACu bez vyhledávání.nIndex urceny pro defaultni zobrazeni zaznamu v IPACu bez vyhledavani. Digitalni kronika a SCD indexuje UNA_C16e, jinak datum z  UNA_100a. Format YYYYMMDDoUNA_100a prvnich 8 znaku nebo UNA_C16esSORT,CODE
+200    adkb1031cDruh dokumentu#Druh dokumentu#Material-typecdruh dokumentu#druh dokumentu#cDruh dokumentu#Druh dokumentu#Material-typendruh suboru, moze byt dalej triedene na REDO autority a podobnenautority skupinovy unifikovany nazov a meno skupinovy nazovnautority formalny deskriptor a predmetove kategoriendruh suboru, upresnenie pre uzivatelske autority; v zavislosti na modifikatoru "authuser2X0"o"200","210","215","220","230","250"   cisla tagovo"235","245"o"285","290"o"2X0"+910-d/980-xsCODE
+200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99dsCODE
+200    adkpodbeginb2317czaciatok podujatia##nIndexovane len pri Inderxaparm „digkr“oC16e ak 980x = D
+200    adkpodendb2318ckoniec podujatia##nIndexovane len pri Inderxaparm „digkr“oC16f ak 980x = D
+200    adocdkb1032c#generovany podle metody i2.data.layer.kind#oLEN SOLR, cfsindex typu G
+200    adsb2492cĎalšie spracovanie#Další zpracovánídxndalsie spracovanie, toto je specialne pole, ktore moze obsahovat interny status autority podobne ako je to u bibliogr.zaznamovo969-fsCODE
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamuo005- sN,SORT
+200    adt1b30b31b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#ndatum vytvorenia zaznamu ( prvy datum v 999-d)oviz . atribut 2485o999-d ( vo formate yyyymmdd)sN,SORT
+200    adtkab2468cRok konania akcie#Rok konání akce#nrok konania akcieo910-bsN
+200    adtnab2478cDátum narodenia#Datum narození#ndatum (rok) narodenianplne datum narodenia (yyyymmdd)o200-f  (datum po pomlcku, narodenia )o901-f, c02csN
+200    adtvyb2475cVýročienIndex pro digitální kronikusN
+200    adtudc2476cRok udalostinIndex pro digitální kronikusN
+200    adtsdkb2315cdatum zaciatku podujatia, pre triedenie##nIndexovane len pri Inderxaparm „digkr“oC16e ak 980x = D
+200    adtumb2477c. . d addrefa("rgm","f","rgo","3")  ; refag 06.11.03 mk index miesto a okres#Datum úmrtí#cDátum úmrtia#Datum úmrtí#nplne datum umrtia (yyyymmdd)o200-f  (datum za pomlckou, umrtia)o901-g, c02-fsN
+200    afullb2600cFulltext zabezpečeného dokumentuovlastní solr jádro (neindexuje se online)sCOMP,WORDS
+200    agxb0b1016b1035cVšetky polia#Všechna pole#Any cVšade#Všude#Anywherenpredvoleny indexnvsetky polia obsah celeho indexu gx zavisi od obsahu 980x=0 viz. poznamka u INDEXPARAMSoviz . atribut 1016o2XX,3XX,4XX,5XX,6XX,7XX,8XX,9XX-abcdefghijklmnrsuvxyz345 (okrem 999)oviz . atribut 1016sY,ASCII,COMP,EXACT,LEFT,PHR
+200    alocb2400cLokácia#Lokace#Locationnlokacie kniznic, ktore maju stiahnuty zaznamo999-c
+200    amdtb2497cSystematiká##nmedzinarodne desatinne triedenieo675-acsCODE
+200    amkondkb2313cmiesto konania##dxnIndexovane len pri Inderxaparm „digkr“oC16h ak 980x = D
+200    amkonsdkb2312cmiesto konania triediaci index##nIndexovane len pri Inderxaparm „digkr“o210e ak 980x = D
+200    amnb2473cautor miesto narodenia#autor miesto narodenia#dxnautor miesto narodeniao900-foc02-bsASCII,COMP,EXACT,LEFT,PHR
+200    ampb2425cautor miesto posobenia#autor miesto posobenia#dxnautor miesto posobeniao900-roc04-bsASCII,COMP,EXACT,LEFT,PHR
+200    amrab2489cAkcia/konferencia miesto#Akce/konference místo#nakcia/miesto konania, 510 pokud existuje modifikator "au5xx"o210,410(,510)-efa ( format: "miesto. rok. akcia")sASCII,COMP,EXACT,LEFT,PHR
+200    amub2427cautor miesto umrtia#autor miesto umrtia#dxnautor miesto umrtiao900-qoc02-esASCII,COMP,EXACT,LEFT,PHR
+200    aoab2469cOrganizátor akcie#Organizátor akce#dxnorganizator akcieo910-asASCII,COMP,EXACT,LEFT,PHR
+200    aoaiidcPoužívateľský kód záznamu pre OAI#Uživatelský kód záznamu pro OAI#User code for OAIrnapř NIDsCODE
+200    aonb2424cautor okres narodenia#autor okres narodenia#nautor okres narodeniao900-f, alebo 915aoc02-b, alebo 915asASCII,COMP,EXACT,LEFT,PHR
+200    aopb2422cautor okres posobenia#autor okres posobenia#nautor okres posobeniao900-r, alebo 915aoc04-b, alebo 915asASCII,COMP,EXACT,LEFT,PHR
+200    aorgdkb2316corganizator##dxnIndexovane len pri Inderxaparm „digkr“oC15a ak 980x = D
+200    aoub2423cautor okres umrtia#autor okres umrtia#nautor okres umrtiao900-q, alebo 915aoc02-e, alebo 915asASCII,COMP,EXACT,LEFT,PHR
+200    apprab2463cpozícia na predcházajúcom pracovisku#pozícia na predcházajúcom pracovisku#npozícia na predcházajúcom pracoviskuoc18-d
+200    aiownb2407cVlastník záznamu v ipacu#Vlastník záznamu v ipacu#Ipac ownero999-e
+200    aprab2462b2472cPracovisko autora##dxnpracovisko, nazov pracoviska autora dotiahnuty z autorito900-d, c06-doviz . atribut 2462sASCII,COMP,EXACT,LEFT,PHR
+200    aprallb2436cabstrakt projektu#abstrakt projektu#nabstrakt projektuoC12-a
+200    aprcisb2437ccisla projektu#cisla projektu#nciselne informace vstahujici se k projektuo230-h,C28-gist,C29-g,C40-bd
+200    aprgsb2449cschema projektu#schema projektu#nschema projektuoC28-r
+200    aprkonb2438ckonec projektu#konec projektu#nkonec projektuoC29-blsN
+200    aprkrab2439ckrajina projektu#krajina projektu#nkrajina projektuoC28-c
+200    aprkstb2440ckod stavu projektu#kod stavu projektu#nkod stavu projektuoC30-asASCII,COMP,EXACT,LEFT,PHR
+200    aprnazb2441cnazov projektu#nazev projektu#dxnnazev projektuo230-a,C28-fhux
+200    aprobdb2442cobdobi projektu#obdobie projektu#nobdobi, kdy se ma projekt resitoC28-l
+200    aprplab2443cplatby projektu#platby projektu#nroky, v nichz byl projekt placenoC42-a
+200    aprposb2448cposkytovatel projektu#poskytovatel projektu#nposkytovatel projektuoC28-a
+200    aprrieb2444cresitelia projektu#resitele projektu#nresitele projektuoC31-j,C35-absASCII,COMP,EXACT,LEFT,PHR,SORT
+200    aprspob2493czadatel#zadatel#nzadatel o projektoC31-a pro hodnotu 1. indikátoru 2
+200    aprtypb2445ctyp projektu#typ projektu#ntyp projektuoC40-a
+200    aprzacb2446czacatek projektu#zacatek projektu#nzacatek projektuoC29-asN,SORT
+200    aprziab2447czadatel#zadatel#nzadatel o projektoC31-ag pro hodnotu prvního indikátoru různou od 2sASCII,COMP,EXACT,LEFT,PHR
+200    asnupb2421cstat narodenia, umrtia, posobenia#stat narodenia, umrtia, posobenia#nna zaklade subtagu 3 v 900fqr,c02be a c04b o915csASCII,COMP,EXACT,LEFT,PHR
+200    at001ab2434cKód záznamu z centrálneho katalógu##nkod zaznamu z centalneho katalogu (napr. NKP a pod.; cislo atributu zvolene tak, aby bolo rovnake pre bazu autorit aj akatalogu a pre vsetky institucie)oC99-a
+200    at001cb2435cAlternatívne T001#Alternativní T001nAlternativní T001oC99-c
+200    at001nb2426ckod zaznamu bez nul#kod zaznamu bez nul#nkod p0000125, v indexe p0000125 a p125oT001 bez vodiacich nulsCODE
+200    atagb2500cTág UNIMARC#Tág UNIMARC#Tag UNIMARC .ncisla vsetkych tagov zaznamuovsetky cisla tagov a tag_subtagov daneho zaznamusCODE
+200    atidkb2310cnazvove udaje##dxnIndexovane len pri Inderxaparm „digkr“o210ab,410a ak 980x = D
+200    atisdkb2311cnazvove udaje triediaci index##nIndexovane len pri Inderxaparm „digkr“o210a ak 980x = D
+200    atitb2420ctitul a vedecka hodnost#titul a vedecka hodnost#ntitul a vedecka hodnostoc06-absASCII,COMP,EXACT,LEFT,PHR
+200    atypadkb2314ctyp podujatia##nIndexovane len pri Inderxaparm „digkr“oC16d ak 980x = D
+200    aupsb2350cInformácia o fulltexte#Informace o fulltextu#Information about fulltextnIdexace informací o ukládání fulltextů. Indexuje se podpole a i b. Pokud je nejaka hodnota, ulozi se tam FoC52sCODE
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmddsCODE
+200    aaugenb2319cAut. gener. záznamy (používateľ)#Aut. gener. záznamy (uživatel)#opouživateľ z prvého 999-d
+200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2
+200    ag200cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a,b jsou povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o200 a_" "_b_ + _" "_c_" "_d_" "_f_" "_x
+200    ag210cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o210 a_" "_ +  _b_" "_c_" "_d_" "_e_" "_f
+200    ag215cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o215 a_" "_ +  _x_" "_y_" "_z
+200    ag220cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o220 a_" "_ +  _f
+200    ag230cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o230 a_" "_ +  _b_" "_h_" "_i_" "_m_" "_s
+200    ag235cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o235 a_" "_ +  _b_" "_h_" "_i_" "_m_" "_s
+200    ag250cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o250 a_" "_ + _j_" "_x_" "_y_" "_z
+200    ag280cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o280a
+200    ag285cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o285a
+###
+# @id UN_TABLES BASE_INDEXES_A2
+002    12.08.21 ln; pridany indexy pro DKO 2323,2326,2329-2339
+002    13.04.18 js; doplnene t001cr2
+002    27.11.14 rn; pridaný index "augen" - 2318
+002    27.11.14 rn; pridané indexy pre digitálnu kroniku - 2300 - 2318
+002    autority M21
+200    aT001b12cKód záznamu#Kód záznamu#Local number nkod zaznamuo001sASCII,COMP,EXACT
+200    aa100b1cOsobné meno#Osobní jméno#Personal namedxmau5xx (indexuje aj 500); au7xx (indexuje aj 700)nosobne meno a meno rodiny, roduo100,400(,500,700) a,q,b,c,d,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa100eb2453cEdícia - osoby a rody (rodiny)#Edice - jména osob a rodin (rodů)#dxmau5xx (indexuje aj 500); au7xx (indexuje aj 700)nedícia - osobné menáo100,400(,500,700) a,q,b,c,d,t,0; pre 980x = Erpodpolia zretazene - oddelovac medzera
+200    aa100rodb2483cAutorita rodu#Autorita rodudxmau5xx (indexuje aj 500); au7xx (indexuje aj 700)nvstupny prvok autorit rodu - autorita rodu sa oznacuje hodnotou "3" prveho indikatoru v poli 100,400 a 500  ; rod nie je v m21 samostatne, ale samostatny index je praktickyo100,400(,500,700) a,q,b,c,d,0; ak 1. indikátor = 3; rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa110b2cKorporácia#Korporace#Corporate namedxmau5xx (indexuje aj 510); au7xx (indexuje aj 710)nkorporaciao110,410(,510,710) a,b,d,c,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa110ab2452cKorporácie bez dodávateľov a vydávateľov#Korporace bez dodavatelů a nakladatelůdxmindexAuca (vytvara sa index auca); au5xx (indexuje aj 510); au7xx (indexuje aj 710)nkorporacie neoznacene 980x alebo oznacene 980x=a - toto su "ciste" korporacie bez dodavatelov a vydavatelovo110,410(,510,710) a,b,d,c,0; pre 980x = "", alebo Arpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa110eb2454cEdícia - korporácie#Edice - jména korporací#dxmau5xx (indexuje aj 510); au7xx (indexuje aj 710)nedícia - korporácieo110,410(,510,710) a,b,d,c,t,0; pre 980x = Erpodpolia zretazene - oddelovac medzera
+200    aa110pb2488cKorporácie - vydávateľ#Korporace - vydavateldxmau5xx (indexuje aj 510); au7xx (indexuje aj 710)nkorporace - vydavatelo110,410(,510,710) a,b,d,c,0; pre 980x = Prpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa110vb2487cKorporácia - dodávateľ#Korporace - dodavateldxmau5xx (indexuje aj 510); au7xx (indexuje aj 710)nkorporace - dodavatelo110,410(,510,710) a,b,d,c,0; pre 980x = Vrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa110wb2498cNázov a kód pracoviska#Název a kód pracovištědxmau5xx (indexuje aj 510); au7xx (indexuje aj 710)nnazev a kod pracoviste; totozne s atributom 2499 kvoli kompatibilite so starymi nastaveniamio110,410(,510,710) a,b,d,c,0; pre 980x = Wrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa111b3cAkcia/konferencia #Akce/konference#Conference namedxmau5xx (indexuje aj 511); au7xx (indexuje aj 711)nakciao111,411(,511,711) a,q,e,n,d,c,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa111eb2455cEdícia - akcie#Edice - jména akcí#dxmau5xx (indexuje aj 511); au7xx (indexuje aj 711)nedícia - akcieo111,411(,511,711) a,q,e,n,d,c,t,0; pre 980x = Erpodpolia zretazene - oddelovac medzera
+200    aa11Xab2440cKorporácia a akcie#Korporace a akcedxmau5xx (indexuje aj 510); au7xx (indexuje aj 70)mau5xx (indexuje aj 511); au7xx (indexuje aj 711)nkorporacie+akcie, ktore su oznacene 980x=a alebo nemaju ziadne oznacenie v 980x (mimo eventualne 0 (nula)), 510,511 pokud existuje modifikator "au5xx"; Toto su teda korporacie+akcie kt. nie su napr. dodavatel/vydavatel; viz. tiez auc,aua,aucao110,410(,510,710) a,b,d,c,0o111,411(,511,711) a,q,e,n,d,c,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa130b2484cFilm názvové údaje#Film názvové údaje#dxmau5xx (indexuje aj 530); au7xx (indexuje aj 730)nnazvove udaje, pred subtagom f je pridana mezera kvoli radeniu cisiel pred pismenao130,430(,530,730) a,d,f,g,n,m,p,s,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa130cb2464ccitacie pre tag 810#citacie pre tag 810#dxmau5xx (indexuje aj 530); au7xx (indexuje aj 730)ncitacie pre tag 810o130,430 a,d,f,g,n,p,0; pre 980x = Crpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa130eb2466cEdícia - unifikovaný názov#Edice - unifikovaný název#dxmau5xx (indexuje aj 530); au7xx (indexuje aj 730)nediceo130,430 a,d,f,g,n,p,0; pre 980x = Erpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa130fb2465ccitacie pre tag C13#citacie pre tag C13#dxmau5xx (indexuje aj 530); au7xx (indexuje aj 730)ncitacie pre tag C13o130,430 a,d,f,g,n,p,0; pre 980x = Frpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa130gb2491cprojekty/granty#projekty/granty#projects/grantsdxnprojekty/grantyo130,430 a,d,f,g,n,p,0; pre 980x = Grpodpolia zretazene - oddelovac medzera
+200    aa148b2441cChronologický termín#xxx#xxxdxmau5xx (indexuje aj 548); au7xx (indexuje aj 748)nchronologický termín - autoritao148,448(,548,748) a,v,x,y,z,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa150b2480cVecná téma#Věcné téma#dxmau5xx (indexuje aj 550); au7xx (indexuje aj 750)nheslao150,450(,550,750) a,b,v,x,y,z,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa150ab2495cVecná téma (bez označenia)#Věcné téma#dxmau5xx (indexuje aj 550); au7xx (indexuje aj 750)nhesla, bez 980xo150,450(,550,750) a,b,v,x,y,z,0; pre 980x = "", alebo Arpodpolia zretazene - oddelovac medzera
+200    aa150desb2482cHeslá#Hesladxnhesla - jen deskriptoryo150 a,brpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa150ib2415cEurovoc#Eurovoc#Eurovocnak 980x=Io150,450 a,b pre 980x = I  
+200    aa150kb2418cklucove slova#klucove slova#dxnak 980x=Ko150,450 a,b,0; pre 980x = Krpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa150mb2416cMESH#MESH#MESHnak 980x=Mo150,450 a,b pre 980x = M   
+200    aa150ub2419cmdt-slovny popis#mdt-slovny popis#dxnak 980x=Uo150,450 x,0; pre 980x = Urpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa151b58b2481c Geografické meno#Geografické jméno#Name geographic   dxmau5xx (indexuje aj 551); au7xx (indexuje aj 751); authBr (indexuje sa text po zatvorku)ngeografický názovo151,451(,551,751) a,v,x,y,z,0o#N/Arpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa155b2433cformalne deskriptory#formalne deskriptory#dxmau5xx (indexuje aj 555); au7xx (indexuje aj 755)nvstupny prvok autorit formalne deskriptoryo155,455(,555,755) a,0sASCII,COMP,EXACT,LEFT,PHR
+200    aa180b2442cAutorita - všeobecné spresnenie#xxx#xxxdxmau5xx (indexuje aj 580); au7xx (indexuje aj 780)nvstupný prvok autority "všeobecné spresnenie"o180,480(,580,780) x,0sASCII,COMP,EXACT,LEFT,PHR
+200    aa181b2443cAutorita - geografické spresnenie#xxx#xxxdxmau5xx (indexuje aj 581); au7xx (indexuje aj 781)nvstupný prvok autority "geografické spresnenie"o181,481(,581,781) z,0sASCII,COMP,EXACT,LEFT,PHR
+200    aa182b2444cAutorita - chronologické spresnenie#xxx#xxxdxmau5xx (indexuje aj 582); au7xx (indexuje aj 782)nvstupný prvok autority "chronologické spresnenie"o182,482(,582,782) y,0sASCII,COMP,EXACT,LEFT,PHR
+200    aa185b2445cAutorita - formálne spresnenie#xxx#xxxdxmau5xx (indexuje aj 585); au7xx (indexuje aj 785)nvstupný prvok autority "formálne spresnenie"o185,485(,585,785) v,0sASCII,COMP,EXACT,LEFT,PHR
+200    aa190b2432cskupina konspektu#skupina konspektu#dxmau5xx (indexuje aj 590); au7xx (indexuje aj 790)nvstupny prvok autorit skupina konspektuo190,490(,590,790) a,x,9,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa190rb2430cpredmetova kategoria##dxmau5xx (indexuje aj 590); au7xx (indexuje aj 790)nvstupny prvok autorit skupina Predmetova kategoriao190,490(,590,790) a,x,9,0 pre 980x = Rrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aa190sb2431cskupina konspektu##dxmau5xx (indexuje aj 590)nvstupny prvok autorit skupina konspektuo190,490(,590) a,x,9,0 pre 980x = Srpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aaub4b1003cVstupný prvok#Vstupní prvek#Entry elementcVstupný prvok#Vstupný prvok#cAutorské údaje#Autorské údaje#Authordxmau5xx (indexuje aj 500); au7xx (indexuje aj 700)mau5xx (indexuje aj 510); au7xx (indexuje aj 710)mau5xx (indexuje aj 511); au7xx (indexuje aj 711)mau5xx (indexuje aj 530); au7xx (indexuje aj 730)mau5xx (indexuje aj 548); au7xx (indexuje aj 748)mau5xx (indexuje aj 550); au7xx (indexuje aj 750)mau5xx (indexuje aj 551); au7xx (indexuje aj 751); authBr (indexuje sa text po zatvorku)mau5xx (indexuje aj 555); au7xx (indexuje aj 755)mau5xx (indexuje aj 580); au7xx (indexuje aj 780)mau5xx (indexuje aj 581); au7xx (indexuje aj 781)mau5xx (indexuje aj 582); au7xx (indexuje aj 782)mau5xx (indexuje aj 585); au7xx (indexuje aj 785)mau5xx (indexuje aj 590); au7xx (indexuje aj 790)nvstupny prvok autorityo100,400(,500,700) a,q,b,c,d,0o110,410(,510,710) a,b,d,c,0o111,411(,511,711) a,q,e,n,d,c,0o130,430(,530,730) a,d,f,g,n,p,0o148,448(,548,748) a,0o150,450(,550,750) a,b,0o151,451(,551,751) a,0o155,455(,555,755) a,0o180,480(,580,780) x,0o181,481(,581,781) z,0o182,482(,582,782) y,0o185,485(,585,785) v,0o190,490(,590,790) a,x,9,0o#N/Arpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aauab1006cAkcia/konferencia #Akce/konference#Author-name conferencedxo#N/AsASCII,COMP,EXACT,LEFT,PHR
+200    aaucb1005cKorporácia#Korporace#Author-name corporatedxo#N/AsASCII,COMP,EXACT,LEFT,PHR
+200    aaukb1013cKód autority#Kód autority#Authority/format idckod autority (epca)#kod autority (epca)#Authority/format idcKód autority#Kód autority#Authority/format idnkod autoritynkod autority (epca)nkod autorityo500,700 7o510,710 7o511,711 7o530,730 7o548,748 7o550,750 7o551,751 7o555,755 7o580,780 7o581,781 7o582,782 7o585,785 7o590,790 7o980 3oC02,C04,C08,C10,C11,C14 3, C02 4oC06 dsCODE
+200    aauk1b2479cOdkazový index#Odkazový indexnodkazovy index, toto je specialny index pre odkazovanie medzi zaznamami. Vyhladavaci termin sa konstruuje v zobrazovacom formate.; "auk1" index obsahuje konstantu "x" pre zaznamy, kde sa vyskytla aspon jedna chyba referencnej integrity (neexistujuci odkazovany zaznam).oretazec (format  "auk*dk")rzretazene hodnoty indexov auk a dk - oddelovac *; t.j. format: auk*dksCODE
+200    aaumb2471cMiesto akcie/konferencie##dxnMiesto akcie/konferencieo111 c; C16 hsASCII,COMP,EXACT,LEFT,PHR
+200    aaupb2417cOsobné meno (kompletné)#Osobní jméno ( kompletní)#Personal name (complete)o#N/AsASCII,COMP,EXACT,LEFT,PHR
+200    aaup2b2486cOsobná autorita#Osobná autoritadxnvstupny prvok u osobnej autority bez poli 400 (teda bez odkazov viz.)o100 a,q,b,c,drpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aaupcab2463cOsobné autority, korporácie, akcie#Osobní autority, korporace, akcedxmau5xx (indexuje aj 500); au7xx (indexuje aj 700)mau5xx (indexuje aj 510); au7xx (indexuje aj 710)mau5xx (indexuje aj 511); au7xx (indexuje aj 711)nautority osobne, korporacie, akcieo100,400(,500,700) a,q,b,c,d,0o110,410(,510,710) a,b,d,c,0o111,411(,511,711) a,q,e,n,d,c,0rpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aaupwb2399cOsobné meno#Osobní jméno#Personal namenjmeno autora bez diakritiky pro import ohlasu z WoSo400 a (ak je 400 w ="w")
+200    aausb2474cOsobné meno - spresnenie#xxx#xxxdxnosobné meno - spresnenieo100 v,x,y,zrpodpolia zretazene - oddelovac medzera
+200    aausrb4ccAutorita (pre triedenie)#Autorita (pro třídění)nindex obsahujuci vstupny prvok autority vytvoreny hlavne za ucelom triedenia autorit; umoznuje triedenie vsetkych typov autorito1xx abcdfxyztrpodpolia zretazene - oddelovac medzerasSORT
+200    aauvsb2446cFormálne spresnenie#xxx#xxxdxnformálne spresnenie v ostatných autoritácho1XX (okrem 185) vsASCII,COMP,EXACT,LEFT,PHR
+200    aauxsb2447cVšeobecné spresnenie#xxx#xxxdxnvšeobecné spresnenie v ostatných autoritácho1XX (okrem 180) xsASCII,COMP,EXACT,LEFT,PHR
+200    aauysb2448cChronologické spresnenie#xxx#xxxdxnchronologické spresnenie v ostatných autoritácho1XX (okrem 182) ysASCII,COMP,EXACT,LEFT,PHR
+200    aauzsb2449cGeografické spresnenie#xxx#xxxdxngeografické spresnenie v ostatných autoritácho1XX (okrem 181) zsASCII,COMP,EXACT,LEFT,PHR
+200    adelnkb2525cZáznam zrušený z NK#Záznam zrušený z NKmpříznak, že záznam je už zrušený z NKnpříznak, že záznam je už zrušený z NKoC90 arpříznak, že záznam je už zrušený z NK
+200    adflb2524cIndex určený pre defaultné zobrazenie záznamu v IPACu bez vyhľadávania.#Index určený pro defaultní zobrazení záznamu v IPACu bez vyhledávání.nIndex urceny pro defaultni zobrazeni zaznamu v IPACu bez vyhledavani. Digitalni kronika a SCD indexuje UNA_C16e, jinak první datum z  USA_999d. Format YYYYMMDDoUSA_999d první datum, nebo UNA_C16esSORT,CODE
+200    adkb1031cDruh dokumentu#Druh dokumentu#Material-typendruh suboru, moze byt dalej triedene na REDO autority a podobnendruh suboru, upresnenie pre uzivatelske autorityo"100","110","111","130","148","150","151","155","180","181","182","185","190"o"1XX"+980 xrzretazene hodnoty cislo pola+hodnota 980 x - bez oddelovaca - napr. 110vsCODE
+200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99dsCODE
+200    adocdkb1032cngenerovany podle metody i2.data.layer.kindoLEN SOLR, cfsindex typu G
+200    adsb2492cĎalšie spracovanie#Další zpracovánídxndalsie spracovanie, toto je specialne pole, ktore moze obsahovat interny status autority podobne ako je to u bibliogr.zaznamovo969fsCODE
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamuo005sN,SORT
+200    adt1b30b31b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#ndatum vytvorenia zaznamu ( prvy datum v 999-d)o#N/Ao999d ( vo formate yyyymmdd)sN,SORT
+200    adtkab2468cRok konania akcie#Rok konání akce#nrok konania akcieoC15fsN
+200    adtnab2478cDátum narodenia#Datum narození#nrok narodenia (100d), plny datum narodenia - yyyymmdd (901f, C02c)o100d (datum po pomlcku); 901f; C02csN
+200    adtvyb2475cVýročienIndex pro digitální kronikusN
+200    adtudc2476cRok udalostinIndex pro digitální kronikusN
+200    adtumb2477cDátum úmrtia#Datum úmrtí#nrok umrtia (100d), plny datum umrtia - yyyymmdd (901g, C02f)o100d (datum za pomlckou); 901g; C02fsN
+200    aedib2451cEdícia#Edice#dxmau5xx (indexuje aj 500); au7xx (indexuje aj 700)mau5xx (indexuje aj 510); au7xx (indexuje aj 710)mau5xx (indexuje aj 511); au7xx (indexuje aj 711)mau5xx (indexuje aj 530); au7xx (indexuje aj 730)nedícia - spolu vsetky typy autoríto100,400(,500,700) a,q,b,c,d,t,0; pre 980x = Eo110,410(,510,710) a,b,d,c,t,0; pre 980x = Eo111,411(,511,711) a,q,e,n,d,c,t,0; pre 980x = Eo130,430(,530,730) a,d,f,g,n,p,0; pre 980x = Erpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    afullb2600cFulltext zabezpečeného dokumentuovlastní solr jádro (neindexuje se online)sCOMP,WORDS
+200    agxb1016b0b1035cVšetky polia#Všechna pole#Any nvsetky polia; obsah celeho indexu gx zavisi od obsahu 980x=0 viz. poznamka u INDEXPARAMSo1XX,2XX,3XX,4XX,5XX,6XX,7XX,8XX,9XX; abcdefghijklmnopqr sutvwxyz024568 (okrem 999)sY,ASCII,COMP,EXACT,LEFT,PHR
+200    aiownb2407cVlastník záznamu v ipacu#Vlastník záznamu v ipacu#Ipac ownernpro hodnotu z holdingu 100b se predrazuje "xxx_is_user*", kde xxx je prefix daneho zakaznikao999e; UNH_100 bsASCII,COMP,EXACT,LEFT,PHR
+200    alocb2400cLokácia#Lokace#Locationnlokacie kniznic, ktore maju stiahnuty zaznam; rs 03.07.06; zrusenyo999csASCII,COMP,EXACT,LEFT,PHR
+200    amdtb2497cSystematiká##nmedzinarodne desatinne triedenieo080ao089asCODE
+200    amdt1b2496cMDT-znak##ntriednik MDT v autorite MDTo150a pre 980x = U
+200    amnb2473cautor miesto narodenia#autor miesto narodenia#dxnautor miesto narodeniao900f alebo C02bsASCII,COMP,EXACT,LEFT,PHR
+200    ampb2425cautor miesto posobenia#autor miesto posobenia#dxnautor miesto posobeniao900r alebo C04bsASCII,COMP,EXACT,LEFT,PHR
+200    amrab2489cAkcia/konferencia miesto#Akce/konference místo#mau5xx (indexuje aj 511)nakcia/miesto konaniao111,411(,511) c,d,a ; rpodpolia zretazene - oddelovat bodka medzera; c". "d". "a (miesto. rok. akcia)sASCII,COMP,EXACT,LEFT,PHR
+200    amub2427cautor miesto umrtia#autor miesto umrtia#dxnautor miesto umrtiao900q C02e sASCII,COMP,EXACT,LEFT,PHR
+200    anazb2450cNázov diela#xxx#xxxdxnnázov diela v autoriteo100,110,111,130 to400,410,411,430 tsASCII,COMP,EXACT,LEFT,PHR
+200    aoab2469cOrganizátor akcie#Organizátor akce#dxnorganizator akcieoC15 asASCII,COMP,EXACT,LEFT,PHR
+200    aoaiidcPoužívateľský kód záznamu pre OAI#Uživatelský kód záznamu pro OAI#User code for OAIrnapř NIDsCODE
+200    aonb2424cAutor - okres narodenia#Autor - okres narozenímautor okres narodenianautor okres narodeniaoc02-b, alebo 915arautor okres narodenia
+200    aopb2422cAutor - okres pôsobenia#Autor - okres působenímautor okres posobenianautor okres posobeniaoc04-b, alebo 915arautor okres posobenia
+200    aoub2423cAutor - okres úmrtia#Autor - okres úmrtímautor okres umrtianautor okres umrtiaoc02-e, alebo 915arautor okres umrtia
+200    apoznamkacnobsah pola ovplyvnuje tvorbu dalsich indexov; 1, ak v 980x je pismeno vytvori sa index a1XXY, kde 1XX je cislo zakladneho tagu autority a Y je obsah 980x - podpole x moze byt opakovatelne; 2, pokial 980x=0 (nula) vypina vsetky indexy okrem "najspodnejsieho" a1XXYo980x
+200    aprab2462b2472cPracovisko autora##dxmpracovisko, nazov pracoviska autora dotiahnuty z autoritnpracovisko, nazov pracoviska autora dotiahnuty z autorito900-d, c06-do900d alebo; C06doviz . atribut 2462rPracovisko autorasASCII,COMP,EXACT,LEFT,PHR
+200    are100b2457cRegionálne autority - osoby a rody (rodiny)#Regionální autority - jména osob a rodin (rodů)#dxmau5xx (indexuje aj 510); au7xx (indexuje aj 710)nregionálne autority - len osobné mená a rody (ak C06x = REOS alebo REFA alebo REFAG)o100,400(,500,700) a,q,b,c,d,t,0; pre REGrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    are100rodb2458cRegionálne autority - rody (rodiny)#Regionální autority - jména rodin (rodů)#dxmau5xx (indexuje aj 500); au7xx (indexuje aj 700)nregionálne autority - len rody (ak C06x = REOS alebo REFA alebo REFAG)o100,400(,500,700) a,q,b,c,d,t,0; ak 1. indikátor = 3; pre REGrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    are110b2459cRegionálne autority - korporácie#Regionální autority - jména korporací#dxmau5xx (indexuje aj 510); au7xx (indexuje aj 710)nregionálne autority - len korporácie (ak C06x = REOS alebo REFA alebo REFAG)o110,410(,510,710) a,b,d,c,t,0; pre REGrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    are111b2460cRegionálne autority - akcie#Regionální autority - jména akcí#dxmau5xx (indexuje aj 511); au7xx (indexuje aj 711)nregionálne autority - len akcie (ak C06x = REOS alebo REFA alebo REFAG)o111,411(,511,711) a,q,e,n,d,c,t,0; pre REGrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    are148b2461cRegionálne autority - chronologické termíny#Regionální autority - chronogické termíny#dxmau5xx (indexuje aj 511); au7xx (indexuje aj 711)nregionálne autority - len chronologické termíny (ak C06x = REOS alebo REFA alebo REFAG)o148,448(,548,748) a,v,x,y,z,0; pre REGrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    are151b2470cRegionálne autority - geografické heslá#Regionální autority - geografické jména#dxmau5xx (indexuje aj 511); au7xx (indexuje aj 711); authBr (indexuje sa text po zatvorku)nregionálne autority - len geografické termíny (ak C06x = REOS alebo REFA alebo REFAG)o151,451(,551,751) a,v,x,y,z,0; pre REGrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    aregb2456cRegionálne autority#Regionální autority#dxmau5xx (indexuje aj 500); au7xx (indexuje aj 700)mau5xx (indexuje aj 510); au7xx (indexuje aj 710)mau5xx (indexuje aj 511); au7xx (indexuje aj 711)mau5xx (indexuje aj 530); au7xx (indexuje aj 730)mau5xx (indexuje aj 530); au7xx (indexuje aj 730); authBr (indexuje sa text po zatvorku)nregionálne autority - spolu (ak C06x = REOS alebo REFA alebo REFAG)o100,400(,500,700) a,q,b,c,d,t,0; pre REGo110,410(,510,710) a,b,d,c,t,0; pre REGo111,411(,511,711) a,q,e,n,d,c,t,0; pre REGo148,448(,548,748) a,v,x,y,z,0; pre REGo151,451(,551,751) a,v,x,y,z,0; pre REGrpodpolia zretazene - oddelovac medzerasASCII,COMP,EXACT,LEFT,PHR
+200    asnupb2421cŠtát narodenia, úmrtia, pôsobenia#Stát narození, úmrtí, působenímna zaklade subtagu 3 v 900fqr,c02be a c04b nstat narodenia, umrtia, posobeniao915crstat narodenia, umrtia, posobenia
+200    at001ab2434cKód záznamu z centrálneho katalógu##nkod zaznamu z centalneho katalogu (napr. NKP a pod.; cislo atributu zvolene tak, aby bolo rovnake pre bazu autorit aj akatalogu a pre vsetky institucie)oC99asASCII,COMP,EXACT,LEFT,PHR
+200    at001cb2435cAlternatívne T001#Alternativní T001nAlternativní T001oC99c
+200    at001nb2426ckod zaznamu bez nul#kod zaznamu bez nul#nkod p0000125, v indexe p0000125 a p125oT001 (bez vodiacich nul)sCODE
+200    atagb2500cTág UNIMARC#Tág UNIMARC#Tag UNIMARCncisla vsetkych tagov zaznamuovsetky cisla tagov a tag_subtagov daneho zaznamusCODE
+200    atitb2420ctitul a vedecka hodnost#titul a vedecka hodnost#ntitul a vedecka hodnostoC06 a,b,c  alebo; 900 a,b,csASCII,COMP,EXACT,LEFT,PHR
+200    aupsb2350cInformácia o fulltexte#Informace o fulltextu#Information about fulltextnIdexace informací o ukládání fulltextů. Indexuje se podpole a i b. Pokud je nejaka hodnota, ulozi se tam FoC52sCODE
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmddsCODE
+200    aa100db2300cOsobné autority DK#Osobní autority  DKdxnosobné autority DKo100,400(,500,700) a,q,b,c,d,0 ak 980x = D
+200    aa111db2301cAkcie DK#Akce DKdxnakcie DKo111,411(,511,711) a,q,b,c,d,0 ak 980x = D
+200    aa110ob2302cKorporácie DK#Korporace DKdxnkorporácie DKo110,410(,510,710) a,b,d,c,0 980x = O
+200    aa115db2303cGeografické autority DK#Geografické autority DKdxngeografické autority DKo115,415(,515,715) a,b,d,c,0 ak 980x = D
+200    aa130db2304cSúťaž#Soutěždxnsutazo130,430(,530,730) a,b,d,c,0 ak 980x = D
+200    atidkb2310cnazvove udaje##dxnIndexovane len pri Inderxaparm „digkr“o111aec,411a ak 980x = D
+200    atisdkb2311cnazvove udaje triediaci index##nIndexovane len pri Inderxaparm „digkr“o111a ak 980x = D
+200    amkonsdkb2312cmiesto konania triediaci index##nIndexovane len pri Inderxaparm „digkr“o210e ak 980x = D
+200    amkondkb2313cmiesto konania##dxnIndexovane len pri Inderxaparm „digkr“oC16h ak 980x = D
+200    atypadkb2314ctyp podujatia##nIndexovane len pri Inderxaparm „digkr“oC16d ak 980x = D
+200    adtsdkb2315cdatum zaciatku podujatia, pre triedenie##nIndexovane len pri Inderxaparm „digkr“oC16e ak 980x = D
+200    aorgdkb2316corganizator##dxnIndexovane len pri Inderxaparm „digkr“oC15a ak 980x = D
+200    adkpodbeginb2317czaciatok podujatia##nIndexovane len pri Inderxaparm „digkr“oC16e ak 980x = D
+200    adkpodendb2318ckoniec podujatia##nIndexovane len pri Inderxaparm „digkr“oC16f ak 980x = D
+200    aaugenb2319cAut. gener. záznamy (používateľ)#Aut. gener. záznamy (uživatel)#opouživateľ z prvého 999-d
+200    aa100osb2414cOsobná autorita#Osobní autoritadxnpridaný index "a100os" (na modifikátor "a100os") v metóde "ixIndexValuesAuth"otagy 100,400,500,700 subtagy acbdq0sASCII,COMP,EXACT,LEFT,PHR
+200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2
+200    atyposdkb2323cTyp osoby - DK##nIndexovane len pri Inderxaparm „digkr“oC50a když 980x = D & 100'= ""sASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
+200    atypindkb2326cTyp instituce - DK##nIndexovane len pri Inderxaparm „digkr“oC15a když 980x = D & 110'= ""sASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
+200    atypakdkb2329cTyp akce DKnIndexovani len pri Inderxaparm „digkr“o111;C50$a ak 980x = DsASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
+200    adkondkb2330cZačátek akcenpri Inderxaparm „digkr“oC16$e, když 980x = DsN,FACET
+200    adsz2b2331cSouborný záznam akce##nIndexovane len pri Inderxaparm „digkr“o111a když 980x = DSZ & 111'= ""sASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
+200    azasdkb2332cZastupitelstvo##dxnIndexovane len pri Inderxaparm „digkr“o980x = DZsASCII,COMP,EXACT,LEFT,PHR,FACET
+200    adzub2333cZáznam události bez SZ##nIndexovane len pri Inderxaparm „digkr“o111a když 980x = D & 111'= ""sASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
+200    arkub2334cRok konání události##nIndexovane len pri Inderxaparm „digkr“o111a když 980x = D & 111'= ""; C16f, 1.-4. pozicesFACET
+200    atypzpdkb2335cTyp zpravodaje DKnIndexovani len pri Inderxaparm „digkr“o130;C50$a ak 980x = DsASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
+200    atzdkb2336cTyp zaznamu DK - pro oddeleni SZ udalosti ve vyhledavaninIndexovani len pri Inderxaparm „digkr“o980$xsCODE
+200    arkpcb2337cRok - počasí##nIndexovane len pri Inderxaparm „digkr“oC54$d, když 980x = D,  1.-4. pozicesFACET
+200    arkzpb2338cRok vydání - zpravodaj##nIndexovane len pri Inderxaparm „digkr“o130$f, když 980x = D,  1.-4. pozicesFACET
+200    atypzadkb2339cTyp záznamu DK - pro účel výstupu##oC50a(text přeložený z číselníku)sASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
+200    ag100cXmIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu (t může být povinné). Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1nautoritni index pro vyhledanio100 a_“ “_t(pokud existuje)_“ “ +b_“ “_c_“ “_d_“ “(_h_“ “_l_“ “_s   - pokud existuje t)
+200    ag110cXmIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu (t může být povinné). Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1nautoritni index pro vyhledanio110 a_“ “_t(pokud existuje)_“ “ +b_“ “(_h_“ “_l_“ “_s   - pokud existuje t)
+200    ag111cXmIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud není vyplněno, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1nautoritni index pro vyhledanioa_“ “+_c_“ “_d_“ “_n
+200    ag130cXmIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud není vyplněno, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1nautoritni index pro vyhledanioa_“ “+_h_“ “_l_“ “_s
+200    ag148cXmIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud není vyplněno, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1nautoritni index pro vyhledanioa
+200    ag150cXmIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud není vyplněno, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1nautoritni index pro vyhledanioa_“ “+_v_“ “_x_“ “_y_“ “_z
+200    ag151cXmIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud není vyplněno, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1nautoritni index pro vyhledanioa_“ “+_v_“ “_x_“ “_y_“ “_z
+200    ag155cXmIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud není vyplněno, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1nautoritni index pro vyhledanioa
+###
+# @id UN_TABLES BASE_INDEXES
+002    CmConfig
+200    aT001b12cKód záznamu zmeny#Kód záznamu změny#Local number nkod zaznamu z tagu 001o001
+200    alncnlname*objectname pre INFO vety; specialne indexy pre konverziu lname na tablename a naopak
+200    aoncnobjectname*lname pre INFO vety
+###
+# @id UN_TABLES BASE_INDEXES_U
+002    26.09.18 jk; zmena dlhn, pridany dlh a dlhndt
+002    30.07.18 jk; pridan index dtpp1
+002    12.03.18 jk; pridan index antrx
+002    12.12.17 js; doplneny atribut pre index dtpp
+002    12.05.17 lp; doplnene a upravene zbyvajici nazvy a popisy indexu
+002    29.09.16 js; doplnene a upravene popisy a nazvy indexov
+002    ctenari - IctxIsUser
+200    aadb2001cAdresy#Adresy#Addressesnadresa  - nevytvara sa pre vymazane zaznamy (so statusom D)o200,210,220,230-apms
+200    aadrb2489cAdresa  - prechodné bydlisko#Adresa  - přechodné bydliště#Address - temporary addressnAdresa - Prechodné bydliskoo200-a
+200    aantrxb2413c'a' - automatická anonymizácie TRXs#'a' - automatická anonymizace TRXs#'a' - auto TRXs anonymizationo400f="A"
+200    abcb2004cČiarový kód#Čárový kód#Barcodenciarovy kod citatela - nevytvara sa pre vymazane zaznamy (so statusom D)o100-b
+200    abc2b2015cČiarový kód (pre pobočky)#Čárový kód (pro pobočky)#Barcode (for branches)mbranchBcncarovy kod s prefixem pobocky, vytvari se pouze za pritomnosti modifikatoru branchBco100-l + 100-b
+200    abcvcČiarový kód (čitatelia s platným preukazom)#Čárový kód (čtenáři s platným průkazem)#Barcode (with valid card)mbcValidncarovy kod  - pro zaznamy s platnym prukazemo100-b (pokud neni prekrocene datum platnosti prukazu T01b)
+200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otvorenyoC99d
+200    adlhcCelkový dlh čitateľa#Celkový dluh čtenáře#Reader's debtmdlhnhodnota celkoveho dluhu ctenare, vyhodnocuje se z TRX_T03c, zapojeno na modifikator ISU tridy debtoze vsech TRX ctenare suma TRX_T03-c, ve formatu 00000.00
+200    adlhncNajstarší dlh čitateľa#Nejstarší dluh čtenáře#Reader's oldest debtmdlhnnhodnota nejstarsiho dluhu ctenare, vyhodnocuje se z TRX_T01b, zapojeno na modifikator ISU tridy debtoz TRX_T01-b, ve formatu 00000.00
+200    adlhndtcDatum najstaršího dlhu čitateľa#Datum nejstarší dluhu čtenáře#Date of reader's oldest debtmdlhndtndatum nejstarsiho dluhu ctenare, vyhodnocuje se z TRX_T01d, zapojeno na modifikator ISU tridy debtoz TRX_T01-d, ve formatu 005
+200    adnb2013cDatum narodenia#Datum narozeni#Birth datendatum narozenio100-d
+200    adruhb2009cDruh čitateľa#Druh čtenáře#User kindo100-u
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamuo005- 
+200    adt1b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#Date of record creationndatum vytvorenia zaznamu (prvy datum v 999-d)o999-d (vo formate yyyymmdd)
+200    adtopcDátum poslednej registrácie čitateľa#Datum posledné registrace čtenáře#Date of last registrationndatum obnovenia preukazu - datum poslednej registracie, ak sa lisi od datumu zapisu citatelao400d ak sa lisi od 400z
+200    adtppb2493cDátum platnosti preukazu#Datum platnosti průkazu#Date of card validationndatum platnosti preukazu = datum poslednej registracie plus pocet dni platnosti od poslednej registracieo400d+400csN
+200    adtpp1b2494cDátum platnosti preukazu (i zneplatneny)#Datum platnosti průkazu (i zneplatnění)#Date of card validation (invalidated users included)ndatum platnosti preukazu = datum poslednej registracie plus pocet dni platnosti od poslednej registracieo400d+400csN
+200    adtspcDátum straty preukazu#Datum straty průkazu#Date of last cardndatum straty preukazu - nevytvara sa pre vymazane zaznamy (so statusom D)o500-b
+200    adtwrb2491cDátum zápisu čitateľa#Datum zápisu čtenáře#Date of user registrationnDatum zápisu čtenářeo400z
+200    aemb2005cEmail#E-mail#E-mailnemail  - indexuje se pouze vsechna opakovani 100e z duvodu jedinecnosti emailu pro prihlasovani do IPACu, ale nektere ictx si pridavaji 150e,  nevytvara sa pre vymazane zaznamy (so statusom D)o100-e
+200    agxb0b1016cVšetky polia#Všechna pole#All fieldsnvsetky polia - nevytvara sa pre vymazane zaznamy (so statusom D)o1XX,2XX,3XX,4XX,5XX,6XX,7XX,9XX-abcdefghijklmnrsuvxyz345 (okrem 999)
+200    akatb2007cKategória čitateľa#Kategorie čtenáře#Category of usero100-k
+200    alckcTyp blokovania čitateľa#Typ blokování čtenáře#Type of user lockntypy blokovania (V,Z,R,U) - nevytvara sa pre vymazane zaznamy (so statusom D)o400-l
+200    aloccLokačná skratka vlastníka záznamu#Lokační zkratka vlastníka záznamu#Location mark of record ownernlokacie kniznic, ktore maju stiahnuty zaznam, momentalne sa nepouzivao999-c
+200    alogincLogin#Login#Loginnlogin jmeno ctenare pro prihlasovanio610-a (pokud 100x '= D)
+200    amnb2010cMiesto narodenia#Misto narozeni#Birth placeo100-m
+200    amtelb2014cČíslo mobilného telefónu#Číslo mobilního telefonu#Mobil numberncislo mobilu pro posilani smso100-g
+200    anab2000cMeno čitateľa / názov inštitúcie#Jméno čtenáře / název instituce#Name of user / name of institucecNázov inštitúcie#Názov instituce#nmeno citatela  - nevytvara sa pre vymazane zaznamy (so statusom D); nazov institucie  - nevytvara sa pre vymazane zaznamy (so statusom D)o100-ao230-n
+200    anadb2006cMeno čitateľa / názov inštitúcie (zmazané záznamy)#Jméno čtenáře / název instituce (zmazané záznamy)#Name of user / name of instituce (deleted records)nmeno zmazaneho citatelao100-a (pokud 100-x = "D")
+200    aoncPlatnosť preukazu (typ alebo dátum)#Platnost průkazu (typ nebo datum)#Card valid (type or date)nplatnost preukazu - nevytvara sa pre vymazane zaznamy (so statusom D)o400-c
+200    aopb2002cČíslo občianskeho preukazu#Číslo občanského průkazu#ID card numberncislo OP/id karty  - nevytvara sa pre vymazane zaznamy (so statusom D)o100-o
+200    apobb2484cPobočka#Pobočka#Branchnpobockao100-l
+200    arcb2003cRodné číslo#Rodné číslo#Birth numbernrodne cislo  - nevytvara sa pre vymazane zaznamy (so statusom D) - vacsina institucii ho nevyplnujeo100-r
+200    aruccKód záznamu ručiteľa#Kód záznamu ručitele#ID of guarantor recordnkod rucitela v tvare l_is_user*xxxxxxo800-3
+200    asdicDotaz SDI#Dotaz SDI#SDI querynulozene dotazy SDIo700-a
+200    aspb2492cČiarový kód strateného preukazu#Čárový kód ztraceného průkazu#Barcode of lost cardncislo strateneho preukazu - nevytvara sa pre vymazane zaznamy (so statusom D)o500-a
+200    aT001b12cKód záznamu#Kód záznamu#Local numbernkod zaznamuo001-
+200    at001ab2434cKód pôvodného záznamu#Kód původního záznamu#ID of origin recordnkod zaznamu ze STAGu (cislo atributu zvolene tak, aby bolo rovnake pre bazu autorit aj katalogu a pre vsetky institucie)oC99-a
+200    at001nb2426cKód záznamu bez vodiacich núl#Kód záznamu bez vodících nul#ID of record withou leading zeronkod 000125, v indexe 000125 a 125oT001 bez vodiacich nul
+200    atagb2500cPole záznamu#Pole záznamu#Field of recordovsetky cisla tagov a tag_subtagov daneho zaznamu
+200    atelb2012cTelefon#Telefon#Phoneo100-f
+200    atitb2011cTitul#Titul#Degreeo100-i
+200    atypb2008cTyp čitateľa#Typ čtenáře#Type of usero100-t
+200    aufb2488cPoužívateľské pole#Uživatelské pole#User fieldnuzivatelske poleo400x
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmdd
+###
+# @id UN_TABLES BASE_INDEXES_H
+002    28.11.22 jk; pridana index price
+002    09.02.22 dk; v BASE_INDEXES_H, indexy 'tr' a 'tr0' zmenena hodnota podpole $s na 'N'
+002    30.07.19 oi; pridan index vyrtr0 - Úbytkové číslo (zarovnané nulami)
+002    24.04.19 jj; BASE_INDEXES_H doplnen index sect
+002    18.07.18 jk; uprava auk, pridan auk1
+002    29.09.16 js; doplnene a upravene popisy a nazvy indexov
+002    holdingy
+200    aacntb2486cÚčet#Účet#Accountmidxucetnúčet  (na modif."idxucet")o400msASCII,COMP,EXACT,LEFT,PHR
+200    aaub2010cTitul - hlavný autor#Titul - hlavní autor#Title - main authormauidxnhlavni autor (treba zapnout modif. auidx)o700a,b titulusASCII,COMP,EXACT,LEFT,PHR
+200    aaukb2476b1013cKód odkazovaného záznamu#Kód odkazovaného záznamu#ID of linked recordnkod zaznamu dodavatelankod faktury - len ak kod obsahuje "invoice*"nkod predplatneho - len ak kod obsahuje "subscription*"nkod objednavky - len ak kod obsahuje "order*"o400-bo400-ho400-io400-jsASCII,EXACT,LEFT
+200    aauk1b2480cKód odkazovaného záznamu + druh dokumentu#Kód odkazovaného záznamu + druh dokumentu#ID of linked record + type of documentnodkazovy index, toto je specialny index pre odkazovanie medzi zaznamami. Vyhladavaci termin sa konstruuje v zobrazovacom formate.oauk*dkrspojene indexy "auk" a "dk" - oddelovac hviezdicka "*"; auk*dksCODE
+200    aavailb2435cDostupnosť#Dostupnost#Availabilitynaktualne su pridelene tieto hodnoty 'p' - holding je k dispozicii prezencne, 'f' - k dispozicii na absencnu vypozicku (+nie je blok.ziadanky). pre 'f' sa dalej degeruje index t001f, podla ktoreho potom vieme pre dany titul najst vsetky volne hodlingy. Viz. tiez avail index v katalogu. Cislo atributu bolo zvolene tak aby bolo totozne aj pre katalog.nv-vypozicka,z-ziadanka,rd-drzana rezervaciaon/a - indexuju sa konstaty viz. poznamkaopridane statusy z itt z Trx sASCII,COMP,EXACT,LEFT,PHR
+200    abcb2003cČiarový kód#Čárový kód#Čiarový kódnciarovy kodo100-bsASCII,COMP,EXACT,LEFT,PHR
+200    acstcb2487cZúčtovacie stredisko#Zúčtovací středisko#Cost centermidxucetnzúčt.stř  (na modif."idxucet")o400n
+200    adkb2410cTitul - druh dokumentu#Titul - druh dokumentu#Title - document typemtidruhndruh dokumentu, len s parametrom "tidruh"oindex dk z l_un_catsASCII,EXACT
+200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99dsASCII,EXACT
+200    adobab2479cDoba (typ) výpožičky#Doba (typ) výpožičky#Period (type) of check-outndoba vypozicky, pozn. Toto je pouzite pri dotahovani stavu holdingu u Txx katalogu a pod.o200-dsASCII,COMP,EXACT,LEFT,PHR
+200    adodb2484cKód záznamu dodávateľa#Kód záznamu dodavatele#ID of vendorncislo dodavatelao400bsASCII,COMP,EXACT,LEFT,PHR
+200    adodnb2412cNázov dodávateľa#Název dodavatele#Vendor namemdodnnnazov dodavatela ak je zapnuty modifikator "dodn" v holdinguo210a podla 400b sASCII,COMP,EXACT,LEFT,PHR
+200    adsb2492cTitul - ďalšie  spracovanie#Titul - další zpracování#Title - next processingmdsnak je zapnuty parameter "ds", t.j. vklada hodnotu P z holdingu a K z bibliografickeho zaznamuo969f
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamu, teda datum poslednej modifikacie zaznamuo005- sN
+200    adt1b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#Date of record insertndatum vytvorenia zaznamu ( prvy datum v 999-d)o999-d ( vo formate yyyymmdd)sN
+200    adtcdb2481cDoplnková informácia (acqinfo2)#Doplňková informac (acqinfo2)#Additional data (acqinfo2)npole acqinfo2 u CZ kniznic (zatial VY,KL,LI) sa pouziva na zadanie datumu od ktoreho sa CD dany pocet dni (aktualne 270) poziciava len prezencneo400-ssN
+200    adtrb30b31b2007cDátum príjmu#Datum příjmu#Date of accessmdtr0ndatum prijmu, na modifikátor „dtr0“ sa pri prázdnom „400a“ zaindexuje „00000000“oviz . atribut 2007o400-asN
+200    afakib2475cInterné číslo faktúry#Interní číslo faktúry#Internal number of invoiceninterni cislo fakturyo400-qsASCII,COMP,EXACT,LEFT,PHR
+200    afaktb2417cČíslo faktúry#Číslo faktury#Invoice numbermfaktidxncislo faktury len ak je pouzity v indexparam parameter faktidxopodla 400-h dotiahnutie z invoice 200asASCII,COMP,EXACT
+200    ahisb2491cDatabáza a kód záznamu pre chronológiu#Databáze a kód záznamu pro chronologii#Database and ID for chronologynpro historii: tabulka * kod puvodniho zaznamuohis d*k
+200    ainab2411cNázov (a status) inventarizácie#Název (a status) inventarizace#Title (and state) of inventarizationnnazev inventarizace, ak 500-f nerovna sa "ARCH", pozri index "inaa"; nazev inventarizace_status, ak 500-f nerovna sa "ARCH", pozri index "inaa"o500-a; 500-a_500-b (ak 500-f nerovna sa "ARCH")sASCII,COMP,EXACT,LEFT,PHR
+200    aina1b2418cNázov inventarizácie#Název inventarizace#Title of inventarizationnnazev inventarizace, ak 500-f nerovna sa "ARCH", pozri index "inaa"o500-a (ak 500-f nerovna sa "ARCH")
+200    ainaacNázov inventarizácie (odloženej do archívu)#Název inventarizace (odložené do archivu)#Title of inventarization (archived)nnazov "archivovanej" inventarizacie, t.j. ak 500-f = ARCHo500-a (ak 500-f = ARCH)
+200    algb2409cTitul - jazyk dokumentu#Titul - jazyk dokumentu#Title - document languagemtijazyknjazyk dokumentu len s parametrom "tijazyk"oindex lg z l_un_catsASCII,EXACT
+200    alob2004cLokácia#Lokace#Locationnlokacia_dislokaciao100 l_d ( subtagy oddelene podtrzitkom )sASCII,COMP,EXACT,LEFT,PHR
+200    alocb2478cSkupina vlastníka záznamu#Skupina vlastníka záznamu#Group of record ownernlokacie kniznic, ktore maju stiahnuty zaznam , momentalne sa nepouzivao999-csASCII
+200    alockb2477cBlokovanie exemplára#Blokovanie exempláře#Lock of itemnblokovanie holdinguo200-lsASCII,COMP,EXACT,LEFT,PHR
+200    aowb2008cVlastník#Vlastník#Ownernvlastniko400-osASCII,COMP,EXACT,LEFT,PHR
+200    apdodb2482cPoznámka k dodávateľovi#Poznámka k dodavateli#Vendor notedxnPoznámka k dodávateľovio400-usASCII,COMP,EXACT,LEFT,PHR
+200    apriceb2488nCena exmeplare z H_400d, pokud neni tak z H_400c
+200    asectb2011nOddeleni dle T04a
+200    asib2001cSignatúra#Signatura#Call numbernsignaturao100-ssASCII,COMP,EXACT,LEFT,PHR
+200    asi0b2005cSignatúra (zarovnaná nulami)#Signatura (zarovnaná nulami)#Call number (with leading zero)msig0-Nnsignatura doplnena zleva nulami na N mist v zavislosti na parametru sig0-N; (NFA ma vlastni algoritmus - vyjimka); 8.12.03: algoritmus upraveny tak aby splnal vacsinu formatov CZ kniznic (predpoklada sa format XX 9999/text mul - pre iny format je nutne zalozit iny index pripadne rozirit modifikator 'sig0'); index sa generuje len pri modifikatore 'sig0' alebo 'si0'o100-ssASCII,COMP,EXACT,LEFT,PHR
+200    astavb2483cFyzický stav dokumentu#Fyzický stav dokumentu#Condicion of documentnStav dokumentuo300-ssASCII,COMP,EXACT,LEFT,PHR
+200    aT001b0b12cKód záznamu#Kód záznamu#Local number nkod zaznamuoviz . atribut 12o001-sASCII,COMP,EXACT
+200    at001fb2436cKód záznamu voľného exemplára#Kód záznamu voľného exempláře#Record ID of available itemnindexuje sa kod titulu pre holdingy, kde sa dosiahle avail=f; viazane na modifikator availInfo; viz. index avail v holdingu a kataloguo001 - kod titulu vytvoreny z obsahu tagu 001
+200    at001nb2426cKód záznamu bez vodiacich núl#Kód záznamu bez vodících nul#ID of record withou leading zeronkod c000125_0001, v indexe c000125_0001 a c125_0001oT001 bez vodiacich nulsASCII,COMP,EXACT
+200    atagb2500cPole záznamu#Pole záznamu#Field of recordovsetky cisla tagov a tag_subtagov daneho zaznamu
+200    atib2009b2474cTitul - názov#Titul - název#Titlemtiidxnnazev (treba zapnout modifikator tiidx)o200a tituluoindex z 200a z katalogu, zapne sa ak v UnCatH je parameter tiidxsASCII,COMP,EXACT,LEFT,PHR
+200    atitb2006cKód titulu#Kód titulu#Title IDnkod zaznamu tituluo001 - kod titulu vytvoreny z obsahu tagu 001sASCII,COMP,EXACT
+200    atrb2002cPrírastkové číslo#Přirůstkové číslo#Track numbernprirastkove cislo (NFA ma vlastni algoritmus - vyjimka)o100-tsN
+200    atr0b2416cPrírastkové číslo (zarovnané nulami)#Přirůstkové číslo (zarovnané nulami)#Track number (with leading zero)mtr0nt.j. prir.cislo zarovnane na dany pocet miest nulami spredu. Nutne pre selecty. Generuje sa len pri modifikatore 'tr0'; 8.12.03o100-tsN
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmddsASCII,EXACT
+200    avyrb2415cNázov vyraďovacieho zoznamu#Název vyřaďovacího seznamu#Title of dispose listnnazov vyradovacieho zoznamuo300-vsASCII,COMP,EXACT,LEFT,PHR
+200    avyrdtb2414cDatum vyřazení#Datum vyřazení#Date of disposendatum vyradenia v tvare T005oHIS-asN
+200    avyrtrb2413cÚbytkové číslo#Úbytkové číslo#Dispose numbernvyradovacie cislo - cislo vyradenia holdinguoHIS-tsASCII,COMP,EXACT,LEFT,PHR
+200    avyrtr0b2419cÚbytkové číslo (zarovnané nulami)#Úbytkové číslo (zarovnané nulami)#Dispose number (with leading zero)nvyradovacie cislo zarovnane nulami - cislo vyradenia holdinguoHIS-tsASCII,COMP,EXACT,LEFT,PHR
+###
+# @id UN_TABLES BASE_INDEXES_I
+002    faktury
+200    aT001b12cKód záznamu objednávky#Kód záznamu objednávky#nkod zaznamuo001-
+200    aaub1b1003cAutorské údaje#Autorské údajedxnautorske udajeoviz . atribut 1003ot02-cde
+200    aauk1b2479cOdkazový index#Odkazový indexnodkazovy index, toto je specialny index pre odkazovanie medzi zaznamami. Vyhladavaci termin sa konstruuje v zobrazovacom formate.
+200    acfab2006cInterné číslo faktúry# Interní číslo fakturyninterni cislo fakturyo200-k
+200    acisfb2001cČíslo faktúry#Číslo fakturyncislo fakturyo200-a
+200    aczfb2012cČíslo zálohovej faktúry#Číslo zálohové faktury#nc. zal faktutyo205a
+200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99d
+200    adodb2000cDodávateľ#Dodavatel#dxnmeno dodavatelaot01-abcd
+200    adrhb2011cDruh faktúry#Druh faktury#Kind invoicendruh fakturyo200s
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamu, teda datum poslednej modifikacie zaznamuo005- 
+200    adt1b2485cDátum vytvorenia záznamu #Datum vytvoření záznamu #ndatum vytvorenia zaznamu ( prvy datum v 999-d)o999-d ( vo formate yyyymmdd)
+200    adtpb2004cDátum prijatia faktúry#Datum přijetí fakturyndatum prijeti faktury, YYYYMMDD , YYYYMM, YYYYo200-f
+200    adtzb2015cDátum zaplacenia#Datum zaplacení#Date of paymentnje to datum zaplacen9o200h
+200    advzfb2014cDátum vytvorenia zalohovej fakrtúry#Dátum vytvořrení zálohové fakrury#ndatum vyttvorenia zal .fakturyo205o
+200    agxb0b1016cVšetky polia#Všechna pole#nvsetky poliaoviz . atribut 1016o2XX,3XX,4XX,5XX,6XX,7XX,9XX-abcdefghijklmnrsuvxyz345 (okrem 999)
+200    aiczfb2013cInterné číslo  zálohovej  faktúry #Interní číslo  zálohové  faktury #ninterne cislo zal. fakturyo205k
+200    akdodb2003cKód záznamu dodávateľa#Kód záznamu dodavatele#nkod dodavatelao200-e
+200    akordb2002cKód objednávky#Kód objednávkynkod objednavkyo210-a
+200    aktitb2005cKód položky objednávky#Kód položky objednávkynkod polozky objednavkyo210-b
+200    aloccnlokacie kniznic, ktore maju stiahnuty zaznam , momentalne sa nepouzivao999-c
+200    aplb59cMiesto vydania titulu#Místo vydání titulu#dxnmiesto vyd titulovot02-f
+200    apobb2007cPobočka#Pobočka#Branchnpobockao210-c
+200    apub1018cNakladateľ titulu#Nakladatel titulu#dxnvydavatelot02-g
+200    at001nb2426ckod zaznamu##nkod 000125, v indexe 000125 a c125oT001 bez vodiacich nul
+200    atagb2500c Tág UNIMARC # Tag UNIMARC #ovsetky cisla tagov a tag_subtagov daneho zaznamu  
+200    atib4cNázvové údaje titulu#Názvové údaje titulu#dxnnazvy titulovot02-abi
+200    atypb2010cTyp faktúry#Typ faktury#Type invoicentyp fakturyo200r
+200    auctb2008cÚčet#Účet#Accountnuceto210-d
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmdd
+200    ayeb30,31cRok vydania titulov#Rok vydání titulú#nrok vydania titulovot02-h
+200    azstrb2009cZúčtovacie stredisko#Zúčtovací středisko#Account centernzuctovanie strediskoo210-e
+###
+# @id UN_TABLES BASE_INDEXES_CH
+002    Chronologie
+200    aT001b0b12cKód záznamu zmeny#Kód záznamu změny#Local number nkod zaznamu z tagu 001oviz . atribut 12o001
+200    aactb2009cakcia#akce#actionnakce u-update d-delete ub-backup update f-fixup recordo998c
+200    adelb2002cZmazané záznamy#Smazané záznamy#nuzivatel+datum vymazu; len u vymazov tvar username-YYYYMMDDndatum vymazu YYYYMMDD - len u vymazovo998u+'-'+998ao998a
+200    adtb30cDátum zmeny#Datum změny#nindexuje sa len pre zaznamy obsahujuce normalne update/delete zaznamy (nie backup-update)  - nevytvara sa pre fix zaznamyo998a
+200    adtab2005cDátum zmeny všetky záznamy#Datum změny (+backup)#ndatum zaznamu chronologie pre vsetky zaznamy - nevytvara sa pre fix zaznamyo998a
+200    adtafxcnpre fix zaznamyo998a
+200    adtob2008cTimestamp originálneho záznamu#Datum změny originálního záznamu#ntoto je timestamp originalneho zaznamuo005
+200    aipb2003cIP adresa klienta#IP adresa klienta#nIP adresa klientao998i po prvu ##
+200    aserb2004cSériové číslo klienta#Sériové číslo klienta#nseriove cislo klientao998i za druhou ##
+200    asrcb2000cZdrojová databáza a kód záznamu#Zdrojová databáze a kód záznamu#nindexuje sa len pre zaznamy obsahujuce normalne update/delete zaznamy (nie backup-update)o998d+'*'+998k
+200    asrcab2006cZdrojová databáza a kód zaznamu všetky záznamy#Zdroj.databáze a kód záznamu (+backup)#ndatabaza*kod pre vsetky zaznamyo998d+'*'+998k
+200    ausrb2001cPoužívateľ a dátum zmeny#Uživatel a datum změny#User and date of changenindexuje sa len pre zaznamy obsahujuce normalne update/delete zaznamy (nie backup-update). Uzivatel pomlcka - datum v tvare YYYYMMDDo998u+'-'+998a
+200    ausrab2007cPoužívateľ a dátum zmeny (všetky záznamy)#Uživatel a dat.změny (všechny záznamy)#User and date of change(all records)nuzivatel+datum zmeny pre vsetky zaznamy, vratane backup-updateo998u+'-'+998a
+200    apidb2501cPID##o035$a; 035$znIndexace perzistentnich identifikatoru - systemovych kontrolnich cisel
+###
+# @id UN_TABLES BASE_INDEXES_M
+002    mdt
+200    aT001b12cKód záznamu#Kód záznamunkod zaznamuo001-
+200    aaub4b1003co210,410,510,710-aoviz . atribut 4
+200    aaubb2000cdxo210,410,510,710-b
+200    aaukb1013co210,410,510,710-3
+200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99d
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamu, teda datum poslednej modifikacie zaznamuo005- 
+200    adt1b2485cDátum vytvorenia záznamu #Datum vytvoření záznamu #ndatum vytvorenia zaznamu ( prvy datum v 999-d)o999-d ( vo formate yyyymmdd)
+200    agxb0b1016cVšetky polia#Všechna pole#nvsetky poliaoviz . atribut 1016o2XX,3XX,4XX,5XX,6XX,7XX-abcdefghijklmnrsuvxyz345
+200    aloccnlokacie kniznic, ktore maju stiahnuty zaznam , momentalne sa nepouzivao999-c
+200    atagb2500c Tág UNIMARC # Tag UNIMARC #ovsetky cisla tagov a tag_subtagov daneho zaznamu  
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmdd
+###
+# @id UN_TABLES BASE_INDEXES_O
+002    objednavky
+200    aT001b12cKód záznamu objednávky#Kód záznamu objednávky#nkod zaznamuo001-
+200    aaub1b1003cAutorské údaje#Autorské údajedxnautorske udajeoviz . atribut 1003ot02-cde
+200    aaukcodkaz na autority kvoli allowDelete##ncislo autorityncislo tituluo200-fo210-a
+200    aauk1b2479cOdkazový index#Odkazový indexnodkazovy index, toto je specialny index pre odkazovanie medzi zaznamami. Vyhladavaci termin sa konstruuje v zobrazovacom formate.on/a - auk*sta ( spojene indexy auk, a stav oddelene *)sCODE
+200    acobb2006cČíslo objednávky #Číslo objednávky #ncislo objednavkyo200-o
+200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99d
+200    adodb2000cDodávateľ#Dodavatel#dxnmeno dodavatelaot01-abcd
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamu, teda datum poslednej modifikacie zaznamuo005- 
+200    adt1b2485cDátum vytvorenia záznamu #Datum vytvoření záznamu #ndatum vytvorenia zaznamu ( prvy datum v 999-d)o999-d ( vo formate yyyymmdd)
+200    adtob2002cDátum zadania objednávky#Datum zadání objednávky#ndatum objednavky YYYYMMDD , YYYYMM, YYYYo200-a
+200    adtpb2004cDátum platnosti objednávky#Datum platnosti objednávky#ndatum platnosti objednavkyo200-l
+200    agxb0b1016cVšetky polia#Všechna pole#nvsetky poliaoviz . atribut 1016o2XX,3XX,4XX,5XX,6XX,7XX,9XX-abcdefghijklmnrsuvxyz345 (okrem 999)
+200    akdodb2003cKód záznamu dodávateľa#Kód záznamu dodavatele#nkod dodavatelao200-f
+200    aktitb2005cKód záznamu dodávateľa#Kód záznamu dodavatele#nkod zaznamu tituluo210-a
+200    aloccnlokacie kniznic, ktore maju stiahnuty zaznam , momentalne sa nepouzivao999-c
+200    aobtb2007cObjednávateľ#Objednavatel#nobjednavatelo210-c
+200    aplb59cMiesto vydania titulu#Místo vydání titulu#dxnmiesto vyd titulovot02-f
+200    apob2015cPobočka#Pobočka#npobockao210b
+200    apub1018cNakladateľ titulu#Nakladatel titulu#dxnvydavatelot02-g
+200    asdtb2010cSeriál Dátum zadania obj.#Seriál Datum zadání obj.#nserialy datum zadania objednavkyo200-a ( ak 200r="s")
+200    asgxb2008c Seriál Všetky polia# Seriál Všechna pole#nobj.serialovo2XX,3XX,4XX,5XX,6XX,7XX,9XX-abcdefghijklmnvxyz ( ak 200r="s")
+200    astab2001cStatus objednávky#Status objednávky#nstatus objednavkyo200-e
+200    astib2009cSeriál Názvové údaje titulu#Seriál Názvové údaje titulu#dxnserialy nazov tituluot03-a ( ak 200r="s")
+200    at001nb2426ckod zaznamu##nkod o000125, v indexe o000125 a o125oT001 bez vodiacich nul
+200    atagb2500c Tág UNIMARC # Tag UNIMARC #ovsetky cisla tagov a tag_subtagov daneho zaznamu
+200    atib4cNázvové údaje titulu#Názvové údaje titulu#dxnnazvy titulovot02-abi
+200    aucb2013cÚčet#Účet#nuceto210d
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmdd
+200    ayeb30,31cRok vydania titulov#Rok vydání titulú#nrok vydania titulovot02-h
+200    ayesb2011cSeriál Rok predplanteho titulu#Seriál Rok předplantého titulu#nrok predplanteho tituluot03-e ( ak 200r="s")
+200    ayes01b2012cSeriály Rok predpl. a  číslo objednávky#Seriály Rok předpl. a  číslo objednávky#nrok predplanteho titulu medzera kod zaznamu t.j. cislo objednavkyot03-e + 001( ak 200r="s")
+200    azsb2014cZúčovacie stredisko#Zúčtovací středisko#nzuct.stredistoo210e
+###
+# @id UN_TABLES BASE_INDEXES_T
+002    02.02.21 oi; doplneny index dttvg
+002    19.10.18 lp; doplneny popis indexu ukpk
+002    12.05.17 lp; doplnene a upravene zbyvajici nazvy a popisy indexu
+002    29.09.16 js; doplnene a upravene popisy a nazvy indexov
+002    transakce
+200    aT001b12cKód záznamu#Kód záznamu#Local numbernkod zaznamu z tagu 001o001-
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamu, teda datum a cas poslednej modifikacie zaznamuo005- 
+200    adt1b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#Date of record creationndatum vytvorenia zaznamu (prvy datum v 999-d)o999-d (vo formate yyyymmdd)
+200    adttb2015cDátumy všetkých operácií v transakcii#Datumy všech operací v transakci#Dates of all operations in transactionndatumy zalozeni vsech operaci v transakcio200-b
+200    adttvb2016cDátum operácie výpožičky v transakcii#Datum operace výpůjčky v transakci#Date of borrow operation in transactionndatum zalozeni operace vypujcky v transakcio200-b (ak 200a = V)
+200    adttvgb2501cDátum operácie výpožičky a e-výpožičky v transakcii#Datum operace výpůjčky a e-výpůjčky v transakci#Date of borrow and e-borrow operation in transactionndatum zalozeni operace vypujcky a evypujcky v transakci; datum zalozeni operace V nebo Go200-b (ak 200a = V nebo G)
+200    aerrb2001cChyby v zázname trx#Chyby v záznamu trx#Errors in trx recordnchyby v zaznamoch trx, ak je chyba vo formate datumu alebo integriteoT00-x
+200    aitb2002cDatabáza a kód exemplára/titulu (otvorené transakcie)#Databáze a kód exempláře/titulu (otevřené transakce)#Database and ID of item/title (open transactions)nkod holdingu/titulu v transakcii (len otvorene), vo formate lname*t001o100-b (ak T03b = 1)
+200    ait1b2003cDatabáza a kód exemplára/titulu (všetky transakcie)#Databáze a kód exempláře/titulu (všechny transakce)#Database and ID of item/title (all transactions)nkod holdingu/titulu v transakcii (aj uzatvorene), vo formate lname*t001o100-b
+200    aittb2004cDatabáza a kód exemplára/titulu * typ transakcie (otvorené transakcie)#Databáze a kód exempláře/titulu * typ transakcie (otevřené transakce)#Database and ID of item/title * type of transaction (open transactions)nkod holdingu/titulu v transakcii * typ transakcie (len otvorene) - typy su e/g/k/m/r/rd/v/w/zo100-b + *typ-trx
+200    alocb2005cLokačná skratka vlastníka záznamu#Lokační zkratka vlastníka záznamu#Location mark of record ownernlokacna skratka kniznice, ktora vytvorila zaznam trx, momentalne sa nevyuzivao999-b
+200    aodb2007cOddelenie/pobočka (otvorené transakcie)#Oddelení/pobočka (otevřené transakce)#Branch (open transactions)noddelenie len z otvorenych transakcii, indexuju sa tiez pobocky z operacie 200Co100-c, 200-C (ak T03b = 1)
+200    aod1b2006cOddelenie/pobočka (všetky transakcie)#Oddelení/pobočka (všechny transakce)#Branch (all transactions)noddelenie zo vsetkych transakcii, indexuju sa tiez pobocky z operacie 200Co100-c, 200-C
+200    aprntb2017cNevytlačené žiadanky/rezervácie#Nevytisknuté žádanky/rezervace#Not printed requests/reservationsmprntPZ (aktivace opakovaného tisku prolongovaných žádanek)ntyp transakcie u nevytlacenych ziadaniek a rezervacii - neobsahuju 200n, teda index obsahuje bud 'z' alebo 'r' alebo 'm'oT03a (ak nie je 200n)
+200    artdb2018cDnes vrátené exempláre#Dnes vrácené exempláře#Today returned holdingsmRTDnindex pro dnes vracene exemplare, ktere nejsou v prepraveo100-b (ak nie je T03y)
+200    asubtb2019cSubtyp transakcie (všetky transakcie)#Subtyp transakce (všechny transakce)#Transaction subtype (all transactions)nsubtyp transakce ze 100-xo100-x
+200    asubtob2020cSubtyp transakcie (otvorené transakcie)#Subtyp transakce (otevřené transakce)#Transaction subtype (open transactions)nsubtyp transakce ze 100-x, jen otevrene trxo100-x (ak T03b = 1)
+200    atagb2500cPole záznamu#Pole záznamu#Field of recordnvsetky cisla tagov a tag_subtagov daneho zaznamu
+200    atrxtb2008cTyp transakcie (všetky transakcie)#Typ transakce (všechny transakce)#Transaction type (all transactions)ntyp transakcie (e/g/h/k/l/m/r/rd/s/v/w/z)oT03-a
+200    atrxtob2009cTyp transakcie (otvorené transakcie)#Typ transakce (otevřené transakce)#Transaction type (open transactions)ntyp transakcie (g/k/m/r/rd/v/w/z), len otvoreneoT03-a (ak T03b = 1)
+200    aukb2010cDatabáza a kód čitateľa (otvorené transakcie)#Databáze a kód čtenáře (otevřené transakce)#Database and ID of user (open transactions)nkod zaznamu citatela - len pre otvorene (t.j. g/k/m/r/rd/v/w/z) trx daneho citatela, kde su nevratene vypozicky + neprepadnute rezervacie a ziadanky, vratane MVS a DDS + neprepadnute e-vypozicky, neobsahuje ciste platby ani vratene trx s nezaplatenym dlhom, ani MVS po navrate, ani vypozicky v preprave po navrateo100-a (ak T03b = 1)
+200    auk1b2012cDatabáza a kód čitateľa (všetky transakcie)#Databáze a kód čtenáře (všechny transakce)#Database and ID of user (all transactions)nkod zaznamu citatela - pre vsetky trx daneho citatelao100-a
+200    aukpb2013cDatabáza a kód čitateľa (nezaplatené dlhy)#Databáze a kód čtenáře (nezaplacené dluhy)#Database and ID of user (unpaid debts)nkod zaznamu citatela - pre nezaplatene ciste platby za sluzby a zatvorene trx s nezaplatenym dlhom alebo nevratenou kauciouo100-a (ak T03c>0 OR T03h>0)
+200    aukptb2014cDatabáza a kód čitateľa * typ transakcie (nezaplatené dlhy)#Databáze a kód čtenáře * typ transakce (nezaplacené dluhy)#Database and ID of user * transaction type (unpaid debts)nkod zaznamu citatela - pre nezaplatene ciste platby za sluzby a zatvorene trx s nezaplatenym dlhom alebo nevratenou kauciou + *typ-trxo100-a + *typ-trx (ak T03c>0 OR T03h>0)
+200    auktb2011cDatabáza a kód čitateľa * typ transakcie (otvorené transakcie)#Databáze a kód čtenáře * typ transakce (otevřené transakce)#Database and ID of user * transaction type (open transactions)nkod zaznamu citatela + *typ-trx - len pre otvorené transakcie daneho citatelao100-a + *typ-trx (ak T03b = 1)
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmdd
+200    aacpcPlatba z konta#Platba z konta#Account paymentnlink na trx se zalohou financniho konta, ze ktere se platil dluho200-3 (pokud 200a = L)
+200    aaczcZáloha na konto#Záloha na konto#Account depositnkod zaznamu ctenare - zaloha s nenulovym zustatkem na financni konto daneho ctenareo100-a (pokud T03d > 0)
+200    adtretcDátum návratu (otvorené výpožičky)#Datum návratu (otevřené výpůjčky)#Return date (open loans)ndatum ocekavaneho navratu (bez uvodniho priznaku *) otevrenych vypujcekoT03-r (pokud T03a = v, T03b = 1)
+200    adtretucPrepadnutý dátum návratu (otvorené výpožičky)#Propadnutý datum návratu (otevřené výpůjčky)#Expired return date (open loans)mgenUnprekroceny datum ocekavaneho navratu (bez uvodniho priznaku *) otevrenych vypujcek; optimalizovane pro generovani upominek, parametry se nastavuji v modifikatoru genUoT03-r (pokud T03a = v, T03b = 1, T03r zacina znakem *)
+200    adtrrcDátum platnosti rezervácie (max. 30 dní staré)#Datum platnosti rezervace (max. 30 dnů staré)#Expiration date of reservation (max. 30 days old)ndatum platnosti rezervace (bez uvodniho priznaku *); obsahuje vsechny platne a propadnute R a RD, ne starsi nez 30 dnioT03-r (pokud T03a = r/rd)
+200    adtrzcDátum platnosti žiadanky (max. 30 dní staré)#Datum platnosti žádanky (max. 30 dnů staré)#Expiration date of request (max. 30 days old)ndatum platnosti zadanky (bez uvodniho priznaku *); obsahuje vsechny platne a propadnute Z, ne starsi nez 30 dnioT03-r (pokud T03a = z)
+200    adttxcDátum operácie x v transakcii#Datum operace x v transakci#Date of x operation in transactionndatum zalozeni operace x v transakci, x muze nabyvat hodnoty d/e/g/h/k/l/m/n/p/r/s/u1/u2/u3/u4/u5/v/w/zo200-b (ak 200a = X, X in [D/E/G/H/K/L/M/N/P/R/S/U1/U2/U3/U4/U5/V/W/Z])
+200    aitocŽiadanky a rezervácie s odloženou platnosťou#Žádanky a rezervace s odloženou platností#Postponed requests and reservationsnkod holdingu/titulu pro zadanky (a objednavky z volneho vyberu) a rezervace s odlozenou platnosti, od okamziku zalozeni do dne zacatku platnosti jsou mezi uzavrenymi, v den zacatku platnosti se dostanou mezi otevrene trx a vypadnou z indexu ito, itot, uko a ukoto100-b (pokud T03a = r/w/z, T03b neni, akt.datum < T03o)
+200    aitotcŽiadanky a rezervácie s odloženou platnosťou * typ transakcie#Žádanky a rezervace s odloženou platností * typ transakce#Postponed requests and reservations * transaction typenkod holdingu/titulu pro zadanky (a objednavky z volneho vyberu) a rezervace s odlozenou platnosti + *typ-trxo100-b + *typ-trx (pokud T03a = r/w/z, T03b neni, akt.datum < T03o)
+200    alocLokácia + dislokácia#Lokace + dislokace#Location + dislocationnindex lokace_dislokace pro otevrene zadanky a objednavky W a vsechny presunove trx EoT02-f_T02-g (pokud T03a = z/w, T03b = 1, nebo T03a = e)
+200    amxupocMaximálne číslo upomienky#Maximální číslo upomínky#Maximal number of claimnmaximalne cislo upomienky v otvorenych vypozickachoT03-q (pokud T03a = v, T03b = 1)
+200    atitdcKód titulu s dátumom výpožičky#Kód titulu s datumem výpůjčky#Title ID with date of loanmtitdidxndatumy vypoziciek prislusneho titulu, funguje len po zapojeni modifikatora titdidx v Trx triede, obmedzene defaultne len na 1 rok dozadu, pocet dni sa da zmenit parametrom modifikatora.okod_titulu#datum_vypozicky (RRRRMMDD)
+200    atitlcKód titulu s lokáciou/dislokáciou#Kód titulu s lokací/dislokací#Title ID with location/dislocationmtitlidxnindex pro kontrolu, jestli uz byl tento titul v minulosti na dane lokaci_dislokaci, funguje jen po zapojeni modifikatoru titlidx v Trx tride, omezene defaultne na 1 rok dozadu, pocet dni se da zmenit parametrem modifikatoruokod_titulu#lokace_dislokace (jen pro T03a = e, tj. pohyb dokumentu)
+200    atitucDatabáza a kód titulu + databáza a kód čitateľa (časovo obmedzené)#Databáze a kód titulu + databáze a kód čtenáře (časovo omezeno)#Database and title ID + database and user ID (limited)mtituidxnindex pro kontrolu, jestli uz mel ctenar tento titul v minulosti vypujceny, funguje jen po zapojeni modifikatoru tituidx v Trx tride, omezene defaultne na 1 rok dozadu, pocet dni se da zmenit parametrem modifikatoruokod_titulu#kod_ctenare (pokud 200a = V)
+200    atitu1cDatabáza a kód titulu + databáza a kód čitateľa#Databáze a kód titulu + databáze a kód čtenáře#Database and title ID + database and user IDnindex pro kontrolu, jestli uz mel ctenar tento titul v minulosti vypujceny, ale neomezeny modifikatoremokod_titulu#kod_ctenare (pokud 200a = V)
+200    atrxtexcPrepadnuté Z a RD (max. 30 dní staré)#Propadnuté Z a RD (max. 30 dní staré)#Expired Z and RD (max. 30 days old)ntyp transakce (rd/z) - propadnute zadanky a drzene rezervace ne starsi nez 30 dnioT03-a (pokud T03a = rd/z, T03b neni, T03r neni starsi nez 30 dni)
+200    audocAktivita čitateľa#Aktivita čtenáře#Reader's activitymudoidxnkontrola aktivnich ctenaru, slozeny index kod_ctenare#datum_operace_ve_formatu_RRRRMMDD#oddeleni pro vsechny operace v transakci, ktere nejsou starsi nez 10 dni (10 je default, da se zmenit parametrem modifikatoru)o100-a#200-b(RRRRMMDD)#100-c
+200    audoscKontrola návštevnosti#Kontrola návštěvnosti#Traffic controlmudoidxnkontrola evidence navstevnosti, slozeny index kod_ctenare#datum_operace_ve_formatu_RRRRMMDD#oddeleni pro konkretni typ operace S, ktera neni starsi nez 10 dni (10 je default, da se zmenit parametrem modifikatoru)o100-a#200-b(RRRRMMDD)#100-c (pokud 200a = S)
+200    audttcLogin knihovníka a dátum operácie#Login knihovníka a datum operace#User's login and date of operationmusrdttnindex obsahuje login knihovnika s datumom operacie, index sa vytvara ak je zapnuty modifikator usrdtto200c-200b
+200    aukocŽiadanky a rezervácie s odloženou platnosťou#Žádanky a rezervace s odloženou platností#Postponed requests and reservationsnkod ctenare pro zadanky (a objednavky z volneho vyberu) a rezervace s odlozenou platnosti, od okamziku zalozeni do dne zacatku platnosti jsou mezi uzavrenymi, v den zacatku platnosti se dostanou mezi otevrene trx a vypadnou z indexu ito, itot, uko a ukoto100-a (pokud T03a = r/w/z, T03b neni, akt.datum < T03o)
+200    aukotcŽiadanky a rezervácie s odloženou platnosťou * typ transakcie#Žádanky a rezervace s odloženou platností * typ transakce#Postponed requests and reservations * transaction typenkod ctenare pro zadanky (a objednavky z volneho vyberu) a rezervace s odlozenou platnosti + *typ-trxo100-a + *typ-trx (pokud T03a = r/w/z, T03b neni, akt.datum < T03o)
+200    aukpkcTransakcie s nevrátenou kauciou#Transakce s nevrácenou kaucí#Transactions with unreturned depositnkod zaznamu citatela - pre ciste platby a vypozicky s nevratenou kauciouo100-a (ak T03h>0)
+200    aupogcKód záznamu transakcie pre tlač upomienky#Kód záznamu transakce pro tisk upomínky#ID of transaction for claim printnlink na trx platby za tisk upominky (grupovani trx z jedne tistene upominky)o200-4
+200    auserpcLogin knihovníka, ktorý predlžoval transakciu#Login knihovníka, který prodloužil transakci#Login of user who prolonged transactionmuserpidxnindex obsahuje loginy knihovnikov ktory vykonali prolongaciu, index sa vytvara ak je zapnuty modifikator userpidxo200-c (ak 200a = P)
+###
+# @id UN_TABLES BASE_INDEXES_S
+002    02.02.15 jk; doplnen index auk1
+002    predplatne
+200    aT001b12cKód záznamu objednávky#Kód záznamu objednávky#nkod zaznamuo001-
+200    aaccb2015cÚčet#Účetnúčeto200p
+200    aamb2008cAkvizičná metóda#Akviziční metodanakvizicni metodao200-r
+200    aaukcodkaz na autority kvoli allowDelete u n,o len ak obsah pola obsahuje znak hviezdicky - kvoli spatnej kompatibilite so starymi datami##ncislo autorityo200-ubcdno
+200    aauk1b2479cOdkazový index#Odkazový indexnodkazovy index, toto je specialny index pre odkazovanie medzi zaznamami. Vyhladavaci termin sa konstruuje v zobrazovacom formate.on/a - auk*dk ( spojene indexy auk, dk oddelene *)
+200    accb2016cZúčtovacie stredisko#Zúčtovací střediskonzúčtovací střediskoo200q
+200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99d
+200    adodb2001cDodávateľ#Dodavateldxndodavatelot02-a
+200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamu, teda datum poslednej modifikacie zaznamuo005- 
+200    adt1b2485cDátum vytvorenia záznamu #Datum vytvoření záznamu #ndatum vytvorenia zaznamu ( prvy datum v 999-d)o999-d ( vo formate yyyymmdd)
+200    adtkb2013cDátum konca predplatného#Datum konce předplatnéhondatum konca predplatnehoo200i
+200    adtzb2012cDátum začiatku predplatného#Datum začátku předplatnéhondatum zaciatku predplatnehoo200h
+200    afakb2006cAdresa pre fakturáciu#Adresa pro fakturacidxnadresa pro fakturaciot05-a
+200    agxb0b1016cVšetky polia#Všechna pole#nvsetky poliaoviz . atribut 1016o2XX,3XX,4XX,5XX,6XX,7XX,9XX-abcdefghijklmnrsuvxyz345 (okrem 999)
+200    akisb2011cKód čitateľa#Kód čtenářenkod citatelao210a
+200    akobb2009cKód objednávky#Kód objednávkynkod objednavkyo200-u
+200    akobtb2010cKód objednávky (medzera) kód titulu#Kód objednávky (mezera) kód titulunkod objednavky mezera kod tituluo200-ub
+200    akofb2014cKód faktúry#Kód fakturynkód fakturyo200r
+200    akotb2021cKód titulu#Kód titulunkod tituluo200b
+200    akpobb2018cPobočka knihovníkanpobocka knihovnikao2000
+200    aloccnlokacie kniznic, ktore maju stiahnuty zaznam , momentalne sa nepouzivao999-c
+200    apobb2004cPobočka#Pobočkanpobockao200-l
+200    astb2000cStatus#Statusnstatuso200-a
+200    at001nb2426ckod zaznamu##nkod 000125, v indexe 000125 a 125oT001 bez vodiacich nul
+200    atagb2500c Tág UNIMARC # Tag UNIMARC #ovsetky cisla tagov a tag_subtagov daneho zaznamu
+200    atib4cNázvové údaje titulu#Názvové údaje titulu#dxnnazvy titulovot01-abi
+200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmdd
+200    avydb2002cVydávateľ#Vydavateldxnvydavatelot03-a
+200    ayepb2003cRok predplatného#Rok předplatnéhonrok predplatnehoo200-j
+200    azadb2005cŽiadateľ#Žadateldxnzadatelot04-ab
+200    azadkb2017cKód záznamu žiadateľa#Kód záznamu žadateledxnaut.kod zaznamu zadateleo200m
+200    azasb2007cAdresa pro zaslání#Adresa pre zaslaniedxnadresa pro zaslaniot06-a
+200    aziab2022cZaslať#Zaslat#nzaslato200o
+###
+# @id UN_TABLES BASE_INDEXES_B
+002    UnTablesd
+200    aT001b12cKód záznamu#Kód záznamu#Local number nkod zaznamu z tagu 001o001sASCII,COMP,EXACT,SORT
+###
+# @id UN_TABLES BASE_INDEXES_V
+002    bPro Vf třídy
+200    aT001b12cKód záznamu#Kód záznamu#Local number nkod zaznamu z tagu 001o001
+###
+# @id UN_TABLES BASE_INDEXES_WR
+002    Třídy pro plánovač
+200    aT001b12cKód záznamu#Kód záznamu#Local number nkod zaznamu z tagu 001o001
+###
+# @id UN_TABLES BASE_INDEXES_TQ
+002    transakce zařízení
+200    aT001b12cKód záznamu#Kód záznamu#Local number nkod zaznamu z tagu 001o001
+200    aerrb2001cChyby v zázname trx#Chyby v záznamu trx#Errors in trx recordnchyby v zaznamoch trx, ak je chyba vo formate datumu alebo integriteoT00-x
+200    aitb2002cDatabáza a kód exemplára/titulu (otvorené transakcie)#Databáze a kód exempláře/titulu (otevřené transakce)#Database and ID of item/title (open transactions)nkod holdingu/titulu v transakcii (len otvorene), vo formate lname*t001o100-b (ak T03b = 1)
+200    ait1b2003cDatabáza a kód exemplára/titulu (všetky transakcie)#Databáze a kód exempláře/titulu (všechny transakce)#Database and ID of item/title (all transactions)nkod holdingu/titulu v transakcii (aj uzatvorene), vo formate lname*t001o100-b
+200    aittb2004cDatabáza a kód exemplára/titulu * typ transakcie (otvorené transakcie)#Databáze a kód exempláře/titulu * typ transakcie (otevřené transakce)#Database and ID of item/title * type of transaction (open transactions)nkod holdingu/titulu v transakcii * typ transakcie (len otvorene) - typy su e/g/k/m/r/rd/v/w/zo100-b + *typ-trx
+200    atrxtb2008cTyp transakcie (všetky transakcie)#Typ transakce (všechny transakce)#Transaction type (all transactions)ntyp transakcie (e/g/h/k/l/m/r/rd/s/v/w/z)oT03-a
+200    atrxtob2009cTyp transakcie (otvorené transakcie)#Typ transakce (otevřené transakce)#Transaction type (open transactions)ntyp transakcie (g/k/m/r/rd/v/w/z), len otvoreneoT03-a (ak T03b = 1)
+200    aukb2010cDatabáza a kód čitateľa (otvorené transakcie)#Databáze a kód čtenáře (otevřené transakce)#Database and ID of user (open transactions)nkod zaznamu citatela - len pre otvorene (t.j. g/k/m/r/rd/v/w/z) trx daneho citatela, kde su nevratene vypozicky + neprepadnute rezervacie a ziadanky, vratane MVS a DDS + neprepadnute e-vypozicky, neobsahuje ciste platby ani vratene trx s nezaplatenym dlhom, ani MVS po navrate, ani vypozicky v preprave po navrateo100-a (ak T03b = 1)
+200    auktb2011cDatabáza a kód čitateľa * typ transakcie (otvorené transakcie)#Databáze a kód čtenáře * typ transakce (otevřené transakce)#Database and ID of user * transaction type (open transactions)nkod zaznamu citatela + *typ-trx - len pre otvorené transakcie daneho citatelao100-a + *typ-trx (ak T03b = 1)
+200    auk1b2012cDatabáza a kód čitateľa (všetky transakcie)#Databáze a kód čtenáře (všechny transakce)#Database and ID of user (all transactions)nkod zaznamu citatela - pre vsetky trx daneho citatelao100-a
+200    aukpb2013cDatabáza a kód čitateľa (nezaplatené dlhy)#Databáze a kód čtenáře (nezaplacené dluhy)#Database and ID of user (unpaid debts)nkod zaznamu citatela - pre nezaplatene ciste platby za sluzby a zatvorene trx s nezaplatenym dlhom alebo nevratenou kauciouo100-a (ak T03c>0 OR T03h>0)
+200    adttb2015cDátumy všetkých operácií v transakcii#Datumy všech operací v transakci#Dates of all operations in transactionndatumy zalozeni vsech operaci v transakcio200-b
+
+###
+# @id UN_TABLES BASE_BASETYPE
+002    seznam všech existujících BASETYPE
+200    aAbAutority v UN
+200    aA2bAutority v M21
+200    aCbKatalog v UN
+200    aC2bKatalog v M21
+200    aHbHoldingy
+200    aH2bHoldingynPlatí pro něj záznam INDEXES_H
+200    aTbTransakce
+200    aTQbTransakce zařízení
+200    aIbFaktury
+200    aObObjednávky
+200    aSbPředplatné
+200    aUbČtenáři 
+200    aCHbChronologie
+200    aBbUnTablesd
+200    aMbMDT
+200    aVbPro Vf třídyn(například KlVf)
+200    aWRbTřídy pro plánovačnSpolečné pro CsWork, CsPlan, CsMail
+###

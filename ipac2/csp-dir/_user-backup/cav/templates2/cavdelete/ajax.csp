@@ -1,0 +1,12 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+<csp:if condition=(data("ISDELETED")=1)>1|</csp:if>
+<csp:if condition=(data("ISDELETED")=0)>0|</csp:if>
+#(data("REPORTS"))##(data("ERRORS"))#|
+<ipac:off>
+Předělat na JSON
+[{
+    "isdeleted": "<csp:if condition=(data("ISDELETED")=1)>1</csp:if><csp:if condition=(data("ISDELETED")=0)>0</csp:if>",
+    "reports": "#(data("REPORTS"))#",
+    "errors": "#(data("ERRORS"))#"
+}]
+</ipac:off>

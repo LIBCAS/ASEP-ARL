@@ -1,0 +1,32 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<div class="row">
+
+<ipac:form class="col-6" action="#(data("ACTION"))#" id="#(data("PAGEID"))#-f" method="get">
+<div class="xsubmit">
+<button class="btn btn-primary" type="submit" value="#(..tx("YES_URL"))#"><ipac:tx param="YES_URL"/></button>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="approval" value="1"/>
+<input type="hidden" name="repo" value="#(data("REPO"))#"/>
+<input type="hidden" name="key" value="#(data("KEY"))#"/>
+<input type="hidden" name="token" value="#(data("TOKEN"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+</ipac:form>
+
+
+<ipac:form class="col-6" action="#(data("ACTION"))#" id="#(data("PAGEID"))#-f2" method="get">
+<div class="xsubmit">
+<button class="btn btn-light" type="submit" value="#(..tx("NO_URL"))#"><ipac:tx param="NO_URL"/></button>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="refuse" value="1"/>
+<input type="hidden" name="repo" value="#(data("REPO"))#"/>
+<input type="hidden" name="key" value="#(data("KEY"))#"/>
+<input type="hidden" name="token" value="#(data("TOKEN"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+</ipac:form>
+
+</div>

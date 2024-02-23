@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2024-01-03 21:51:16">
+<Class name="i2.cust.cav.editPreferences">
+<Super>i2.ui.editPreferences</Super>
+<TimeChanged>66842,77600.805469243</TimeChanged>
+<TimeCreated>66525,46689.703198089</TimeCreated>
+
+<UDLText name="T">
+<Content><![CDATA[
+// parametr instituce
+
+]]></Content>
+</UDLText>
+
+<Parameter name="Ictx">
+<Default>cav</Default>
+</Parameter>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi pro odchylky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+    ; ucet IPAC2 prihlaseneho
+    s userAcc=##class(i2.ui.tools).getAccountObj()
+    ; vychozi vyhledavani
+    d ..getWOSOPTION(.data,userAcc)
+]]></Implementation>
+</Method>
+
+<Method name="getWOSOPTION">
+<Description><![CDATA[
+<pre> Zjisteni hodnot pro zapinani/vypinani nastaveni stahovani wos. Bere se pro ustav uzivatel hodnota z 200d "CavUnTablesd - GET_REC_WOS"
+Parametry:
+ data     pole pro naplneni daty
+ user     uzivatel IPAC2
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data:%Binary,&user:i2.data.User]]></FormalSpec>
+<Implementation><![CDATA[
+  s userId=##class(i2.access).getLoginId()  ; ziskame id uzivatele
+  s data("USER_ID")=userId
+  s data("USER_USTAV")=##class(User.CavS).FTgetUstavU(userId)
+  s data("USER_WOS")=""
+  d ..handleGetRecWos(.data,"0")  ; naplneni promenne data("USER_WOS")
+  if ((data("USER_WOS")="") || (data("USER_WOS")=1)) 
+  { ; "" nebo 1 - ano   - nastaveni priznaku sakrtnuti
+    s data("WOSOPTION_YES")=$lb(" checked=""checked""",1)
+  }
+  else 
+  {   
+    s data("WOSOPTION_YES")=$lb("",1)
+  }
+
+  if data("USER_WOS")=2   ; 2 - ne
+  { ; nastavime priznak, poku mame v "GET_REC_WOS" hodnotu $$d2 pro dany ustav uzivatele - zpracovatele 
+    s data("WOSOPTION_NO")=$lb(" checked=""checked""",2) 
+  }
+  else
+  { 
+    s data("WOSOPTION_NO")=$lb("",2) 
+  }
+]]></Implementation>
+</Method>
+
+<Method name="test">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+    s data("USER_USTAV")="ARUB-Q"
+     s data("USER_ID")="0000"
+    d ..handleGetRecWos(.data,2)
+    b
+     d ..handleGetRecWos(.data,1)
+    b
+]]></Implementation>
+</Method>
+
+<Method name="handleGetRecWos">
+<Description><![CDATA[
+<pre> Metoda pro ovladani zaznamu GET_REC_WOS
+Parametry:
+ data     - nastavuje se stav  
+ ustav    - Ustav, ktery budeme upravovat
+ operace  - co budeme provadet
+           0 - vrat stav 
+           1 - zapnout pro ustav
+           2 - vypnout pro ustav
+         
+ Navratove hodnoty: cislo stavu
+                    999 - chyba      
+                         
+             
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,pOper="0"]]></FormalSpec>
+<Implementation><![CDATA[
+  s bUpdate=0
+  if (data("USER_USTAV")="")  
+  { ; pokud nemame ustav, nemuzeme delat zmeny, vratime chybovou hlasku
+    s data("ERROR")="ERRW001#Nenalezen ustav uzivatele"    
+    q
+  }
+  
+  // samotna uprava zaznamu
+  if ##class(User.MARC).readX(.handle,"CavUnTablesd","GET_REC_WOS")
+  {
+    s nC=##class(User.MARC).recordLineCountX(.handle) ; ziskani poctu radku v zaznamu 
+    f i=1:1:nC 
+    { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
+      s lsLine=##class(User.MARC).getLineX(.handle,i) continue:lsLine="" 
+      s sTag=$e(lsLine,1,3), sOldLine=lsLine
+      if (sTag="200")
+      { ; pokud mame tag 200, zpracovavame konfiguraci
+        s sSTa=$$$getSubTagStr(lsLine,"a")                          //a - ziskam si kod ustavu
+        if ((sSTa)=(data("USER_USTAV")))
+        { ; mame nacteny konkretni radek a nasleduje aktualizace udaju
+            s sSTd=$$$getSubTagStr(lsLine,"d")    
+            if (pOper="0")
+            { ; vracime stav - pokud neni, vratime hodnotu 1
+              s data("USER_WOS")=sSTd
+              s:(data("USER_WOS")="") data("USER_WOS")=1
+            } 
+            elseif (pOper="1")
+            { ; pokud mame zapnout stahovani pro ustav, nastavime 1
+              s lsLine=##class(User.MARC).setSubTagStr(lsLine,$c(31)_"d1") 
+              s bUpdate=1
+              d ##class(User.MARC).setLineX(.handle,i,lsLine) ; zapsani to radku    
+            }
+            elseif (pOper="2")
+            { ; pokud mame vypnout stahovani pro ustav
+              s lsLine=##class(User.MARC).setSubTagStr(lsLine,$c(31)_"d2") 
+              s bUpdate=1
+              d ##class(User.MARC).setLineX(.handle,i,lsLine) ; zapsani to radku    
+            }
+            else
+            { ; pokud 
+              s data("ERROR")="ERRW001#Chyba při změně nastavení, nenalezena hodnota operace"
+            }          
+        }
+      }      
+    }
+    
+    if (bUpdate)
+    {       
+      s sIp="127.0.0.1"
+      s:$$$WeAreInCSPContext sIp=##class(i2.common).getIP()        
+      s sc=##class(User.MARC).writeX(.handle,1,,,3_$c(10)_data("USER_ID")_$c(10)_sIp)
+      ; pokud se nepodari zapis, v vypis chyby
+      s:('$$$ISOK(sc)) data("ERROR")="ERRW001#CavUnTablesd/GET_REC_WOS#"_##class(User.Util).status2str(sc)
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="dataSave">
+<Description><![CDATA[
+<pre> 
+Kontroly a ulozeni zmen do zaznamu uzivatele.
+Parametry:
+ user      zaznam uzivatele i2.data.User
+
+12.06.20 ln; audit uspesneho uzitatele
+31.05.18 lo; preklad hlasky detekovaneho CSRF utoku
+17.08.17 ln; ochrana pred CSRF (prvni verze)
+08.12.14 lo; ulozeni nastaveni komentaru
+04.11.10 jk; zalozeno
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&user:i2.data.User]]></FormalSpec>
+<Implementation><![CDATA[
+  ; 17.08.17 ln; ochrana pred CSRF (prvni verze) 
+  if '##class(i2.base.forms).checkFormNonce(..#PageID) {
+    ; 31.05.18 lo; preklad hlasky detekovaneho CSRF utoku
+    s data("ERRORS")=data("ERRORS")_" "_..txg("FORM_CSRF_DETECTED")
+    q
+  }  
+  s userId=##class(i2.access).getLoginId()  ; ziskame id uzivatele
+  s data("USER_ID")=userId
+  s data("USER_USTAV")=##class(User.CavS).FTgetUstavU(userId)
+  d ..handleGetRecWos(.data,"0")
+  
+  s bChanged=0
+  
+  s sWos=$$$GETREQVAR("wos")
+  if ((sWos'=$g(data("USER_WOS"))) && ((sWos=1)||(sWos=2))) {
+    d ..handleGetRecWos(.data,sWos) 
+    s bChanged=1
+  }
+
+  ; ulozeni volby jazyka
+  s nLang=$$$GETREQVAR("language")
+  if ((nLang=1) || (nLang=2) || (nLang=3)) && (user.Lang'=nLang) {
+    s user.Lang=nLang
+    s bChanged=1
+  }
+
+  s nSkin=$$$GETREQVAR("skin")
+  if (nSkin'="") && (user.Skin'=nSkin) {
+    s user.Skin=nSkin
+    s bChanged=1
+  }
+
+  s sSearch=$$$GETREQVAR("search")
+  if ((sSearch'=user.InitSearch) && ((sSearch=1)||(sSearch=2)||(sSearch=3))) {
+    s user.InitSearch=sSearch
+    s bChanged=1
+  }
+
+  s sElink=$$$GETREQVAR("elink")
+  s:sElink="" sElink=0
+  if ((sElink'=user.Elink) && ((sElink=0)||(sElink=1))) {
+    s user.Elink=sElink
+    s bChanged=1
+  }
+  
+  ; 08.12.14 lo; moznosti zobrazeni komentaru a hodnoceni
+  s Rating=##class(i2.ui.rating).getOption(user)
+  s newRating=$$$GETREQVAR("rating")
+  ; pripad 1) pokud neni zmena, necha se tak
+  ; pripad 2) pokud je zmena a nova hodnota neni shodna s default nastavenim ulozi se
+  ; pripad 3) pokud je zmena a nova hodnota je stejna jako default chovani katalogu, tak se nastaveni uzivatele vymaze
+  if (Rating'=newRating) {
+    s user.RatingBehaviour=newRating
+    s bChanged=1
+  }
+
+  ; ulozit zmeny
+  if bChanged {
+    s sc=user.%Save()    
+    ; 23.08.11 jk; uprava vypisu statusu
+    if $$$ISERR(sc) { 
+      ; nepodarilo se ulozit zmeny
+      s data("ERRORS")=data("ERRORS")_..tx("NOTSAVEDATA")_" "_##class(User.Util).status2str(sc) 
+    } else {
+      s data("REPORTS")=data("REPORTS")_..tx("SAVEOK")
+      ; 17.08.17 ln; ochrana pred CSRF (prvni verze)
+      d ##class(i2.base.forms).clearFormNonce(..#PageID)
+      ; 12.06.20 ln; audit uspesneho uzitatele
+      d ##class(i2.audit.storage).increment("ok-"_..#PageID,##class(i2.access).getLoginId())
+    }
+  }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

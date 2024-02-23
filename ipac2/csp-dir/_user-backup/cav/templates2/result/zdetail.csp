@@ -1,0 +1,40 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+    <ipac:loop param="RECORDS">
+
+<li data-idx="#(item)#" #($s(..v("itemtype")'="":"itemscope=""itemscope"" itemtype="""_..v("itemtype")_"""",1:""))# id="item-#($REPLACE(item,"*",""))#" class="list-group-item result-item #(oddeven)# zf-detail #($p(item,"*",1))# #($s(..v("showstars")=1:"rating",1:""))#">
+<csp:if condition=(..v("error")'="")>#(..v("error"))#</li>#[ continue ]#</csp:if>
+
+<div class="li-row row">
+
+<div class="aside col-lg-3 col-md-4">
+<csp:if condition=(data("PAGEID")="mydoc")>
+<ipac:tpl version="operations" page="mydoc"/>
+<csp:else>
+<ipac:tpl version="operations" page="result"/>
+</csp:if>
+</div>
+
+<div class="format col-lg-9 col-md-8">
+<div>
+
+        <csp:if condition=(data("PAGEID")="basket")>
+<input type="checkbox" value="#(item)#" name="item"#(..v("select"))#/>
+    </csp:if>
+<span class="nr badge badge-light">#(node)#.</span>
+
+<ipac:zf/>
+</div>
+</div>
+
+</div>
+
+<ipac:zf version="2" tftype="css"/>
+
+<ipac:tpl version="tabs" page="result"/>
+
+    <csp:if condition=($d(data("CITACEPRO")))>
+        <ipac:tpl version="detail" page="citacepro" />
+    </csp:if>
+</li>
+    </ipac:loop>

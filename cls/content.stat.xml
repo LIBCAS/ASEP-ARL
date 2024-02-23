@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 867_4U)" ts="2022-04-22 12:44:08">
+<Class name="content.stat">
+<Description><![CDATA[
+<pre> Persistentni trida pro statistiky content serveru
+
+11.04.22 ln; neuspesny import pres globalku muze mit nedefinovany uzel ictx
+08.02.22 ln; pridany klasicke indexy k bitmapovym
+12.11.19 ln; nepouzivat callBack pro page404
+28.02.19 ln; podpora security uzivatelu
+03.09.18 ln; metoda getArray
+07.06.17 ln; RecT001 nastaveno COLLATION na EXACT
+08.10.15 tt; zmena delky LoginContext z 50 na 200 znaku kvuli dlouhym kontextum
+01.06.15 tt; vyjimka pro CAV na indexaci druhu dokumentu - impaktovane clanky JI
+17.03.15 ln; pridan index na CKey
+11.12.14 ln; change uklada take chronologii
+04.09.14 ln; podpora pro importFile
+05.06.14 ln; pridana property RecKind
+01.11.12 ln; pridana chronologie
+19.10.12 jk; volano i z ipac1 cav, kde nejsou dostupne nektere parametry
+</pre>]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<Super>%Persistent,%XML.Adaptor</Super>
+<TimeChanged>66221,45737.18198</TimeChanged>
+<TimeCreated>62714,47687.938325</TimeCreated>
+<Inheritance>right</Inheritance>
+
+<Property name="Repo">
+<Description>
+Polozka Repo objektu content.metadata</Description>
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Index name="Repo">
+<Properties>Repo</Properties>
+</Index>
+
+<Index name="RepoBit">
+<Type>bitmap</Type>
+<Properties>Repo</Properties>
+</Index>
+
+<Property name="CKey">
+<Description>
+Polozka CKey objektu content.metadata</Description>
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Index name="CKey">
+<Properties>CKey</Properties>
+</Index>
+
+<Property name="Idx">
+<Description>
+Idx prihlaseneho uzivatele, nebo prazdne</Description>
+<Type>%String</Type>
+</Property>
+
+<Index name="Idx">
+<Properties>Idx</Properties>
+</Index>
+
+<Property name="LoginContext">
+<Description>
+Seznam skupin pristupovych prav prideleny pri logine</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="200"/>
+</Property>
+
+<Index name="LoginContext">
+<Properties>LoginContext</Properties>
+</Index>
+
+<Property name="Category">
+<Description>
+Kategorie ctenare, ISU_100$$k</Description>
+<Type>%String</Type>
+</Property>
+
+<Index name="Category">
+<Properties>Category</Properties>
+</Index>
+
+<Property name="Login">
+<Description>
+Stav prihlaseni</Description>
+<Type>%Integer</Type>
+</Property>
+
+<Index name="Login">
+<Properties>Login</Properties>
+</Index>
+
+<Index name="LoginBit">
+<Type>bitmap</Type>
+<Properties>Login</Properties>
+</Index>
+
+<Property name="Intranet">
+<Description>
+1-pristup z intranetu</Description>
+<Type>%Boolean</Type>
+</Property>
+
+<Index name="Intranet">
+<Properties>Intranet</Properties>
+</Index>
+
+<Index name="IntranetBit">
+<Type>bitmap</Type>
+<Properties>Intranet</Properties>
+</Index>
+
+<Property name="IP">
+<Description>
+IP adresa uzivatele, IPv4 IPv6</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="39"/>
+</Property>
+
+<Property name="Stamp">
+<Description>
+Datum a cas operace</Description>
+<Type>%TimeStamp</Type>
+<Required>1</Required>
+</Property>
+
+<Index name="Stamp">
+<Properties>Stamp</Properties>
+</Index>
+
+<Property name="Operation">
+<Description>
+Zapisovana operace edit,upload,delete,read,status a dalsi uzivatelske</Description>
+<Type>%String</Type>
+</Property>
+
+<Index name="Operation">
+<Properties>Operation</Properties>
+</Index>
+
+<Index name="OperationBit">
+<Type>bitmap</Type>
+<Properties>Operation</Properties>
+</Index>
+
+<Property name="Ictx">
+<Description>
+Zkratka instituce</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="15"/>
+</Property>
+
+<Index name="Ictx">
+<Properties>Ictx</Properties>
+</Index>
+
+<Index name="IctxBit">
+<Type>bitmap</Type>
+<Properties>Ictx</Properties>
+</Index>
+
+<Property name="RecClass">
+<Description>
+Trida MARC zaznamu</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="25"/>
+</Property>
+
+<Index name="RecClass">
+<Properties>RecClass</Properties>
+</Index>
+
+<Index name="RecClassBit">
+<Type>bitmap</Type>
+<Properties>RecClass</Properties>
+</Index>
+
+<Property name="RecT001">
+<Description>
+T001 MARC zaznamu</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="COLLATION" value="EXACT"/>
+<Parameter name="MAXLEN" value="25"/>
+</Property>
+
+<Index name="RecT001">
+<Properties>RecT001</Properties>
+</Index>
+
+<Property name="Result">
+<Description>
+Vysledek operace, 0 neproslo, 1 proslo, 3 proslo s odsouhlasenim u operace read</Description>
+<Type>%Integer</Type>
+</Property>
+
+<Index name="Result">
+<Properties>Result</Properties>
+</Index>
+
+<Index name="ResultBit">
+<Type>bitmap</Type>
+<Properties>Result</Properties>
+</Index>
+
+<Property name="Status">
+<Description>
+Stav (schvalen, neschvalen, ...)</Description>
+<Type>%Integer</Type>
+</Property>
+
+<Index name="Status">
+<Properties>Status</Properties>
+</Index>
+
+<Index name="StatusBit">
+<Type>bitmap</Type>
+<Properties>Status</Properties>
+</Index>
+
+<Property name="FileName">
+<Description>
+Originalni nazev zpracovavaneho souboru</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="255"/>
+</Property>
+
+<Index name="FileName">
+<Properties>FileName</Properties>
+</Index>
+
+<Property name="UserVal1">
+<Description>
+Uzivatelske pole plnene v uzivatelskych tridach, 
+v podedene metode content.uploader.getUseStat1()</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="255"/>
+</Property>
+
+<Index name="UserVal1">
+<Properties>UserVal1</Properties>
+</Index>
+
+<Property name="UserVal2">
+<Description>
+Uzivatelske pole plnene v uzivatelskych tridach, 
+v podedene metode content.uploader.getUseStat2()</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="255"/>
+</Property>
+
+<Index name="UserVal2">
+<Properties>UserVal2</Properties>
+</Index>
+
+<Property name="UserVal3">
+<Description>
+Uzivatelske pole plnene v uzivatelskych tridach, 
+v podedene metode content.uploader.getUseStat3()</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="255"/>
+</Property>
+
+<Index name="UserVal3">
+<Properties>UserVal3</Properties>
+</Index>
+
+<Property name="Chronology">
+<Description>
+Pole pro ulozeni puvodnich zmenenych metadat pri editaci
+WHERE FOR SOME %ELEMENT(Chronology) (%KEY='extension' AND %VALUE %STARTSWITH 't')</Description>
+<Type>%String</Type>
+<Collection>array</Collection>
+<Parameter name="MAXLEN" value="2000"/>
+</Property>
+
+<Property name="RecKind">
+<Description>
+970b MARC zaznamu</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="25"/>
+</Property>
+
+<Index name="RecKind">
+<Properties>RecKind</Properties>
+</Index>
+
+<Index name="RecKindBit">
+<Type>bitmap</Type>
+<Properties>RecKind</Properties>
+</Index>
+
+<Method name="addEdit">
+<Description><![CDATA[
+<pre> Prida do statistik operaci "edit".
+ zaroven ulozi puvodni metadata, u kterych doslo ke zmene
+ orig       vicerozmerne pole s puvodnim stavem
+ succes     uspesnost operace
+ new        vicerozmerne pole s zmenenym stavem
+
+01.11.12 ln; pridana chronologie
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&orig,success:%Boolean,&new]]></FormalSpec>
+<Implementation><![CDATA[
+  m orig1=orig
+  d ..addOperation(.orig1,"edit",success,.new)
+]]></Implementation>
+</Method>
+
+<Method name="addUpload">
+<Description><![CDATA[
+<pre> Prida do statistik operaci "upload".
+ array      vicerozmerne pole s informacemi o aktualni operaci
+ succes     uspesnost operace
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,success:%Boolean]]></FormalSpec>
+<Implementation><![CDATA[  d ..addOperation(.array,"upload",success)
+]]></Implementation>
+</Method>
+
+<Method name="addDel">
+<Description><![CDATA[
+<pre> Prida do statistik operaci "delete".
+ array      vicerozmerne pole s informacemi o aktualni operaci
+ succes     uspesnost operace
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,success:%Boolean]]></FormalSpec>
+<Implementation><![CDATA[  d ..addOperation(.array,"del",success)
+]]></Implementation>
+</Method>
+
+<Method name="addRead">
+<Description><![CDATA[
+<pre> Prida do statistik operaci "read".
+ array      vicerozmerne pole s informacemi o aktualni operaci
+ succes     uspesnost operace
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,success:%Integer]]></FormalSpec>
+<Implementation><![CDATA[  d ..addOperation(.array,"read",success)
+]]></Implementation>
+</Method>
+
+<Method name="addStatus">
+<Description><![CDATA[
+<pre> Prida do statistik operaci "status".
+ array      vicerozmerne pole s informacemi o aktualni operaci
+ succes     uspesnost operace
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,success:%Boolean]]></FormalSpec>
+<Implementation><![CDATA[  d ..addOperation(.array,"status",success)
+]]></Implementation>
+</Method>
+
+<Method name="addClaim">
+<Description><![CDATA[
+<pre> Prida do statistik operaci vyzadat - "claim".
+ array      vicerozmerne pole s informacemi o aktualni operaci
+ succes     uspesnost operace
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,success:%Boolean]]></FormalSpec>
+<Implementation><![CDATA[  d ..addOperation(.array,"claim",success)
+]]></Implementation>
+</Method>
+
+<Method name="addChange">
+<Description><![CDATA[
+<pre> Prida do statistik operaci zmena souboru - "change".
+ zaroven ulozi puvodni metadata, u kterych doslo ke zmene
+ orig       vicerozmerne pole s puvodnim stavem
+ succes     uspesnost operace
+ new        vicerozmerne pole s zmenenym stavem
+ 
+ 11.12.14 ln; change uklada take chronologii
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&orig,success:%Boolean,&new]]></FormalSpec>
+<Implementation><![CDATA[
+  m orig1=orig
+  d ..addOperation(.orig1,"change",success,.new)
+]]></Implementation>
+</Method>
+
+<Method name="addOperation">
+<Description><![CDATA[
+<pre>
+Vlozeni nove operace do statistik content serveru
+ array      vicerozmerne pole s informacemi o aktualni operaci
+            array("category")
+            array("class")
+            array("context")
+            array("count")
+            array("ctype")
+            array("dayfrom")
+            array("dayimport")
+            array("description")
+            array("extension")
+            array("humansize")
+            array("ictx")
+            array("importer")
+            array("intranet")
+            array("ipadress")
+            array("key")
+            array("origname")
+            array("repository")
+            array("size")
+            array("status")
+            array("supervisor")
+            array("type")
+            array("t001")
+            array("user")
+            array("userstate")
+ operation  operace edit,upload,delete,read,status a dalsi uzivatelske
+ succes     uspesnost operace
+
+11.04.22 ln; neuspesny import pres globalku muze mit nedefinovany uzel ictx
+12.11.19 ln; nepouzivat callBack pro page404
+28.02.19 ln; podpora security uzivatelu
+11.12.14 ln; change uklada take chronologii
+04.09.14 ln; podpora pro importFile
+01.11.12 ln; pridana chronologie
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,operation:%String,success:%Boolean,&new]]></FormalSpec>
+<Implementation><![CDATA[
+  ; POZOR, v array chybi runtime cast
+  s stat=##class(content.stat).%New()
+  s stat.Repo=$g(array("repository"))
+  s stat.CKey=$g(array("key"))  
+  
+  ; 19.10.12 jk; volano i z ipac1 cav, kde nejsou dostupne nektere parametry
+  if $d(%request) && $isobject(%request) {
+    s userIdx=##class(User.Util).objectName2lname(##class(i2.access).getLoginClassName())_"*"_##class(i2.access).getLoginId()
+    ; 28.02.19 ln; podpora security uzivatelu
+    s:userIdx="*" userIdx=##class(i2.ws.auth).getSessionUserName()
+    s stat.Idx=userIdx
+    s stat.LoginContext=##class(i2.access).getLoginCateg()
+    s stat.Category=##class(i2.access).getLogin100k()
+    s stat.Login=##class(i2.access).isLoggedIn()
+    s stat.Intranet=##class(i2.access).getLoginIntranet() 
+    s stat.IP=##class(i2.common).getIP()   
+  } 
+  ; 11.04.22 ln; neuspesny import pres globalku muze mit nedefinovany uzel ictx
+  elseif ($g(array("importer"))'="") && $d(array("ictx")) {
+    ; 04.09.14 ln; podpora pro importFile
+    s stat.Idx=array("ictx")_"_is_user*"_array("importer")
+  }
+  
+  if $g($$$GETICTX)'="" {
+    s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")
+    ; 12.11.19 ln; nepouzivat callBack pro page404
+    if (callBack'="") && '$f(callBack,".page404") {
+	  ; existuje uzvatelska trida uploader, provolat plneni uzivatelskych poli
+	  s stat.UserVal1=$ZOBJCLASSMETHOD(callBack,"getUseStat1",.array,operation,success)
+	  s stat.UserVal2=$ZOBJCLASSMETHOD(callBack,"getUseStat2",.array,operation,success)
+	  s stat.UserVal3=$ZOBJCLASSMETHOD(callBack,"getUseStat3",.array,operation,success)
+    }
+  }
+  
+  s class=$g(array("class"))
+  s t001=$g(array("t001"))
+  
+  s stat.Stamp=$zdt($h,3,1,2)
+  s stat.Operation=operation
+  s stat.Ictx=$$$GETICTX
+  s stat.RecClass=class
+  s stat.RecT001=t001
+  s stat.Result=success
+  s stat.Status=$g(array("status"))
+  s stat.FileName=$g(array("origname"))
+  
+  if (class'="") && (t001'="") && ##class(User.MARC).readX(.handle,class,t001) {
+    s stat.RecKind=##class(User.MARC).getTagX(.handle,"970b")
+   
+    if ((class="CavUnEpca")&&(stat.RecKind="J"))
+    { ; 01.06.15 tt; vyjimka pro CAV na indexaci druhu dokumentu - impaktovane clanky JI
+      s idc=##class(User.MARC).recordIdX(.handle) 
+      s dok="",dokx=""
+      for { ; nalezeni vsech druhu dokumentu
+       set dokx=$o(^$$$MarcIndexG(class,idc,"dk",dokx)) 
+       q:(dokx="")  
+       s dok=dok_" "_dokx
+      }
+      s:($f(dok," ji ")) stat.RecKind="JI"
+    }
+   } else {
+    s stat.RecKind=""
+  }
+  
+  ; 11.12.14 ln; change uklada take chronologii
+  ; 01.11.12 ln; pridana chronologie
+  ; ulozeni chronologie, puvodni hodnoty zmenenych metadat  
+  if (operation="edit") || (operation="change") {
+    d ##class(content.engine).split(.array,.storage)    
+    d ##class(content.engine).pure(.array)
+    ;d ##class(content.engine).purge(.array)
+    
+    s node=""
+    f { s node=$o(new(node),1,val) q:node=""
+      continue:$d(new(node))>1      
+      
+      k:$g(array(node))=val array(node)
+    }
+    d stat.setArray(.array)
+  }    
+  
+  s st=stat.%Save()
+  if $$$ISERR(st) { 
+    s err=$$$I2ErrContent(1)_$c(10)_##class(User.Util).status2str(st)
+    d ##class(i2.log).errI2Log(err)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="setArray">
+<Description><![CDATA[
+<pre> setter pro polozku Chronology
+</pre>]]></Description>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<Implementation><![CDATA[
+  k i%Chronology
+  m i%Chronology=array
+]]></Implementation>
+</Method>
+
+<Method name="getArray">
+<Description><![CDATA[
+<pre> getter pro polozku Chronology
+</pre>]]></Description>
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<Implementation><![CDATA[
+  k array
+  m array=i%Chronology
+]]></Implementation>
+</Method>
+
+<Method name="exportAll">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo="",file=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" "err: repo"
+  
+  s writer=##class(%XML.Writer).%New()
+  s writer.Indent=1
+  if file'="" {
+	d SetPDefIO^%NLS("UTF8",3) ; reset FILE NLS pro tento proces
+	s st=writer.OutputToFile(file)
+	q:'st "err: file"
+  }
+  
+  d writer.StartDocument()
+  ;d writer.RootElement("xx")
+  
+  &sql(DECLARE C1 CURSOR FOR
+    SELECT ID
+    INTO :cid
+    FROM content.stat
+    WHERE Repo = :repo
+    ORDER BY ID
+       
+  )
+  &sql(OPEN C1)
+  &sql(FETCH C1)
+ 
+  While (SQLCODE = 0) 
+  {
+    ;w !,cid
+    s obj=##class(content.stat).%OpenId(cid)
+    continue:'$isobject(obj)
+    s st=writer.RootObject(obj)
+    
+    &sql(FETCH C1)
+  }
+  &sql(CLOSE C1)
+ 
+  ;d writer.EndRootElement()
+  d writer.EndDocument()
+  
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="fixRecKind">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>test=1</FormalSpec>
+<Implementation><![CDATA[
+  s count=0, fixed=0, saved=0
+
+  &sql(DECLARE FIX1 CURSOR FOR
+    SELECT ID
+    INTO :id
+    FROM content.stat
+    WHERE RecKind IS NULL
+  )
+  
+  &sql(OPEN FIX1)
+  &sql(FETCH FIX1)
+  While (SQLCODE = 0)  
+  {
+	s count=count+1
+    ;w !,"id=",id
+    s obj=##class(content.stat).%OpenId(id)
+    continue:'$isobject(obj)
+    
+    s class=obj.RecClass
+    s t001=obj.RecT001
+    if (class'="") && (t001'="") && ##class(User.MARC).readX(.handle,class,t001) {
+      s ret=##class(User.MARC).getTagX(.handle,"970b")
+      s obj.RecKind=ret
+      s:ret="" ret="@empty@"
+    } else {
+      s obj.RecKind=""
+      s ret="@rec@"
+    }
+    
+    ;d $system.OBJ.Dump(obj)    
+    
+    if '$d(sums(ret)) {
+      w !,ret
+    }
+    s sums(ret)=$g(sums(ret))+1    
+    s fixed=fixed+1
+    w:'(fixed#1000) "."
+    
+    if 'test && (obj.%Save()) {
+        s saved=saved+1
+      }    
+    
+    &sql(FETCH FIX1)
+  }
+  &sql(CLOSE FIX1)
+  
+  w !
+  zw sums
+  w !,"count=",count,", fixet=",fixed,", saved=",saved
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^content.statD</DataLocation>
+<DefaultData>statDefaultData</DefaultData>
+<IdLocation>^content.statD</IdLocation>
+<IndexLocation>^content.statI</IndexLocation>
+<StreamLocation>^content.statS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="statDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Repo</Value>
+</Value>
+<Value name="3">
+<Value>CKey</Value>
+</Value>
+<Value name="4">
+<Value>Idx</Value>
+</Value>
+<Value name="5">
+<Value>LoginContext</Value>
+</Value>
+<Value name="6">
+<Value>Category</Value>
+</Value>
+<Value name="7">
+<Value>Login</Value>
+</Value>
+<Value name="8">
+<Value>Intranet</Value>
+</Value>
+<Value name="9">
+<Value>IP</Value>
+</Value>
+<Value name="10">
+<Value>Stamp</Value>
+</Value>
+<Value name="11">
+<Value>Operation</Value>
+</Value>
+<Value name="12">
+<Value>Ictx</Value>
+</Value>
+<Value name="13">
+<Value>RecClass</Value>
+</Value>
+<Value name="14">
+<Value>RecT001</Value>
+</Value>
+<Value name="15">
+<Value>Result</Value>
+</Value>
+<Value name="16">
+<Value>Status</Value>
+</Value>
+<Value name="17">
+<Value>FileName</Value>
+</Value>
+<Value name="18">
+<Value>UserVal1</Value>
+</Value>
+<Value name="19">
+<Value>UserVal2</Value>
+</Value>
+<Value name="20">
+<Value>UserVal3</Value>
+</Value>
+<Value name="21">
+<Value>Chronology</Value>
+</Value>
+<Value name="22">
+<Value>RecKind</Value>
+</Value>
+</Data>
+<Property name="CKey"/>
+<Property name="Category"/>
+<Property name="Chronology"/>
+<Property name="FileName"/>
+<Property name="IP"/>
+<Property name="Ictx"/>
+<Property name="Idx"/>
+<Property name="Intranet"/>
+<Property name="Login"/>
+<Property name="LoginContext"/>
+<Property name="Operation"/>
+<Property name="RecClass"/>
+<Property name="RecKind"/>
+<Property name="RecT001"/>
+<Property name="Repo"/>
+<Property name="Result"/>
+<Property name="Stamp"/>
+<Property name="Status"/>
+<Property name="UserVal1"/>
+<Property name="UserVal2"/>
+<Property name="UserVal3"/>
+</Storage>
+</Class>
+</Export>

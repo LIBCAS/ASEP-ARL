@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 865U)" ts="2019-03-01 19:10:50">
+<Class name="i2.cust.cav.service">
+<Description><![CDATA[
+<pre>
+
+27.02.19 tt; verze zaznamu smlouva musi byt vzdy A - archiv
+14.12.18 ln; aktualizace konverze dayfrom
+09.03.17 tt; pridany metody deleteAllFiles a approveAllFiles a podpora pro ne
+08.11.16 tt; pridana 970b kvuli velkym datum
+17.02.15 tt; applyEdit: pridano pri jistotu pregenerovani C52
+21.08.13 tt; odstranen parametr script
+14.02.13 jk; vymazan template()
+10.01.13 tt; pridana funkce pro editaci C52 - zmenena logika delC52, aby bylo jednotne
+06.10.12 tt; delC52: kompletne prepsana logika, aby se C52 znovu vyskladala 
+             podle aktualnich dat
+06.10.12 tt; pridano jako parametr cele pole, pro dalsi mozne vyuziti pri volani genC52
+22.02.12 tt; pridana metoda na odstraneni C52 ze zaznamu pri vymazu
+20.02.12 tt; oprava schvaleni, nahrazen pageRedirect
+</pre>]]></Description>
+<Super>content.service</Super>
+<TimeChanged>65071,46186.843534</TimeChanged>
+<TimeCreated>62425,41516.182913</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+ictx instituce  "contser"</Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  q:ret'="" ret
+  
+  ; 20.02.12 tt; oprava schvaleni, nahrazen pageRedirect
+  if ($$$GETREQVAR("state")'="") && ($$$GETREQVAR("stateorig")=2) {
+    ;d ##class(i2.ui.tools).pageRedirect("upsendemail")
+    $$$SETREQVAR("op","upsendemail")
+    s %response.ServerSideRedirect=##class(i2.entry).scriptName()
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi hlavne pro nacteni vsech ciselniku formulare
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("REPO")="crepo1"
+  
+  d ##class(content.human).stable(.data,"UT_ASEP_ACCESS")
+  d ##class(content.human).stable(.data,"UT_ASEP_VERSION")
+  d ##class(content.human).stable(.data,"UT_ASEP_TYPE")
+  
+  d ##class(content.human).xlate(.data,"UT_ASEP_STATUS_SER_INFO")  
+  d ##class(content.human).xlate(.data,"UT_ASEP_STATUS")
+  
+  s data("T001z")=$$$HandleT001(handle)
+  s idx=data("IDX")
+  
+  ;s data("RECTITLE_Z")=##class(User.Util).HTMLfixup($$$getTagX(.handle,"Tbca"))    
+  s data("RECTITLE_Z")=$$$getTagX(.handle,"Tbca")
+  ; uprava podle Karla
+  if ($g(data("RECTITLE_Z"),"")'="")
+  { ; rozprostreni na vice casti vysledku
+    s sRecT1="<p>"_##class(User.Util).HTMLfixup($p(data("RECTITLE_Z"),"\n",1))_"</p>"
+    ;s sRecT2="<ul><li>"_$$$strswap($p(data("RECTITLE_Z"),"\n",2,999),"\n","</li><li>")_"</li></ul>"
+    ;s:(sRecT2="<ul><li></li></ul>") sRecT2=""    
+    s data("RECTITLE_Z")=sRecT1
+  }
+  
+  s data("T969f")=""
+  s sT969f=$$$getTagX(.handle,"969f")        ; ziskame pole 969f
+  s:(sT969f'="") data("T969f")="<p><b>"_..tx("T969")_"</b></p>"  ; pokud mame data ve zpracovani, vypiseme hlasku 
+
+  
+  ; 22.02.12 tt; pridana metoda na odstraneni C52 ze zaznamu pri vymazu  
+  s sClass=$$$HandleClass(handle)
+  ; pokud byla stlacena operace mazani, zjistime stav
+  s sErr=""
+  s:($$$GETREQVAR("delete")'="") sErr=..delC52(sClass,data("T001z"))
+  ; 10.01.13 tt; pridana funkce pro editaci C52
+  s:($$$GETREQVAR("edit")'="") sErr=..delC52(sClass,data("T001z"))
+  s:(sErr'="") data("ERRORS")=$g(data("ERRORS"),"")_sErr
+ 
+  s upload=##class(content.uploader).getPageID()
+  s data("UPLOAD")=##class(i2.html.tpl).getLink(upload,"idx="_idx) 
+  s maintain=##class(content.service).getPageID()
+  s data("MAINTAIN")=##class(i2.html.tpl).getLink(maintain,"idx="_idx)
+  s contlist=##class(content.list).getPageID()
+  s data("CONTLIST")=##class(i2.html.tpl).getLink(contlist,"idx="_idx)
+  s data("ODREC")=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_data("T001z"),..tx("RECORD"))
+  ; 08.11.16 tt; pridana 970b kvuli velkym datum
+  s data("REC_970b")=$$$getTagX(.handle,"970b")
+  
+  if $$$GETREQVAR("delall")=1 {
+    d ..deleteAllFiles(.data,.handle)    
+    if (data("ERRORS")="") 
+    {
+      k data("CONTENT") ; promazani dat pro soubory
+    }
+  }
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+/* puvodni logika nahrazena novou
+/// <pre> Metoda pro odmazani tagu C52
+/// C52 $a - stav v zaznamu
+///     $b - omezeni
+///     $c - poznamky k zaznamu
+/// Parametry: pClass        - trida
+///            pT001         - 001 zaznamu
+/// Navratova hodnota: "" - vse ok
+///                    chyba
+/// 
+/// 06.10.12 tt; kompletne prepsana logika, aby se C52 znovu vyskladala 
+///              podle aktualnich dat
+/// 22.02.12 tt; pridana metoda na odstraneni C52 ze zaznamu pri vymazu
+/// </pre> 
+ClassMethod delC52(pClass, pT001) As %String
+{
+  s sRet="", bCH=0    ; navratova hodnota
+  if ##class(User.MARC).readX(.handle,pClass,pT001) 
+  { ; uspesne se podarilo otevrit
+    s sTC52Puv=$$$getTagX(.handle,"C52")
+    s sTC52="C52    " ; inicializujeme C52
+
+    ; ziskame vsechny data k zaznamu v output
+    d ##class(content.api).selectRecAll(.output,pClass,pT001)
+    
+    ; prochazime postupne cyklem vsech polozek k zaznamu
+    s item=""      ; jedna polozka k zaznamu
+    f { 
+      s item=$o(output(item)) q:item=""
+      s repo=output(item,"repository")   ; ziskame repository
+      s key=output(item,"key")           ; klice
+      ; nacteme delsi pomocna data k jednomu zaznamu
+    
+      d ##class(content.api).getBatch(.array,repo,key)         ; ziskame informace z array    
+      s sSTa="", sSTb="", sSTc=""
+      s sSTb=$c(31)_"b"_array("accession")                     ; nacteme si postupne data
+      s sSTa=$c(31)_"a"_array("status")
+      
+      continue:(sSTa'=($c(31)_"a4"))
+      s:($g(array("nusl"),"")="true") sSTc=$c(31)_"c"_"nusl"
+      ; seskladame si vyslednou C52
+      s:('$f(sTC52,sSTa)) sTC52=sTC52_sSTa
+      s:('$f(sTC52,sSTb)) sTC52=sTC52_sSTb
+      s:('$f(sTC52,sSTc)) sTC52=sTC52_sSTc         
+    } ; konec cyklu prochazeni souboru k zaznamu
+    
+    ; mame vyskladanou aktualni C52 a muzeme ji ulozit
+    if (($l(sTC52)>9)&&(sTC52Puv'=sTC52))
+    { ; pokud mame nejakou hodnotu v C52 a neni stejna jako ta co uz v zaznamu byla, ulozime
+      d $$$setTagX(.handle,sTC52)                 ; ulozime si zmenene tag C52
+      s st=##class(User.MARC).writeX(.handle)     ; ulozim handle
+      ; zkontroluji spravnost
+      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record CavUnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
+    }             
+  }
+  else
+  { ; vypis chyby
+    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
+  }   
+  q sRet
+}
+
+*/
+]]></Content>
+</UDLText>
+
+<Method name="delC52">
+<Description><![CDATA[
+<pre> Metoda pro odmazani tagu C52
+C52 $a - stav v zaznamu
+    $b - omezeni
+    $c - poznamky k zaznamu
+Parametry: pClass        - trida
+           pT001         - 001 zaznamu
+Navratova hodnota: "" - vse ok
+                   chyba
+
+10.01.13 tt; pridana funkce pro editaci C52 - zmenena logika delC52, aby bylo jednotne
+06.10.12 tt; kompletne prepsana logika, aby se C52 znovu vyskladala 
+             podle aktualnich dat
+22.02.12 tt; pridana metoda na odstraneni C52 ze zaznamu pri vymazu
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pClass,pT001</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet="", bCH=0    ; navratova hodnota
+  if ##class(User.MARC).readX(.handle,pClass,pT001) 
+  { ; uspesne se podarilo otevrit
+    s sTC52Puv=$$$getTagX(.handle,"C52")
+    d ##class(User.CavS).generateC52(.handle)
+    s sTC52=$$$getTagX(.handle,"C52")
+    
+    ; mame vyskladanou aktualni C52 a muzeme ji ulozit
+    if (sTC52Puv'=sTC52)
+    { ; pokud mame nejakou hodnotu v C52 a neni stejna jako ta co uz v zaznamu byla, ulozime
+      s st=##class(User.MARC).writeX(.handle)     ; ulozim handle
+      ; zkontroluji spravnost
+      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record CavUnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
+    }             
+  }
+  else
+  { ; vypis chyby
+    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
+  }   
+  q sRet
+]]></Implementation>
+</Method>
+
+<Method name="applyState">
+<Description><![CDATA[
+<pre> Umoznuje modifikovat metadata pri zmene stavu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,prevState:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  ; prevState minuly stav
+  ; novy stav array("status")
+  ; array("accession")
+  ///if ((array("status")="4")&&(prevState=5))
+  ; 17.02.15 tt; pro jistotu pregenerovat vzdy
+  if (array("status")="4")
+  { ; pokud menime z ulozen se zamitnutim na ulozen, je potreba take vygenerovat C52
+    ; vygenerovani tagu C52 pro indexovani
+    ; 06.10.12 tt; pridano jako parametr cele pole, pro dalsi mozne vyuziti pri volani genC52
+    d ##class(i2.cust.cav.approvalAuthor).genC52(.array,array("t001"),"4",array("accession")) 
+  }
+]]></Implementation>
+</Method>
+
+<Method name="applyEdit">
+<Description><![CDATA[
+<pre> Umoznuje modifikovat metadata pri editaci
+
+14.12.18 ln; aktualizace konverze dayfrom
+17.02.15 tt; pridano pri jistotu pregenerovani C52
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<ReturnType>%Library.Boolean</ReturnType>
+<Implementation><![CDATA[
+  ; prevedeni datumu
+  if (array("status")="4")
+  { ; pokud menime z ulozen se zamitnutim na ulozen, je potreba take vygenerovat C52
+    ; vygenerovani tagu C52 pro indexovani
+    ; 17.02.15 tt; pridano pri jistotu pregenerovani C52
+    d ##class(i2.cust.cav.approvalAuthor).genC52(.array,array("t001"),"4",array("accession")) 
+  }
+  
+  ; 14.12.18 ln; aktualizace konverze dayfrom
+  s dayfrom=$g(array("dayfrom"))
+  if dayfrom'="" {
+     try { s dayfrom=$zd($zdh($tr(dayfrom,".","/"),4),8) } catch { s dayfrom=0 }
+     /*if ($zd($h,8)>dayfrom) {
+      s data("ERRORS")=..tx("ERR_DATE") ; ERR_DATE_3
+      q 0
+    }*/
+    s array("dayfrom")=dayfrom
+  }
+  
+  if ($g(array("version"),"")="SML")
+  { ; 27.02.19 tt; verze zaznamu smlouva musi byt vzdy A - archiv
+    s array("accession")="A"
+    s data("ERRORS")=..tx("ERR_SMLOUVA") 
+  }  
+  
+  if (($g(array("accession"),"")="E")&&(dayfrom=""))
+  { ; chyba, pokud mam embargo a nemam datum
+    s data("ERRORS")=..tx("ERR_E_DATE")
+    q 0
+  }
+  if (($g(array("accession"),"")'="E")&&(dayfrom'=""))
+  { ; datum zadavam jen pro embargo
+    s data("ERRORS")=..tx("ERR_NE_DATE")
+    q 0
+  }
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="deleteAllFiles">
+<Description><![CDATA[
+<pre> Metoda pro smazani vsech souboru u zaznamu datasetu
+
+09.03.17 tt; pridany metody deleteAllFiles a approveAllFiles a podpora pro ne
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+<Implementation><![CDATA[
+  q:$$$getTagX(.handle,"970b")'="DATA"
+  
+  s t001=$$$HandleT001(handle)                ; ziskame si T001 zaznamu
+  s class=$$$HandleClass(handle)              ; ziskame tridu zaznamu
+   
+  ; ziskame vsechny data k zaznamu v output
+  d ##class(content.api).selectRecAll(.output,class,t001)
+  
+  s item=""      ; jedna polozka k zaznamu
+  f { s item=$o(output(item)) q:item=""
+    s repo=output(item,"repository")   ; ziskame repository
+    s key=output(item,"key")           ; klice
+    
+    continue:'##class(content.api).engineDelete(repo,key,.array)   ; kontrola na prava pro odmazavani
+    continue:$g(array("bigdata"))'="true"                          ; kontrola, jestli je soubor ve velkych datech
+    
+    //s ^lnb($i(^lnb))=t001_"|"_key                                ; zakomentovany pomocny vypis
+     
+    if ##class(content.api).delete(repo,key) {
+      d ##class(content.stat).addDel(.array,1)      
+    } else {
+      s data("ERRORS")=data("ERRORS")_" "_..tx("CONTSERERR4")_array("origname")
+      d ##class(content.stat).addDel(.array,0)
+    }
+  }
+  
+  if data("ERRORS")="" 
+  { ; jestlize nemame zadnou chybu, zapisujeme handle
+    s data("REPORTS")=..tx("CONTSEROK4C")
+    
+    if ##class(content.engine).setC52(.handle,,$g(array("status")),$g(array("accession")),$g(array("type"))) {
+      s sc=##class(User.MARC).writeX(.handle)
+      if $$$ISERR(sc) {  s data("ERRORS")="ERROR:"_..tx("CONTSERERR3")_" - záznam:"_class_"/"_t001_" "__sc }
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="approveAllFiles">
+<Description><![CDATA[
+<pre> Metoda pro schvaleni vsech souboru u zaznamu datasetu
+vyzaduje uzivatele prihlaseneho pres ipac nebo s security uctem svazanyms ipacovym
+
+09.03.17 tt; pridany metody deleteAllFiles a approveAllFiles a podpora pro ne
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:'$$$WeAreInCSPContext ""
+  q:$$$getTagX(.handle,"970b")'="DATA" ""
+  //s ^lnb($i(^lnb))=##class(i2.access).isLoggedIn()
+  
+  s t001=$$$HandleT001(handle)                ; ziskame si T001 zaznamu
+  s class=$$$HandleClass(handle)              ; ziskame tridu zaznamu
+  s ret=""
+   
+  ; ziskame vsechny data k zaznamu v output
+  d ##class(content.api).selectRecAll(.output,class,t001)
+  
+  s item=""      ; jedna polozka k zaznamu
+  f { s item=$o(output(item)) q:item=""
+    s repo=output(item,"repository")   ; ziskame repository
+    s key=output(item,"key")           ; klice
+    
+    continue:'##class(content.api).engineState(repo,key,.array)
+    continue:$g(array("bigdata"))'="true"
+    
+    s status=$g(array("status"))
+    //s ^lnb($i(^lnb))=t001_"|"_key_"|"_status
+    s array("status")=4 ; schvaleno
+    
+    if ##class(content.api).update(.array) {
+      d ##class(content.stat).addStatus(.array,1)
+    } else {
+      s ret=ret_" "_..tx("CONTSERERR5")_array("origname")
+      d ##class(content.stat).addStatus(.array,0)
+    }    
+  }
+  
+  if ret="" {
+    if ##class(content.engine).setC52(.handle,.array,$g(status),$g(orig("accession")),$g(orig("type"))) {
+      s sc=##class(User.MARC).writeX(.handle)
+      if $$$ISERR(sc) { s data("ERRORS")="ERROR:"_..tx("CONTSERERR3")_" - záznam:"_class_"/"_t001_" "__sc  }
+    }
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+</Class>
+</Export>

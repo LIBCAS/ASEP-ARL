@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.2.2 (Build 805U)" ts="2016-04-19 12:44:52">
+<Class name="i2.cust.cav.detail">
+<Super>i2.ui.detail</Super>
+<TimeChanged>64027,45874.465315</TimeChanged>
+<TimeCreated>62741,48621.093776</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+19.04.16 tt; nastaveni desiderat na 969f = N nebo D
+11.10.12 tt; zalozena metoda pro zobrazovani informaci v panelu u vyhledavani
+ictx instituce</Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi pro odchylky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[  d ##class(i2.cust.cav.result).SetUserData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="permissions">
+<Description><![CDATA[
+<pre> Kontrola prav na detail zaznamu
+Defaulte varaci "", jinak text chyby
+standardne ..tx("NORIGHTS") nebo ..tx("NOREC")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,idx]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:idx="" ""
+  if ($g(handle)'=$$$MarcHANDLEXMAGIC) || '$d(handle("modified")) { 
+    q ""
+  }
+  
+  ; kontrola prav na zdroj pro permalink
+  ; TODO v pripade logicke databaze zkontrolovat, zda v ni zaznam skutecne je
+  s src=$p(idx,"*",1)
+  if '##class(i2.access).isSourceAccessible(src) {
+    q ..tx("NORIGHTS")  ;"nejsou prava na zdroj"
+  }
+  
+  s line=##class(User.MARC).getTagX(.handle,"969")_$c(31)
+  ; 19.04.16 tt; nastaveni desiderat na 969f = N nebo D
+  ; desidereata
+  if ($f(line,$c(31)_"fD"_$c(31)) || $f(line,$c(31)_"fN"_$c(31))) {
+    q ..tx("NOREC") 
+  }
+  
+  q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

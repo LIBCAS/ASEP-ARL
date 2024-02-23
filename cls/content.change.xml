@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2022-11-29 14:54:25">
+<Class name="content.change">
+<Description><![CDATA[
+<pre> stranka pro nahrazeni souboru v contentServeru (nova verze)
+
+06.11.22 kp; Doplnen data("DESCRIPTION")
+11.12.14 ln; change uklada take chronologii
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66442,53642.2021226</TimeChanged>
+<TimeCreated>62760,35978.901162</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contchng</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>contchngr#contchng#contchng</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("repo,key,idx,status")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("ISET")=""
+  s data("DESCRIPTION")=..txn("DESCRIPTION")
+  s repo=$$$GETREQVAR("repo")
+  s:repo="" repo=$$$GETREQVAR("repository")
+  s data("REPO")=repo
+  s key=$$$GETREQVAR("key")
+  s data("KEY")=key
+  s data("VERSION")=""
+  
+  s data("ORIG_QUERY")=$$$GETSESSVAR("q")  
+  s data("RECTITLE")=""  
+  s idx=$$$GETREQVAR("idx")
+  s data("IDX")=idx  
+  
+  if idx="" {
+    s data("ERRORS")=..tx("CONTSERERR1")
+    s data("EXIT")=1 
+    q
+  } 
+  
+  if '##class(i2.dblink).recordReadLX(.handle,idx,"T") {
+    s data("ERRORS")=..tx("CONTSERERR2")_": "_idx
+    s data("EXIT")=1       
+    q
+  }
+  
+  s data("RECTITLE")=##class(i2.data.layer).title(.handle)
+  
+  d ..userData(.data)
+  
+  ;s runtime("class")=##class(User.Util).lname2objectName($p($p(idx,"*",1),"-",1))
+  ;s runtime("t001")=$p(idx,"*",2)
+  
+  if '##class(content.api).engineRead(repo,key) {
+    s data("ERRORS")=..tx("CONTSERERR3")
+    s data("EXIT")=1  
+    q
+  }  
+  
+  if '##class(content.api).engineChange(repo,key,.array) {
+    s data("ERRORS")=..tx("ERRCHANGE")
+    s data("EXIT")=1  
+    q
+  }        
+  
+  d ..change(.data,.array)
+]]></Implementation>
+</Method>
+
+<Method name="change">
+<Description>
+11.12.14 ln; change uklada take chronologii</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&orig]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s rest=$$$GETREQVAR("st")="rest"
+  
+  s stream=$g(%request.MimeData("FileStream",1))
+  if '$isobject(stream) || (stream.Size="") {
+    s:rest data("ERRORS")="NOSTREAM"
+    ;w !,"stream"
+    q 0
+  }  
+  
+  d ##class(i2.base.request).get(.request)
+  d ##class(i2.base.request).pure(.request)
+  d ##class(i2.base.request).purge(.request)
+  d ##class(i2.base.request).first(.request)
+  s idx=$g(request("idx"))
+  k request("idx"),request("repo"),request("status")
+  m array=request
+  
+  if $g(array("Changed_by"))="" {
+    s array("Changed_by")=##class(i2.access).getLoginId()
+  }  
+  
+  if $g(array("Changed_on"))="" {
+    s array("Changed_on")=$tr($zdt($h,8)," :")
+  }        
+      
+  s ret=##class(content.api).change(idx,stream,.array)
+  if ret'="" {
+    s data("ERRORS")=ret
+    d ##class(content.stat).addChange(.array,0)
+    q 0
+  }
+  
+  ; 11.12.14 ln; change uklada take chronologii
+  d ##class(content.stat).addChange(.orig,1,.array)
+  
+  s data("ORIGNAME")=array("origname")
+  s data("VERSION")=array("ver")
+  
+  if 'rest {
+    s data("REPORTS")=..tx("SAVEOK")_" "_array("origname")_" "_array("ver")
+  } else {
+    s data("REPORTS")=..tx("SAVEOK")
+  }
+  q 1
+]]></Implementation>
+</Method>
+</Class>
+</Export>

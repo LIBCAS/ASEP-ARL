@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865U)" ts="2019-04-17 13:53:30">
+<Class name="content.get">
+<Description><![CDATA[
+<pre> Stranka pro ziskani metadat objektu (REST API)
+nezapocitava se do statistiky
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>65120,49996.854447</TimeChanged>
+<TimeCreated>62776,42298.692457</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contget</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  
+  ; url parametry pro obnoveni stavu stranky
+   s data("RESTORE")=##class(i2.base.request).restore("repo,key")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s key=$$$GETREQVAR("key")
+  s repo=$$$GETREQVAR("repo")
+  s origver=$$$GETREQVAR("version")
+  s version=origver
+  s:version=1 version=""
+  
+  s:version'="" runtime("oldversion")=version
+  s ret=##class(content.api).engineRead(repo,key,.array,.runtime)
+  
+  if 'ret {
+    s data("ERRORS")=..tx("NORIGHTS")
+    q
+  }
+  
+  if (origver'="") && (ret'=4) {
+    s data("ERRORS")=..tx("NORIGHTS")
+    q
+  }
+    
+  s:$$$GETREQVAR("st")="rest" data("REPORTS")="SUCCESS"
+  
+  d ##class(content.engine).pure(.array)
+  
+  s node="", seq=1
+  f { s node=$o(array(node),1,val) q:node=""
+    continue:node="st"
+  
+    s data("METADATA",seq)=$lb(node,val)
+    s data("META",node)=val
+    s seq=seq+1
+  }
+    
+  d ..userData(.data,.array)
+]]></Implementation>
+</Method>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi pro odchylky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+</Method>
+</Class>
+</Export>

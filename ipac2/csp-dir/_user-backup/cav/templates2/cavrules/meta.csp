@@ -1,0 +1,4 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+<script data-main="#(..cb(..script(1)_"conf."_data("PAGEID")_".js"))#" src="#(..cb(..script()_"require.js"))#"></script>
+

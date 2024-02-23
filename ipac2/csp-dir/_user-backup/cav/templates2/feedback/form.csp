@@ -1,0 +1,84 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+<ipac:off>
+Pridany 3 polozky formulare (firstname, surname a workplace)
+</ipac:off>
+
+<ipac:form action="#(data("ACTION"))#" id="#(data("PAGEID"))#-f" method="post">
+    <ipac:dtx param="FORM_UP"/>
+    <p class="note-required"><ipac:txg param="FORM_NOTE_REQUIRED"/></p>
+<div class="container">
+
+    <csp:if condition=($g(data("ADDRESSEE"))'=0)>
+<div class="row form-group">
+<label for="addressee" class="col-form-label"><ipac:tx param="EMAILLABEL"/>:</label>
+<div class="half fv-row">
+<select name="addressee" autofocus="autofocus" class="form-control" id="addressee">
+            <ipac:loop param="ADDRESSEE">
+<option value="#(..v("id"))#" #($s($$$GETREQVAR("addressee")=..v("id"):"selected='selected' ",1:""))#>#(..v("name"))#</option>
+            </ipac:loop>
+</select>
+</div></div>
+    </csp:if>
+
+<div class="row form-group">
+<label for="firstname" class="col-form-label"><ipac:tx param="FIRSTNAME"/>:</label>
+<div class="half fv-row">
+<input type="text" class="form-control" #($s($g(data("ADDRESSEE"))'=0:"",1:"autofocus='autofocus'"))# name="firstname" autocomplete="given-name" id="firstname" value="#(data("FIRSTNAME"))#">
+</div>
+</div>
+
+<div class="row form-group">
+<label for="surname" class="col-form-label"><ipac:tx param="SURNAME"/>:</label>
+<div class="half fv-row">
+<input type="text" class="form-control" name="surname" autocomplete="family-name" id="surname" value="#(data("SURNAME"))#">
+</div>
+</div>
+
+<div class="row form-group">
+<label for="workplace" class="col-form-label"><ipac:tx param="WORKPLACE"/>:</label>
+<div class="half fv-row">
+<input type="text" class="form-control" name="workplace" id="workplace" value="#(data("WORKPLACE"))#">
+</div>
+</div>
+
+<div class="row form-group">
+<label for="sender" class="col-form-label"><ipac:tx param="FROM"/>:</label>
+<div class="half fv-row">
+<input type="email" name="sender" id="sender" value="#(data("REPLY"))#" autocomplete="email" inputmode="email" class="form-control"
+data-fv-email-address="true" data-fv-email-address___message="#(..tx("EMAILERROR"))#">
+</div></div>
+
+<div class="row form-group">
+<label for="subject" class="col-form-label"><ipac:tx param="SUBJ"/>: <em>*</em></label>
+<div class="half fv-row">
+<input type="text" required="required" name="subject" id="subject" value="#(data("SUBJECT"))#" class="form-control" spellcheck="true"
+data-fv-not-empty___message="#(..tx("SUBJECTFILLERR"))#">
+</div></div>
+
+<div class="row form-group">
+<label for="message" class="col-form-label"><ipac:tx param="BODY"/>: <em>*</em></label>
+<div class="half fv-row">
+<textarea name="message" required="required" id="message" cols="30" rows="3" maxlength="#(..tx("LIMIT"))#" class="form-control maxlength-text" spellcheck="true"
+data-fv-string-length="true" data-fv-string-length___min="3" data-fv-string-length___max="#(..tx("LIMIT"))#" data-fv-string-length___message="#(..tx("MAXSTRINGLENGTH"))#"
+data-fv-not-empty___message="#(..tx("BODYFILLERR"))#"
+>#(data("MESSAGE"))#</textarea>
+</div>
+</div>
+</div>
+
+<csp:if condition=('data("---","LOGGED"))>
+<ipac:tpl version="captcha" page="parts"/>
+   </csp:if>
+
+    <ipac:dtx param="SEND_UP"/>
+
+<div class="submit">
+<button type="submit" class="btn btn-primary" name="send" value="1"><ipac:tx param="SEND"/></button>
+<input type="hidden" name="send" value="1">
+<input type="hidden" name="op" value="#(data("OP_VALUE"))#">
+<input type="hidden" name="textlimit" value="#(..tx("LIMIT"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
+</div>
+
+        <ipac:dtx param="FORM_DOWN"/>
+</ipac:form>

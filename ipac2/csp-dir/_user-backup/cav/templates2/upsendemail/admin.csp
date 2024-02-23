@@ -1,0 +1,19 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+<admin:tabs tabs="texts,techinfo" pageid="#(data("KEY"))#"/>
+
+<script language="cache" runat="server">
+s i=##class(i2.admin.techinfo).%New(.data, data("KEY"))
+s data("TEXTS",1,"t001")=i.t001Tx
+s data("TEXTS",1,"text")=..tx("TEXTAPAGE")
+s data("ISFORM")=1
+</script>
+
+<div class="tab-content">
+
+<ipac:off> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx </ipac:off>
+<ipac:tpl page="admin" version="tab.techinfo"/>
+<ipac:off> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx </ipac:off>
+<ipac:tpl page="admin" version="tab.texts"/>
+<ipac:off> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx </ipac:off>
+
+</div>

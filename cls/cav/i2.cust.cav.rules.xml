@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="22" zv="Cache for Windows (x86-64) 2009.1.3 (Build 704U)" ts="2013-08-22 09:37:52">
+<Class name="i2.cust.cav.rules">
+<Super>i2.ui.page</Super>
+<TimeChanged>63056,34577.94018</TimeChanged>
+<TimeCreated>62790,39785.57907</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+22.08.13 tt; pridany parametr pretty 
+29.11.12 tt; zalozena stranka pro vypis pravidel pro ukladani plnych textu
+&op={PageID} rules]]></Description>
+<Default>cavrules</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>pravidla-repozitare#pravidla-repozitare#repository-rules</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+
+<UDLText name="T">
+<Content><![CDATA[
+///    vznik na zaklade stranky 
+///    https://www.lib.cas.cz/asep/pro-zpracovatele/ulozeni-dokumentu/obrazovka-v-myasep/#2
+
+]]></Content>
+</UDLText>
+</Class>
+</Export>

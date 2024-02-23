@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865_3U)" ts="2022-06-24 10:09:12">
+<Class name="content.settings">
+<Description><![CDATA[
+<pre> stranka pro spravu prav contentServeru
+
+24.06.22 kp; Pridany zalozky
+31.10.12 ln; podpora verzovani
+23.10.12 ln; upraveno pro ipac3.1
+04.01.12 kp; parametr robots
+11.11.11 ln; upraveno pro ipac3
+</pre>]]></Description>
+<Super>i2.ui.forms</Super>
+<TimeChanged>66284,36397.655863</TimeChanged>
+<TimeCreated>62186,50637.691527</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}
+contset]]></Description>
+<Default>contset</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>contset#contset#contset</Default>
+</Parameter>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("OPERATION")=$$$GETREQVAR("operation")
+  s:data("OPERATION")="" data("OPERATION")="Read"
+  s operation=$zcvt(data("OPERATION"),"U")
+  
+  if (operation'="READ") && (operation'="UPLOAD") && (operation'="EDIT") && 
+     (operation'="DELETE") && (operation'="STATE") && (operation'="CHANGE") &&
+     ($e(operation,1,4)'="SYMB")
+  {
+    s data("OPERATION")="Read"
+    s operation="READ"
+  }
+  
+  ; zaznam do ktereho se ma formular ulozit
+  s data("CLASS")				= $$$IPREF_"UnTablesd"
+  s data("T001")				= "CONTENT_"_operation
+  
+  
+  s data("read")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"operation=Read")
+  s data("upload")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"operation=Upload")
+  s data("edit")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"operation=Edit")  
+  s data("delete")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"operation=Delete")
+  s data("state")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"operation=State")
+  s data("change")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"operation=Change")
+    
+  s bTest=$$$GETREQVAR("test")=..tx("TEST")
+  s data("TEST")=bTest
+  if ($$$GETREQVAR("send")=..tx("SEND")) || (bTest){
+    s data("POSTED")=1
+  } else {
+    s data("POSTED")=0
+  }
+  
+  ; Prepinac, zda se ma zobrazit formular
+  s data("FORM")=2
+  
+  s bRead=##class(User.MARC).existsT001(data("CLASS"),data("T001"))
+  
+  ; ziskani dat formulare
+  d ..formsdata(.data,bRead)
+  s:bTest data("T001")=data("T001")_"_TEST"
+  
+  s operation=$zcvt(data("OPERATION"),"U")
+  s:$e(operation,1,4)="SYMB" operation="SYMB"
+  
+  s data("MAIN")="CONTENT_MAIN"
+  if ##class(User.MARC).existsT001(data("CLASS"),data("MAIN")_"_"_operation) {
+     s data("MAIN")=data("MAIN")_"_"_operation
+  }  
+  
+  s data("KRIT")="CONTENT_KRIT"
+  if ##class(User.MARC).existsT001(data("CLASS"),data("KRIT")_"_"_operation) {
+     s data("KRIT")=data("KRIT")_"_"_operation
+  }  
+  
+  s data("COP")="CONTENT_OP"
+  if ##class(User.MARC).existsT001(data("CLASS"),data("COP")_"_"_operation) {
+     s data("COP")=data("COP")_"_"_operation
+  }  
+  
+  d ..getStable(.data,data("MAIN"),2)
+  d ..getStable(.data,data("KRIT"),2)
+  d ..getStable(.data,data("COP"),2)
+  
+  // Zalozky
+  d ..getSubSite(.data)
+]]></Implementation>
+</Method>
+
+<Method name="postSave">
+<Description><![CDATA[
+<pre> Kod spousteny po ulozen formulare do zaznamu
+Vraci pripadny text chyby
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  w "<pre>"
+  s ret=##class(content.generator).generate($$$GETICTX,data("OPERATION"),data("TEST"))
+  w "</pre>"
+  q:ret'="" ret
+  q:data("TEST") ..tx("TESTED")
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="getRecord">
+<Description><![CDATA[
+<pre> Nacteni a indexace datoveho zaznamu
+
+01.04.11 ln; prepracovana indexace pro cteni i ulozeni handle
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  //w !,"VALIDSEND=",data("VALIDSEND")
+  //w !,"MODIFIED=",data("MODIFIED")
+  if 'data("MODIFIED") || data("VALIDSEND") {
+    if ##class(User.MARC).readX(.h,data("CLASS"),data("T001")) {
+      if data("POSTED") {
+        ; PREDPOKLADEM JE ZE ZAZNAM JE KOMPLETNE VE FORMULARI
+        //d ##class(i2.base.forms).indexSave(.h,.data) ; @@ln@@
+      } else {
+        d ##class(i2.base.forms).indexRead(.h,.data)
+      }
+    } else {
+      s data("ERRORS")=..tx("ERR_OPEN_RECORD")
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="getSubSite">
+<Description><![CDATA[
+<pre>
+Zalozky 
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data:%Binary]]></FormalSpec>
+<Implementation><![CDATA[
+	s i=0
+	
+	s i=i+1
+	s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"tab="_i)
+	s data("SUBMENU",i,"pageid")=..#PageID
+	s data("SUBMENU",i,"param")="operation=Read"
+	s data("SUBMENU",i,"title")=..tx("READ_TITLE")
+	s data("SUBMENU",i,"tab")=i
+	s data("SUBMENU",i,"text")=..tx("READ")
+	s data("SUBMENU",i,"active")=$s(data("OPERATION")="Read":"1",1:"")
+	
+	s i=i+1
+	s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"tab="_i)
+	s data("SUBMENU",i,"pageid")=..#PageID
+	s data("SUBMENU",i,"param")="operation=Upload"
+	s data("SUBMENU",i,"title")=..tx("UPLOAD_TITLE")
+	s data("SUBMENU",i,"tab")=i
+	s data("SUBMENU",i,"text")=..tx("UPLOAD")
+	s data("SUBMENU",i,"active")=$s(data("OPERATION")="Upload":"1",1:"")
+	
+	s i=i+1
+	s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"tab="_i)
+	s data("SUBMENU",i,"pageid")=..#PageID
+	s data("SUBMENU",i,"param")="operation=Edit"
+	s data("SUBMENU",i,"title")=..tx("EDIT_TITLE")
+	s data("SUBMENU",i,"tab")=i
+	s data("SUBMENU",i,"text")=..tx("EDIT")
+	s data("SUBMENU",i,"active")=$s(data("OPERATION")="Edit":"1",1:"")
+
+	s i=i+1
+	s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"tab="_i)
+	s data("SUBMENU",i,"pageid")=..#PageID
+	s data("SUBMENU",i,"param")="operation=Delete"
+	s data("SUBMENU",i,"title")=..tx("DELETE_TITLE")
+	s data("SUBMENU",i,"tab")=i
+	s data("SUBMENU",i,"text")=..tx("DELETE")
+	s data("SUBMENU",i,"active")=$s(data("OPERATION")="Delete":"1",1:"")
+	
+	s i=i+1
+	s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"tab="_i)
+	s data("SUBMENU",i,"pageid")=..#PageID
+	s data("SUBMENU",i,"param")="operation=State"
+	s data("SUBMENU",i,"title")=..tx("STATE_TITLE")
+	s data("SUBMENU",i,"tab")=i
+	s data("SUBMENU",i,"text")=..tx("STATE")
+	s data("SUBMENU",i,"active")=$s(data("OPERATION")="State":"1",1:"")
+	
+	s i=i+1
+	s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"tab="_i)
+	s data("SUBMENU",i,"pageid")=..#PageID
+	s data("SUBMENU",i,"param")="operation=Change"
+	s data("SUBMENU",i,"title")=..tx("CHANGE_TITLE")
+	s data("SUBMENU",i,"tab")=i
+	s data("SUBMENU",i,"text")=..tx("CHANGE")
+	s data("SUBMENU",i,"active")=$s(data("OPERATION")="Change":"1",1:"")
+
+	s data("SUBMENU")=i
+]]></Implementation>
+</Method>
+</Class>
+</Export>

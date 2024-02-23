@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1.2 (Build 309U)" ts="2019-10-11 13:46:05">
+<Class name="i2.cust.cav.cavclaimret">
+<Description><![CDATA[
+<pre>
+Trida slouzi pro zobrazeni informaci pro odeslani emailu uzivateli - po vyzadani
+
+09.10.19 jk; zmenena trida pro praci s emaily
+27.08.19 tt; upraveno cteni po zmene standardni metody pri upgradu
+02.09.14 jk; odeslani emailu pres tridu util.email.cls
+22.08.13 tt; pridany parametr pretty
+28.05.13 tt; zalozena trida
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>65297,49550.058162</TimeChanged>
+<TimeCreated>62319,37199.363805</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID} "cavclaimret"]]></Description>
+<Default>cavclaimret</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>odeslat-soubor#odeslat-soubor#send-file</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Method name="writeBody">
+<Description><![CDATA[
+<pre> Telo stranky bez hlavicky a paticky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  d ..data(.data)
+  d ##class(i2.ui.page).writeBody(.data)
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s sErrors = ""
+  s sReports = ""   
+  s sIctx = $$$GETICTX
+  s sBaseURL = ##class(i2.html.tpl).getBaseURL()              ; www adresa do rootu stránek IPACu
+  s data("WWW_SKIN") = sBaseURL_"s"_$$$GETSESSVAR("skin")_"/" ; www adresa do adresáře skinu 
+  s data("OP_VALUE") = ..#PageID                              ; id stranky do url parametru &op
+  s data("ACTION") = $$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID) 
+  s data("USER_OBJ") = ##class(i2.ui.tools).getAccountObj()   ; ipac2 zaznamu uzivatele
+  s data("LOGGED") = ##class(i2.access).isLoggedIn()
+  
+  s data("idx") = $$$GETREQVAR("idx")           ; id zaznamu
+  //s data("idx") = "0103816"
+  s data("repo") = $$$GETREQVAR("repo")         ; nazev repozitare
+ // s data("repo") = "xxx"
+  s data("key") = $$$GETREQVAR("key")           ; klic fulltextu 
+  //s data("key") = "key"
+  s:((data("key") = "")||(data("repo") = "")||(data("idx") = "")) data("ERRORS")=..tx("FAILED")
+  s data("STAV_ZADOSTI")=$$$GETREQVAR("state")
+  s:(data("STAV_ZADOSTI")="") data("STAV_ZADOSTI")="0"
+  
+  
+  s data("SUBJECT") = "Žádost o kopii fulltextu"
+  s data("SURNAME") = ""
+  s data("FIRSTNAME") = ""
+  s data("WORKPLACE") = ""
+  s data("MESSAGE") = ""
+  s data("EMAIL_V") = ""
+  
+  ; prava contentServeru pro cteni, ziskani orginalniho nazvu souboru
+  if '##class(content.api).engineRead(data("repo"),data("key"),.array) {
+    s data("ERRORS")=..tx("FAILED") q
+  }
+  s data("FILE")=$g(array("origname"))
+  s data("VERZE")=$g(array("version"),"")
+  s data("VERZE")=##class(User.Util).sXlate("UT_ASEP_VERSION",data("VERZE"),"",%ipac2("ipref"))   
+  s data("SURNAME") = $$$GETREQVAR("xsurname")     ; prijmeni
+  s data("FIRSTNAME") = $$$GETREQVAR("xfirstname") ; jmeno
+  s data("WORKPLACE") = $$$GETREQVAR("xworkplace") ; pracoviste
+  s data("MESSAGE") = $$$GETREQVAR("xmessage")     ; zprava
+  s data("EMAIL_V") = $$$GETREQVAR("xemail")
+  s:(data("EMAIL_V")="") data("EMAIL_V")="@"       ; pokud nemame vyhledany email, vlozime zavinac
+
+  d ..getData(.data)
+  
+  ; formular byl odeslan, zpracuji data a odeslu email
+  if (($$$GETREQVAR("send")'="")&&(data("STAV_ZADOSTI")="1"))
+  { ; zpracovat formular pred odeslanim emailu
+    ; 01.11.12 tt; pridano array pro potreby statistik
+    d ..sendMailFile(.data,.array) 
+  }
+  elseif (($$$GETREQVAR("send")="")&&(data("STAV_ZADOSTI")="1"))
+  {
+    ; 25.05.13 tt; osetreni reseni prihlaseni pro zasilani fulltextu na vyzadani 
+    if (data("USER_ID")="") 
+    { ; 25.05.13 tt; neprihlasenym uzivatelum se vypise hlaska
+      s data("ERRORS")=data("ERRORS")_..tx("PLEASE")
+    }
+    else
+    { ; pokus je uzivatel prihlaseny, overime mejly
+      s sRet="",sEmailnaOver=""
+      ; 27.08.19 tt; upraveno cteni po zmene standardni metody pri upgradu
+      //s sEmailnaOver= ##class(content.claim).getEmailUstavR(data("idx"))
+      s sEmailnaOver= ##class(i2.cust.cav.claim).getEmail(data("idx"))
+      if ##class(User.MARC).readLX(.handleU,"cav_is_user*"_data("USER_ID"))
+      { ; pokud se poradi nacist uzivatele, pokracuji
+        s sRet=$$$getTagX(.handleU,"100e")  ; email
+        if (sRet="")
+        { ; pokud se nepodarilo nacist email, pokusim se ho dotahnout z autority
+          s sIDAuth=$$$getTagX(.handleU,"620a") 
+          if ##class(User.MARC).readLX(.handleA,sIDAuth)
+          { ; nacteme autoritu
+            s sRet=$$$getTagX(.handleA,"C01f")  ; email            
+          }
+        }        
+      }
+      ; vypis chyby pokud uzivatel nema spravne emaily
+      s:(('$f(sEmailnaOver,sRet))||(sRet="")||(sEmailnaOver="")) data("ERRORS")=data("ERRORS")_..tx("SEND_RECORD_R")
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="getData">
+<Description>
+metoda pro nacteni uzivatelskych dat</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; nacteme si data o zobrazovacim formatu
+  if ##class(i2.dblink).recordReadLX(.handle,data("idx"),"T") {
+    s data("RECTITLE_Z")=$$$getTagX(.handle,"Tbca")
+    s data("RECTITLE_Z")=##class(User.Util).HTMLfixup($p(data("RECTITLE_Z"),"\n",1))
+  }
+  
+  s userId=##class(i2.access).getLoginId()  ; ziskame id uzivatele
+  s data("USER_ID")=userId
+  
+  ; pridavame popisku podle aktualniho stavu
+  if (data("STAV_ZADOSTI")="0")
+  {
+    s data("DESCRIPTION")=..tx("DESCRIPTION")
+  }
+  elseif (data("STAV_ZADOSTI")="1")
+  {
+    s data("DESCRIPTION")=..tx("DESCRIPTION_1")
+  }
+]]></Implementation>
+</Method>
+
+<Method name="sendMailFile">
+<Description><![CDATA[
+<pre>
+odeslani emailu se souborem v priloze
+vejde sem ze stranky linkovane v emailu
+
+02.09.14 jk; odeslani emailu pres tridu util.email.cls
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  
+  ; doplnit adresu dle pozadavku
+  ; nasteveni brat z ciselniku cav podle pracoviste
+  ; $$a pracoviste $b$ operace: email/ AUTOR(autor zaznamu)
+  //s data("emailR")=##class(content.claim).getEmailUstavR(data("idx"))
+  ; 27.08.19 tt; upraveno cteni po zmene standardni metody 
+  s data("emailR")=##class(i2.cust.cav.claim).getEmail(data("idx"))
+  ;w data("emailR")
+  ;w data("idx")
+  
+  if ($g(data("EMAIL_V"),"")="")
+  { ; kontrola vyplnenosti emailu
+    s data("ERRORS")=$g(data("ERRORS"),"")_" "_..tx("EMAILERR")
+    q
+  }
+  
+  ;w !,"<pre>"              ; vypsani dat
+  ;zw data
+  ;zw array
+  ;w !,"</pre>"
+  
+  ; 02.09.14 jk; odeslani emailu pres tridu util.email.cls
+  s bHtml=1 ; nastaveno napevno, puvodne to bylo v konfiguraci I2_EMAILS
+  ; uzivatelsky pridane polozky formulare
+  s sBody=##class(i2.email).TableLine(..tx("MESSAGE"),data("MESSAGE"),bHtml) ; zprava  
+  s:(bHtml) sBody=$$$CRLF_"<table style=""text-align:left;"">"_$$$CRLF_sBody_$$$CRLF_"</table>"
+  
+  ; path je cesta k souboru contentServeru
+  s key=array("key")
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",array("repository"),"N",$$$IPREF,"b")
+  s sPathSep=##class(User.Util).getPathSepp()
+  if $e(path,$l(path))'=sPathSep { s path=path_sPathSep }
+  s path=path_$e(key,1,2)_sPathSep_$e(key,3,99)_"."_array("extension")
+ 
+  d ##class(util.emailgw).send($$$IPREF,sBody,,.ret,"contclaim",data("SUBJECT"),$$$GETLANGUAGE,,data("EMAIL_V"),,,,path,)
+
+  if (ret="") 
+  { ; email se dobre odeslal, vypiseme hlasku a vymazeme formulare
+     s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_array("t001"),..tx("SEND_RECORD"))
+    s data("REPORTS")=$g(data("REPORTS"),"")_..tx("SENDEMAILOK")
+                      _"<br />"_..tx("SEND_REC_TEXT")_" "_sLinkRec     ; dobre oteslany email
+    s data("REPLY")="@"                                                ; vymazeme hodnoty
+    s data("SUBJECT")=""
+    s data("MESSAGE")=""
+    d ##class(content.stat).addClaim(.array,1)   
+    s data("STAV_ZADOSTI")="8"
+    s data("DESCRIPTION")="" 
+  } 
+  else 
+  { ; email se neodeslal, vypiseme chybovou hlasku
+    s data("ERRORS")=$g(data("REPORTS"),"")_..tx("SENDEMAILERROR")_"("_ret_")"
+  }
+  
+  s data("SURNAME") = ""          ; promazene formular
+  s data("FIRSTNAME") = ""
+  s data("WORKPLACE") = ""
+  s data("EMAIL_V") = ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

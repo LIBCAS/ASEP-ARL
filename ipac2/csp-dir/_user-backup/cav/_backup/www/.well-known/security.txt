@@ -1,0 +1,5 @@
+Contact: mailto:webmaster@cosmotron.cz
+Expires: 2024-04-01T22:02:00.000Z
+Preferred-Languages: cs,sk,en
+Policy: https://www.cosmotron.cz/kontakt/hlaseni-zranitelnosti/
+Canonical: https://www.library.sk/.well-known/security.txt

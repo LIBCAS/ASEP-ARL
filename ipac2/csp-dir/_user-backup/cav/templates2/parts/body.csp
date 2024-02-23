@@ -1,0 +1,36 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+<script language="cache" runat="server">
+ // Wide layout
+ s wideL=$f(..getOption("WIDE"),data("PAGEID"))
+ s:'wideL wideL=..isOption("WIDELAYOUT")
+</script>
+<title>
+	<csp:if condition=(data("---","PAGEID")="detail")>
+#($g(data("---","HEAD_TITLE")))#
+	<csp:else>
+<ipac:atext simple/> | #(data("---","MAIN_TITLE"))#
+	</csp:if>
+</title>
+
+#("</head>")#
+#("<body class="""_data("---","BODYCLASS")_""">")#
+#("<div id=""body"">")#
+#("<div id=""page"" class="""_$s(wideL:"container-fluid",1:"container")_""">")#
+
+<ipac:tpl page="parts" version="accessibilitynav"/>
+<ipac:tpl page="parts" version="header"/>
+#("<main id=""content"">")#
+
+	<csp:if condition=(..getOption("BREADCRUMB")'="in")>
+<ipac:tpl page="parts" version="breadcrumb"/>
+	</csp:if>
+
+<ipac:tpl page="parts" version="systemalert"/>
+
+	<csp:if condition=($g(data("---","HEAD"))'="")>
+<section class="usertext">#(data("---","HEAD"))#</section>
+	</csp:if>
+    
+<csp:if condition=((..isPage("login"))&&(data("---","LOGGED")))>
+<div id="info-user" class="text-right pr-3"><p><ipac:txg param="INFO_LOGIN"/>: <span id="sii"></span> #(data("---","USER_NAME"))#</p></div>
+</csp:if>

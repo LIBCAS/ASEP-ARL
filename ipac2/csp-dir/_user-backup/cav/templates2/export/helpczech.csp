@@ -1,0 +1,77 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<p>
+Exportovat lze buď jednotlivé záznamy pomocí funkce v nástroji Bookmark nebo záznamy uložené v košíku.
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/bookmark-cs.png" class="img-fluid" alt="Bookmark"/>
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/basket-bar-cs.png" class="img-fluid" alt="Košík - submenu"/>
+</p>
+
+<p>
+Při exportu se zvolí znaková sada (Windows CP1250 nebo UTF8) a formát, do kterého budou záznamy vyexportovány. Uvedené formáty jsou určeny pro výměnu dat (záznamů) mezi informačními systémy, pro vytvoření soupisu literatury jsou nadefinovány zobrazovací formáty.
+</p>
+
+<div class="row">
+<p class="col-md-6 fragment">
+<img src="#(..img(1))#help/export-format-cs.png" class="img-fluid" alt="Export - formát"/>
+</p>
+<p class="col-md-6 fragment">
+<img src="#(..img(1))#help/export-charset-cs.png" class="img-fluid" alt="Export - znaková sada"/>
+</p>
+</div>
+
+<h2>Soupis do CSV</h2>
+<p>
+Soubor má koncovku csv a lze ho otevřít v programu Excel. 
+</p>
+<p>
+Pokud je zvolena znaková sada Windows CP1250, lze soubor ihned otevřít „dvojklikem“ myší na soubor.
+</p>
+<p>
+V případě znakové sady UTF8 se musí soubor uložit na lokální disk s příponou txt a pak otevřít Excel přes funkci „Otevřít soubor“. Nastaví se znaková sada UTF8 a jako oddělovač se zvolí středník.
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/export-csv-charset-cs.png" class="img-fluid" alt="Import CSV - znaková sada"/>
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/export-csv-cs.png" class="img-fluid" alt="Import CSV - nastavení"/>
+</p>
+
+
+<h2>Spolupráce do CSV</h2>
+<p>
+Soubor obsahuje záznamy spolupracujících institucí AV ČR. To znamená, že pokud jsou v záznamu uvedeni autoři více pracovišť AV ČR, záznam bude v souboru uveden pro každé pracoviště zvlášť, tedy duplicitně, triplicitně…, podle počtu spolupracujících pracovišť.
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/export-csv-table-cs.png" class="img-fluid" alt="CSV - tabulka"/>
+</p>
+
+<h2> XML</h2>
+<p>
+Prezentace formátu MARC ve struktuře XML - jednotlivé prvky záznamu (pole a podpole) jsou převedeny na XML značky. 
+</p>
+
+<h2> Formát <ipac:abbr lang="en-GB" title="Research Information Systems">RIS</ipac:abbr></h2>
+<p>
+Standardizovaný tagovaný formát, který umožňuje citačním programům a manažerům výměnu dat, umožňuje import a export výsledků vyhledávání do/z různých databází. Tento formát lze použít například pro import dat z ASEP do ResearcherID:
+</p><ul>
+<li> <strong>RIS</strong> – obsahuje pole: název, autor, zdrojový dokument, UT ISI, stránkování, rok publikování, afiliace autora, URL, abstrakt, klíčová slova, <strong>s diakritikou</strong>.</li>
+<li> <strong>RIS – <ipac:abbr lang="en-GB" title=" American Standard Code for Information Interchange">ASCII</ipac:abbr></strong> – obsahuje pole: název, autor, zdrojový dokument, UT ISI, stránkování, rok publikování, afiliace autora, URL, abstrakt, klíčová slova, <strong>bez diakritiky</strong>.</li>
+</ul>
+<h2> Řádkový MARC</h2>
+<p>
+ Formát, ve kterém každý jeden řádek představuje jedno pole výměnného formátu MARC. Jde o specializovaný knihovnický formát, který umožňuje zapsat informace o dokumentu ve strojem čitelné podobě bez ohledu na jazyk, využívaný software apod. Pro označení podpolí, začátku a konce záznamu se používají předepsané znaky.
+</p>
+
+<h2> ISO 2709</h2>
+<p>
+ Specializovaný formát, který prezentuje data z formátu MARC jako řetězec, ve kterém se používají předepsané oddělovače polí, podpolí a záznamů.
+</p>

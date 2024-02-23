@@ -1,0 +1,18 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream/><ipac:off><du>2</du></ipac:off>
+<ipac:tpl version="mailhead" page="parts"/>
+<h2 style="text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#;#(..txgn("H2_STYLE"))#">#(..tx("EMAIL_TITLE"))#</h2>
+
+<p align="#($CASE($$$GETLANGUAGE,6:"right",:"left"))#" style="text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#;#(..txgn("P_STYLE"))#">#(..tx("EMAIL_BODYLIB"))#</p>
+
+<table style="text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#;#(..txgn("TABLE_STYLE"))#" border="0" width="100%">
+<tbody>
+<ipac:loop param="MAIL_DATA">
+<tr>
+<td align="#($CASE($$$GETLANGUAGE,6:"right",:"left"))#" valign="top" style="text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#;#(..txgn("TD_STYLE"))#">#(..li(1))#</td>
+<td align="#($CASE($$$GETLANGUAGE,6:"right",:"left"))#" valign="top" style="text-align:#($CASE($$$GETLANGUAGE,6:"right",:"left"))#;#(..txgn("TD_STYLE"))#">#(..li(2))#</td>
+</tr>
+</ipac:loop>
+</tbody>
+</table>
+<br>
+<ipac:tpl version="mailfoot" page="parts"/>

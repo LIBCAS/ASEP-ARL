@@ -1,0 +1,27 @@
+# @id UN_TABLES EPCA_FLDLIST_AUT
+002    seznam indexu v db autorit
+200    $$a1$$bOsobné meno#Jméno osoby#Personal name
+200    $$a2$$bKorporácia#Korporace#Corporate
+200    $$a3$$bAkcia#Akce#Conference
+200    $$a2484$$bUnifikovaný názov#Unifikovaný název#Uniform title
+200    $$a2441$$bChronologický termín#Chronologický termín#Chronological term
+200    $$a2002$$bTematický termín#Vìcné téma#Topical term
+200    $$a2003$$bGeografický názov#Geografické jméno#Geographic name
+200    $$a2426$$bkod zaznamu
+200    $$a2433$$bForma, žáner#Forma, žánr#Form, Genre
+200    $$a2432$$bKonspekt#Konspekt#Conspect
+200    $$a2496$$bMDT
+200    $$a12$$bKód záznamu#Kód záznamu#Record id
+###
+# @id UN_TABLES EPCA_FLDLIST_BIB
+002    seznam indexu v db epca/katalogu
+###
+# @id UN_TABLES EPCA_ZFLIST_AUT
+002    seznam ZF pro autoritni zaznamy
+###
+# @id UN_TABLES EPCA_ZFLIST_BIB
+002    seznam ZF pro bibliograficke zaznamy
+200    aLINEMARCbMARC
+200    aTF_US_CAT_UF_Cbpodrobný ZF
+200    aTF_US_CAT_SF_Cbzkrácený ZF
+###

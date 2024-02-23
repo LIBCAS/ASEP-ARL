@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2024-01-08 16:08:16">
+<Class name="i2.cust.cav.result">
+<Description><![CDATA[
+<pre>
+08.01.24 ln; prefetch detekovan podle hlavicky
+24.10.23 ln; prefetch fix
+04.09.23 tt; provedeno nastaveni defaultnich hodnotu pro scholarly
+23.08.23 tt; pridane metadata pro scholar - data("RECORDS","1","scholarly")=1
+07.02.23 tt; nastavení maximálního počtu verzí datového záznamu
+07.02.23 tt; pridana logika zobrazovani 5 verzi datoveho zaznamu + link
+02.02.23 tt; pridana kopie datoveho zaznamu pro vsechny - na zaklade prav
+             - prepracovana funkcnost
+26.01.23 ln; metoda downloadAll
+04.12.22 tt; změny pro uživatele, aby nemohli jen tak zacházet se záznamem - pozor, je pak potřeba odstrani testovací uživatele
+25.11.22 tt; přidání lokiky DataCopyVersion - pro kopie datasetů
+11.08.22 tt; zpracovani logiky pridani DOI pro datove zaznamy - doi se zobrazuje u trvaleho linku
+19.12.21 tt; pridan link na openAire
+06.11.21 tt; osetreni na smazani datasetu
+19.12.19 tt; pridana zmena druhu dokumentu
+28.05.19 tt; pridana moznost zmeny roku sberu
+15.01.18 tt; pridano prava na dataset na login kategorii DATASET
+08.12.16 tt; upraveno porovnani anonymniho uzivatele - jsou vovoleny cisla, ktere se pri porovnani odfiltruji
+21.10.16 tt; uprava parametru recid
+21.10.16 tt; upraven format formtype
+03.06.16 tt; pridan link na PUBMED
+17.11.15 tt; pridano ziskavani roli a prava na role - uprava logiky
+20.10.15 tt; pridany autority
+20.08.15 tt; pridany vyjimky pro testovaci uzivatele
+11.08.15 tt; upravena funcnost kvuli funkcnosti novych formularu
+             Operace u jednotlivych zaznam - result - detail - kosik
+             operace na leve strane ipacu
+18.11.13 tt; pridan link na SCOPUS
+21.08.13 tt; na zadost kp nahrazeno _new za _blank
+14.01.13 tt; pridano wos
+11.10.12 tt; zalozena metoda pro zobrazovani informaci v panelu u vyhledavani
+</pre>]]></Description>
+<Super>i2.ui.result</Super>
+<TimeChanged>66847,58086.280864485</TimeChanged>
+<TimeCreated>62741,48621.550522</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+ictx instituce</Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi pro odchylky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[  d ##class(i2.cust.cav.result).SetUserData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="SetUserData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+ s sId=""
+ s sCount=0
+ s brk="X"
+ s userId="",IsLog="",sUT100b=""
+ s IsLog=##class(i2.access).isLoggedIn()
+ s userId=##class(i2.access).getLoginId()  ; ziskame id uzivatele 
+ 
+ ; 11.08.15 tt; dopracovana podpora pro operace na leve strane IPACU
+ s data("ZNewRecCav")=0,data("ZReportCavExp")=0,data("ZReportCavKont")=0,data("DATASET")=0,data("scholarly")=0 
+ // data("ZNewRecCav")=1  - Nový záznam
+ // data("ZReportCavKont")=1 - Kontroly dat
+ // data("ZReportCavExp")=1 - Výstupy RIV
+ // data("DATASET")=1 - pro datové záznamy
+ // data("scholarly")=1 - clánek pro google scholar  
+ if (userId'="")
+ {
+   ; zjistime roli uzivatele na zaklade uzivatele a zaznamu
+   s sRoleU=##class(User.CavS).GetRoleUser("cav_is_user*"_userId, "", "", 0, .handlexx)
+   s data("ZNewsRoleU")=sRoleU
+
+   if ##class(User.MARC).readX(.handleU,"CavIsUser",userId)
+   {  
+     s sUT100k=$$$getTagX(.handleU,"100k")             ; ustav uzivatele 
+     s sUT100b=$$$getTagX(.handleU,"100b")             ; anonymni uzivatel
+     s sUT600a=$$$getTagX(.handleU,"600a")             ; link na nadrizenou jednotku
+     s sUT600b=$$$getTagX(.handleU,"600b")             ; ustav uzivatele 
+     s sUT600i=$$$getTagX(.handleU,"600i")             ; dataset
+
+     s zprac=0
+     ; je zpracovatel?
+     if ((sUT600b'="") && (sUT600a="")) { s data("ZNewRecCav")=1,data("ZReportCavExp")=1,data("ZReportCavKont")=1,zprac=1   } 
+     else {  s zprac=0 }
+  
+     if (('zprac) && (sUT100k'="2")) { 
+       s data("ZNewRecCav")=1,data("ZReportCavKont")=1 
+     }
+     elseif (sUT100k="2") {   
+       s data("ZNewRecCav")=1,data("ZReportCavExp")=1,data("ZReportCavKont")=1  ; zaznamy pro superuzivatele
+     }  
+     ; osetreni pro anonymni uzivatele
+     ; 08.12.16 tt; upraveno porovnani anonymniho uzivatele - jsou vovoleny cisla, ktere se pri porovnani odfiltruji
+     s sUT100btest=$tr(sUT100b,"0123456789","")
+     if (($e(sUT100btest,($l(sUT100btest)-1),$l(sUT100btest))="-A")&&(sUT600a'=""))
+     {  ; pokud je anonymni uzivatel, nema pravo ani na zaznamy ani nic
+        s data("ZNewRecCav")=1
+     }
+     ; pridan priznak testovaciho uzivatele pro potreby vytvareni nove funkcnosti
+     // 15.01.18 tt; pridano prava na dataset na login kategorii DATASET
+     s:($f(sUT600i,"DATASET")) data("DATASET")=1 
+     // 22.11.22 tt; priznak pro test
+     //s:($f(sUT100b,"TEST")) data("DATA_VERSION")=1 
+     
+     /// 20.08.15 tt; pridany vyjimky pro testovaci uzivatele
+     s:((userId="0000888")||(userId="0000682")||(userId="0000712")||(userId="0000621")||(userId="0000618")||(userId="0000016")) data("DATASET")=1 
+   }  
+ }
+ 
+ f
+ { ; cyklus pro prochazeni
+     s sId=$o(data("RECORDS",sId)) 
+     q:((sId="") || (brk=""))
+     ; 04.09.23 tt; provedeno nastaveni defaultnich hodnotu pro scholarly
+     s data("RECORDS",sId,"scholarly")=0 
+     if $f($p(data("RECORDS",sId),"*",1),"cav_un_epca")
+     {
+       s x=##class(User.MARC).readX(.handle,"CavUnEpca",$p(data("RECORDS",sId),"*",2),"T")
+       if x=1
+       { 
+         s sRT970b=$$$getTagX(.handle,"970b")  
+         s sRT969f=$$$getTagX(.handle,"969f")  
+         s sRTC99d=$$$getTagX(.handle,"C99d")  
+         
+         s:($e(sRT970b,1)="J") data("RECORDS",sId,"scholarly")=1  
+         
+         s sRIV=##class(User.CavUnEpca).getRIVlink(.handle)
+         s sRIVTit=$p(sRIV,1,"<span></span>")
+         s sRIVT=$p($p(sRIV,"target=""_blank"" title=""",2),""">",1)
+         s sRIVLink=$p($p(sRIV,"<a href=""",2),""" rel=""external""",1)
+         s data("RECORDS",sId,"VyslRIV")=sRIV
+         s data("RECORDS",sId,"VyslRIVT")=sRIVT
+         s data("RECORDS",sId,"VyslRIVPT")="RIV"
+         s data("RECORDS",sId,"VyslRIVLink")=sRIVLink
+         s sDOI=##class(User.CavUnEpca).getDOIlink(.handle) 
+         s:(sRTC99d="DFLT_DATA") sDOI=""  /// 11.08.22 tt; zpracovani logiky pridani DOI pro datove zaznamy - doi se zobrazuje u trvaleho linku
+         s sDOI=$$$strswap(sDOI,"&#46;",".")
+         s data("RECORDS",sId,"VyslDOI")=sDOI 
+         s data("RECORDS",sId,"VyslDOIT")=$p($p(sDOI,"target=""_blank"" title=""",2),""">",1)
+         s data("RECORDS",sId,"VyslDOIPT")="DOI"
+         s data("RECORDS",sId,"VyslDOILink")=$p($p(sDOI,"<a href=""",2),""" ",1)
+         s sWOS=##class(User.CavUnEpca).getWOSlink(.handle)
+         s sWOSTit=$p(sWOS,1,"<span></span>")
+         s sWOST=$p($p(sWOS,"target=""_blank"" title=""",2),""">",1)
+         s sWOSLink=$p($p(sWOS,"<a href=""",2),""" rel=""external""",1)
+         s data("RECORDS",sId,"VyslWOS")=sWOS
+         s data("RECORDS",sId,"VyslWOST")=sWOST
+         s data("RECORDS",sId,"VyslWOSPT")="WOS"
+         s data("RECORDS",sId,"VyslWOSLink")=sWOSLink
+         ; 18.11.13 tt; pridan link na SCOPUS
+         s sSCOPUS=##class(User.CavUnEpca).getSCOPUSlink(.handle)
+         s sSCOPUSTit=$p(sSCOPUS,1,"<span></span>")
+         s sSCOPUST=$p($p(sSCOPUS,"target=""_blank"" title=""",2),""">",1)
+         s sSCOPUSLink=$p($p(sSCOPUS,"<a href=""",2),""" rel=""external""",1)
+         s data("RECORDS",sId,"VyslSCOPUS")=sSCOPUS
+         s data("RECORDS",sId,"VyslSCOPUST")=sSCOPUST
+         s data("RECORDS",sId,"VyslSCOPUSPT")="SCOPUS"
+         s data("RECORDS",sId,"VyslSCOPUSLink")=sSCOPUSLink
+         
+         /// 19.12.21 tt; pridan link na openAire
+         s sOpenAIRE=##class(User.CavUnEpca).getOPENAIRElink(.handle)
+         s sOpenAIRETit=$p(sOpenAIRE,1,"<span></span>")
+         s OpenAIRET=$p($p(sOpenAIRE,"target=""_blank"" title=""",2),""">",1)
+         s OpenAIRELink=$p($p(sOpenAIRE,"<a href=""",2),""" rel=""external""",1)
+         s data("RECORDS",sId,"VyslOPENAIRE")=sOpenAIRE
+         s data("RECORDS",sId,"VyslOPENAIRET")=OpenAIRET
+         s data("RECORDS",sId,"VyslOPENAIREPT")="OpenAIRE"
+         s data("RECORDS",sId,"VyslOPENAIRELink")=OpenAIRELink
+         
+         ; 03.06.16. tt; pridan link na PUBMED
+         s sPUBMED=##class(User.CavUnEpca).getPUBMEDlink(.handle)
+         s sPUBMEDTit=$p(sPUBMED,1,"<span></span>")
+         s sPUBMEDT=$p($p(sPUBMED,"target=""_blank"" title=""",2),""">",1)
+         s sPUBMEDLink=$p($p(sPUBMED,"<a href=""",2),""" rel=""external""",1)
+         s data("RECORDS",sId,"VyslPUBMED")=sPUBMED
+         s data("RECORDS",sId,"VyslPUBMEDT")=sPUBMEDT
+         s data("RECORDS",sId,"VyslPUBMEDPT")="PUBMED"
+         s data("RECORDS",sId,"VyslPUBMEDLink")=sPUBMEDLink
+         
+         ; 11.08.15 tt; upravena funcnost kvuli funkcnosti novych formularu - blok operaci u záznamu
+         s data("RECORDS",sId,"ZContLSprava")=0
+         s data("RECORDS",sId,"ZContLUpload")=0
+         s data("RECORDS",sId,"DATASET")=0
+         s data("RECORDS",sId,"ZRecEdit")=0
+         s data("RECORDS",sId,"ZRecOHl")=0
+         s data("RECORDS",sId,"ZRecDel")=0
+         s data("RECORDS",sId,"ZFormType")=""
+         s data("RECORDS",sId,"DataVersionsLink")=""    
+         s data("RECORDS",sId,"DataVersionsCount")=0      
+         s data("RECORDS",sId,"DataCopyVersion")=0  // 22.11.22 tt; podpora linku na kopii datového záznamu - je nutne doplnit podminky pro moznost kopie
+
+         s:(sRTC99d="DFLT_EPCA3") data("RECORDS",sId,"ZFormType")="&formtype=c"
+         s:(sRTC99d="DFLT_CAT_BCA") data("RECORDS",sId,"ZFormType")="&formtype=c"
+         s:(sRTC99d="DFLT_CAT_BXXS") data("RECORDS",sId,"ZFormType")="&formtype=c"
+         s:(sRTC99d="DFLT_DATA") data("RECORDS",sId,"ZFormType")="&formtype=e"
+         s dataMD=##class(User.MARC).getIDByIndex("CavUnEpca","zmdl","cav_un_epca*"_$p(data("RECORDS",sId),"*",2),"")
+         if (dataMD'=0) 
+         {
+           s data("RECORDS",sId,"ZRecMDLink")=1
+           s data("RECORDS",sId,"ZRecMDLinkHod")="cav_un_epca"_$p(data("RECORDS",sId),"*",2)
+         }
+         if (sRTC99d="DFLT_DATA") 
+         {
+           s data("RECORDS",sId,"ZRecDATATyp")=1
+          
+           s c=0,ccc=1
+           d { ; prohledame vsechny 856
+               s sT856=$$$getTagXC(.handle,"856",.c) ; vsetky citacie
+               continue:((sT856="")&&(c'=0))
+               if (sT856'="")
+               { ; pokud mame vyplnene data, muzeme provadet akce 
+                 s sT856u=$$$getSubTagStr(sT856,"u") ; ziskame subtag 
+                 if (sT856u'="") 
+                 {
+                   if $e(sT856u,1,4)="www." s sT856u="http://"_sT856u
+                   s data("RECORDS",sId,"ZRecDATAURL")=1
+                   s data("RECORDS",sId,"ZRecDATAURL"_ccc)=sT856u
+                   s ccc=ccc+1                   
+                 }
+               }
+           } while (c'=0)  
+           
+           
+           /// 30.11.22 tt; zapracovani zobrazeni verzi
+           s sVerze=##class(User.CavUnEpca).versionDataGetAll(.handle,.verze)
+           if (sVerze'="")
+           {
+             s data("RECORDS",sId,"DataVersionsCount")=$l(sVerze,"#")
+             s:($f(sVerze,("*"_$$$HandleT001(handle)))) data("RECORDS",sId,"DataVersionsCount")=($l(sVerze,"#")-1)
+             ; 07.02.23 tt; nastavení maximálního počtu verzí datového záznamu
+             s:(data("RECORDS",sId,"DataVersionsCount"))>5 data("RECORDS",sId,"DataVersionsCount")=5
+           }
+           s j=1
+           for i=$l(sVerze,"#"):-1:1
+           { ; 07.02.23 tt; pridana logika zobrazovani 5 verzi datoveho zaznamu + link
+             s sVerze1=$p(sVerze,"#",i)
+             if (i<($l(sVerze,"#")-data("RECORDS",sId,"DataVersionsCount")))
+             { ; doplněna podmínka na zobrazování počtu linků
+               continue:(data("RECORDS",sId,"DataVersionsLink")'="")
+               s linkVer=$$$getTagX(.handle,"U033")
+               s:(linkVer="") linkVer="cav_un_epca"_$$$HandleT001(handle)
+               s data("RECORDS",sId,"DataVersionsLink")=$tr(linkVer,"*","")               
+             }
+             continue:($f(sVerze1,("*"_$$$HandleT001(handle))))
+           
+             if (sVerze'="") 
+             {
+               s data("RECORDS",sId,"DataVersions",j)=sVerze1
+               s data("RECORDS",sId,"DataVersionsNumber",j)=i
+               s j=j+1
+             }
+            
+           }         
+         }
+         
+        
+         
+         if (userId'="")
+         {
+           ////////////////////////////////
+           ; zjistime roli uzivatele na zaklade uzivatele a zaznamu
+           s sRole=##class(User.CavS).GetRoleUser("cav_is_user*"_userId, "", "", 0, .handle)
+           ; zjistime prava uzivatele podle role na dany zaznam
+           s sPrava=##class(User.CavS).GetAllOperation("", sRole, "", 0, .handle)
+           s data("RECORDS",sId,"ZNewsRole")=sRole
+           s data("RECORDS",sId,"ZNewsPrava")=sPrava   
+           ///////////////////////////////////////////
+           s:($f(sPrava,"w")) data("RECORDS",sId,"ZRecEdit")=1
+           s:($f(sPrava,"d")) data("RECORDS",sId,"ZRecDel")=1  
+           s:($f(sRole,"i")) data("RECORDS",sId,"DATASET")=1 
+           s:($f(sPrava,"o")&& (sRTC99d'="DFLT_DATA")) data("RECORDS",sId,"ZRecOHl")=1
+           s:($f(sPrava,"z")) data("RECORDS",sId,"ZRecZRokSberu")=1                         ; 28.05.19 tt; pridana zmena roku sberu
+           s:($f(sPrava,"k")) data("RECORDS",sId,"ZRecDruhDokumentu")=1                     ; 19.12.19 tt; pridana zmena druhu dokumentu
+           ; 04.12.22 tt; změny pro uživatele, aby nemohli jen tak zacházet se záznamem - pozor, je pak potřeba odstrani testovací uživatele
+           // 22.11.22 tt; podpora linku na kopii datového záznamu - je nutne doplnit podminky pro moznost kopie
+           // 02.02.23 tt; pridana kopie datoveho zaznamu pro vsechny - na zaklade prav
+           //s:($f(sUT100b,"TEST")) data("RECORDS",sId,"DataCopyVersion")=1          
+           s:(($f(sPrava,"c"))&& (sRTC99d="DFLT_DATA")) data("RECORDS",sId,"DataCopyVersion")=1 
+           // zpristupneni testovacim uzivatelum
+           //s:(((userId="0000888")||(userId="0000682")||(userId="0000712")||(userId="0000621")||(userId="0000618")||(userId="0000016"))&&($f(sPrava,"c"))&& (sRTC99d="DFLT_DATA")) data("RECORDS",sId,"DataCopyVersion")=1 
+           /////////////////
+           /// !!! pozor,  az nebude testovaci, dat ZContLUpload ZContLSprava jen pokud data("RECORDS",sId,"DataCopyVersion") - aby se nedali editovat data
+           /////////////////
+           //s:($f(sUT100b,"TEST")&& (sRTC99d="DFLT_DATA")) data("RECORDS",sId,"DataCopyVersion")=1   
+
+           s sTypUser=##class(User.CavS).FTgetIsUser(userId,$$$HandleT001(handle))
+           s data("RECORDS",sId,"FTgetIsUser")=sTypUser
+           /*
+           s sRT999e=$$$getTagX(.handle,"999e")                ; ziskam si autora zaznamu
+           ///  Navratova hodnota: 0 - nema zadny vztah
+           ///                     1 - jeden z autoru zaznamu, nebo clovek, ktery zaznam vytvoril
+           ///                     2 - zpracovatel k zaznamu
+           ///                     3 - clovek z ustavu zaznamu (ma stejny ustav)
+           ///                     4 - clovek ze spolupracujiciho ustavu
+           ///                     5 - zpracovatel ze spolupracujiciho zaznamu
+           ///                     6 - superuzivatel
+           s sTypUser=##class(User.CavS).FTgetIsUser(userId,$p(data("RECORDS",sId),"*",2))
+           s sHclass=$$$HandleClass(handle)
+           if (((sRT969f="D")||(sRT969f="N"))&&((sTypUser=6)||(sTypUser=2)||((sTypUser=1)&&(($p(sRT999e,"*",2)=userId)))))
+           { ; pokud je zaznam rozpracovany a uzivatel je zpracovatel nebo autor zaznamu, dovol editovat a mazat
+             s data("RECORDS",sId,"ZRecEdit")=1
+             s data("RECORDS",sId,"ZRecDel")=1             
+           }
+           if ((sRTC99d="DFLT_EPCA3")&&(sTypUser=6))
+           { ; souborne zaznamy muze editovat jen superuzivatel
+             s data("RECORDS",sId,"ZRecEdit")=1
+             s data("RECORDS",sId,"ZRecDel")=1               
+           }
+           
+           s data("RECORDS",sId,"ZsTypUser")=sTypUser  
+           s data("RECORDS",sId,"ZsRT969f")=sRT969f
+                   
+           if ##class(User.MARC).readX(.handleU,"CavIsUser",userId)
+           {
+             s sUT610b=$$$getTagX(.handleU,"610b")             ; priznak, ze se muze uzivatel hlasit pres ipac do formularu
+             ; pridan priznak testovaciho uzivatele pro potreby vytvareni nove funkcnosti
+             s:(sUT610b="SAFE") data("RECORDS",sId,"DATASET")=1
+           }*/
+         }
+         s sContLink=##class(content.zf).fmtMaintain(.handle,"-\n")
+         s sCSprava=$p(sContLink,"\n",1)
+         s sCUpload=$p(sContLink,"\n",2)
+         if ((sRT970b'="BCA")&&(sRT970b'="BXXS")&&(sRT970b'="BXX")&&(sRT970b'="DATA"))
+         { ; u techto vybranych druhu dokumentu se nesmi zobrazovat sprava priloh a nahrat prilohu
+           s:($l(sCSprava)>20) data("RECORDS",sId,"ZContLSprava")=1
+           s:($l(sCUpload)>20) data("RECORDS",sId,"ZContLUpload")=1         
+         }
+         if (sRT970b="DATA")
+         { ; u techto vybranych druhu dokumentu se nesmi zobrazovat sprava priloh a nahrat prilohu
+           ; 06.11.21 tt; osetreni na smazani datasetu
+           d ##class(content.api).selectRecAll(.outputtt,$$$HandleClass(handle) ,$$$HandleT001(handle))
+           
+           if ($o(outputtt(""))'="")
+           {
+             s:(($l(sCSprava)>20)&&(data("RECORDS",sId,"ZRecDel")=1)) data("RECORDS",sId,"ZContLSprava")=1
+           }
+           s:(($l(sCUpload)>20)&&(data("RECORDS",sId,"ZRecEdit")=1)) data("RECORDS",sId,"ZContLUpload")=1         
+           
+           if ((data("RECORDS",sId,"DataCopyVersion")=0)&&(sRT969f=""))  
+           { ; pokud nemuzeme pridat novou verzi, nemuzeme ani editovat u vystavenych zaznamu
+             s data("RECORDS",sId,"ZContLSprava")=0
+             s data("RECORDS",sId,"ZContLUpload")=0 
+             s data("RECORDS",sId,"ZRecDel")=0
+           }           
+         }
+       }
+    }
+    if $f($p(data("RECORDS",sId),"*",1),"cav_un_auth")
+    {  ; 20.10.15 tt; pridany autority
+       s x=##class(User.MARC).readX(.handle,"CavUnAuth",$p(data("RECORDS",sId),"*",2),"T")
+       if x=1
+       { 
+         ; 11.08.15 tt; upravena funcnost kvuli funkcnosti novych formularu - blok operaci u záznamu
+         s data("RECORDS",sId,"ZContLSprava")=0
+         s data("RECORDS",sId,"ZContLUpload")=0
+         s data("RECORDS",sId,"DATASET")=0
+         s data("RECORDS",sId,"ZRecEdit")=0
+         s data("RECORDS",sId,"ZRecOHl")=0
+         s data("RECORDS",sId,"ZRecDel")=0
+                    
+         s sRT970b=$$$getTagX(.handle,"970b")  
+
+         if (userId'="")
+         {
+           ////////////////////////////////
+           ; zjistime roli uzivatele na zaklade uzivatele a zaznamu
+           s sRole=##class(User.CavS).GetRoleUser("cav_is_user*"_userId, "", "", 0, .handle)
+           ; zjistime prava uzivatele podle role na dany zaznam
+           s sPrava=##class(User.CavS).GetAllOperation("", sRole, "", 0, .handle)
+           s data("RECORDS",sId,"ZNewsRole")=sRole
+           s data("RECORDS",sId,"ZNewsPrava")=sPrava   
+           ///////////////////////////////////////////
+           s:($f(sPrava,"w")) data("RECORDS",sId,"ZRecEdit")=1
+           s:($f(sPrava,"d")) data("RECORDS",sId,"ZRecDel")=1    
+           s:($f(sRole,"i")) data("RECORDS",sId,"DATASET")=1 
+
+           /*  
+           s sRT999e=$$$getTagX(.handle,"999e")                ; ziskam si autora zaznamu
+           ///  Navratova hodnota: 0 - nema zadny vztah
+           ///                     1 - jeden z autoru zaznamu, nebo clovek, ktery zaznam vytvoril
+           ///                     2 - zpracovatel k zaznamu
+           ///                     3 - clovek z ustavu zaznamu (ma stejny ustav)
+           ///                     4 - clovek ze spolupracujiciho ustavu
+           ///                     5 - zpracovatel ze spolupracujiciho zaznamu
+           ///                     6 - superuzivatel
+           s sTypUser=##class(User.CavS).FTgetIsUser(userId,"","USER")
+           s sRT969f=$$$getTagX(.handle,"969f")  
+           s sRTC99d=$$$getTagX(.handle,"C99d")  
+           s sHclass=$$$HandleClass(handle)
+           if ((sHclass="CavUnAuth")&&(sTypUser=6))
+           { ; souborne zaznamy muze editovat jen superuzivatel
+             s data("RECORDS",sId,"ZRecEdit")=1
+             s data("RECORDS",sId,"ZRecDel")=1               
+           }
+           
+           s data("RECORDS",sId,"ZsTypUser")=sTypUser  
+           s data("RECORDS",sId,"ZsRT969f")=sRT969f
+           
+           if ##class(User.MARC).readX(.handleU,"CavIsUser",userId)
+           {
+             s sUT610b=$$$getTagX(.handleU,"610b")             ; priznak, ze se muze uzivatel hlasit pres ipac do formularu
+             ; pridan priznak testovaciho uzivatele pro potreby vytvareni nove funkcnosti
+             s:(sUT610b="SAFE") data("RECORDS",sId,"DATASET")=1
+           }*/
+         }         
+       }
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="recordUser">
+<Description><![CDATA[
+<pre> uzivatelska data pro kazdy zaznam (result, detail, basket)
+implementovat pouze v zakaznicke tride i2.cust.xxx.result
+
+26.01.23 ln; metoda downloadAll
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle,seq:%Integer]]></FormalSpec>
+<Implementation><![CDATA[
+  ; s data("RECORDS",seq,"yyy")=$$$HandleT001(handle)
+   
+  if ##class(i2.access).isLoggedIn() {
+    d ..downloadAll(.data,.handle,seq)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="downloadAll">
+<Description><![CDATA[
+<pre> Podpora hromadneho stazeni souboru
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle,seq:%Integer]]></FormalSpec>
+<Implementation><![CDATA[
+  s class=$$$HandleClass(handle), t001=$$$HandleT001(handle)
+  
+  d ##class(content.api).selectRecAll(.output,class,t001)
+  q:'$d(output)
+  
+  s item="", files=""
+  f { s item=$o(output(item)) q:item=""
+    s repo=output(item,"repository")
+    s key=output(item,"key")
+    s mode=##class(content.api).engineRead(repo,key,.array)
+    continue:'mode
+    
+    s type=$g(array("type")) ; TODO omezit select dotaz
+    continue:type'="content"
+    
+    s size=$g(array("size"))
+    continue:size>104857600 ; prakticky limit 100MB
+    
+    s files=files_" "_##class(content.csg2).getLink(repo,key)   
+  }
+  
+  s:$l(files," ")>2 data("RECORDS",seq,"downall")=$e(files,2,*)
+]]></Implementation>
+</Method>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+
+08.01.24 ln; prefetch detekovan podle hlavicky
+24.10.23 ln; prefetch fix
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  q:ret'="" ret
+  
+  ; 08.01.24 ln; prefetch detekovan podle hlavicky
+  if $g(%request.CgiEnvs("HTTP_PURPOSE"))="prefetch" {
+    q "prefetch"
+  }
+  
+  if ($$$GETREQVAR("type")="zf") {
+    $$$SETREQVAR("st","ajax")
+  }  
+  
+  if ($$$GETREQVAR("feed")="rss") {
+    d %response.SetHeader("Access-Control-Allow-Methods","*")
+    d %response.SetHeader("Access-Control-Allow-Origin","*")
+    s %response.ContentType="application/xml"
+    s %response.CharSet="UTF-8" 
+    if ($$$GETREQVAR("guide")="news") {
+        d %response.SetHeader("Content-Disposition","attachment; filename=""news-rss.xml""")
+    } else {
+        d %response.SetHeader("Content-Disposition","attachment; filename="""_..#PageID_"-rss.xml""")
+    }
+  }
+  q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

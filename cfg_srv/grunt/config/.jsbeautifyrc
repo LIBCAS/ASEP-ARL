@@ -1,0 +1,29 @@
+{
+	"js": {
+		"braceStyle": "collapse",
+		"breakChainedMethods": false,
+		"browser": true,
+		"e4x": false,
+		"endWithNewline": false,
+		"esnext": true,
+		"esversion": 6,
+		"evalCode": false,
+		"fileTypes": [".js"],
+		"indentChar": "\t",
+		"indentLevel": 0,
+		"indentSize": 4,
+		"indentWithTabs": true,
+		"jslintHappy": false,
+		"keepArrayIndentation": false,
+		"keepFunctionIndentation": false,
+		"maxPreserveNewlines": 2,
+		"preserveNewlines": true,
+		"spaceBeforeConditional": true,
+		"spaceInParen": false,
+		"unescapeStrings": false,
+		"wrapLineLength": 0,
+		"globals": {
+			"jQuery": true
+		}
+	}
+}

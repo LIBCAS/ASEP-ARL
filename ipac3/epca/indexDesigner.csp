@@ -1,0 +1,136 @@
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+d ##class(i2.info.i3app).preHTTP()
+// Automatické odhlášení
+d ##class(i2.info.i3app).autoLogout()
+q 1</script><script language="Cache" runat="SERVER">
+/*
+05.03.20 on; zmena default skinu
+03.03.20 on; logout
+30.08.19 on; vraceno KindValue
+30.08.19 kp; Skin pres URL skin=1
+16.06.16 kp; XML - informace o stavu aplikace, metody ve třídě i2.info.i3app
+05.01.16 kp; pouziti localStorage pro aktualizaci IPACu
+07.12.15 kp; jazykova lokalizace, zmena css
+03.12.14 on; tisk
+20.12.13 on; csp:include
+19.12.13 on; podpora "remember me"
+*/
+
+s i3=##class(i2.info.i3app).%New()
+s data("LANG_DEFAULT")=1
+s data("APP_DIR")="epca"
+s data("DIR_EXTJS")="extjs340"
+s data("MAIN_JS")="epcadesigner.js"
+s data("WIKI_CLIENT")="https://arl2.library.sk/wiki_arl/index.php/Manu%C3%A1ly:Web_EPCA"
+s data("WIKI_COSMO")="https://cosmo2/wiki/index.php/App/epca"
+s data("PARAMS")="ictx"
+s data("OPTIONAL")=""
+s data("CONFIG_PREFIX")="EPCA_"
+d i3.data(.data)
+
+// CSS skin
+s sSkin = ""
+if ($g(%request.Data("skin",1))="1"){
+    s sSkin = "1"
+}
+// CSS soubory
+s data("CSS")=$LISTBUILD(
+  "css/"_data("ICTX")_sSkin_"1.css"
+)
+
+// JavaScripty pro vývoj
+if (data("DEV")=1) {
+    s data("JS") = $LISTBUILD(
+        "file;../"_data("DIR_EXTJS")_"/adapter/ext/ext-base.js",
+        "file;../"_data("DIR_EXTJS")_"/ext-all-debug.js",
+        "file;../"_data("DIR_EXTJS")_"/examples/shared/examples.js",
+        "file;../"_data("DIR_EXTJS")_"/examples/ux/Spotlight.js",
+        "file;../etc/jslint.js",
+        "code;Ext.BLANK_IMAGE_URL='../images/s.gif';Ext.getUrlParam=function(param) {var params=Ext.urlDecode(location.search.substring(1));return param ? params[param] : params;};i3={language: "_data("LANG")_"}",
+        // 03.03.20 on; zmena
+		// Odhlášení přes změnu localStorage
+        //"file;"_$s(data("LOGOUT")'=0:"login.js",1:"logout.js"),
+        "file;logout.js",
+        "file;../etc/dynform/Ext.form.Field.js",
+        "file;../etc/dynform/Ext.form.FieldSet.js",
+        "file;../etc/dynform/Ext.form.FormPanel.js",
+        "file;../etc/dynform/Ext.form.CheckboxGroup-rs.js",
+        "file;../etc/dynform/Ext.ux.DynTriggerField.js",
+        "break;pack",
+        "file;../i3.Base.js",
+        "file;../i3.Marc.js",
+        "file;../i3.WS.js",
+        "file;../i3.WS.Store.js",
+        "file;../i3.SOAP.js",
+        "file;../i3.UI.Ext.js",
+        "file;../i3.UI.Base.js",
+        "file;../i3.Login.js",
+        "file;../i3.UI.FlexPop.js",
+        "file;../i3.UI.ColWin.js",
+        "file;../i3.UI.DataTable.js",
+		"file;styleswitcher.js",
+        "file;epca.Config.js",
+        "file;epca.L10n.js",
+        "file;window/epca.window.Notification.js",
+        "file;epca.js",
+        "file;epca.Form.js",
+        "file;epca.WsTagMap.js",
+        "file;epca.WsForm.js",
+        "file;epca.MarcConv.js",
+        "file;form/epca.form.Helper.js",
+        "file;form/epca.form.MarcFieldSet.js",
+        "file;form/epca.form.MarcSearchComboBox.js",
+        "file;form/epca.form.MarcTextField.js",
+        "file;form/epca.form.MarcTextArea.js",
+        "file;form/epca.form.CodedDataFieldSet.js",
+        "file;form/epca.form.CodedDataComboBox.js",
+        "file;form/epca.form.CodedDataDateField.js",
+        "file;form/epca.form.RepeatableEncapsulation.js",
+        "file;form/epca.form.LinkEntry.js",
+        "file;form/epca.form.ContentServerLink.js",
+        "file;form/epca.form.Label.js",
+        "file;form/epca.form.Checkbox.js",
+        "file;form/epca.form.KindValue.js",
+		"file;form/epca.form.Button.js",
+        "file;window/epca.window.LinkEntryDefault.js",
+        "file;window/epca.window.FormatForm.js",
+        "file;window/epca.window.NewForm.js",
+        "file;window/epca.window.SaveAsForm.js",
+        "file;window/epca.window.OpenRecord.js",
+        "file;designer/epca.designer.TagTreePanel.js",
+        "file;designer/epca.designer.FormPropertyGrid.js",
+        "file;designer/epca.designer.DesignerPanel.js",
+        "file;designer/epca.designer.CustomCodeValidator.js",
+        "file;epca.MainPanel.js",
+        "file;epca.MainLoginDesigner.js",
+        "code;i3.Login.txPleaseLogin += ' ' + ' ** "_data("DEVELOP")_" ** ';"
+    )
+// JavaScripty pro ostrý web
+} else {
+    s data("JS") = $LISTBUILD(
+        "file;../"_data("DIR_EXTJS")_"/adapter/ext/ext-base.js",
+        "file;../"_data("DIR_EXTJS")_"/ext-all.js",
+        "file;"_$s(data("LANG")=6:"../RTL/src/extjs_rtl.js",1:""),
+        "file;../"_data("DIR_EXTJS")_"/examples/shared/examples.js",
+        "file;../"_data("DIR_EXTJS")_"/examples/ux/Spotlight.js",
+        "file;../etc/jslint.js",
+        "code;Ext.BLANK_IMAGE_URL = '../images/s.gif';i3 = {language: "_data("LANG")_"}",
+        // 03.03.20 on; logout
+		// Odhlášení přes změnu localStorage
+        //"file;"_$s(data("LOGOUT")'=0:"login.js",1:"logout.js"),
+        "file;logout.js",
+		"file;styleswitcher.js",
+        "file;../build/dynf.js",
+        "file;"_data("MAIN_JS")
+    )
+}
+
+// Konfigurace applikace
+// První položka je hlavní konfigurace pro ictx nebo prázdná hodnota
+s data("CONFIG")=$LISTBUILD(
+  "IctxUnTablesd;EPCA_ZFLIST_AUT",
+  "IctxUnTablesd;EPCA_ZFLIST_BIB",
+  "IctxUnTablesd;EPCA_FLDLIST_AUT",
+  "IctxUnTablesd;EPCA_FLDLIST_BIB"
+)
+</script><csp:include page="../etc/appHTML.csp"/>

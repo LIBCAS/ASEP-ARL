@@ -1,0 +1,26 @@
+[{
+	id : 'B',
+	text : 'Publikační činnost',
+	formList : 'DFLT_CZ_EPCA_A1#DFLT_CZ_EPCA_A2#DFLT_CZ_EPCA_A3#DFLT_CZ_EPCA_B#DFLT_CZ_EPCA_C#DFLT_CZ_EPCA_D#DFLT_CZ_EPCA_E#DFLT_CZ_EPCA_G#DFLT_CZ_EPCA_H#DFLT_CZ_EPCA_I#DFLT_CZ_EPCA_J#DFLT_CZ_EPCA_K#DFLT_CZ_EPCA_L#DFLT_CZ_EPCA_L1#DFLT_CZ_EPCA_L2#DFLT_CZ_EPCA_L3#DFLT_CZ_EPCA_L4#DFLT_CZ_EPCA_M#DFLT_CZ_EPCA_N#DFLT_CZ_EPCA_O#DFLT_CZ_EPCA_P#DFLT_CZ_EPCA_P1#DFLT_CZ_EPCA_R1#DFLT_CZ_EPCA_R2#DFLT_CZ_EPCA_T1#DFLT_CZ_EPCA_T2#DFLT_CZ_EPCA_T3#DFLT_CZ_EPCA_U#DFLT_CZ_EPCA_V#DFLT_CZ_EPCA_Z',
+	userGroupList : 'I3UG_IN#I3UG_AN#I3UG_ZP#I3UG_SU'
+}, {
+	id : 'A',
+	text : 'Autority',
+	formList : 'DFLT_UN_AUTH_200#DFLT_UN_AUTH_210_A#DFLT_UN_AUTH_210_W#DFLT_UN_AUTH_210_I#DFLT_UN_AUTH_230',
+	userGroupList : 'I3UG_ZP#I3UG_SU'
+}, {
+	id : 'C',
+	text : 'Autorita sborníku/periodika',
+	formList : 'DFLT_CAT_BCA#DFLT_CAT_BXXS',
+	userGroupList : 'I3UG_SU#I3UG_ZP'
+}, {
+	id : 'E',
+	text : 'Datový záznam',
+	formList : 'DFLT_DATA',
+	userGroupList : 'I3UG_IN#I3UG_ZP#I3UG_SU'
+}, {
+	id : 'D',
+	text : 'Ohlasy',
+	formList : 'DFLT_CZ_CIT_J#DFLT_CZ_CIT_B#DFLT_CZ_CIT_M',
+	userGroupList : 'I3UG_IN#I3UG_ZP#I3UG_SU'
+}]

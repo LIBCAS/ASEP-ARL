@@ -1,0 +1,77 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<p>
+You can export all records in the basket, or one record individually using the function in tool Bookmark.
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/basket-bar-en.png" class="img-fluid" alt="Košík - submenu"/>
+</p>
+
+<p>
+It is possible to choose a character set (Windows CP1250 or UTF8) and format of the record export. These formats are intended for the exchange of data (records) between information systems. The display formats are used to create a bibliography.
+</p>
+
+<div class="row">
+<p class="col-md-6 fragment">
+<img src="#(..img(1))#help/export-format-en.png" class="img-fluid" alt="Export - formát"/>
+</p>
+
+<p class="col-md-6 fragment">
+<img src="#(..img(1))#help/export-charset-en.png" class="img-fluid" alt="Export - znaková sada"/>
+</p>
+</div>
+
+
+<h2>CSV list</h2>
+<p>
+The file has a csv extension and can be opened in Excel. 
+</p>
+<p>
+If the Windows CP1250 character set is selected, the file can be opened immediately by "double click" with the mouse on the file.
+</p>
+<p>
+If the UTF8 character set is used, the file must be saved to a local disk with a txt extension and then opened in Excel via the "Open File" function. The UTF8 character set is set and a semicolon is chosen as the separator.
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/export-csv-charset-en.png" class="img-fluid" alt="Import CSV - znaková sada"/>
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/export-csv-cs.png" class="img-fluid" alt="Import CSV - nastavení"/>
+</p>
+
+
+<h2>CSV Cooperation</h2>
+<p>
+The format also contains records of cooperating institutions CAS.<br>
+If a record includes authors from more than one institute of the CAS, the record will be listed separately for each department, i.e. duplicated, triplicated&hellip;, depending on the number of collaborating departments.
+</p>
+
+<p class="fragment">
+<img src="#(..img(1))#help/export-csv-table-cs.png" class="img-fluid" alt="CSV - tabulka"/>
+</p>
+
+<h2> XML</h2>
+<p>
+It is presentation of a MARC format in XML structure. Every record element (fields and subfields) is transformed into an XML element. 
+</p>
+
+<h2> Formát <ipac:abbr lang="en-GB" title="Research Information Systems">RIS</ipac:abbr></h2>
+<p>
+Standardized tagged format allows data exchange to citations programs and managers, import and export of the search results from the various databases. This format can be used e.g. for the data import from ASEP to Researcher ID.
+</p>
+<ul>
+<li> <strong>RIS</strong> – contains fields: title, author, source document, UT ISI, pagination, year of publication, author affiliation, URL, abstract, keywords, <strong>with diacritics</strong>.</li>
+<li> <strong>RIS – <ipac:abbr lang="en-GB" title=" American Standard Code for Information Interchange">ASCII</ipac:abbr></strong> – contains fields: title, author, source document, UT ISI, pagination, year of publication, author affiliation, URL, abstract, keywords, <strong>no diacritics.</strong>.</li>
+</ul>
+<h2>Line MARC</h2>
+<p>
+One line in this format represents one field of the exchange format MARC. It is a specialized format used by librarians that allow saving information about the document in the machine- readable form regardless of the language, software, etc. Required characters are used for labeling fields, the start, and the end of the record. 
+</p>
+
+<h2> ISO 2709</h2>
+<p>
+The specialized format presents data from a MARC format as a string with required marks for fields, subfield, and records. 
+</p>

@@ -1,0 +1,286 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<div class="nav5">
+<nav class="navbar bg-light pl-0" aria-label="#(..txg("RECORDNAV"))#">
+<ul class="nav #($s(data("ZFTYPE")="marc":"",1:"flex-column"))#">
+
+<csp:if condition=('data("NOQUICK"))>
+  <csp:if condition=(data("NOCOVER")&&..v("req"))>
+    <csp:if condition=(..v("req")=1)>
+<li class="reservation available nav-item"><ipac:a class="nav-link" data-modal-login="1" op="request" param="idx=#(item)#&disprec=#(node)#" restore><span aria-hidden="true" class="icon-available"></span>&nbsp; <ipac:atext/></ipac:a></li>
+    <csp:else>
+<li class="reservation unavailable nav-item"><ipac:a class="nav-link" data-modal-login="1" op="request" param="idx=#(item)#&disprec=#(node)#" title="#(..txg("REQUEST_NOAVAIL"))#" restore><span aria-hidden="true" class="icon-unavailable"></span>&nbsp; <ipac:txg param="REQUEST_NOAVAIL"/></ipac:a></li>
+    </csp:if>
+  </csp:if>
+
+  <csp:if condition=(..v("basket"))>
+<li class="basket nav-item" aria-live="assertive"><ipac:a role="button" data-idx="#(item)#" op="basket" aria-controls="basket-info" aria-label="#(..txg("BASKET_FROM_TITLE"))#: #(..v("title"))#" title="#(..txg("BASKET_FROM_TITLE"))#: #(..v("title"))#" param="idx=#(item)#" class="fromcart nav-link"><span aria-hidden="true" class="icon-basket"></span>&nbsp; <ipac:txg param="BASKET_FROM"/></ipac:a></li>
+  <csp:elseif condition=(..isPage("basket"))>
+<li class="basket nav-item" aria-live="assertive"><ipac:a role="button" data-idx="#(item)#" op="basket" aria-controls="basket-info" aria-label="#(..txg("BASKET_TO_TITLE"))#: #(..v("title"))#" title="#(..txg("BASKET_TO_TITLE"))#: #(..v("title"))#" param="idx=#(item)#&add=1" class="addcart nav-link"><span aria-hidden="true" class="icon-basket"></span>&nbsp; <ipac:txg param="BASKET_TO"/></ipac:a></li>
+  </csp:if>
+ <csp:if condition=($g(data("RECORDS",node,"DATASET"))'=1)>  
+    <csp:if condition=($g(data("RECORDS",node,"ZRecMDLink"))=1)>
+ <li class="cavasep nav-item"><ipac:search class="nav-link" fld1="ZMDL" rel="nofollow" term1="#($g(data("RECORDS",node,"ZRecMDLinkHod")))#" src="cav_un_epca-4" qt="asep" sort="DT1_UST"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="PUBASEP"/></ipac:search></li>
+    </csp:if>  
+  </csp:if>
+     
+    <csp:if condition=($g(data("RECORDS",node,"DATASET"))=1)> 
+    <csp:if condition=($g(data("RECORDS",node,"ZRecEdit"))=1)>
+ <li class="cavedit nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="epca/indexT.csp" param="recid=#(item)#&language=#($$$GETSESSVAR("language"))#&client_info=aRL i3 web client 1.0#($g(data("RECORDS",node,"ZFormType")))#"><span aria-hidden="true" class="icon-edit"></span>&nbsp;<ipac:tx param="EDIT"/></ipac:sso></li>
+    </csp:if>
+    
+            
+    <csp:if condition=($g(data("RECORDS",node,"ZRecOHl"))=1)>
+ <li class="cavedit nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="epca" param="recid=#(item)#&language=#($$$GETSESSVAR("language"))#&client_info=aRL i3 web client 1.0&formid=OHLASY#($g(data("RECORDS",node,"ZFormType")))#"><span aria-hidden="true" class="icon-citace-okcz"></span>&nbsp;<ipac:tx param="CITACE"/></ipac:sso></li>
+    </csp:if>
+    
+    <csp:if condition=($g(data("RECORDS",node,"ZRecZRokSberu"))=1)>
+ <li class="cavedit nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="epca" param="recid=#(item)#&language=#($$$GETSESSVAR("language"))#&client_info=aRL i3 web client 1.0&formid=ROK_SBERU#($g(data("RECORDS",node,"ZFormType")))#"><span aria-hidden="true" class="icon-calendar"></span>&nbsp;<ipac:tx param="ZMENA_ROKU_S"/></ipac:sso></li>
+    </csp:if>
+    
+    <csp:if condition=($g(data("RECORDS",node,"ZRecDruhDokumentu"))=1)>
+ <li class="cavedit nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="epca" param="recid=#(item)#&language=#($$$GETSESSVAR("language"))#&client_info=aRL i3 web client 1.0&formid=DRUH_DOKUMENTU#($g(data("RECORDS",node,"ZFormType")))#"><span aria-hidden="true" class="icon-book"></span>&nbsp;<ipac:tx param="ZMENA_DRUHU_DOKUMENTU"/></ipac:sso></li>
+    </csp:if>
+
+    <csp:if condition=($g(data("RECORDS",node,"DataCopyVersion"))=1)>
+ <li class="cavedit nav-item"><ipac:sso class="nav-link external modal-show" data-modal-linktarget="_blank" data-modal-linkicon="icon-copy" rel="external" data-modal-idcontent="#newversionhtml" data-modal-linkprimary="1" data-modal-centered="1" data-modal-name="#(..tx("DATA_COPY"))#" data-modal-link="#(..tx("NEWVERSION"))#" target="_blank" app="epca/indexT.csp" param="recid=#(item)#&language=#($$$GETSESSVAR("language"))#&client_info=aRL i3 web client 1.0&recordcopy=FILTER_DATACPY#($g(data("RECORDS",node,"ZFormType")))#"><span aria-hidden="true" class="icon-copy"></span>&nbsp;<ipac:tx param="DATA_COPY"/></ipac:sso></li>
+    </csp:if>
+
+    <csp:if condition=($g(data("RECORDS",node,"ZRecDel"))=1)>
+<li class="cavdelete nav-item"><ipac:a class="modal-ajax nav-link" op="cavdelete" param="idx=#(item)#" restore title="Smazat záznam: #(..v("title"))#" data-modal-name="Smazat záznam" data-modal-linkicon="icon-remove" data-modal-centered="1" data-modal-size="modal-sm"><span class="icon-remove" aria-hidden="true"></span>&nbsp;<ipac:atext/></ipac:a></li>
+    </csp:if>   
+     <csp:if condition=($g(data("RECORDS",node,"ZRecDATATyp"))="")>
+    <csp:if condition=($g(data("RECORDS",node,"ZContLSprava"))=1)>
+<li class="contser nav-item"><ipac:a class="nav-link" op="contser" idx="#(item)#" restore><span aria-hidden="true" class="icon-list"></span>&nbsp; <ipac:atext/></ipac:a></li>
+    </csp:if>   
+    
+    <csp:if condition=($g(data("RECORDS",node,"ZContLUpload"))=1)>
+<li class="uploader nav-item"><ipac:a class="nav-link" op="uploader" idx="#(item)#" restore><span aria-hidden="true" class="icon-upload"></span>&nbsp; <ipac:atext/></ipac:a></li>
+    </csp:if>
+</csp:if>
+      <csp:if condition=($g(data("RECORDS",node,"ZRecDATATyp"))=1)>
+    
+    <csp:if condition=($g(data("RECORDS",node,"ZContLSprava"))=1)>
+<li class="contser nav-item"><ipac:a class="nav-link" op="contser" idx="#(item)#" restore><span aria-hidden="true" class="icon-contser"></span>&nbsp;<ipac:tx param="SPRAVADAT"/></ipac:a></li>
+    </csp:if>   
+    
+    <csp:if condition=($g(data("RECORDS",node,"ZContLUpload"))=1)>
+<li class="uploader nav-item"><ipac:a class="nav-link" op="uploader" idx="#(item)#" restore><span aria-hidden="true" class="icon-uploader"></span>&nbsp;<ipac:tx param="NAHRATDAT"/></ipac:a></li>
+    </csp:if>
+    
+    <csp:if condition=($g(data("RECORDS",node,"ZRecMDLink"))=1)>
+ <li class="cavasep nav-item"><ipac:search class="nav-link" fld1="ZMDL" rel="nofollow" term1="#($g(data("RECORDS",node,"ZRecMDLinkHod")))#" src="cav_un_epca-4" qt="asep" sort="DT1_UST"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="PUBASEP"/></ipac:search></li>
+    </csp:if>   
+    
+     <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL1"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL1")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL1")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL2"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL2")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL2")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL3"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL3")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL3")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL4"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL4")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL4")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL5"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL5")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL5")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL6"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL6")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL6")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL7"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL7")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL7")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL8"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL8")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL8")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL9"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL9")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL9")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL10"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL10")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL10")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if>
+  <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL11"))'="")>
+<li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL11")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL11")))#"><span aria-hidden="true" class="icon-cavasep"></span>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
+    </csp:if> 
+       </csp:if>     
+
+    </csp:if>
+
+  <csp:if condition=(..isPage("rating")&&($d(data("RATING",node))))>
+<li class="comment nav-item" #($s(data("PAGEID")="detail":"itemprop='aggregateRating'",1:""))# itemscope="itemscope" itemtype="http://schema.org/Rating"><ipac:tpl version="operation" page="rating"/></li>
+  </csp:if>
+    
+  <csp:if condition=(..isPage("dds")&&($e(..v("basetype"))="C"))>
+<li class="dds nav-item"><ipac:a class="nav-link" op="dds" title="#(..txg("PG_DDS_TEXT"))#: #(..v("title"))#" param="idx=#(item)#&disprec=#(node)#" restore><span aria-hidden="true" class="icon-copy"></span>&nbsp; <ipac:atext/></ipac:a></li>
+  </csp:if>
+
+  <csp:if condition=((..isPage("rating"))&&($d(data("RATING",node))))>
+<li class="comment nav-item"><ipac:tpl version="operation" page="rating"/></li>
+  </csp:if>
+
+  <csp:if condition=((..isPage("tagging"))&&(data("TAGGINGEDITABLE"))&&($e(..v("basetype"))="C"))>
+<li class="tagging nav-item"><ipac:a class="nav-link tagging-dialog" op="tagging" param="idx=#(item)#" title="#(..txg("TAGGING_ADDTAG"))#: #(..v("title"))#" restore><span aria-hidden="true" class="icon-tagging"></span>&nbsp; <ipac:txg param="TAGGING_ADDTAG"/></ipac:a></li>
+  </csp:if>
+
+  <csp:if condition=(..isPage("ebook"))>
+    <csp:if condition=(..v("ebook")'="")>
+<li class="ebook nav-item"><ipac:a class="nav-link" op="ebook" param="idx=#(item)#" title="#(..txg("PG_EBOOK_TITLE_B"))#" restore><span class="icon-#($s(..v("provider")="ereading":"palmknihy",1:..v("provider")))#" aria-hidden="true"></span>&nbsp; <ipac:txg param="PG_EBOOK_TEXT_B"/></ipac:a></li>
+    </csp:if>
+  <csp:if condition=(..v("eaudio")'="")>
+<li class="ebook nav-item"><ipac:a class="nav-link" op="ebook" param="idx=#(item)#&type=eaudio" title="#(..txg("PG_EBOOK_TITLE_A"))#" restore><span class="icon-#($s(..v("provider")="ereading":"palmknihy",1:..v("provider")))#" aria-hidden="true"></span>&nbsp; <ipac:txg param="PG_EBOOK_TEXT_A"/></ipac:a></li>
+     </csp:if>
+  </csp:if>
+
+  <csp:if condition=((..v("epreview")'="")&&..isPage("ebook"))>
+<li class="preview dropdown nav-item">
+<ipac:dropdown id="ebookpreview#(node)#" class="nav-link btn btn-link" title="#(..txg("PG_EBOOK_PREVIW"))#" icon="icon-preview">
+  <csp:if condition=(..v("ep-pdf")'="")>
+<li class="preview-pdf"><a class="dropdown-item" download type="application/pdf" rel="external" target="_blank" title="#(..txg("PG_EBOOK_FORMAT_PDF"))##(..txg("EXTERNAL"))#" href="#(..v("ep-pdf"))#"><span class="icon-pdf" aria-hidden="true"></span>&nbsp;<ipac:txg param="PG_EBOOK_FORMAT"/>&nbsp;<ipac:abbr lang="en-GB" title="Portable Document Format">PDF</ipac:abbr></a></li>
+  </csp:if>
+  <csp:if condition=(..v("ep-epub")'="")>
+<li class="preview-epub"><a class="dropdown-item" download type="application/epub+zip" rel="external" target="_blank" title="#(..txg("PG_EBOOK_FORMAT_EPUB"))##(..txg("EXTERNAL"))#" href="#(..v("ep-epub"))#"><span class="icon-epub" aria-hidden="true"></span>&nbsp;<ipac:txg param="PG_EBOOK_FORMAT"/>&nbsp;<ipac:abbr lang="en-GB" title="Electronic publication">ePub</ipac:abbr></a></li>
+  </csp:if>
+  <csp:if condition=(..v("ep-mobi")'="")>
+<li class="preview-mobi"><a class="dropdown-item" download type="application/x-mobipocket-ebook" rel="external" target="_blank" title="#(..txg("PG_EBOOK_FORMAT_MOBI"))##(..txg("EXTERNAL"))#" href="#(..v("ep-mobi"))#"><span class="icon-mobi" aria-hidden="true"></span>&nbsp;<ipac:txg param="PG_EBOOK_FORMAT"/> Mobi</a></li>
+  </csp:if>
+  <csp:if condition=(..v("ep-gbooks")'="")>
+<li class="preview-gbooks"><a class="dropdown-item" rel="external" target="_blank" title="#(..txg("PG_EBOOK_FORMAT_GBOOKS"))##(..txg("EXTERNAL"))#" href="#(..v("ep-gbooks"))#"><span class="icon-googlebooks" aria-hidden="true"></span>&nbsp;<ipac:txg param="PG_EBOOK_FORMAT"/> Google Books</a></li>
+  </csp:if>
+  <csp:if condition=(..v("ep-issuu")'="")>
+<li class="preview-issuu"><a class="dropdown-item" rel="external" target="_blank" title="#(..txg("PG_EBOOK_FORMAT_ISSUU"))##(..txg("EXTERNAL"))#" href="#(..v("ep-issuu"))#"><span class="icon-issuu" aria-hidden="true"></span>&nbsp;<ipac:txg param="PG_EBOOK_FORMAT"/> ISSUU</a></li>
+  </csp:if>
+  <csp:if condition=(..v("ep-youtube")'="")>
+<li class="preview-youtube"><a class="dropdown-item" rel="external" target="_blank" title="#(..txg("PG_EBOOK_FORMAT_YOUTUBE"))##(..txg("EXTERNAL"))#" href="#(..v("ep-youtube"))#"><span class="icon-youtube" aria-hidden="true"></span>&nbsp;<ipac:txg param="PG_EBOOK_FORMAT"/> YouTube</a></li>
+  </csp:if>
+  <csp:if condition=(..v("ep-vimeo")'="")>
+<li class="preview-vimeo"><a class="dropdown-item" rel="external" target="_blank" title="#(..txg("PG_EBOOK_FORMAT_VIMEO"))##(..txg("EXTERNAL"))#" href="#(..v("ep-vimeo"))#"><span class="icon-vimeo" aria-hidden="true"></span>&nbsp;<ipac:txg param="PG_EBOOK_FORMAT"/> Vimeo</a></li>
+  </csp:if>
+  <csp:if condition=(..v("ep-unknow")'="")>
+<li class="preview-unknow"><a class="dropdown-item" download rel="external" target="_blank" title="#(..txg("PG_EBOOK_FORMAT_UNKNOW"))##(..txg("EXTERNAL"))#" href="#(..v("ep-unknow"))#"><span class="icon-book" aria-hidden="true"></span>&nbsp;<ipac:txg param="PG_EBOOK_FORMAT_UNKNOW"></a></li>
+  </csp:if>
+</ipac:dropdown>
+</li>
+  </csp:if>
+
+    <csp:if condition=($g(data("RECORDS",node,"VyslRIV"))'="")>
+<li class="cavriv nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"VyslRIVT")))#" href="#($g(data("RECORDS",node,"VyslRIVLink")))#"><span class="icon-riv" aria-hidden="true"></span>&nbsp;#($g(data("RECORDS",node,"VyslRIVPT")))#</a></li>
+    </csp:if>   
+
+    <csp:if condition=($g(data("RECORDS",node,"VyslDOI"))'="")>
+<li class="cavdoi nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"VyslDOIT")))#" href="#($g(data("RECORDS",node,"VyslDOILink")))#"><span class="icon-doi" aria-hidden="true"></span>&nbsp;#($g(data("RECORDS",node,"VyslDOIPT")))#</a></li>
+    </csp:if>
+    
+    <csp:if condition=($g(data("RECORDS",node,"VyslWOS"))'="")>
+<li class="cavwos nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"VyslWOST")))#" href="#($g(data("RECORDS",node,"VyslWOSLink")))#"><span class="icon-wos" aria-hidden="true"></span>&nbsp;#($g(data("RECORDS",node,"VyslWOSPT")))#</a></li>
+    </csp:if>
+    
+    <csp:if condition=($g(data("RECORDS",node,"VyslSCOPUS"))'="")>
+<li class="cavscopus nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"VyslSCOPUST")))#" href="#($g(data("RECORDS",node,"VyslSCOPUSLink")))#"><span class="icon-scopus" aria-hidden="true"></span>&nbsp;#($g(data("RECORDS",node,"VyslSCOPUSPT")))#</a></li>
+    </csp:if>
+    
+       <csp:if condition=($g(data("RECORDS",node,"VyslOPENAIRE"))'="")>
+<li class="openaire nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"VyslOPENAIRET")))#" href="#($g(data("RECORDS",node,"VyslOPENAIRELink")))#"><span class="icon-openaire" aria-hidden="true"></span>&nbsp;#($g(data("RECORDS",node,"VyslOPENAIREPT")))#</a></li>
+    </csp:if>
+
+    <csp:if condition=($g(data("RECORDS",node,"VyslPUBMED"))'="")>
+<li class="cavpubmed nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"VyslPUBMEDT")))#" href="#($g(data("RECORDS",node,"VyslPUBMEDLink")))#"><span class="icon-pubmed" aria-hidden="true"></span>&nbsp;#($g(data("RECORDS",node,"VyslPUBMEDPT")))#</a></li>
+    </csp:if>
+
+ <csp:if condition=($g(data("CITACEPRO","IPAC_OPERATIONS"))=1)>
+    <csp:if condition=($e($zcvt(data("RECORDS",node,"basetype"),"L"),1)="c")>
+<li class="citacepro nav-item"><a class="nav-link" href="##(data("PAGEID"))#-citacepro-#(node)#" data-id="#(data("PAGEID"))#-citacepro-#(node)#" data-show-title="#(..txg("CITACEPRO_SHOW_TITLE"))#: #(..v("title"))#" data-hide-title="#(..txg("CITACEPRO_HIDE_TITLE"))#: #(..v("title"))#"><span aria-hidden="true" class="icon-citace"></span>&nbsp;<ipac:txg param="PG_CITACEPRO_TEXT"></a></li>
+    </csp:if>
+  </csp:if>
+
+       <csp:if condition=($g(data("RECORDS",node,"ZRecDATATyp"))="")>
+  <csp:if condition=(..isPage("bookmark"))>
+<li class="bookmark nav-item"><ipac:a class="nav-link" op="bookmark" param="idx=#(item)#&disprec=#(node)#" title="#(..txg("PG_BOOKMARK_TITLE"))#: #(..v("title"))#" restore><span aria-hidden="true" class="icon-bookmark"></span>&nbsp; <ipac:atext/></ipac:a></li>
+  </csp:if>
+       </csp:if>
+
+<csp:if condition=((data("PAGEID")'="mydoc")&&(..isPage("mydoc")))>
+<li class="mydoc nav-item"><ipac:a op="mydoc" idx="#(item)#" param="f_new=1" data-modal-login="1" rel="nofollow" class="nav-link" title="#(..txg("PG_MYDOC_TITLE"))#: #(..v("title"))#" restore><span aria-hidden="true" class="icon-mydocuments"></span>&nbsp;<ipac:atext/></ipac:a></li>
+</csp:if>
+
+<csp:if condition=(..isPage("icalgw")&&(..v("ical")'=0))>
+<csp:if condition=('$g(data("ICAL",node,"2","ical_param")))>
+<li class="icalendar nav-item"><ipac:a op="icalgw" idx="#(item)#" param="event=#($g(data("ICAL",node,"1","ical_param")))#" rel="nofollow" class="nav-link" title="#(..txg("PG_ICALGW_TITLE"))#: #(..v("title"))#" restore><span aria-hidden="true" class="icon-calednar-add"></span>&nbsp;<ipac:atext/></ipac:a></li>
+<csp:else>
+<li class="dropdown">
+<ipac:dropdown title="#(..txg("PG_ICALGW_TEXT"))#" class="nav-link btn btn-link" id="ical#(node)#" icon="icon-calednar-add">
+<csp:while counter="inode" condition=inode&lt;..v("ical")>
+<csp:if condition=($g(data("ICAL",node,inode,"ical_param"))'="")>
+<li class="icalendar"><ipac:a op="icalgw" idx="#(item)#" param="event=#(data("ICAL",node,inode,"ical_param"))#" rel="nofollow" class="dropdown-item" title="#(..txg("PG_ICALGW_TITLE"))#: #(..v("title"))# #(data("ICAL",node,inode,"ical_text"))#" restore><span aria-hidden="true" class="icon-calednar-add"></span>&nbsp;#(data("ICAL",node,inode,"ical_text"))#</ipac:a></li>
+</csp:if>
+</csp:while>
+</ipac:dropdown>
+</li>
+</csp:if>
+</csp:if>
+
+<csp:if condition=(..v("urldigi")'="")>
+<li class="digi nav-item"><a target="_blank" rel="external" href="#(..v("urldigi"))#" class="nav-link" title="#(..txg("DIGITIZED_TITLE"))#: #(..v("title"))#"><span aria-hidden="true" class="icon-digi"></span>&nbsp;#(..txg("DIGITIZED_TEXT"))#</a></li>
+</csp:if>
+
+<csp:if condition=(..v("extlinkokcz")'="")>
+<li class="extlinkokcz dropdown nav-item">
+<ipac:dropdown title="#(..txg("PG_OKCZ_BOOKWEB"))#" class="nav-link btn btn-link" id="extlinkokcz#(node)#">
+    <csp:loop COUNTER="extlinknode" FROM="1" TO="#(..v("extlinkokcz"))#" STEP="1">
+<li><a class="dropdown-item" rel="external" target="_blank" title="#($li(data("EXTLINKOKCZ",node,extlinknode),1))# #(..txg("PG_OKCZ_BOOKWEB_TITLE"))##(..txg("EXTERNAL"))#" href="#($li(data("EXTLINKOKCZ",node,extlinknode),2))#">#($li(data("EXTLINKOKCZ",node,extlinknode),1))#</a></li>
+    </csp:loop>
+</ipac:dropdown></li>
+</csp:if>
+
+  <csp:else>
+
+    <csp:if condition=((data("ZFTYPE")'="detail")||data("NOCOVER"))>
+      <csp:if condition=(..v("basket"))>
+<li class="nav-item basket" aria-live="assertive"><ipac:a data-idx="#(item)#" op="basket" title="#(..txg("BASKET_FROM_TITLE"))#: #(..v("title"))#" param="idx=#(item)#" class="fromcart nav-link"><span aria-hidden="true" class="icon-basket"></span>&nbsp; <ipac:txg param="BASKET_FROM"/></ipac:a></li>
+    <csp:elseif condition=(..isPage("basket"))>
+<li class="nav-item basket" aria-live="assertive"><ipac:a data-idx="#(item)#" op="basket" title="#(..txg("BASKET_TO_TITLE"))#: #(..v("title"))#" param="idx=#(item)#&add=1" class="addcart nav-link"><span aria-hidden="true" class="icon-basket"></span>&nbsp; <ipac:txg param="BASKET_TO"/></ipac:a></li>
+      </csp:if>
+    </csp:if>
+    <csp:if condition=(..isPage("bookmark"))>
+<li class="nav-item bookmark"><ipac:a class="nav-link" op="bookmark" param="idx=#(item)#" title="#(..txg("PG_BOOKMARK_TITLE"))#: #(..v("title"))#" restore><span aria-hidden="true" class="icon-bookmark"></span>&nbsp; <ipac:atext/></ipac:a></li>
+
+    </csp:if>
+
+  </csp:if>
+
+</ul>
+</nav>
+</div>
+
+<csp:if condition=((data("ZFTYPE")'="detail")&&($d(data("CITACEPRO"))))>
+   <ipac:tpl version="detail" page="citacepro"/>
+</csp:if>
+
+<csp:if condition=((data("ZFTYPE")'="detail")&&(..isOption("CITACEOKCZ")))>
+   <ipac:tpl version="detail" page="citaceokcz"/>
+</csp:if>
+
+
+
+
+
+<csp:if condition=($d(data("RECORDS",node,"DataVersionsCount")))>
+<div class="navbar bg-light pl-0">
+<ul class="nav flex-column">
+<csp:while counter="vnonde" condition=(vnonde<data("RECORDS",node,"DataVersionsCount"))>
+<csp:if condition=(data("RECORDS",node,"DataVersions",vnonde)'="")>
+<li class="nav-item">
+    <ipac:a class="nav-link pt-0 pb-0" op="detail" title="#(..txg("VERSION"))# #(data("RECORDS",node,"DataVersionsNumber",vnonde))#" idx="#(data("RECORDS",node,"DataVersions",vnonde))#">
+    #(..txg("VERSION"))# #(data("RECORDS",node,"DataVersionsNumber",vnonde))#</ipac:a>
+</li>
+</csp:if>
+</csp:while>
+<csp:if condition=((data("RECORDS",node,"DataVersionsLink")'=""))>
+  <li class="nav-link pt-0 pb-0"><ipac:search field1="ZDV" term1="#(data("RECORDS",node,"DataVersionsLink"))#" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ALL_VERSION"/></ipac:search></li>
+</csp:if>
+ 
+</ul>
+</div>
+</csp:if>

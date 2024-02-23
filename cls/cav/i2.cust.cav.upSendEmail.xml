@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1.2 (Build 309U)" ts="2019-10-11 13:49:53">
+<Class name="i2.cust.cav.upSendEmail">
+<Description><![CDATA[
+<pre> Stranka rozesle emaily na zadost uzivatele pri schvalovani zaznamu
+
+09.10.19 jk; zmenena trida pro praci s emaily
+30.11.16 tt; zmena adresy
+02.09.14 jk; odeslani emailu pres tridu util.email.cls
+15.06.14 tt; pridan text do emailu "English version below"
+24.05.14 tt; MailBody: pridano doladeni anglicke verze o anglicky odkaz
+20.05.14 tt; MailBody: pridana anglicka verze souhlasu se zverejnenim
+26.03.14 tt; pridana podpora pristupu A - archiv
+22.08.13 tt; pridany parametr pretty 
+21.08.13 tt; odstranen parametr script
+17.06.13 tt; MailBody: pridano jmeno uzivatele do emailu
+15.06.13 tt; MailBody: zmena pouzivani UPSENDMAIL_WORKPLACE - zapracovano sklonovani
+14.06.13 tt; MailBody: zmena pouzivani UPSENDMAIL_WORKPLACE - zapracovano sklonovani
+12.06.13 tt; MailBody: pridano cteni pracoviste z UPSENDMAIL_WORKPLACE
+11.06.13 tt; MailBody: pridano nove telo emailu pro Cav - email pro vyjadreni souhlasu
+14.02.13 jk; vymazan template(), writeBody()
+02.11.12 tt; pridavani tlacitka a logiky pro neodeslani emailu
+06.10.12 tt; pridano jako parametr cele pole, pro dalsi mozne vyuziti pri volani genC52
+26.09.12 tt; pridani zapsani zmeny stavu do statistik
+06.08.12 tt; data: pridan link na zaznam po odeslani emailu
+19.01.11 tt; zmena textu emailu
+19.01.11 tt; uprava kvuli chybe pro prikladani souboru
+02.11.11 tt; zalozena stranka pro rozesilani emailu pri schvalovani zaznamu
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>65297,49776.684906</TimeChanged>
+<TimeCreated>62049,40650.340959</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>upsendemail</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>rozesilani-emailu#rozesilani-emailu#sending-email</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("idx,repo,key")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+06.08.12 tt; pridan link na zaznam po odeslani emailu
+22.03.11 kp;Odkaz na stránku knihovního řádu MAIN_RULES
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+    ;www adresa do rootu stránek IPCu
+    s sBaseURL              = ##class(i2.html.tpl).getBaseURL()
+    s data("ACTION_VALUE")  = sBaseURL_"i2.entry.cls"  
+    s data("OP_VALUE")      = ..#PageID
+    s data("HEADING")       = ..txn("HEADING")
+    
+    
+    s idx=$$$GETREQVAR("idx")
+    s data("IDX")=idx
+    s repo=$$$GETREQVAR("repo")
+    s data("REPO")=repo
+    s key=$$$GETREQVAR("key")
+    s data("KEY")=key  
+    s data("EMAILSALL")=$$$GETREQVAR("emailsall")
+    if (idx="") || (repo="") || (key="")
+    {
+      s data("ERRORS")=..tx("MISSING_INFO")
+      q
+    }
+    
+    if '##class(content.api).engineState(repo,key,.array) {
+      s data("ERRORS")="nejsou prava"
+      q
+    }
+    s data("ACCESSION")=array("accession") ; rezim pristupu
+    
+    ; link na spravu priloh
+    s maintain=##class(content.service).getPageID()
+    s data("MAINTAIN")=##class(i2.html.tpl).getLink(maintain,"idx="_idx)   
+    
+    ; link na spravu plnych textu
+    s contlist=##class(content.list).getPageID()
+    s contlist=##class(i2.html.tpl).getLink(contlist,"tab=2")   
+    ;w data("ACCESSION")
+    ; osetreni textu na strance rozesilani
+    ; 26.03.14 tt; pridana podpora pristupu A - archiv
+    if ((data("ACCESSION")'="R") || (data("ACCESSION")'="X") || (data("ACCESSION")'="A")) 
+    { ; pokud nemam omezeni, zobrazim pro souhlas
+      s data("TXDESCRIPTION")=..tx("DESCRIPTION_S") 
+      s data("TXSEND")=..tx("SEND_S") 
+    }
+    else
+    { ; pokud mam omezeni, zobrazim informaci ze rozesilam informaci
+      s data("TXDESCRIPTION")=..tx("DESCRIPTION_I") 
+      s data("TXSEND")=..tx("SEND_I") 
+    }
+
+    ; 02.11.12 tt; pridavani tlacitka a logiky pro neodeslani emailu    
+    s data("DONTSEND")=..tx("DONTSEND")
+    s dontsend=$$$GETREQVAR("dontsend")
+
+     
+    ; pokud se kliklo na odeslani emailu, odeslou se emaily
+    ; pro pristu x se nerozesilaji emaily - jen se projde stejnou cestou
+    ; 02.11.12 tt; pridavani tlacitka a logiky pro neodeslani emailu
+    ; tlacitko neodesilat emaily, take nic neodesila DONTSEND
+    ; 26.03.14 tt; pridana podpora pristupu A - archiv
+    if (($$$GETREQVAR("send")=data("TXSEND"))
+         ||(data("ACCESSION")="X")||(data("ACCESSION")="A")
+         ||($$$GETREQVAR("dontsend")=data("DONTSEND")))
+    {     
+      s sPomSendE=""
+      
+      ; 02.11.12 tt; pridavani tlacitka a logiky pro neodeslani emailu
+      ; 26.03.14 tt; pridana podpora pristupu A - archiv
+      if ((data("ACCESSION")'="X")&&(data("ACCESSION")'="A")&&($$$GETREQVAR("dontsend")'=data("DONTSEND")))
+      { ; pokud neni neverejne, odeslou se emaily
+        s sPomSendE=..sendMail(.data)
+      } 
+      else
+      { ; nastavi se promenne, aby probehla zmena stavu 
+        s data("BEMAIL")=0
+      }
+      
+      if (sPomSendE'="") 
+      { ; odesilani emailu selhalo
+        s data("ERRORS")=..tx("SEND_ERR")_data("MAINTAIN")
+                           _" ERROR: "_sPomSendE
+      } 
+      else 
+      { ; uspesne odeslani emailu, vratime se na stranku      
+        ; rovnou zmenime stav
+        
+        s nextState=##class(content.api).engineState(repo,key,.array)
+        ; vyjimka pro x
+        ; 26.03.14 tt; pridana podpora pristupu A - archiv
+        if (((nextState) && (nextState'=99))||((array("status")=4)&&(data("ACCESSION")="X"))||((array("status")=4)&&(data("ACCESSION")="A"))) {
+          ;w data("ACCESSION")
+          if (data("BEMAIL")=0)
+          { ; pokud nebyl vyplnen zadny email, prejit do stavu schvaleno
+            s array("status")=4
+            ; vygenerovani tagu C52 pro indexovani
+            ; 06.10.12 tt; pridano jako parametr cele pole, pro dalsi mozne vyuziti pri volani genC52
+            d ##class(i2.cust.cav.approvalAuthor).genC52(.array,array("t001"),"4",array("accession")) 
+          }
+          else
+          { ; pokud byl vyplnen email, musi se cekat na schvaleni
+            s array("status")=nextState
+          }
+          ; 26.09.12 tt; pridani zapsani zmeny stavu do statistik
+          d ##class(content.stat).addStatus(.array,1)
+      
+          
+          if ##class(content.api).update(.array) 
+          {
+            ; 06.08.12 tt; pridan link na zaznam po odeslani emailu
+            s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_array("t001"),..tx("SEND_RECORD"))
+            s data("REPORTS")=..tx("SEND_OK")_contlist_"<br />"_..tx("SEND_REC_TEXT")_" "_sLinkRec ; _"&amp;state=change&amp;key="_key
+            ; pro pristu x se nerozesilaji emaily
+            ; 26.03.14 tt; pridana podpora pristupu A - archiv
+            s:((data("ACCESSION")="X")||(data("ACCESSION")="A")) data("REPORTS")=..tx("SENDX_OK")_contlist_"<br>"_..tx("SEND_REC_TEXT")_" "_sLinkRec             
+            ; 02.11.12 tt; pridavani tlacitka a logiky pro neodeslani emailu
+            ; pokud tlacitko neodesilat emaily, zobrazi se prislusna hlaska o ulozeni souboru
+            s:($$$GETREQVAR("dontsend")=data("DONTSEND")) data("REPORTS")=..tx("DONTSEND_OK")_contlist_"<br>"_..tx("SEND_REC_TEXT")_" "_sLinkRec             
+          } else {
+            s data("ERRORS")="zmena stavu selhala"
+          }
+        }
+        
+      }
+      if ((data("ACCESSION")'="R") || (data("ACCESSION")'="X")|| (data("ACCESSION")'="A")) 
+      { ; ulozeni pomocnych metadat
+        m array("tokens")=data("tokens")
+        m array("mails")=data("mails")
+        s array("dayimport")=$zd($h,8)
+        d ##class(content.api).update(.array)
+      }
+    } 
+    else 
+    {    
+      d ..getData(.data)
+    }
+]]></Implementation>
+</Method>
+
+<Method name="getData">
+<Description><![CDATA[
+<pre> Naplneni pole data doplnijicimi informacemi
+Parametry: data - byref pole pro ulozeni vysledku
+
+20.10.11 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data:%Binary]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sRet=""
+  s data("USER_OBJ") = ##class(i2.ui.tools).getAccountObj()   ; ipac2 zaznamu uzivatele
+  s data("USER_ID")=##class(i2.access).getLoginId()  ; ziskame id uzivatele
+  s data("USTAV")=##class(User.CavS).FTgetUstavU(data("USER_ID"))
+  
+  s sClass="CavUnEpca"
+  s sT001=$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")
+  ;s data("T001z")=sT001
+
+  if ##class(User.MARC).readX(.handle,sClass,sT001) 
+  { ; uspesne se podarilo otevrit zaznam, zjistime autory
+    s c=0,sPomUstavR="",sPomAuth=""
+    d {
+      s sT7XX=$$$getTagXC(.handle,"7**",.c) ; vsetky citacie
+      continue:((sT7XX="")&&(c'=0))
+      if (sT7XX'="")
+      { ; pokud mame vyplnene data, muzeme provadet akce 
+        s sT7XX3=$$$getSubTagStr(sT7XX,"3")              ; nacteme link na autoritu
+        s sT7XXp=$$$getSubTagStr(sT7XX,"p")              ; nacteme si ustav
+        s:((sT7XXp'="")&&('$f(sPomUstavR_",",","_sT7XXp_","))) sPomUstavR=sPomUstavR_","_sT7XXp
+        s:((sT7XX3'="")&&('$f(sPomAuth_",",","_sT7XX3_","))) sPomAuth=sPomAuth_","_sT7XX3
+      }
+    } while (c'=0)
+    s sPomUH=$$$getTagX(.handle,"C26e")                      ; hlavni ustav zaznamu
+    s:('$f(sPomUstavR,sPomUH)) sPomUstavR=sPomUH_sPomUstavR  ; ziskame hlavni ustav
+    
+    s data("POM","sPomUstavR")=sPomUstavR                    ; pomocne data
+    s data("POM","sPomAuth")=sPomAuth
+    
+    ; zpracovani autoru
+    s nPoc=0, data("EMAILA","Pocet")=0
+    for i=1:1:$l(sPomAuth,",")
+    { ; ziskame emaily autoru
+      s sIDAuth=$p(sPomAuth,",",i)    ; ziskame jednoho autora
+      continue:($tr(sIDAuth," ")="") ; pokud nemame data, nema cenu pokracovat 
+      if ##class(User.MARC).readLX(.handleA,sIDAuth)
+      { ; pokud se podarilo otevrit zaznam autority
+        s sPomEmail=##class(User.CavS).FTgetEmailHandle(.handleA)
+        if (sPomEmail'="")
+        { ; pokud jsme ziskali email, ulozim si ho do struktury
+          s nPoc=nPoc+1                            ; zvysim pocitadlo
+          s data("EMAILA","Pocet")=nPoc            ; ulozim si celkovy pocet
+          s data("EMAILA",nPoc)=sPomEmail          ; ulozim si email
+          s sPrijm=$$$getTagX(.handleA,"200a")
+          s sJm=$$$getTagX(.handleA,"200b")
+          s:(sJm'="") sPrijm=sPrijm_", "_sJm       ; slozim si jmeno
+          s data("EMAILA",nPoc,"T")=sPrijm         ; ulozim pro zobrazeni
+        }
+      }
+    }
+    
+    s nPoc=0, data("EMAILU","Pocet")=0
+    ; zpracovani ustavu
+    for i=1:1:$l(sPomUstavR,",")
+    { ; ziskame jednotlive ustavy
+      s sZUst=$p(sPomUstavR,",",i)       ; ziskame jeden ustav
+      continue:($tr(sZUst," ")="")  ; pokud nemame data, nema cenu pokracovat 
+      
+      s sPomEmail=##class(User.CavS).FTgetZpracZaUstav(sZUst,"2")
+      if (sPomEmail'="")
+      { ; pokud jsme ziskali email, ulozim si ho do struktury
+        s nPoc=nPoc+1                            ; zvysim pocitadlo
+        s data("EMAILU","Pocet")=nPoc            ; ulozim si celkovy pocet
+        s data("EMAILU",nPoc)=sPomEmail          ; ulozim si email
+        s data("EMAILU",nPoc,"T")=sZUst         ; ulozim pro zobrazeni
+      }
+    }
+  }
+  else
+  { ; vypis chyby
+    s sRet=sRet_"Error: read handle in (i2.cust.cav.upSendEmail).getData"
+  }
+  
+  q sRet
+]]></Implementation>
+</Method>
+
+<Method name="sendMail">
+<Description><![CDATA[
+<pre> Metoda pro rozeslání emailu uživatelům pro schválení souboru
+ziska emaily z formulare, email po emailu zpracovava.
+Parametry: data  - interni datova struktura
+Navratova hodnota: "" - vse ok
+                   chyba
+data("tokens",$r(1000000))=`mailadr`
+
+02.09.14 jk; odeslani emailu pres tridu util.email.cls
+24.11.11 tt; založena metoda
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    ; definice pomocnych promennych
+    s sRet="", node="", sEmails=$$$GETREQVAR("emailsall") 
+    
+    ; ziskani vsech emailu autoru
+    f { s node=$o(%request.Data("autor",node),1,val) q:node=""
+        s sEmails=sEmails_","_val             ; ulozim si emaily autoru
+    }
+    
+    s node=""  ; ziskani vsech emailu zpracovatelu
+    f { s node=$o(%request.Data("zprac",node),1,val) q:node=""
+        s sEmails=sEmails_","_val             ; pridam si emaily zpracovatelu
+    }
+    
+    ; 02.11.12 tt; pridavani tlacitka a logiky pro neodeslani emailu
+    if ($tr(sEmails," ,","")="")
+    { ; pridano overeni na vyplnene emaily
+      q ..tx("MAILEM_ERR")
+    }
+
+
+    ; 02.09.14 jk; odeslani emailu pres tridu util.email.cls
+    s bHtml=1 ; nastaveno napevno, puvodne to bylo v konfiguraci I2_EMAILS
+    s sSEP=$s(bHtml:"<br />",1:$$$CRLF)
+    s sMailBody=""
+    
+    ; inicializace 0 znamena, ze nebyl vyplnen zadny email
+    s data("BEMAIL")=0  
+    ; dd.mm.yyyy
+    s data("DATUM_MESIC")=$tr($zd($h+31,4),"/",".")  ; aktualni datum + 31 dni
+    ; 26.03.14 tt; pridana podpora pristupu A - archiv
+    if ((data("ACCESSION")'="R") && (data("ACCESSION")'="X")&& (data("ACCESSION")'="A"))    
+    { ; pokud ma probehnout schvalovani zaznamu, rozeslu emaly
+      for i=1:1:$l(sEmails,",")
+      { ; po jednotlive emailu budeme odesilat
+        s sEmail1=$p(sEmails,",",i)                       ; ziskame jeden email
+        continue:(sEmail1="")                             ; pokud prazdny pokracujeme
+        ; 1 znamena v BEMAIL, ze byl vyplnen email 
+        s data("BEMAIL")=1
+        s nToken=""
+        s sRet=..MailBody(.data,.sMailBody,.nToken,sEmail1,sSEP)  ; ziskame telo emailu
+        s:bHtml sMailBody=$$$CRLF_"<table style=""text-align:left;"" border=""0"">"_$$$CRLF_sMailBody_$$$CRLF_"</table>"
+        d:(sRet="") ##class(util.emailgw).send($$$IPREF,sMailBody,,.err,"repozitar",..tx("MAILSUBJ"),$$$GETLANGUAGE,,sEmail1,,,,,"cp1250")
+        s:(err'="") sRet=sRet_..tx("MAIL_ERR")_"<!-- "_err_" -->"    
+        k:(sRet'="") data("tokens",nToken),data("mails",nToken)   ; pri chybe odstranime uzly
+      }
+    }
+    else
+    { ; rozeslu informaci, ze soubor byl ulozen pokud mam omezeny pristup
+      s sT001 = $p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")  ; ziskame id epca zaznamu  
+      s sBaseURL = ##class(i2.html.tpl).getBaseURL()  ; www adresa do rootu stránek IPCu
+      s linkS = sBaseURL_"content.csg.cls?repo="_data("REPO")_"&key="_data("KEY")
+      s sRet=##class(i2.cust.cav.approvalAuthor).sendMail(sEmails,linkS,sT001) 
+    }
+    
+    q sRet
+]]></Implementation>
+</Method>
+
+<Method name="MailBody">
+<Description>
+Metoda pro vyskladani tela emailu pro kazdeho uzivatele zvlast s linkem
+na souhlas a nesouhlas uzivatele
+Parametry: data      - obecna datova struktura
+           pMailBody - samotne telo emailu
+           pToken    - aktulani token pro jeden email
+           pEmail    - email dotycneho cloveka
+           pSEP      - separator emailu
+Navratova hodnota: "" - vse ok
+                   chyba
+
+24.05.14 tt; pridano doladeni anglicke verze o anglicky odkaz
+20.05.14 tt; pridana anglicka verze souhlasu se zverejnenim
+17.06.13 tt; pridano jmeno uzivatele do emailu
+12.06.13 tt; pridano cteni pracoviste z UPSENDMAIL_WORKPLACE
+11.06.13 tt; pridano nove telo emailu pro Cav - email pro vyjadreni souhlasu
+data("tokens",$r(1000000))=`mailadr`</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&pMailBody,&pToken,pEmail,pSEP]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s sBaseURL = ##class(i2.html.tpl).getBaseURL()  ; www adresa do rootu stránek IPCu
+  s sRet = "",sZf = ""
+  
+  for 
+  { ; zkousime ziskat token, dokud neziskame jednoznacny 
+    s pToken = $r(1000000)                        ; ziskame nahodny token
+    q:($g(data("tokens",pToken),"") = "")         ; overime jestli jiz neexistuje
+  }
+  
+  s data("tokens",pToken)=1
+  s data("mails",pToken)=pEmail  ; ulozime si email do sturktury
+  
+  ; sestaveni linku
+  s urlparams  = "repo="_data("REPO")_"&amp;key="_data("KEY")_"&amp;token="_pToken
+  s urlparamsN = urlparams_"&amp;refuse=1"  ; ne
+  ; link pro ano je bez parametru refuse
+  s link  = "<a href="""_sBaseURL_##class(i2.html.tpl).getLinkURL("approvalauthor",urlparams)_""">"_..tx("APPROVAL")_"</a>"
+  s linkA  = "<a href="""_sBaseURL_##class(i2.html.tpl).getLinkURL("approvalauthor",urlparams_"&amp;language=3")_""">HERE</a>"
+  s linkA  = $$$strswap(linkA,"cs/souhlas-se-zpristupnenim","en/consent-to-disclosure")
+  ; link pro ne
+  ;s linkN = "<a href="""_sBaseURL_##class(i2.html.tpl).getLinkURL("approvalauthor",urlparamsN)_""">"_..tx("NO")_"</a>"
+  ;s linkS = "<a href="""_sBaseURL_"content.csg.cls?repo="_data("REPO")_"&key="_data("KEY")_""">"_..tx("FILE")_"</a>"
+
+  s sUserId=##class(i2.access).getLoginId()       ; ziskame id uzivatele
+  if ($g(sUserId,"")'="")
+  { ; pokud mame id usera, nacteme informace
+    if ('##class(User.MARC).readX(.handleU,"CavIsUser",sUserId)) 
+    { s sRet = sRet_"Error: read handle: CavIsUser*"_sUserId_" in (i2.cust.cav.upSendEmail).MailBody"   }
+    else
+    { ; nastavime si priznak otevreni
+      s sUT100c = $$$getTagX(.handleU,"100c")             ; nacteme si jmeno
+      s sUJmeno = $tr($p(sUT100c," ",2)," ")              ; zjistime si jmeno
+      s sUPrijemni = $tr($p(sUT100c," ",1)," ")           ; zjistime si prijmeni
+      s sUEmail = $$$getTagX(.handleU,"100e")             ; nacteme si email
+      s:(sUEmail '= "") sUEmail = " ("_sUEmail_")"
+      s sUT600b = $$$getTagX(.handleU,"600b")             ; ustav uzivatele 
+      ; ziskame nazev ustavu
+      s sUUstav = ##class(User.Util).sXlate("UPSENDMAIL_WORKPLACE",sUT600b,"N","Cav")
+      s sUUstavC = ##class(User.Util).sXlate("UPSENDMAIL_WORKPLACE",sUT600b,"","Cav","c")
+      s sUUstavD = ##class(User.Util).sXlate("UPSENDMAIL_WORKPLACE",sUT600b,"","Cav","d")
+      s:((sUUstav="")&&(sUUstavD="")) sUUstavD=sUT600b
+      s:((sUUstav="")&&(sUUstavD'="")) sUUstav =sUUstavD
+      s sUdAut = sUT100c_sUEmail           ; vysledny retezec pro autora      
+    }
+  }
+  
+  s sT001 = $p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")  ; ziskame id epca zaznamu  
+  if ##class(User.MARC).readX(.handle,"CavUnEpca",sT001,"T") 
+  { ; uspesne se podarilo otevrit
+    s sZf=##class(User.Util).HTMLfixup($$$getTagX(.handle,"Tbca"))
+  }
+  else
+  { ; vypis chyby
+    s sRet=sRet_"Error: read handle: CavUnEpca*"_sT001_" in (i2.cust.cav.upSendEmail).MailBody"
+  } 
+  
+  /*
+  s pMailBody="Vážená paní/ vážený pane,"_pSEP_pSEP_
+  "do Institucionálního repozitáře ASEP AV ČR, který je spravován Knihovnou AV ČR, v. v. i. byl uložen plný text práce, jejímž jste (spolu)autorem/autorkou."_pSEP_pSEP
+  s pMailBody=pMailBody_sZf_pSEP_pSEP
+  s pMailBody=pMailBody_"Plný text uložil/a: "_sUdAut_pSEP
+  s pMailBody=pMailBody_"Chtěli bychom se ujistit, že souhlasíte se zpřístupněním tohoto díla v režimu otevřeného přístupu prostřednictvím institucionálního "_
+              "repozitáře AV ČR a proto Vás požádat o vyjádření Vašeho souhlasu, případně nesouhlasu se zveřejněním: "_link_pSEP
+  s pMailBody=pMailBody_"Zpracovatel/ka "_sUdAut_" zodpovědný/á za zpracování dat ústavu: "_
+              sUUstav_", v. v. i. již potvrdil/a, že zpřístupnění tohoto díla v režimu otevřeného přístupu "_
+              "prostřednictvím institucionálního repozitáře není v rozporu s vydavatelskou politikou daného vydavatele."_pSEP
+  s pMailBody=pMailBody_"Dovolujeme si Vás upozornit na skutečnost, že pokud neobdržíme Vaší reakci nejpozději do "_data("DATUM_MESIC")_ 
+              ", budeme tento fakt považovat za vyjádření Vašeho souhlasu se zpřístupněním díla v režimu otevřeného přístupu."_pSEP_pSEP           
+  s pMailBody=pMailBody_"Předem Vám děkujeme za Vaši spolupráci."_pSEP_pSEP_"S pozdravem"_pSEP_pSEP
+  s pMailBody=pMailBody_"Správa repozitáře: arl@lib.cas.cz"_pSEP
+  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx=cav"">https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx=cav</a>"_pSEP
+  */
+  ; 11.06.13 tt; pridano nove telo emailu pro Cav - email pro vyjadreni souhlasu
+  ///////////////////////////////////////////////////////
+  ; 15.06.14 tt; pridan text do emailu "English version below"
+  s pMailBody="English version below"_pSEP_pSEP_"Vážená paní/ vážený pane,"_pSEP_
+  "do Institucionálního repozitáře ASEP AV ČR (<a href=""https://www.lib.cas.cz/asep/repozitar-asep/"">https://www.lib.cas.cz/asep/repozitar-asep/</a>), který je spravován Knihovnou AV ČR, v. v. i., byl v souladu se "_
+  "<a href=""https://www.lib.cas.cz/asep/smernice/smernice_4_2013.pdf"">Směrnicí Akademické rady AV ČR č. 4/2013 ""Tvorba a využívání celoakademické databáze ASEP""</a> a s Rámcovou licenční smlouvou uzavřenou mezi "_sUUstav
+  _" a KNAV uložen plný text následující práce, jejíž jste (spolu)autorem/autorkou:"_pSEP_pSEP
+  s pMailBody=pMailBody_sZf_pSEP_pSEP
+  s pMailBody=pMailBody_"Zpracovatel/ka "_sUT100c_" ("_sUdAut_") odpovědný/á za zpracování dat "_sUUstavD_" potvrdil/a, že zpřístupnění tohoto díla v režimu otevřeného přístupu prostřednictvím institucionálního repozitáře není v rozporu s vydavatelskou politikou příslušného vydavatele."_pSEP_pSEP
+  s pMailBody=pMailBody_"Chtěli bychom se ujistit, že se zpřístupněním tohoto díla v režimu otevřeného přístupu prostřednictvím Institucionálního repozitáře AV ČR souhlasíte. Prosíme Vás proto o potvrzení svého souhlasu popř. vyjádření nesouhlasu se zveřejněním "_link_" do "_data("DATUM_MESIC")_"."_pSEP_pSEP
+  s pMailBody=pMailBody_"V případě, že nevyjádříte svůj nesouhlas, dovolíme si to vzhledem k uvedeným skutečnostem považovat za Váš souhlas se zpřístupněním díla v režimu otevřeného přístupu. Pokud se následně rozhodnete změnit svůj souhlas/nesouhlas, kontaktujte: "_$tr(sUEmail," ,()","")_"."_pSEP_pSEP_pSEP
+  s pMailBody=pMailBody_"Předem Vám děkujeme za spolupráci."_pSEP_pSEP
+  s pMailBody=pMailBody_"S pozdravem"_pSEP_pSEP
+  s pMailBody=pMailBody_"Správa repozitáře: arl@lib.cas.cz"_pSEP
+  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx=cav"">https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx=cav</a>"_pSEP
+  
+  
+  ; 20.05.14 tt; pridana anglicka verze souhlasu se zverejnenim
+  s pMailBody=pMailBody_pSEP_pSEP_pSEP_pSEP
+  s pMailBody=pMailBody_"Dear Sir or Madam,"_pSEP_pSEP_
+  "the fulltext of the bellow mentioned work of which you are the (co-)author has been archived in the Institutional Repository of AS CR (<a href=""https://www.lib.cas.cz/asep/repozitar-asep/"">https://www.lib.cas.cz/asep/repozitar-asep/</a>), which is administrated by the Academy of Science Library in accordance with the Academy Council of AS CR directive No. 4/2013 "_
+  "<a href=""https://www.lib.cas.cz/asep/smernice/smernice_4_2013.pdf"">""Creation and use of the AS CR database ASEP""</a> and with the General licence contract between "_sUUstav
+  _" and KNAV."_pSEP_pSEP
+  s pMailBody=pMailBody_sZf_pSEP_pSEP
+  s pMailBody=pMailBody_"The responsible person for data processing in the Academy of Science Library, respectively "_sUT100c_" ("_sUdAut_") confirmed that making accessible this work as open access through the Institutional Repository is not in contrary with publishing policy of the publisher."_pSEP_pSEP
+  s pMailBody=pMailBody_"We would like to assure that you agree with making this work open access through the Institutional Repository of AS CR. We would like to ask you to give your permission or to express your disagreement "_linkA_" until "_data("DATUM_MESIC")_"."_pSEP_pSEP
+  s pMailBody=pMailBody_"In case you do not express your disagreement, we will consider this fact as an expression of your consent to archiving this document in open access mode. If you decide later to change your agreement/disagreement, please contact: "_$tr(sUEmail," ,()","")_"."_pSEP_pSEP_pSEP
+  s pMailBody=pMailBody_"Thank you in advance for your cooperation."_pSEP_pSEP
+  s pMailBody=pMailBody_"Yours faithfully"_pSEP_pSEP
+  s pMailBody=pMailBody_"The administration of the Institutional Repository: arl@knav.cz"_pSEP
+  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/arl-cav/en/expanded-search/"">https:/asep.lib.cas.cz/arl-cav/en/expanded-search/</a>"_pSEP
+  
+  
+  s pMailBody=$tr(pMailBody,"ÁÉÍÓÚÝČĎĚŇŘŠŤŽŮÅŠŽÕÄÖÜÀÂÇÉÈÊËÎÏÔÙÛÜŽŠČĆĐĀĒĪŪČŠŽĻĶŅĢÖÜŐŰÄÖÜËÏĄĆĘŁŃÓŚŹŻĂÂÎȘȚÁÄČĎÉÍĹĽŇÓÔŔŠŤÚÝŽÑÅÄÖÇŞĞĂÂĐÊÔƠƯ"
+                           ,"AEIOUYCDENRSTZUASZOAOUAACEEEEIIOUUUZSCCDAEIUCSZLKNGOUOUAOUEIACELNOSZZAAISTAACDEILLNOORSTUYZNAAOCSGAADEOOU")
+  s pMailBody=##class(User.Util).diaTR(pMailBody)
+  //////////////////////////////////
+  q sRet
+]]></Implementation>
+</Method>
+</Class>
+</Export>

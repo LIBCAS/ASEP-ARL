@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="9" zv="Cache for Windows NT (Intel/P4) 5.0.4 (Build 829U)" ts="2004-02-11 09:21:05">
+<Class name="User.CavUnEpcaH">
+<Description><![CDATA[
+21.02.03 lp; volani dflt. metod pres INDEXPARAMS<br>
+26.11.02 lp; doplnene dflt. allowSave()
+22.11.02 rs; prehodene na dflt.indexy
+22.11.02 lp; prevzate z KL pro Vyskov
+--from top
+
+holding data for UN_CAT]]></Description>
+<ClassType>persistent</ClassType>
+<DdlAllowed>1</DdlAllowed>
+<SqlRowIdName>ID</SqlRowIdName>
+<SqlTableName>CAV_UN_EPCA_H</SqlTableName>
+<Super>User.DataTable</Super>
+<TimeChanged>59575,83515.758292</TimeChanged>
+<TimeCreated>59575,83515.755731</TimeCreated>
+
+<Parameter name="INDEXPARAMS">
+<Description><![CDATA[
+Toto su parametre pre indexovaciu rutinu.
+viz. ..ixUpdate(), ixIndexValues(), ixIndexValuesEx()
+a tiez ##class(SPIndex).ixIndexValues()<br><br>
+
+Popis obsahu parametrov viz. desciption u SpIndex.ixIndexValues()<br><br>
+
+
+POZOR: i ked je tento param pomenovany INDEXPARAMS
+sluzi aj pre getDATA,allowSave,allowDelete a mozno neskor
+aj dalsie callbacky. 
+
+23.01.03 rs; prva verzia<br>]]></Description>
+<Final>0</Final>
+<Default>H</Default>
+</Parameter>
+
+<Method name="classNameX">
+<Description><![CDATA[
+29.07.03 lp; doplnene predani parametru t001<br>
+11.02.03 lp; pridany parametr class<br>
+
+return either error message why the record is not allowed to save
+or "" when it is ok to save the record
+for not non existing records id will be 0
+return current class unlike %ClassName this is a class method]]></Description>
+<Final>0</Final>
+<ClassMethod>1</ClassMethod>
+<CodeMode>code</CodeMode>
+<FormalSpec/>
+<Private>0</Private>
+<ReturnType>%Library.String</ReturnType>
+<SqlProc>0</SqlProc>
+<Implementation><![CDATA[ quit "CavUnEpcaH"
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DefaultData>UnCatHDefaultData</DefaultData>
+<Data name="UnCatHDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"UnCatH"</Subscript>
+<Value name="1">
+<Value>xsig</Value>
+</Value>
+<Value name="2">
+<Value>xpr</Value>
+</Value>
+<Value name="3">
+<Value>xlok</Value>
+</Value>
+<Value name="4">
+<Value>xbar</Value>
+</Value>
+<Value name="5">
+<Value>xsig0</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+<Checksum value="127961479"/>
+</Export>

@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865_3U)" ts="2022-05-03 13:14:43">
+<Class name="content.metadata">
+<Description><![CDATA[
+<pre> perzistentni trida pro metadata contentServeru
+
+03.05.22 ln; pridany query RecAllStable
+08.04.22 ln; pridany query RecAllRankAsc s RecAllRankDesc
+22.12.21 ln; podpora CRank
+06.12.18 ln; podpora zpracovatele pro vice front
+31.07.17 ln; index ArElIndex omezen na 50 znaku
+02.03.16 ln; pridan index ArElIndex
+24.09.14 ln; metoda exportByDate
+31.10.12 ln; podpora verzovani
+12.07.12 ln; metoda exportAll pro export vseho do xml s vyjimkou polozky Storage
+</pre>]]></Description>
+<Super>%Persistent,%XML.Adaptor</Super>
+<TimeChanged>66232,47195.792385</TimeChanged>
+<TimeCreated>62299,28001.339059</TimeCreated>
+<Inheritance>right</Inheritance>
+
+<Property name="Repo">
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Index name="Repo">
+<Properties>Repo</Properties>
+</Index>
+
+<Property name="CKey">
+<Description>
+prejmoenovano kvuli cache 2008.2</Description>
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Index name="Key">
+<Properties>Repo,CKey,Version</Properties>
+<Unique>1</Unique>
+</Index>
+
+<Property name="Class">
+<Type>%String</Type>
+</Property>
+
+<Property name="T001">
+<Type>%String</Type>
+</Property>
+
+<Index name="Record">
+<Properties>Class,T001</Properties>
+</Index>
+
+<Property name="Uploader">
+<Type>%String</Type>
+</Property>
+
+<Index name="Uploader">
+<Properties>Uploader</Properties>
+</Index>
+
+<Property name="Supervisor">
+<Type>%String</Type>
+</Property>
+
+<Index name="Supervisor">
+<Properties>Supervisor</Properties>
+</Index>
+
+<Property name="Type">
+<Type>%String</Type>
+</Property>
+
+<Index name="Type">
+<Properties>Type</Properties>
+</Index>
+
+<Property name="Status">
+<Type>%String</Type>
+</Property>
+
+<Index name="Status">
+<Properties>Status</Properties>
+</Index>
+
+<Property name="Downloaded">
+<Type>%Integer</Type>
+<InitialExpression>0</InitialExpression>
+</Property>
+
+<Index name="Downloaded">
+<Properties>Downloaded</Properties>
+</Index>
+
+<Property name="UploadDate">
+<Type>%Integer</Type>
+<InitialExpression>$tr($zdt($h,8)," :")</InitialExpression>
+</Property>
+
+<Index name="UploadDate">
+<Properties>UploadDate</Properties>
+</Index>
+
+<Property name="Array">
+<Description>
+WHERE FOR SOME %ELEMENT(Array) (%KEY='extension' AND %VALUE %STARTSWITH 't')
+$list($extract(Array,$find(Array,CHAR(1)||'size'),length(Array)))</Description>
+<Type>%String</Type>
+<Collection>array</Collection>
+<Parameter name="MAXLEN" value="2000"/>
+</Property>
+
+<Index name="ArElIndex">
+<Properties>Array(ELEMENTS):SQLUPPER(50)</Properties>
+</Index>
+
+<Property name="Storage">
+<Type>%List</Type>
+<Parameter name="XMLPROJECTION" value="NONE"/>
+</Property>
+
+<Property name="Version">
+<Type>%Integer</Type>
+<Parameter name="MINVAL" value="0"/>
+</Property>
+
+<Index name="Version">
+<Properties>Version</Properties>
+</Index>
+
+<Property name="EditedBy">
+<Type>%String</Type>
+</Property>
+
+<Index name="EditedBy">
+<Properties>EditedBy</Properties>
+</Index>
+
+<Property name="EditedOn">
+<Type>%String</Type>
+</Property>
+
+<Index name="EditedOn">
+<Properties>EditedOn</Properties>
+</Index>
+
+<Property name="ChangedBy">
+<Type>%String</Type>
+</Property>
+
+<Index name="ChangedBy">
+<Properties>ChangedBy</Properties>
+</Index>
+
+<Property name="ChangedOn">
+<Type>%String</Type>
+</Property>
+
+<Index name="ChangedOn">
+<Properties>ChangedOn</Properties>
+</Index>
+
+<Property name="CRank">
+<Type>%String</Type>
+</Property>
+
+<Index name="CRank">
+<Properties>Class:EXACT,T001:EXACT,CRank</Properties>
+</Index>
+
+<Method name="%OnNew">
+<Description>
+Predpoklada se, ze array i path je spravne inicializovane</Description>
+<FormalSpec>repo:%String,key=""</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  if key="" {
+    s i%CKey=$r(100000000000)
+  } else {
+    &sql(SELECT count(*) INTO :cnt FROM content.metadata WHERE (Repo = :repo AND CKey = :key))
+    s i%CKey=key
+    s i%Version=cnt
+  }
+  
+  s i%Repo=repo
+
+  Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="setArray">
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<Implementation><![CDATA[
+  k i%Array
+  m i%Array=array
+]]></Implementation>
+</Method>
+
+<Method name="getArray">
+<FormalSpec><![CDATA[&array]]></FormalSpec>
+<Implementation><![CDATA[
+  k array
+  m array=i%Array
+]]></Implementation>
+</Method>
+
+<Method name="test">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+ s rset = ##class(%ResultSet).%New()
+  s rset.ClassName = "content.metadata"
+  s rset.QueryName = "RecAll"
+  d rset.Execute("CbvkUsCat","m0007489")
+  d $System.OBJ.Dump(rset)  
+  b
+  w rset.Next(.sc)
+  w $System.Status.DisplayError(sc)
+  d $System.OBJ.Dump(rset)
+  s list=rset.Data("Array")  
+  b
+  w rset.Next(.sc)
+  w $System.Status.DisplayError(sc)
+  d $System.OBJ.Dump(rset)
+  b  
+  
+
+  
+  //s st=##class(content.metadata).%DeleteExtent()
+  //w $System.Status.DisplayError(st)
+  //b
+  
+  s obj=##class(content.metadata).%OpenId(2)
+  d $System.OBJ.Dump(obj)
+  w !,"get=",##class(content.engine).get(.array,obj.Repo,obj.CKey)
+  zw array
+  b  
+  
+  s obj=##class(content.metadata).%New("repo")
+  d $System.OBJ.Dump(obj)
+  b
+  /*
+  d obj.Array.SetAt("CbvkUsCat","class")
+  d obj.Array.SetAt("text/plain","ctype")
+  d obj.Array.SetAt("20110727","dayimport")
+  d obj.Array.SetAt("ahoj julku","description")
+  d obj.Array.SetAt("txt","extension")
+  d obj.Array.SetAt("22 B","humansize")
+  d obj.Array.SetAt("","importer")
+  d obj.Array.SetAt("88829641682","key")
+  d obj.Array.SetAt("file.txt","origname")
+  d obj.Array.SetAt("repo","repository")
+  d obj.Array.SetAt("22","size")
+  d obj.Array.SetAt("annotation","type")
+  d obj.Array.SetAt("m0007489","t001")
+  d obj.Array.SetAt("ahoj","uzel1")
+  */
+  
+  ;s x=$lb($lb("class","CbvkUsCat"),$lb("ctype","text/plain"),$lb("dayimport","20110727"),$lb("description","ahoj julku"),$lb("extension","txt"),$lb("humansize","22 B"),$lb("importer",""),$lb("key",88829641682),$lb("origname","file.txt"),$lb("repository","crepo1"),$lb("size",22),$lb("type","annotation"),$lb("t001","m0007489"),$lb("uzel1","ahoj"))
+  ;s obj.Array=x
+  /*
+  s array("class")="CbvkUsCat"
+  s array("ctype")="text/plain"
+  s array("dayimport")=20110727
+  s array("description")="ahoj julku"
+  s array("extension")="txt"
+  s array("humansize")="22 B"
+  s array("importer")=""
+  s array("key")=88829641682
+  s array("origname")="file.txt"
+  s array("repository")="repo"
+  s array("size")=22
+  s array("type")="annotation"
+  s array("t001")="m0007489"
+  s array("uzel1")="ahoj"  
+  s array("author","Bernau")="Adam"
+  s array("author","Tell")="Vilem"
+  
+  s array("supervisor")="abc"
+  */  
+  
+  s array("extension")="tbc"
+  s array("author","Miller")="Zdenek"
+    
+  s %ipac2("ictx")="cbvk"
+  
+  d ##class(content.engine).set(.array,obj)
+  
+  
+  d $System.OBJ.Dump(obj)
+  b
+  s st=obj.%Save()
+  w $System.Status.DisplayError(st)
+  q
+  
+  
+  
+  s writer=##class(%XML.Writer).%New()
+  s writer.Indent=1
+  
+  d writer.StartDocument()
+  d writer.RootElement("metadata")  
+  d writer.Element("Key")
+  d writer.Write(obj.CKey)
+  d writer.EndElement()
+  d writer.EndRootElement()
+  d writer.EndDocument()
+  b
+  s st=writer.RootObject(obj)
+  b
+]]></Implementation>
+</Method>
+
+<Method name="exportAll">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo="",file=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" "err: repo"
+  
+  s writer=##class(%XML.Writer).%New()
+  s writer.Indent=1
+  if file'="" {
+	d SetPDefIO^%NLS("UTF8",3) ; reset FILE NLS pro tento proces
+	s st=writer.OutputToFile(file)
+	q:'st "err: file"
+  }
+  
+  d writer.StartDocument()
+  ;d writer.RootElement("xx")
+  
+  &sql(DECLARE C1 CURSOR FOR
+    SELECT ID
+    INTO :cid
+    FROM content.metadata
+    WHERE Repo = :repo
+    ORDER BY ID
+       
+  )
+  &sql(OPEN C1)
+  &sql(FETCH C1)
+ 
+  While (SQLCODE = 0) 
+  {
+    ;w !,cid
+    s obj=##class(content.metadata).%OpenId(cid)
+    continue:'$isobject(obj)
+    s:(obj.Array.Count()) st=writer.RootObject(obj)
+    
+    &sql(FETCH C1)
+  }
+  &sql(CLOSE C1)
+ 
+  ;d writer.EndRootElement()
+  d writer.EndDocument()
+  
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="exportByDate">
+<Description><![CDATA[
+<pre> export metadat
+from (pripadne to) ve vormatu YYYYMMDD
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo="",file="",from="",to=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  q:repo="" "err: repo"
+  q:from="" "err: from"
+  
+  s:to="" to=$zd($h,8)  
+  s writer=##class(%XML.Writer).%New()
+  s writer.Indent=1
+  if file'="" {
+	d SetPDefIO^%NLS("UTF8",3) ; reset FILE NLS pro tento proces
+	s st=writer.OutputToFile(file)
+	q:'st "err: file"
+  }
+  
+  d writer.StartDocument()
+  
+  &sql(DECLARE C2 CURSOR FOR
+    SELECT ID
+    INTO :cid
+    FROM content.metadata
+    WHERE Repo = :repo AND UploadDate >= :from AND UploadDate <= :to
+    ORDER BY ID
+       
+  )
+  &sql(OPEN C2)
+  &sql(FETCH C2)
+ 
+  While (SQLCODE = 0) 
+  {
+    ;w !,cid
+    s obj=##class(content.metadata).%OpenId(cid)
+    continue:'$isobject(obj)
+    s:(obj.Array.Count()) st=writer.RootObject(obj)
+    
+    &sql(FETCH C2)
+  }
+  &sql(CLOSE C2)
+ 
+  d writer.EndDocument()
+  
+  q ""
+]]></Implementation>
+</Method>
+
+<Query name="Rec1">
+<Type>%SQLQuery</Type>
+<FormalSpec>repo:%String,key:%String</FormalSpec>
+<SqlQuery>SELECT TOP 200 Array,Downloaded FROM metadata
+ WHERE (Repo = :repo AND CKey = :key AND Version is NULL)
+ ORDER BY ID DESC</SqlQuery>
+</Query>
+
+<Query name="RecRepo">
+<Type>%SQLQuery</Type>
+<FormalSpec>repo:%String,class:%String,t001:%String</FormalSpec>
+<SqlQuery>SELECT TOP 200 Array,Downloaded FROM metadata
+ WHERE (Repo = :repo AND Class = :class AND T001 = :t001 AND Version is NULL)
+ ORDER BY ID DESC</SqlQuery>
+</Query>
+
+<Query name="RecAll">
+<Type>%SQLQuery</Type>
+<FormalSpec>class:%String,t001:%String</FormalSpec>
+<SqlQuery>SELECT TOP 1000 Array,Downloaded FROM metadata
+ WHERE (Class = :class AND T001 = :t001 AND Version is NULL)
+ ORDER BY ID DESC</SqlQuery>
+</Query>
+
+<Query name="RecAllRankAsc">
+<Type>%SQLQuery</Type>
+<FormalSpec>class:%String,t001:%String</FormalSpec>
+<SqlQuery>SELECT TOP 2000 Array,Downloaded FROM metadata
+ WHERE (Class = :class AND T001 = :t001 AND Version is NULL)
+ ORDER BY CRank ASC</SqlQuery>
+</Query>
+
+<Query name="RecAllRankDesc">
+<Type>%SQLQuery</Type>
+<FormalSpec>class:%String,t001:%String</FormalSpec>
+<SqlQuery>SELECT TOP 2000 Array,Downloaded FROM metadata
+ WHERE (Class = :class AND T001 = :t001 AND Version is NULL)
+ ORDER BY CRank DESC</SqlQuery>
+</Query>
+
+<Query name="RecAllStable">
+<Description>
+navzdy radit od zacatku, at se soubory prenesou ve stejnem poradi</Description>
+<Type>%SQLQuery</Type>
+<FormalSpec>class:%String,t001:%String</FormalSpec>
+<SqlQuery>SELECT Array,ID,Version FROM metadata
+ WHERE (Class = :class AND T001 = :t001)</SqlQuery>
+</Query>
+
+<Query name="RecAllTrue">
+<Description>
+vcetne smazanych</Description>
+<Type>%SQLQuery</Type>
+<FormalSpec>class:%String,t001:%String</FormalSpec>
+<SqlQuery>SELECT Array,ID,Version FROM metadata
+ WHERE (Class = :class AND T001 = :t001)
+ ORDER BY ID DESC</SqlQuery>
+</Query>
+
+<Query name="RecStatus">
+<Type>%SQLQuery</Type>
+<FormalSpec>class:%String,t001:%String,status:%String</FormalSpec>
+<SqlQuery>SELECT TOP 200 Array,Downloaded FROM metadata
+ WHERE (Class = :class AND T001 = :t001 AND Status = :status AND Version is NULL)
+ ORDER BY ID DESC</SqlQuery>
+</Query>
+
+<Query name="UploaderAll">
+<Type>%SQLQuery</Type>
+<FormalSpec>user:%String</FormalSpec>
+<SqlQuery>SELECT TOP 100 Array,Downloaded FROM metadata
+ WHERE (Uploader = :user AND Version is NULL)
+ ORDER BY ID DESC</SqlQuery>
+</Query>
+
+<Query name="UploaderStatus">
+<Type>%SQLQuery</Type>
+<FormalSpec>user:%String,status:%String</FormalSpec>
+<SqlQuery>SELECT TOP 200 Array,Downloaded FROM metadata
+ WHERE (Uploader = :user AND Status = :status AND Version is NULL)
+ ORDER BY ID DESC</SqlQuery>
+</Query>
+
+<Query name="SupervisorAll">
+<Type>%SQLQuery</Type>
+<FormalSpec>queue:%String</FormalSpec>
+<SqlQuery>SELECT TOP 1000 Array,Downloaded FROM metadata
+ WHERE (Supervisor = :queue AND Version is NULL)
+ ORDER BY ID DESC</SqlQuery>
+</Query>
+
+<Query name="SupervisorStatus">
+<Description><![CDATA[
+<pre> stranka contlist, zpracovatel
+
+06.12.18 ln; podpora zpracovatele pro vice front
+</pre>]]></Description>
+<Type>%SQLQuery</Type>
+<FormalSpec>queue:%String,status:%String</FormalSpec>
+<SqlQuery><![CDATA[SELECT TOP 200 Array,Downloaded FROM metadata
+ WHERE (Status = :status AND Version is NULL AND POSITION(','||Supervisor||',' IN ','||:queue||',') > 0)
+ ORDER BY ID DESC]]></SqlQuery>
+</Query>
+
+<Query name="DateStatus">
+<Type>%SQLQuery</Type>
+<FormalSpec>class:%String,date:%String,status:%String</FormalSpec>
+<SqlQuery><![CDATA[SELECT TOP 200 Array,Downloaded FROM metadata
+ WHERE (Class = :class AND UploadDate < :date AND Status = :status AND Version is NULL)
+ ORDER BY ID DESC]]></SqlQuery>
+</Query>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^content.metadataD</DataLocation>
+<DefaultData>metadataDefaultData</DefaultData>
+<IdLocation>^content.metadataD</IdLocation>
+<IndexLocation>^content.metadataI</IndexLocation>
+<StreamLocation>^content.metadataS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="metadataDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Repo</Value>
+</Value>
+<Value name="3">
+<Value>CKey</Value>
+</Value>
+<Value name="4">
+<Value>Class</Value>
+</Value>
+<Value name="5">
+<Value>T001</Value>
+</Value>
+<Value name="6">
+<Value>Uploader</Value>
+</Value>
+<Value name="7">
+<Value>Supervisor</Value>
+</Value>
+<Value name="8">
+<Value>Type</Value>
+</Value>
+<Value name="9">
+<Value>Status</Value>
+</Value>
+<Value name="10">
+<Value>Downloaded</Value>
+</Value>
+<Value name="11">
+<Value>UploadDate</Value>
+</Value>
+<Value name="12">
+<Value>Array</Value>
+</Value>
+<Value name="13">
+<Value>Storage</Value>
+</Value>
+<Value name="14">
+<Value>Version</Value>
+</Value>
+<Value name="15">
+<Value>EditedBy</Value>
+</Value>
+<Value name="16">
+<Value>EditedOn</Value>
+</Value>
+<Value name="17">
+<Value>ChangedBy</Value>
+</Value>
+<Value name="18">
+<Value>ChangedOn</Value>
+</Value>
+<Value name="19">
+<Value>CRank</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

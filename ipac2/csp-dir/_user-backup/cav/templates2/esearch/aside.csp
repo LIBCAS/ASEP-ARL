@@ -1,0 +1,27 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:aside>
+<ipac:asidepart title=#(..txg("RELATED_PAGES"))#>
+
+<csp:if condition=(..isPage("ssearch"))>
+<li id="nav1-ssearch" class="nav-item"><ipac:a class="nav-link" op="ssearch"><ipac:atext/></ipac:a></li>
+</csp:if>
+
+<csp:if condition=(..isPage("esearch"))>
+<li id="nav1-esearch" class="nav-item"><ipac:a class="nav-link active" op="esearch"><ipac:atext/></ipac:a></li>
+</csp:if>
+
+<csp:if condition=(..isPage("hsearch"))>
+<li id="nav1-hsearch" class="nav-item"><ipac:a class="nav-link" op="hsearch"><ipac:atext/></ipac:a></li>
+</csp:if>
+
+<csp:if condition=(..isPage("dictionary"))>
+<li id="nav1-dictionary" class="nav-item"><ipac:a class="nav-link" op="dictionary"><ipac:atext/></ipac:a></li>
+</csp:if>
+
+<csp:if condition=(..isPage("src"))>
+<li id="nav1-src" class="nav-item"><ipac:a class="nav-link" op="src"><ipac:tx param="CHANGESRC"/></ipac:a></li>
+</csp:if>
+
+</ipac:asidepart>
+</ipac:aside>

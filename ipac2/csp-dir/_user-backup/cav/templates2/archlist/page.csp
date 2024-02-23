@@ -1,0 +1,10 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:layout1>
+<pre>
+	<ipac:loop param="PIPE">
+#(item)#
+	</ipac:loop>
+</pre>
+
+</ipac:layout1>

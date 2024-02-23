@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="24" zv="Cache for Windows (x86-64) 2010.2.8 (Build 1104U)" ts="2016-08-10 09:01:30">
+<Class name="content.csg2">
+<Description><![CDATA[
+<pre> obaka pro csg tvorici regulerni stranku
+
+09.08.16 ln; podpora arlsso
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>64139,52118.61487</TimeChanged>
+<TimeCreated>63431,37131.493324</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>csg</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>csg#csg#csg</Default>
+</Parameter>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  if ret'="" {
+    s %response.Status="404 Not Found"
+    d %response.SetHeader("Status","404 Not Found")
+    
+    q ret
+  }
+  
+  q:##class(content.csg).OnPreHTTP()'="login" ""
+  
+  d ##class(i2.audit.storage).increment("p-"_..#PageID,"login")
+  s rest=$$$GETREQVAR("st")="rest"
+  d ##class(i2.base.request).get(.array)
+  d ##class(i2.base.request).purge(.array)
+  d ##class(i2.base.request).save(.array)
+  s baseurl=##class(i2.html.tpl).getBaseURL(1)
+  ; opalt pro transparentni prihlaseni
+  s url=$zcvt(baseurl_##class(i2.html.tpl).getLinkURL("login","opalt="_..#PageID),"I","HTML")
+  s %response.Redirect=url      
+    
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="entry">
+<Description><![CDATA[
+<pre> Vstupni bod pro IPAC2
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[  d ##class(content.csg).OnPage()
+]]></Implementation>
+</Method>
+
+<Method name="getLink">
+<Description><![CDATA[
+<pre> odkaz na soubor pres csg
+vyzaduje plnou inicializaci pres i2.init
+
+batch - url nebude obsahovat &amp; ale &
+params - umoznuje predat sso parametry
+
+09.08.16 ln; podpora arlsso
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repo:%String,key:%String,batch:%Boolean=0,params:%String=""</FormalSpec>
+<Implementation><![CDATA[
+  s ret=$$$BASEURL_##class(i2.html.tpl).getLinkURL("csg","repo="_repo_"&key="_key,params)
+  s:batch ret=$zcvt(ret,"I","HTML")
+  
+  q ret
+]]></Implementation>
+</Method>
+</Class>
+</Export>

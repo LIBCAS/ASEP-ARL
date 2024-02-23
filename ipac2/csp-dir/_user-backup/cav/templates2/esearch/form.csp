@@ -1,0 +1,77 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<div class="row" role="search">
+
+<fieldset class="col-sm-10" aria-live="assertive"><legend class="sr-only"><ipac:tx param="SEARCHBOX"/></legend>
+    <ipac:loop param="FIELDOPTION">
+        <csp:if condition=(node=(data("COUNT")+1)) note="bez javscriptu min 3 pole">
+<noscript>
+        </csp:if>
+        <csp:if condition=(..li(5)'="") note="19.08.15 ln; upravu dotazu se skrytymi poli">
+            <csp:if condition=(node'=1)>
+<input type="hidden" name="boolop#(node-1)#" value="#($s(..li(1)'="":"and",..li(2)'="":"or",1:"not"))#"/>
+            </csp:if>
+<input type="hidden" name="field" value="#(..li(5))#"/>
+<input type="hidden" name="term" value="#(..li(4))#"/>
+<input type="hidden" name="kvant" value="#(..li(6))#"/>
+        <csp:else>
+<div class="part" id="part#(node)#">
+        <csp:if condition=(node'=1)>
+<div class="bool">
+<div class="form-check form-check-inline"><input type="radio" class="form-check-input" #(..li(1))# name="boolop#(node-1)#" id="boolop1#(node-1)#" value="and"/> <label class="form-check-label" for="boolop1#(node-1)#"><ipac:tx param="AND"/></label></div>
+<div class="form-check form-check-inline"><input type="radio" class="form-check-input" #(..li(2))# name="boolop#(node-1)#" id="boolop2#(node-1)#" value="or"/> <label class="form-check-label" for="boolop2#(node-1)#"><ipac:tx param="OR"/></label></div>
+<div class="form-check form-check-inline"><input type="radio" class="form-check-input" #(..li(3))# name="boolop#(node-1)#" id="boolop3#(node-1)#" value="not"/> <label class="form-check-label" for="boolop3#(node-1)#"><ipac:tx param="NOT"/></label></div>
+</div><!-- /.bool -->
+        </csp:if>
+
+<div class="row">
+
+<div class="form-group col-sm-3">
+<label for="field#(node)#" class="sr-only"><ipac:tx param="CRITERION"/></label>
+<select name="field" id="field#(node)#" class="form-control">
+        <ipac:loop2 param="FIELDOPTION">
+<option value="#(..li2(2))#"#(..li2(1))#>#(..li2(3))#</option>
+        </ipac:loop2>
+</select>
+</div>
+
+<div class="form-group col-sm-4">
+<label for="term#(node)#" class="sr-only"><ipac:tx param="TERM"/></label>
+<input type="search"#($s(node=1:" autofocus='autofocus'",1:""))# aria-label="#(..tx("TERM"))#" class="search form-control clearable" autocapitalize="off" role="combobox" autocomplete="off" aria-expanded="false" placeholder="#(..tx("TERM"))#" aria-autocomplete="list" inputmode="search" aria-owns="listbox#(node)#" id="term#(node)#" name="term" maxlength="250" size="30" value="#(..li(4))#"/>
+</div>
+
+<div class="form-group col-sm-3">
+<label for="kvant#(node)#" class="sr-only"><ipac:tx param="KVANT"/></label>
+<div class="styled-select slate">
+<select name="kvant" id="kvant#(node)#" class="form-control">
+        <ipac:loop2 param="WHOOPTION">
+<option value="#(..li2(2))#"#(..li2(1))#>#(..li2(3))#</option>
+        </ipac:loop2>
+</select>
+</div>
+</div>
+
+</div><!-- /.row -->
+</div>
+</csp:if>
+    </ipac:loop>
+    <csp:if condition=(data("NOSCRIPT")) note="bez javscriptu min 3">
+</noscript>
+    </csp:if>
+
+</fieldset>
+
+    <ipac:dtx param="SEND_UP"/>
+
+<div class="submit-search col-sm-2 text-right">
+<button type="submit" class="btn btn-primary" name="search" value="#(..tx("FIND"))#"><ipac:tx param="FIND"/></button>
+<input type="hidden" name="op" value="result"/>
+<input type="hidden" name="guide" value="#(data("GUIDE"))#"/>
+    <csp:if condition=($d(data("QSRC")))>
+<input type="hidden" name="src" value="#(data("QSRC"))#"/>
+<input type="hidden" name="qt" value="asep"/>
+    </csp:if>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+
+</div>

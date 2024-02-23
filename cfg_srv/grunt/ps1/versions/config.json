@@ -1,0 +1,53 @@
+[{
+	"items": [{
+		"name": "powershell",
+		"program": "PowerShell",
+		"download": "https://github.com/PowerShell/PowerShell/releases/tag/v7.3.4",
+		"version": "$PSVersionTable.PSVersion"
+	}, {
+		"name": "node",
+		"program": "Node.js",
+		"download": "https://nodejs.org/en/download",
+		"version": "node --version"
+	}, {
+		"name": "npm",
+		"program": "Npm",
+		"download": "",
+		"version": "npm -v"
+	}, {
+		"name": "grunt",
+		"program": "Grunt.js",
+		"download": "",
+		"version": "grunt --version"
+	}, {
+		"name": "gulp",
+		"program": "Gulp.js",
+		"download": "",
+		"version": "gulp --version"
+	}, {
+		"name": "sass",
+		"program": "Sass",
+		"download": "",
+		"version": "sass --version"
+	}, {
+		"name": "choco",
+		"program": "Chocolatey",
+		"download": "https://chocolatey.org/install#individual",
+		"version": "choco --version"
+	}, {
+		"name": "python",
+		"program": "Python",
+		"download": "https://www.python.org/getit/",
+		"version": "python --version"
+	}, {
+		"name": "java",
+		"program": "Java",
+		"download": "https://www.java.com/download/ie_manual.jsp",
+		"version": "java -version"
+	}, {
+		"name": "ruby",
+		"program": "Ruby",
+		"download": "https://www.ruby-lang.org/en/downloads/",
+		"version": "ruby -v"
+	}]
+}]

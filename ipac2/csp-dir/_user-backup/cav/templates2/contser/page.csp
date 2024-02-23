@@ -1,0 +1,35 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+<script language="cache" runat="server">
+  s data("H1")=..txg("PG_CONTSER_TEXT")
+  if (($g(data("REC_970b"))="DATA")) {
+     s data("H1")=..txg("PG_CONTSER_TEXT2")
+  }
+  s data("DESCRIPTION")=""
+  if ($g(data("T001z"))) {
+     s data("DESCRIPTION")=..tx("DESCRIPTION")_": <cite>"_data("T001z")_"</cite>"
+  }
+</script>
+<ipac:layout1 report="simple" description="#(data("DESCRIPTION"))#" title="#(data("H1"))#">
+
+
+<csp:if condition=($g(data("RECTITLE_Z")))><p>#($g(data("RECTITLE_Z")))#</p></csp:if>
+
+    <csp:if condition=($g(data("REC_970b"))="DATA")>    
+         <csp:if condition=($g(data("CONTENT","1","isDelete"))="1")>    
+<ipac:form action="#(..base())#" id="#(data("PAGEID"))#-f">
+<button type="submit" title="#(..tx("DELALL_TITLE"))#"><ipac:tx param="DELALL_TEXT"/></button>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="delall" value="1"/>
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+</ipac:form>
+         </csp:if>      
+    </csp:if>   
+
+    <ipac:loop param="CONTENT">
+ 
+        <ipac:tpl version="form"/>
+
+    </ipac:loop>
+</ipac:layout1>
+
+<ipac:tpl page="result" version="jstemplate"/>

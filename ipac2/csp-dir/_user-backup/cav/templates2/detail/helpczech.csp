@@ -1,0 +1,11 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<p>
+Detail záznamu se zobrazí po „kliknutí“ na odkaz handle u vyhledaného záznamu.
+Odkaz handle je perzistentní odkaz záznamu v ASEP a pokud se použije tento odkaz v publikaci,
+vždy se uživateli zobrazí detail záznamu v systému ASEP.
+</p>
+
+<ipac:tpl version="operationsczech" page="help"/>
+
+<ipac:tpl version="formatsczech" page="help"/>

@@ -1,0 +1,391 @@
+////
+/// ZOBRAZOVACÍ FORMÁTY pro detail, výsledky vyhledávání a košík
+/// <du>1</du>
+////
+
+@import "../../../../../../sass/bskin1/openseadragon";
+
+// Označit po zavření modálního okna odstraněnou položku
+.remove-highlight {
+	&::before {
+		position: absolute;
+		content: "X";
+		font-size: 200px;
+		opacity: 0.1;
+		z-index: 99;
+		left: 30%;
+	}
+
+	*,
+	a,
+	div,
+	span,
+	td,
+	th,
+	td a,
+	li,
+	.bg-light,
+	nav {
+		color: silver !important;
+		pointer-events: none;
+		background-color: #fff !important;
+	}
+}
+
+/* Logo: Citace PRO - obrázek font, název textem */
+.citace-link {
+	text-decoration: none;
+
+	.citacebrand {
+		color: black;
+	}
+}
+
+#fp-facPRA {
+	input {
+		display: none;
+	}
+
+	li {
+		padding-left: 0;
+	}
+}
+
+.citace-pro {
+	.citace-inner {
+		min-height: 4rem;
+	}
+
+	.form-inline {
+		margin-top: 0.6rem;
+	}
+}
+
+.citace-okcz {
+	padding-bottom: 1.2rem;
+}
+
+.zf-short .aside .reservation.nav-link {
+	padding: 0.2rem 0.1rem;
+}
+
+.aside {
+	.available,
+	.unavailable {
+		font-weight: 700;
+	}
+}
+
+.unavailable .icon-request {
+	color: $danger;
+}
+
+.available .icon-request {
+	color: $success;
+}
+
+#result-body {
+	ol {
+		margin: 0;
+		padding: 0;
+	}
+
+	.table-responsive {
+		position: relative;
+		z-index: 1;
+	}
+
+	h2 span.badge {
+		padding-left: 0;
+	}
+
+	.link-nr {
+		display: inline-block;
+		padding-left: 0.3rem;
+		padding-right: 0.3rem;
+	}
+
+	.nav .like a span {
+		text-decoration: none;
+		font-size: 90%;
+		color: $gray-400;
+	}
+
+	.nav5 {
+		margin-top: 0.5rem;
+
+		iframe {
+			margin: 0;
+			padding: 0;
+			width: auto !important;
+		}
+
+		.fb_iframe_widget span {
+			width: auto !important;
+		}
+	}
+
+	.nav-tabs {
+		margin-bottom: 0.5rem;
+		.nav-link.active {
+			font-weight: bold;
+		}
+	}
+
+	.table {
+		th,
+		td {
+			padding: 0.1rem 0.3rem;
+		}
+
+		tr:first-child > {
+			th,
+			td {
+				border-top: none !important;
+			}
+		}
+	}
+
+	.result-gallery img {
+		vertical-align: bottom;
+	}
+
+	li {
+		.li-row {
+			flex-direction: row-reverse;
+		}
+
+		&.citaceokcz {
+			.citace-okcz-caption {
+				padding-left: 0.2rem;
+			}
+		}
+
+		&.result-item {
+			border: 0;
+			border-bottom: 4px solid $gray-300;
+			padding: 0.9rem 0;
+
+			.gallery img {
+				display: inline;
+			}
+		}
+
+		.longstring {
+			@include breakword;
+
+			display: inline-block;
+		}
+
+		&.zf-cover {
+			list-style-type: none;
+		}
+
+		&.zf-detail,
+		&.zf-short {
+			.aside {
+				.img {
+					small {
+						display: block;
+					}
+				}
+
+				div.bookcontent img {
+					border: $gray-100 solid 1px;
+					box-shadow: 1px 1px 1px 1px $gray-300;
+				}
+
+				.obalkyknih.gallery {
+					img {
+						border: 0;
+						margin: 0;
+						padding: 0;
+					}
+				}
+			}
+		}
+
+		&.zf-marc,
+		&.zf-DATA {
+			table.marc {
+				position: relative;
+				z-index: 2;
+
+				th {
+					vertical-align: top;
+					font-family: Menlo, Monaco, Consolas, "Courier New",
+						monospace;
+				}
+
+				td {
+					@include breakword;
+
+					pre {
+						border: 0;
+						background: transparent;
+						padding: 0;
+						display: inline;
+					}
+				}
+
+				th,
+				td strong {
+					color: blue;
+					font-family: Menlo, Monaco, Consolas, "Courier New",
+						monospace;
+					letter-spacing: 2px;
+					text-align: left;
+				}
+
+				em {
+					color: red;
+					font-style: normal;
+					font-family: Menlo, Monaco, Consolas, "Courier New",
+						monospace;
+					font-weight: 700;
+					letter-spacing: 2px;
+				}
+			}
+		}
+
+		.zfTF th,
+		#myloans th {
+			width: 20%;
+		}
+	}
+
+	.dropdown-toggle.nav-link {
+		padding-left: 0.6rem;
+	}
+
+	.reservation {
+		margin: 0.6rem 0;
+		position: relative;
+		z-index: 3;
+		min-width: 6.5rem;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+
+		span {
+			display: inline-block;
+		}
+	}
+
+	.edoc-download {
+		margin: 0.6rem 0 0 0;
+		width: 100%;
+		min-width: 6.5rem;
+		position: relative;
+		z-index: 3;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+
+		span {
+			display: inline-block;
+		}
+	}
+
+	.aside {
+		span {
+			padding-right: 0.2rem;
+		}
+	}
+
+	.fb-like {
+		margin-bottom: 0.6rem;
+	}
+
+	.tag-list {
+		display: block;
+		margin: 0.3rem 0;
+		padding: 0;
+		list-style-type: none;
+
+		.tag-item {
+			display: inline;
+			padding: 0.3rem;
+			margin: 0 0.6rem 0.3rem 0;
+			font-size: 100%;
+			float: left;
+
+			a,
+			span {
+				font-size: 100%;
+			}
+		}
+	}
+
+	.xbside {
+		text-align: center;
+
+		.active {
+			text-decoration: underline;
+		}
+	}
+}
+
+#detail #result-body li.result-item {
+	border: 0;
+}
+
+/* Je na stranke vysledkov vyhladavania, detaile zaznamu a v konte na stranke odporucani */
+.recommend-content {
+	.jcarousel li a span img {
+		height: 150px !important;
+	}
+
+	li {
+		width: 200px;
+		min-height: 12.5rem;
+
+		p {
+			margin: 0;
+			padding: 0;
+			min-height: 1.25rem;
+		}
+	}
+
+	p.next {
+		text-align: center;
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, md) - 1) {
+	#result-body {
+		&.obalkyknih {
+			background-position: 100% 90%;
+
+			img {
+				width: 100%;
+			}
+		}
+
+		&.martinus {
+			background-position: 100% 90%;
+			logo {
+				max-height:30px;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 1200px) {
+	#result-body {
+		.aside,
+		.format {
+			flex: 0 0 100%;
+			max-width: 100%;
+		}
+	}
+}
+
+// Zvýraznění holdingu dle stavu
+.holding_available td {
+	color: green;
+}
+
+.holding_unavailable td {
+	color: red;
+}

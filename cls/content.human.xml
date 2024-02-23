@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-21 15:06:59">
+<Class name="content.human">
+<Description><![CDATA[
+<pre> Pomocne metody pro lidske zobrazeni dat contentServeru
+
+20.04.23 ln; metoda getRepo
+26.02.19 ln; metoda erase
+03.09.18 ln; podpora pro jazyky
+05.12.17 ln; sizeSI je nove sql procedura
+</pre>]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<TimeChanged>66585,54386.9146567</TimeChanged>
+<TimeCreated>62189,31328.82737</TimeCreated>
+
+<Method name="version">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[  q "4.6.12a  - 02.06.2023"
+]]></Implementation>
+</Method>
+
+<Method name="sizeSI">
+<Description><![CDATA[
+<pre> Zobrazeni velikosti v SI jednotkach
+Defaultne diskova velikost, binary=1 binarni velikost
+
+05.12.17 ln; sizeSI je nove sql procedura
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>size:%Integer,binary:%Boolean=0</FormalSpec>
+<ReturnType>%String</ReturnType>
+<SqlName>sizesi</SqlName>
+<SqlProc>1</SqlProc>
+<Implementation><![CDATA[
+  s unit="B"
+  s factor=$s(binary=0:1000,1:1024)
+  s mag=0
+    
+  
+  //While size>100 {
+  //While size'<factor {
+  ; vzdy max 4 cislice 
+  While size>999.9 {
+    s size=size/factor
+    s mag=mag+1
+  }
+  s unit=$case(mag,0:"",1:"K",2:"M",3:"G",4:"T",5:"P")
+  if (binary && mag) s unit=unit_"i"
+  
+  //s size=$num(size,2)
+  s size=$num(size,1) ; 1 desenine misto
+  s:$e(size)="." size="0"_size
+  
+  q size_" "_unit_"B"
+]]></Implementation>
+</Method>
+
+<Method name="testSizeSI">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s size=56.256
+  w !,size_" = ",..sizeSI(size),", ",..sizeSI(size,1)
+  
+  s size=999.999
+  w !,size_" = ",..sizeSI(size),", ",..sizeSI(size,1)
+  
+  s size=1000
+  w !,size_" = ",..sizeSI(size),", ",..sizeSI(size,1)
+  
+  s size=1000.001
+  w !,size_" = ",..sizeSI(size),", ",..sizeSI(size,1)
+  
+  s size=1020.256
+  w !,size_" = ",..sizeSI(size),", ",..sizeSI(size,1)
+  
+  s size=987156.256
+  w !,size_" = ",..sizeSI(size),", ",..sizeSI(size,1)
+  
+  s size=6543987156.256
+  w !,size_" = ",..sizeSI(size),", ",..sizeSI(size,1)
+]]></Implementation>
+</Method>
+
+<Method name="getRepo">
+<Description><![CDATA[
+<pre> Ziskani upload repozitare
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")
+  q:callBack="" ##class(content.uploader).userRepo()
+  q:$f(callBack,".page404") ##class(content.uploader).userRepo()
+  
+  q $ZOBJCLASSMETHOD(callBack,"userRepo")
+]]></Implementation>
+</Method>
+
+<Method name="stable">
+<Description><![CDATA[
+<pre> Hromadne nacteni ciselniku do formatu pro combobox
+
+03.09.18 ln; podpora pro jazyky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,stable:%String,selected:%String=""]]></FormalSpec>
+<Implementation><![CDATA[
+  q:'##class(User.MARC).readX(.handle,%ipac2("ipref")_"UnTablesd",stable)
+  s c=0, seq=0, sel=""
+  do {
+    s line=##class(User.MARC).getTagX(.handle,"200",.c)
+    s tagA=##class(User.MARC).getSubTagStr(.line,"a")
+    continue:tagA=""
+   
+    s seq=seq+1
+    //s tagB=$$$ls(##class(User.MARC).getSubTagStr(.line,"b"))
+    ; 03.09.18 ln; podpora pro jazyky
+    s tagB=$p((##class(User.MARC).getSubTagStr(.line,"b")),"#",$$$GETLANGUAGE)
+    s:tagB="" tagB=tagA
+    s:selected'="" sel=$s(tagA=selected:" selected=""selected""",1:"")
+    s data(stable,seq)=$lb(sel,tagA,tagB)
+  } while (c'=0)
+]]></Implementation>
+</Method>
+
+<Method name="testStable">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s %ipac2("ipref")="Cbvk"
+  d ..stable(.data,"UT_ASEP_VERSION")
+  w !
+  zw data 
+  
+  d ..stable(.data,"UT_ASEP_VERSION","APOST")
+  w !
+  zw data
+]]></Implementation>
+</Method>
+
+<Method name="xlate">
+<Description><![CDATA[
+<pre> Hromadne nacteni ciselniku
+
+03.09.18 ln; podpora pro jazyky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,stable:%String,node:%String=""]]></FormalSpec>
+<Implementation><![CDATA[
+  q:'##class(User.MARC).readX(.handle,$$$IPREF_"UnTablesd",stable)
+  
+  s:node="" node=stable
+  s c=0
+  do {
+    s line=##class(User.MARC).getTagX(.handle,"200",.c)
+    s tagA=##class(User.MARC).getSubTagStr(.line,"a")
+    continue:tagA=""
+   
+    //s tagB=$$$ls(##class(User.MARC).getSubTagStr(.line,"b"))
+    ; 03.09.18 ln; podpora pro jazyky
+    s tagB=$p((##class(User.MARC).getSubTagStr(.line,"b")),"#",$$$GETLANGUAGE)
+    s:tagB="" tagB=tagA
+    s data(node,tagA)=tagB
+  } while (c'=0)
+]]></Implementation>
+</Method>
+
+<Method name="genDirs">
+<Description><![CDATA[
+<pre> Pomocna metoda pro vygenerovani podadresaru v pripade sitoveho disku
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>path:%String</FormalSpec>
+<Implementation><![CDATA[
+  ;f i=0:1:9 {
+  ;  d ##class(%File).CreateNewDir(path,"0"_i) 
+  ;}
+  
+  f i=10:1:99 {
+    d ##class(%File).CreateNewDir(path,i) 
+  }
+]]></Implementation>
+</Method>
+
+<Method name="erase">
+<Description><![CDATA[
+<pre> Definitivni odstraneni smazanych souboru
+predpokladane zapojeni jako planovana uloha
+
+Parametry: repos - carkou oddeleny seznam repozitaru
+  pripadne repozitar:roky (default 5 let)
+<pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>repos:%String</FormalSpec>
+<Implementation><![CDATA[
+  
+  s pathSep=$$$PathSepp, today=$zd($h,8), total=0
+  w !,"erase deleted files from contentServer by day: ",today,!
+  
+  for i=1:1:$l(repos,",") {
+    s part=$p(repos,",",i)
+    s repo=$p(part,":"), years=+$p(part,":",2)
+    s:'years years=5
+    s:years<1 years=1
+    s maxdate=$zd($h-$normalize(365.24219*years,0),8)
+    
+    w !,"========"
+    w !,"repo=",repo,", years=",years,", maxdate=",maxdate
+    w !,"========",!
+    
+    &sql(DECLARE C1 CURSOR FOR
+      SELECT ID
+      INTO :id
+      FROM content.metadata
+      WHERE Repo = :repo AND Version IS NOT NULL 
+      AND NOT FOR SOME %ELEMENT(Array) (%KEY='erased')
+      AND FOR SOME %ELEMENT(Array) (%KEY='daydel' AND %VALUE < :maxdate)      
+    )
+    s count=0, deleted=0
+    
+    &sql(OPEN C1)
+    for { &sql(FETCH C1) q:SQLCODE
+      s count=count+1
+      w !,"id=",id
+      s obj=##class(content.metadata).%OpenId(id)
+      s daydel=obj.Array.GetAt("daydel")
+      continue:$l(daydel)'=8
+      
+      s ipref=##class(User.Util).getClassPrefixParam(obj.Class)
+      s path=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",ipref,"b")
+      q:path="" ; TODO
+      s:$e(path,*)'=pathSep path=path_pathSep
+      
+      s ext=obj.Array.GetAt("extension")
+      s dest=path_$e(obj.CKey,1,2)_pathSep_$e(obj.CKey,3,99)_"."_ext      
+      s exist=##class(%File).Exists(dest)
+      
+      w ", daydel=",daydel,", ",dest," = ",exist
+      
+      d obj.Array.SetAt(today,"erased")
+      if exist {
+	    if ##class(%File).Delete(dest) {
+	      w ", ",obj.%Save(),", 1"
+	      s deleted=deleted+1
+	    } else {
+          w ", ",obj.%Save(),", 0"
+	    }
+      } else {
+        w ", ",obj.%Save(),", 0"
+      }
+    }
+    &sql(CLOSE C1)
+    s total=total+count
+    
+    w !!,"count=",count,", deleted=",deleted
+  }
+  w !!,"===================",!!,"total=",total
+]]></Implementation>
+</Method>
+</Class>
+</Export>

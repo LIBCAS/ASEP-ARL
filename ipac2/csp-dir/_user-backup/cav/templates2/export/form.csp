@@ -1,0 +1,54 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+<ipac:off>19.03.20 tt; zalozena metoda kvuli moznosti prehodit poradi kodovani</ipac:off>
+
+<ipac:form id="#(data("PAGEID"))#-f" action="#(data("ACTION"))#" method="get" target="_blank">
+    <ipac:dtx param="FORM_UP"/>
+
+<fieldset>
+<legend><ipac:tx param="SELECT_EXPORT"/></legend>
+
+<div class="form-group">
+<label for="charset"><ipac:tx param="CHARSET"/>:</label>
+<select name="charset" id="charset" class="form-control" autofocus="autofocus">
+<ipac:note param="19.03.20 tt; prehozeno poradi znakove sady pro potrebu zakaznika">
+<option value="CP1250">Windows CP1250</option>
+<option value="UTF8">UTF-8</option>
+</ipac:note>
+<ipac:note param="01.06.21 tt; odstraneno Latin2 ->Latin 2">
+</ipac:note>
+</select>
+</div>
+
+<fieldset class="form-group">
+<legend><ipac:tx param="FORMAT"/></legend>
+    <ipac:loop param="FORMAT">
+<div class="form-check">
+<csp:if condition=(..v("value")="SCSV")>
+<input name="format" type="radio" class="form-check-input" checked="checked" id="format-#(..v("value"))#" title="#(..tx("DOWNLOAD_TITLE"))#: #(..v("name"))#" value="#(..v("value"))#"/>
+</csp:if>
+<csp:if condition=(..v("value")'="SCSV")>
+<input name="format" type="radio" class="form-check-input" id="format-#(..v("value"))#" title="#(..tx("DOWNLOAD_TITLE"))#: #(..v("name"))#" value="#(..v("value"))#"/>
+</csp:if>
+
+<label for="format-#(..v("value"))#" class="form-check-label"><b>#(..v("name"))#</b></label> - #(..v("help"))#
+</div>
+    </ipac:loop>
+</fieldset>
+
+
+
+
+</fieldset>
+
+    <ipac:dtx param="SEND_UP"/>
+
+<div class="submit">
+<input type="hidden" name="op" value="export"/>
+<input type="hidden" name="pg" value="#(data("PG"))#"/>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="export" value="1"/>
+<button type="submit" name="export" value="1"><ipac:tx param="SEND"/></button>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+        <ipac:dtx param="FORM_DOWN"/>
+</ipac:form>

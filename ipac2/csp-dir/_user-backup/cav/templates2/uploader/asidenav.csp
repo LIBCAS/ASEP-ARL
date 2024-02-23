@@ -1,0 +1,44 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<div id="nav1" class="part">
+<h2><ipac:txg param="RELATED_PAGES"/></h2>
+<ul class="nav flex-column">
+    <csp:if condition=(..isPage("myasep"))>
+<li class="nav-item" id="nav1-myasep"><ipac:a op="myasep" class="nav-link #($s(data("PAGEID")="myasep":" active",1:""))#" aria-current="#($s(data("PAGEID")="myasep":"page",1:"false"))#" restore><ipac:atext/></ipac:a></li>
+    </csp:if>
+    <csp:if condition=($$$GETREQVAR("idx")'="")>
+        <csp:if condition=(..isPage("uploader"))>
+<li class="nav-item" id="nav1-uploader"><ipac:a op="uploader" class="nav-link#($s(data("PAGEID")="uploader":" active",1:""))#" aria-current="#($s(data("PAGEID")="uploader":"page",1:"false"))#" restore><ipac:atext/></ipac:a></li>
+        </csp:if>
+    </csp:if>
+    <csp:if condition=(..isPage("contser"))>
+<li class="nav-item" id="nav1-contser"><ipac:a op="contser" class="nav-link#($s(data("PAGEID")="contser":" active",1:""))#" aria-current="#($s(data("PAGEID")="contser":"page",1:"false"))#" restore><ipac:atext/></ipac:a></li>
+    </csp:if>
+    <csp:if condition=(..isPage("contorder"))>
+<li class="nav-item" id="nav1-contorder"><ipac:a op="contorder" class="nav-link#($s(data("PAGEID")="contorder":" active",1:""))#" aria-current="#($s(data("PAGEID")="contorder":"page",1:"false"))#" restore><ipac:atext/></ipac:a></li>
+    </csp:if>
+    <csp:if condition=(..isPage("contlist"))>
+<li class="nav-item" id="nav1-contlist"><ipac:a op="contlist" class="nav-link#($s(data("PAGEID")="contlist":" active",1:""))#" aria-current="#($s(data("PAGEID")="contlist":"page",1:"false"))#" restore><ipac:atext/></ipac:a></li>
+    </csp:if>
+    <csp:if condition=(..isPage("contstat"))>
+<li class="nav-item" id="nav1-contstat"><ipac:a op="contstat" class="nav-link#($s(data("PAGEID")="contstat":" active",1:""))#" aria-current="#($s(data("PAGEID")="contstat":"page",1:"false"))#" restore><ipac:atext/></ipac:a></li>
+    </csp:if>
+    <csp:if condition=(..req("iset")'="")>
+<li class="nav-item" id="nav1-result"><ipac:a op="result" rel="nofollow" class="nav-link" restore><ipac:atext/></ipac:a></li>
+    </csp:if>
+
+    <csp:if condition=($g(data("T001z"))'="")>
+<li class="nav-item" id="nav1-result1"><ipac:search fld1="T001" class="nav-link" rel="nofollow" term1="#($g(data("T001z")))#" src="cav_un_epca-4" qt="asep" sort="DT1_UST"><ipac:tx param="DETAIL_TEXT"/></ipac:search></ipac:a></li>
+    <csp:else>
+        <csp:if condition=($g(data("IDX"))'="")>
+        <li class="nav-item" id="nav1-detail"><ipac:a class="nav-link" op="detail" param="idx=#(data("IDX"))#" restore><ipac:atext/></ipac:a></li>
+        <csp:elseif condition=($$$GETREQVAR("idx")'="")>
+        <li class="nav-item" id="nav1-detail"><ipac:a class="nav-link" op="detail" restore><ipac:atext/></ipac:a></li>
+        </csp:if>
+</csp:if>
+    
+    <csp:if condition=(..isPage("esearch"))>
+<li class="nav-item" id="nav1-esearch"><ipac:a op="esearch" class="nav-link #($s(data("PAGEID")="esearch":" active",1:""))#" restore><ipac:atext/></ipac:a></li>
+    </csp:if>  
+</ul>
+</div>

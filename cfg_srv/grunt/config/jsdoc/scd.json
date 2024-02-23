@@ -1,0 +1,28 @@
+{
+	"tags": {
+		"allowUnknownTags": true
+	},
+	"plugins": ["plugins/markdown"],
+	"templates": {
+		"systemName": "Dokumentace JS pro i3 app",
+		"footer": "Dokumentace JavaScriptu pro ARL I3 aplikaci Webadmin",
+		"logoFile": "",
+		"cleverLinks": false,
+		"monospaceLinks": false,
+		"dateFormat": "ddd MMM Do YYYY",
+		"outputSourceFiles": true,
+		"outputSourcePath": true,
+		"copyright": "Cosmotron.cz",
+		"navType": "vertical",
+		"theme": "cerulean",
+		"linenums": true,
+		"collapseSymbols": false,
+		"inverseNav": true,
+		"protocol": "html://",
+		"methodHeadingReturns": false
+	},
+	"markdown": {
+		"parser": "gfm",
+		"hardwrap": true
+	}
+}

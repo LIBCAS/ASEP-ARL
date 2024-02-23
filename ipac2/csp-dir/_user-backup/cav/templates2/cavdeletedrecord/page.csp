@@ -1,0 +1,13 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<ipac:layout1>
+
+<csp:if condition=($$$GETLANGUAGE=1)>
+	<ipac:tpl version="slovak"/>
+<csp:elseif condition=($$$GETLANGUAGE=2)>
+	<ipac:tpl version="czech"/>
+<csp:else>
+	<ipac:tpl version="english"/>
+</csp:if>
+
+</ipac:layout1>

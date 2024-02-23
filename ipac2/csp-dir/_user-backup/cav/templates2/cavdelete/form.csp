@@ -1,0 +1,26 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<csp:if condition=($g(data("CONFIRM"))=0)>
+
+<h2><ipac:tx param="CONFIRM"/></h2>
+
+<ipac:form action="#(..base())#" method="get" class="modal-ajax" data-modal-ahid="#item-#($REPLACE(data("IDX"),"*",""))#" data-modal-ahclass="remove-highlight" target="_blank" id="#(data("PAGEID"))#-f">
+
+<div class="submit">
+<button type="submit" class="btn btn-light" value="1" name="confirm" id="btn-send"><ipac:tx param="YES"/></button>
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="confirm" value="1"/>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="iset" value="#(data("ISET"))#"/>
+<input type="hidden" name="pg" value="#(..req("pg"))#"/>
+<input type="hidden" name="fnonce" value="#(data("FNONCE_VALUE"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+
+</ipac:form>
+<csp:else>
+<csp:if condition=(data("ISDELETED")=1)>
+    <div id="del-result" data-id="item-#($REPLACE(data("IDX"),"*",""))#"></div>
+</csp:if>
+</csp:if>
+

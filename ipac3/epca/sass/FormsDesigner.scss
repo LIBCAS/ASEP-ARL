@@ -1,0 +1,201 @@
+/*
+ * FormDesigner
+*/
+
+body {
+    font-family: "Lucida grande", Tahoma, Arial, sans-serif;
+    font-size: 11px;
+}
+
+noscript p {
+    font-size: 200%;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    margin: 30px 0;
+}
+
+a {
+    color: $LinkColor;
+
+    &:link, &:visited {
+        text-decoration: none;
+    }
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+label a {
+    color: $LinkColor;
+}
+
+#header {
+    background: #7f99be url("#{$images-dir}layout-browser-hd-bg.gif") repeat-x center;
+
+    h1 {
+        font-size: 16px;
+        color: white;
+        font-weight: bold;
+        padding: 5px 10px;
+    }
+}
+
+#start-div {
+    h2 {
+        font-size: 12px;
+        color: #555;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #c3d0df;
+    }
+
+    p {
+        margin: 10px 0;
+    }
+}
+
+#details-panel {
+    h2 {
+        padding: 10px 10px 0;
+        font-size: 12px;
+        color: #15428b;
+    }
+
+    p {
+        padding: 10px 10px 0;
+        color: #15428b;
+    }
+
+    pre {
+        border-top: 1px dotted #ddd;
+        border-bottom: 1px dotted #ddd;
+        margin-top: 10px;
+        padding: 0 5px;
+        background: #f5f5f5;
+    }
+
+    .details-info {
+        margin: 15px;
+        padding: 15px;
+        border: 1px dotted #999;
+        color: #555;
+        background: #f9f9f9;
+    }
+}
+
+.x-tab-panel-header-plain .x-tab-strip-top {
+    background: #dfe8f6 url("#{$images-dir}default/tabs/tab-strip-bg.gif") repeat-x scroll center bottom !important;
+}
+
+.custom-accordion {
+    .x-panel-body .x-border-panel {
+        font-family: Georgia, serif;
+        padding: 20px 80px !important;
+        background: white;
+        border-color: #99bbe8;
+        font-size: 18px;
+        text-align: center;
+        color: #15428b;
+    }
+
+    .x-panel-header-text {
+        font-weight: bold;
+        font-style: italic;
+        color: #555;
+    }
+}
+
+#form-panel .x-panel-footer {
+    background: #dfe8f6;
+    border-color: #99bbe8;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
+}
+
+#table-panel {
+    .x-table-layout {
+        padding: 5px;
+    }
+
+    .x-table-layout td {
+        vertical-align: top;
+        padding: 5px;
+        font-size: 11px;
+    }
+}
+
+.icon-preview {
+    background-image: url("#{$images-dir}preview.png") !important;
+}
+
+.icon-form {
+    background-image: url("#{$images-dir}form.png") !important;
+}
+
+.icon-save {
+    background-image: url("#{$images-dir}disk.png") !important;
+}
+
+.icon-print {
+    background-image: url("#{$images-dir}printer.png") !important;
+}
+
+.icon-logout {
+    background-image: url("#{$images-dir}logout.png") !important;
+}
+
+.icon-details {
+    background-image: url("#{$images-dir}details.gif") !important;
+}
+
+.icon-book {
+    background-image: url("#{$images-dir}book.png") !important;
+}
+
+.icon-send {
+    background-image: url("#{$images-dir}application_go.png") !important;
+}
+
+.inner-tab-custom .x-border-layout-ct {
+    background: white;
+}
+
+/* search combo box */
+.search-combo-icon {
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+    width: 18px;
+    height: 14px;
+}
+
+.x-form-field-wrap .search-combo-icon {
+    top: 3px;
+    right: 5px;
+}
+
+.search-combo-input {
+    padding-right: 25px;
+}
+
+/* Drag&Drop */
+.x-panel-body {
+    border-color: #99bbe8;
+}
+
+.x-border-panel {
+    background: #dfe8f6;
+    border-color: #99bbe8;
+}
+
+.bigger-text .x-btn-text {
+    font-size: 13px;
+}
+
+.bigger-text .x-form-field {
+    font-size: 13px;
+}
+
+.bigger-text .xtb-text {
+    font-size: 13px;
+}

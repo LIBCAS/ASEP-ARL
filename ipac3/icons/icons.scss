@@ -1,0 +1,538 @@
+﻿/**
+ * @file IKONKY I3 aplikací (ARL_ICONS)
+ * @example <span class="icon-search" aria-hidden="true"></span>
+*/
+$cachebooster: "22";
+
+@font-face {
+    font-family: "ARL Icons";
+    src: url("#{$fonts-dir}arl.woff2?#{$cachebooster}") format("woff2"), url("#{$fonts-dir}arl.woff?#{$cachebooster}") format("woff"), url("#{$fonts-dir}arl.ttf?#{$cachebooster}") format("truetype"), url("#{$fonts-dir}arl.svg?#{$cachebooster}#arl") format("svg");
+    font-weight: normal;
+    font-style: normal;
+	font-display: swap;
+}
+
+[class^="icon-"]::before, [class*=" icon-"]::before, a[rel="external"]::after, a.external::after, .ii {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-family: "ARL Icons" !important;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 1;
+    position: relative;
+    speak: none;
+    text-align: center;
+    text-decoration: inherit;
+    text-transform: none;
+    top: 1px;
+}
+
+button[class^="icon-"]::before, button[class*=" icon-"]::before {
+    font-family: inherit;
+    content: "" !important;
+}
+
+.animate-spin {
+    animation: spin 2s infinite linear;
+    display: inline-block;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+.animate-dump {
+    animation: rotate-dump 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+    display: inline-block;
+}
+
+@keyframes rotate-dump {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(90deg);
+    }
+}
+
+/* Kniha */
+.icon-book {
+    &::before {
+        content: "\E823";
+    }
+}
+
+/* Kalendář */
+.icon-calendar {
+    &::before {
+        content: "\E809";
+    }
+}
+
+/* Rozbalit */
+.icon-collapse-down {
+    &::before {
+        content: "\E804";
+    }
+}
+
+/* Zatáhnout */
+.icon-collapse-left {
+    &::before {
+        content: "\F191";
+    }
+}
+
+/* Vytáhnout */
+.icon-collapse-right {
+    &::before {
+        content: "\E818";
+    }
+}
+
+/* Sbalit - up,sbalit,šipka,nahoru,collapse */
+.icon-collapse-up {
+    &::before {
+        content: "\E815";
+    }
+}
+
+/* Kopírovat */
+.icon-copy {
+    &::before {
+        content: "\F0c5";
+    }
+}
+
+/* DOI (Digital Object Identifier) */
+.icon-doi {
+    color: #264993;
+
+    &::before {
+        content: "\E81e";
+    }
+}
+
+/* Šipka dolů */
+.icon-down {
+    &::before {
+        content: "\e829";
+    }
+}
+
+/* Editovat - Editovat něco */
+.icon-edit {
+    &::before {
+        content: "\E811";
+    }
+}
+
+/* Varování */
+.icon-error {
+    color: #d9534f;
+
+    &::before {
+        content: "\E816";
+    }
+}
+
+/* Externí odkaz - Odkaz vede mimo aplikaci a mimo server */
+.icon-external {
+    font-size: 70%;
+
+    &::before {
+        content: "\F08e";
+    }
+}
+
+/* Formulář */
+.icon-form {
+    &::before {
+        content: "\F298";
+    }
+}
+
+/* Generátor hesla - Generátor hesla */
+.icon-genpw {
+    &::before {
+        content: "\F23e";
+    }
+}
+
+/* Google */
+.icon-google {
+    color: #3780ff;
+
+    &::before {
+        content: "\F1a0";
+    }
+}
+
+/* Nápověda - Nápověda k aplikaci */
+.icon-help {
+    color: #0078d7;
+
+    &::before {
+        content: "\E80c";
+    }
+}
+
+/* Domů - Návrat na úvodní stránku */
+.icon-home {
+    &::before {
+        content: "\E813";
+    }
+}
+
+/* Info o aplikaci - Info o aplikaci/programu */
+.icon-info {
+    color: #0078d7;
+
+    &::before {
+        content: "\E805";
+    }
+}
+
+/* Klíč - Vložit heslo, změnit heslo */
+.icon-key {
+    &::before {
+        content: "\E803";
+    }
+}
+
+/* Odkaz */
+.icon-link {
+    &::before {
+        content: "\E810";
+    }
+}
+
+/* Seznam */
+.icon-list {
+    &::before {
+        content: "\E819";
+    }
+}
+
+/* Vložit číselník - Vložit nový číselník */
+.icon-list-insert {
+    &::before {
+        content: "\F116";
+    }
+}
+
+/* Odstranit číselník - Odstranit číselník */
+.icon-list-remove {
+    color: red;
+
+    &::before {
+        content: "\F117";
+    }
+}
+
+/* Načítací kolečko */
+.icon-loading {
+    @extend .animate-spin;
+
+    font-size: 200%;
+
+    &::before {
+        content: "\E839";
+    }
+}
+
+/* Zamknutý zámek - Záznam je zamčen - nelze editovat */
+.icon-lock {
+    &::before {
+        content: "\E80d";
+    }
+}
+
+/* Odhlášení - Odhlášení z aplikace */
+.icon-logout {
+    color: #bd5124;
+
+    &::before {
+        content: "\E814";
+    }
+}
+
+/* Menu - Menu */
+.icon-menu {
+    &::before {
+        content: "\F0c9";
+    }
+}
+
+/* Mínus */
+.icon-minus {
+    &::before {
+        content: "\E80e";
+    }
+}
+
+/* Nový - Nový čísleník nebo dokument */
+.icon-new {
+    &::before {
+        content: "\E802";
+    }
+}
+
+/* Šipka vpravo */
+.icon-next {
+    border: 1px solid silver;
+    padding-left: 3px;
+    padding-right: 3px;
+
+    &::before {
+        content: "\e828";
+    }
+}
+
+/* OK */
+.icon-ok {
+    color: #5cb85c;
+
+    &::before {
+        content: "\F11e";
+    }
+}
+
+/* Zkontrolovat - Pro spuštění kontroly */
+.icon-ok-check {
+    color: #5cb85c;
+
+    &::before {
+        content: "\E824";
+    }
+}
+
+/* Otevřít - Otevřít něco */
+.icon-open {
+    &::before {
+        content: "\E80b";
+    }
+}
+
+/* ORCID */
+.icon-orcid {
+    color: #95b933;
+
+    &::before {
+        content: "\E8b5";
+    }
+}
+
+/* Soubor PDF - Odkaz na PDF */
+.icon-pdf {
+    color: red;
+    background: white;
+
+    &::before {
+        content: "\F1c1";
+    }
+}
+
+/* Plus - Přidat */
+.icon-plus {
+    &::before {
+        content: "\E81a";
+    }
+}
+
+/* Pop-up okno */
+.icon-popup {
+    &::before {
+        content: "\E825";
+    }
+}
+
+/* Šipka vlevo */
+.icon-prev {
+    border: 1px solid silver;
+    padding-left: 3px;
+    padding-right: 3px;
+
+    &::before {
+        content: "\e827";
+    }
+}
+
+/* Tisk */
+.icon-print {
+    &::before {
+        content: "\E812";
+    }
+}
+
+/* PubMed */
+.icon-pubmed {
+    color: #3774a8;
+
+    &::before {
+        content: "\E820";
+    }
+}
+
+/* Otázka */
+.icon-question {
+    color: #0078d7;
+
+    &::before {
+        content: "\F29c";
+    }
+}
+
+/* Znovu načíst */
+.icon-refresh {
+    &::before {
+        content: "\E807";
+    }
+}
+
+/* Odebrat */
+.icon-remove {
+    color: #d9534f;
+
+    &::before {
+        content: "\E806";
+    }
+}
+
+/* RIV (Rejstřík informací o výsledcích) */
+.icon-riv {
+    &::before {
+        content: "\E821";
+    }
+}
+
+/* Rádek dole - Přidání řádku tabulky dole/pod */
+.icon-row-down {
+    &::before {
+        content: "\F12A";
+    }
+}
+
+/* Odstranit řádek - Odstranit řádek tabulky */
+.icon-row-remove {
+    color: red;
+
+    &::before {
+        content: "\F12B";
+    }
+}
+
+/* Řádek nahoru - Přidání řádku tabulky nahoru */
+.icon-row-up {
+    &::before {
+        content: "\F129";
+    }
+}
+
+/* Uložit - Uložit */
+.icon-save {
+    &::before {
+        content: "\E808";
+    }
+}
+
+/* Scopus */
+.icon-scopus {
+    color: #349a44;
+
+    &::before {
+        content: "\E81c";
+    }
+}
+
+/* Scopus ID */
+.icon-scopusid {
+    color: #0e5965;
+
+    &::before {
+        content: "\E8b4";
+    }
+}
+
+/* Vyhledat - Vyhledat něco, Vyhledávání */
+.icon-search {
+    &::before {
+        content: "\E800";
+    }
+}
+
+/* Nastavení */
+.icon-settings {
+    &::before {
+        content: "\E801";
+    }
+}
+
+/* Oko - Zobrazit něco */
+.icon-show {
+    &::before {
+        content: "\E81b";
+    }
+}
+
+/* Koš */
+.icon-trash {
+    &::before {
+        content: "\F1f8";
+    }
+}
+
+/* Šipka nahoru */
+.icon-up {
+    &::before {
+        content: "\e82a";
+    }
+}
+
+/* Nahrát na server */
+.icon-upload {
+    &::before {
+        content: "\E822";
+    }
+}
+
+/* Uživatel - Přihlášený uživatel */
+.icon-user {
+    &::before {
+        content: "\E817";
+    }
+}
+
+/* Rada pro výzkum, vývoj a inovace */
+.icon-vvi {
+    &::before {
+        content: "\E8b6";
+    }
+}
+
+/* Varování */
+.icon-warning {
+    color: #ff7000;
+
+    &::before {
+        content: "\E826";
+    }
+}
+
+/* Web of Science (WoS) */
+.icon-wos {
+    color: #fc9e3c;
+
+    &::before {
+        content: "\E81d";
+    }
+}

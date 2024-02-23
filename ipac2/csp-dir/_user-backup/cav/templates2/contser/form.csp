@@ -1,0 +1,72 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:form id="#(data("PAGEID"))#-f#(..v("key"))#" data-infolimit="#(..tx("INFOLIMIT"))#" data-textlimit="#(..tx("LIMIT"))#" action="#(..base())#" method="post">
+    <ipac:dtx param="FORM_UP"/>
+<fieldset class="container">
+<legend class="h4">
+<span class="row">
+<span class="col-sm-10">
+<csp:if condition=($find(..v("ctype"),"image"))>
+#($zabs(data("COUNT")-node+1))#. #(..tx("PICTURE"))# &nbsp;
+<ipac:a title="#(..v("origname"))#" data-toggle="lightbox" data-type="image" data-footer="#(..v("humansize"))#, #(..v("description"))#" data-title="#(..v("origname"))#" aria-label="#(..v("origname"))#" op="csg" param="repo=#(..v("repository"))#&key=#(..v("key"))#"><span class="icon-picture" aria-hidden="true"></span></ipac:a> &nbsp; #(..v("origname"))#
+<csp:else>
+#($zabs(data("COUNT")-node+1))#. #(..tx("FILE"))# &nbsp;
+<ipac:a title="#(..v("origname"))#" op="csg" param="repo=#(..v("repository"))#&key=#(..v("key"))#" target="_blank"><span class="icon-mydocuments" aria-hidden="true"></span></ipac:a> &nbsp; #(..v("origname"))#
+</csp:if>
+<csp:if condition=(..v("ver")'=1)><span class="col-sm-2 text-right"><b>#(..tx("VER"))#: #(..v("ver"))#</b></span></csp:if>
+</span>
+</span>
+</legend>
+    <csp:if condition=($g(data("REC_970b"))'="DATA") note="08.03.17 tt; upraveno zobrazovani pro velka data">
+<csp:if condition=(..v("ver"))>
+<div class="row form-group">
+<div class="col-4"><ipac:tx param="VER"/></div>
+<div class="half"><span class="form-control border-0">#(..v("ver"))#</span></div>
+</div>
+</csp:if>
+
+<div class="row form-group">
+<div class="col-4"><ipac:tx param="STATE"/></div>
+<div class="half"><span class="form-control border-0"><strong>#($g(data("UT_ASEP_STATUS_SER_INFO",..v("status"))))#</strong></span></div>
+</div>
+    <csp:else>
+    </csp:if>
+
+<div class="border-bottom" id="c#($zabs(data("COUNT")-node+1))#">
+
+<div class="container">
+    <ipac:tpl version="form" page="uploader"/>
+</div>
+    <ipac:dtx param="SEND_UP"/>
+<div class="xsubmit">
+    <csp:if condition=(..v("nextState")=99)>
+    <csp:elseif condition=(..v("nextState")'="0")>
+<button type="submit" name="state" class="btn btn-light status#(..v("status"))#" value="#(..tx("STATUS_TEXT_"_..v("status")))#" title="#(..tx("STATUS_TITLE_"_..v("status")))#">#(..tx("STATUS_TEXT_"_..v("status")))#</button>
+    </csp:if>
+
+    <csp:if condition=(..v("isEdit"))>
+<button type="submit" name="edit" class="btn btn-primary" value="#(..tx("SET"))#" title="#(..tx("SET_TITLE"))# #(..v("origname"))#"><span class="icon-save" aria-hidden="true"></span> &nbsp;<ipac:tx param="SET"/></button>
+    </csp:if>
+    <csp:if condition=(..v("isChange"))>
+<button type="submit" name="change" class="btn btn-primary" value="#(..tx("CHANGE"))#" title="#(..tx("CHANGE_TITLE"))# #(..v("origname"))#"><span class="icon-save" aria-hidden="true"></span> &nbsp;<ipac:tx param="CHANGE"/></button>
+    </csp:if>
+    <csp:if condition=(..v("isDelete"))>
+<button type="submit" name="delete" class="btn btn-light" value="#(..tx("DELETE"))#" title="#(..tx("DELETE_TITLE"))# #(..v("origname"))#"><span class="icon-remove" aria-hidden="true"></span> &nbsp;<ipac:tx param="DELETE"/></button>
+    </csp:if>
+
+<csp:if condition=(..isPage("contchro"))>
+    <ipac:a op="contchro" class="btn btn-light" title="#(..txg("PG_CONTCHRO_TITLE"))# #(..v("origname"))#" param="repo=#(..v("repository"))#&key=#(..v("key"))#" restore><i class="icon-show" aria-hidden="true"></i> &nbsp;<ipac:tx param="CHRONO"/></ipac:a>
+</csp:if>
+
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="key" value="#(..v("key"))#"/>
+<input type="hidden" name="status" value="#(data("STATUS"))#"/>
+<input type="hidden" name="stateorig" value="#(..v("status"))#"/>
+<input type="hidden" name="repo" value="#(data("REPO"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+</div>
+
+</fieldset>
+</ipac:form>

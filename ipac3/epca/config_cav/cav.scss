@@ -1,0 +1,105 @@
+@charset "UTF-8";
+@use "sass:math";
+$images-dir: "../images/";
+$fonts-dir: "../../icons/";
+$skin: access;
+$bgPanelBody: #343d4e;
+$LinkColor: white;
+$extskin-dir: "../../extjs340/resources/images/#{$skin}/";
+
+// Ikony
+@import "../../icons/icons";
+
+// Nacteni hlavniho stylopisu/skinu
+@import "../sass/ext-all";
+@import "../sass/xtheme-access";
+
+// Zaplaty pro I3 apliakce drive user.css
+@import "../sass/fix";
+
+// Stylopis pro stranky EPCA  drive epca.css
+@import "../sass/epca";
+
+// Stylopis pro Designer formular FormsDesigner.css
+@import "../sass/FormsDesigner";
+
+// Vysoký kontrast
+.x-form-text,
+textarea.x-form-field,
+.x-combo-list-inner {
+    background: white;
+    color: black !important;
+}
+
+.x-grid3-row-selected {
+    color: black;
+    background: #e37d27;
+}
+
+.x-grid3-row-over {
+    background: orange;
+
+    .x-grid3-cell-inner {
+        color: black !important;
+    }
+}
+
+label a {
+    text-decoration: underline !important;
+}
+
+.x-form-label-left label.x-form-item-label {
+    text-align: right;
+}
+
+.x-fieldset {
+    border-color: #e37d27;
+
+    legend {
+        color: #e37d27;
+    }
+}
+
+/* Odkazy do nápovědy */
+
+a.manual-link {
+    font-weight: bold !important;
+    color: #e37d27 !important;
+    text-decoration: underline;
+}
+
+.x-panel-header {
+    color: orange;
+}
+
+.x-tool-collapse-east {
+    background-position: -15px -165px;
+}
+
+.x-tip .x-tip-tc,
+.x-tip .x-tip-tl,
+.x-tip .x-tip-tr,
+.x-tip .x-tip-bc,
+.x-tip .x-tip-bl,
+.x-tip .x-tip-br,
+.x-tip .x-tip-ml,
+.x-tip .x-tip-mr,
+.x-tip-body,
+.x-tip-body font {
+    background: orange !important;
+    color: black !important;
+}
+
+.x-form-field-wrap .x-form-world-trigger {
+    background-image: url("#{$images-dir}earth.png");
+    background-position: 50% 50%;
+
+    &:hover {
+        background-color: #e37d27;
+    }
+}
+
+#flxp__pbScanB .x-btn button {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}

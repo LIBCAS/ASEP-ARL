@@ -1,0 +1,73 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<h2>Institucionální repozitář AV ČR (IR AV)</h2>
+<ol>
+<li><a href="#p1">Co je to institucionální repozitář AV ČR?</a></li>
+<li><a href="#p2">Kdo může ukládat plné texty do IR AV?</a></li>
+<li><a href="#p3">Jaké plné texty se ukládají do IR AV? </a></li>
+<li><a href="#p4">Jaká je metodika ukládání plných textů? </a></li>
+<li><a href="#p5">Jak poznám, že je plný text uložen u záznamu?</a></li>
+<li><a href="#p6">Za jakých podmínek mohu získat plný text?</a></li>
+<li><a href="#p7">Jaká jsou pravidla pro další nakládání se staženými plnými texty</a></li>
+</ol>
+
+<hr>
+
+<ol class="sortlithx">
+<li id="p1" class="nr">
+<h3>Co je to Institucionální repozitář AV ČR?</h3>
+<p>Institucionální repozitář  AV ČR slouží k archivaci publikovaných výsledků vědeckých pracovníků ústavů Akademie věd. Pro vybudování repozitáře byl využit systém pro evidenci publikační činnosti ASEP/ARL, což je databáze záznamů o výsledcích základního výzkumu v Akademii věd ČR &#8211; publikacích a dalších informačních výstupech. Repozitář vznikl v roce 2012 jako nadstavba bibliografické  databáze ASEP, ve které jsou uloženy bibliografické záznamy pracovišť již od roku 1993. Ke každému bibliografickému záznamu v této databázi  je možno uložit plný text.</p>
+</li>
+
+<li id="p2" class="nr">
+<h3>Kdo může ukládat plné texty do IR AV?</h3>
+<ul>
+<li>Zpracovatelé ústavů jsou následně proškoleni a nadále metodicky vedeni pracovníky KNAV.</li>
+<li>Autoři mohou ukládat sami plné texty ke svým bibliografickým záznamům po domluvě se <a rel="external" href="https://www.lib.cas.cz/asep/zkusebni-stranka/zpracovatele-asep/">zpracovatelem</a> svého pracoviště.</li>
+</ul>
+</li>
+
+
+<li id="p3" class="nr">
+<h3>Jaké plné texty se ukládají do IR AV?</h3>
+<p>Institucionální repozitář  AV ČR slouží k archivaci publikovaných zaměstnaneckých děl.</p>
+<p>Pod pojmem <strong>zaměstnanecké dílo </strong>rozumíme dílo, které „autor vytvořil ke splnění svých povinností vyplývajících z pracovněprávního či služebního vztahu k zaměstnavateli nebo z pracovního vztahu mezi družstvem a jeho členem“.<br> Podle současného autorského zákona (Zákon č. 121/2000 Sb.) náleží u zaměstnaneckého díla autorovi osobnostní autorská práva, ale „není-li sjednáno jinak, zaměstnavatel vykonává svým jménem a na svůj účet <strong></strong>autorova majetková práva“. Vykonává-li tedy zaměstnavatel majetková práva autorská, má se za to, že autor svolil ke zveřejnění díla, jeho úpravám, zpracování, překladu, uvádění díla na veřejnost pod jménem zaměstnavatele, nebylo-li dohodnuto s autorem jinak.</p>
+</li>
+
+<li id="p4" class="nr">
+<h3>Jaká je metodika ukládání plných textů?</h3>
+<p>Metodickou podporu při ukládání plných textů zajišťuje Knihovna AV ČR. Metodické pokyny pro zpracovatele a vědecké pracovníky, kteří mají vytvořen účet &#8222;<a rel="external" href="https://www.lib.cas.cz/asep/pro-autory/uzivatelske-ucty/">myASEP</a>&#8220; poskytne zpracovatel pracoviště. </p>
+</li>
+
+<li id="p5" class="nr">
+<h3>Jak poznám, že je plný text uložen u záznamu?</h3>
+<p>Připojený plný text je zveřejněn v on-line katalogu Institucionálního repozitáře AV ČR.</p>
+<p>U každého plného textu jsou zobrazeny informace o jeho dostupnosti, velikosti souboru, počtu stažení a verzi.</p>
+<p><img class="img-responsive" src="https://www.lib.cas.cz/asep/web/obr/I_PT.bmp" alt="PT v IPAC" width="698" height="366"/></p>
+</li>
+
+<li id="p6" class="nr">
+<h3>Za jakých podmínek mohu získat plný text?</h3>
+<p>Existují čtyři možnosti uložení plného textu v Institucionálním repozitáři AV ČR.</p>
+<p><strong>Veřejně přístupný</strong> – plný text díla je přístupný pro všechny uživatele Institucionálního repozitáře AV ČR. (přístup povolen)</p>
+<p><strong>Veřejně přístupný s embargem</strong> – plný text díla bude přístupný pro všechny uživatele až po uplynutí určité doby. Do této doby je na vyžádání.</p>
+<p><strong>Přístupný pro ústav</strong> – plný text díla je přístupný přihlášeným zaměstnancům pracoviště, na kterém dílo vzniklo, pro ostatní uživatele je na vyžádání.</p>
+<p><strong>Nepřístupný</strong> – plný text díla je přístupný pouze zpracovateli daného pracoviště a autorovi, který plný text vložil, pro ostatní uživatele je na vyžádání.</p>
+</li>
+
+<li id="p7" class="nr">
+<h3>Jaká jsou pravidla pro nakládání se staženými plnými texty?</h3>
+<p>Díla uložená v Institucionálním repozitáři <ipac:abbr lang="cs-CZ" title="Akademie věd České republiky">AV ČR</ipac:abbr> jsou chráněna zákonem č. 121/2000 Sb., o právu autorském, o právech souvisejících s právem autorským a o změně některých zákonů (autorský zákon), ve znění pozdějších předpisů (dále jen „autorský zákon“).</p>
+<p>Uživatel je oprávněn užít toto dílo <strong>pouze pro svou osobní</strong> potřebu za podmínky, že účelem užití není dosažení přímého nebo nepřímého hospodářského nebo obchodního prospěchu.</p>
+<p>Uživatel je dále oprávněn užít dílo v mezích bezúplatné zákonné <strong>citační licence</strong> podle § 31 autorského zákona za podmínky, že bude uvedeno jméno autora, název díla a pramen.<br>§ 31 autorského zákona umožňuje:</p>
+<ol>
+<li>užít v odůvodněné míře výňatky ze zveřejněných děl jiných autorů ve svém díle,</li>
+<li>užít výňatky z díla nebo drobná celá díla pro účely kritiky nebo recenze vztahující se k takovému dílu, vědecké či odborné tvorby, za podmínky, že takové užití bude v souladu s poctivými zvyklostmi a v rozsahu vyžadovaném konkrétním účelem,</li>
+<li>užít dílo při vyučování pro ilustrační účel nebo při vědeckém výzkumu, jejichž účelem není dosažení přímého nebo nepřímého hospodářského nebo obchodního prospěchu, pokud užitím nebude přesažen rozsah odpovídající sledovanému účelu.</li>
+</ol>
+<p>Uživatel může dílo užít za podmínky, že toto užití není rozporu s běžným způsobem užití díla a tímto užitím díla nejsou nepřiměřeně dotčeny oprávněné zájmy autora.</p>
+<p>Užít dílo jinak může uživatel jen s předchozím souhlasem oprávněného nositele autorových majetkových práv k dílu.</p>
+</li>
+
+</ol>
+

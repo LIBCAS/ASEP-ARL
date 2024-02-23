@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="20" zv="Cache for Windows (Intel) 5.2 (Build 329U)" ts="2007-07-27 11:25:59">
+<Class name="CAV.IF2005">
+<ClassType>persistent</ClassType>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%Persistent</Super>
+<TimeCreated>60838,39687</TimeCreated>
+
+<Property name="Nazev">
+<Type>%String</Type>
+<Parameter name="TRUNCATE" value="1"/>
+</Property>
+
+<Property name="ISSN">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="10"/>
+<Parameter name="TRUNCATE" value="1"/>
+</Property>
+
+<Property name="IF">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="10"/>
+<Parameter name="TRUNCATE" value="1"/>
+</Property>
+
+<Property name="Done">
+<Type>%Integer</Type>
+</Property>
+
+<Index name="ISSNIndex">
+<Properties>ISSN</Properties>
+</Index>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^CAV.IF2005D</DataLocation>
+<DefaultData>IF2005DefaultData</DefaultData>
+<IdLocation>^CAV.IF2005D</IdLocation>
+<IndexLocation>^CAV.IF2005I</IndexLocation>
+<StreamLocation>^CAV.IF2005S</StreamLocation>
+<Data name="IF2005DefaultData">
+<Structure>listnode</Structure>
+<Subscript/>
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>IF</Value>
+</Value>
+<Value name="3">
+<Value>ISSN</Value>
+</Value>
+<Value name="4">
+<Value>Nazev</Value>
+</Value>
+<Value name="5">
+<Value>Done</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

@@ -1,0 +1,10 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:aside>
+<ipac:asidepart title=#(..txg("RELATED_PAGES"))#>
+<li id="nav1-cavdelete" class="nav-item"><ipac:a class="nav-link active" op="cavdelete" restore><ipac:atext/></ipac:a></li>
+<csp:if condition=(data("ISET")'="")>
+<li id="nav1-result" class="nav-item"><ipac:a class="nav-link" op="result" rel="nofollow" restore><ipac:atext/></ipac:a></li>
+</csp:if>
+</ipac:asidepart>
+</ipac:aside>

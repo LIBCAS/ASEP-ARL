@@ -1,0 +1,13 @@
+{
+    "theme": "default",
+    "dest": "../temp/sassdoc/ipac/",
+    "title": "Dokumentace SASS pro ARL",
+    "homepage": "https://www.cosmotron.cz/",
+    "package": "../package.json",
+    "verbose": "true",
+    "version": "4",
+    "display": {
+        "alias": "true",
+        "watermark": "false"
+    }
+}

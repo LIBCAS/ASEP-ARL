@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-11 08:49:29">
+<Class name="content.order">
+<Description><![CDATA[
+<pre> Zmena poradi souboru pomoci drag & drop
+
+11.04.23 ln; setupAll zakomentovan proti nechtenemu spusteni pri upgrade
+03.05.22 ln; metoda setupAll
+08.04.22 ln; rank trideni pres api selectRecAll
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66575,31756.8668569</TimeChanged>
+<TimeCreated>66092,30712.532447</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contorder</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("idx,iset")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("IDX")=$$$GETREQVAR("idx")
+  s data("ACTION") = $$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID)
+  s data("SAVE")=$$$GETREQVAR("save")
+  s data("ISET")=$$$GETREQVAR("iset")
+  
+  s idx=data("IDX")
+  if idx="" {
+    s data("ERRORS")=..tx("CONTSERERR1")
+    s data("EXIT")=1
+    q
+  }
+  
+  if '##class(i2.dblink).recordReadLX(.handle,idx,"T") {
+    s data("ERRORS")=..tx("CONTSERERR2")_": "_idx
+    s data("EXIT")=1
+    q
+  }
+  s data("CLASS")=$$$HandleClass(handle)
+  s data("T001")=$$$HandleT001(handle)
+  
+  q:'..read(.data)
+  
+  if data("SAVE") {
+    d ..process(.data)  
+  }
+  
+  ;d ..test(.data)
+  
+  d ..userData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="read">
+<Description><![CDATA[
+<pre> Nacteni souboru do uzlu "CONTENT"
+
+08.04.22 ln; rank trideni pres api selectRecAll
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  k data("CONTENT")
+  
+  d ##class(content.api).selectRecAll(.output,data("CLASS"),data("T001"))
+  q:'$d(output) 0
+  
+  s item="", prank=""
+  for { s item=$o(output(item),-1) q:item=""
+    s repo=output(item,"repository")
+    s key=output(item,"key")
+    s mode=##class(content.api).engineRead(repo,key,.array)
+    continue:'mode
+    
+    s data("REPO")=repo
+    s crank=$g(array("crank"))
+    /*if crank="" { ; test
+	 s crank=..getRanks(prank)
+	  s array("crank")=crank
+	  s obj=##class(content.engine).open(repo,key)
+	  d ##class(content.engine).set(.array,obj)
+	  s data("WRITE",key)=obj.%Id()_":"_obj.%Save()
+    }*/
+    
+    m data("CONTENT",item)=array
+    s prank=crank
+  }
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="process">
+<Description><![CDATA[
+<pre> Zpracovani zmen poradi a jim ulozen rank
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s direction=-1
+  s:$$$I2isOp("CONTFIFO") direction=1
+  
+  s node="", seq=1
+  for { s node=$o(%request.Data("key",node),direction,val) q:node=""
+    s new(seq)=val
+    s seq=seq+1
+  }  
+  m data("NEW")=new
+  
+  s node="", seq=1
+  for { s node=$o(data("CONTENT",node),direction) q:node=""
+    s old(seq)=data("CONTENT",node,"key")_","_data("CONTENT",node,"crank")
+    s seq=seq+1
+  }
+  m data("OLD")=old
+  
+  ;w !,"<pre>"
+  d ..unify(.old,.new,.ch)
+  ;w !
+  ;zw ch
+  ;w !,"</pre>"
+  m data("BCHANGES")=ch
+  
+  s node=""
+  for { s node=$o(ch(node),1,val) q:node=""
+    s obj=##class(content.engine).open(data("REPO"),node)
+    s obj.CRank=val
+    d obj.Array.SetAt(val,"crank")
+    d obj.%Save()
+  }
+  
+  d ..read(.data)
+]]></Implementation>
+</Method>
+
+<Method name="test">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[  m data("CONTENT")=^lnrank
+]]></Implementation>
+</Method>
+
+<Method name="testgen">
+<Description>
+d ##class(content.order).testgen()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>count=10</FormalSpec>
+<Implementation><![CDATA[
+  ;#define a(%c) $case(%c,"a":0,"b":1,"c":2,"d":3,"e":4,"f":5,"g":6,"i":7,"j":8,"k":9,"l":10,"m":11,"n":12,"o":13,"p":14,"q":15,"r":16,"s":17,"t":18,"u":19,"v":20,"w":21,"x":22,"y":23,"z":24,"0":25,"1":26,"2":27,"3":28,"4":29,"5":30,"6":31,"7":32,"8":33,"9":34,".":35,";":36,"?":37,"!":38,":":39,"""":40,"-":41,"_":42,"|":43,"/":44,"\":45,"(":46,")":47,"[":48,"]":49,"{":50,"}":51,"&":52,"@":53,"$":54,"=":55,"+":56,"*":57,"#":58,"`":59,"^":60,"~":61,:-1)
+  #define a(%c) $case(%c,"A":0,"B":1,"C":2,"D":3,"E":4,"F":5,"G":6,"I":7,"J":8,"K":9,"L":10,"M":11,"N":12,"O":13,"P":14,"Q":15,"R":16,"S":17,"T":18,"U":19,"V":20,"W":21,"X":22,"Y":23,"Z":24,"0":25,"1":26,"2":27,"3":28,"4":29,"5":30,"6":31,"7":32,"8":33,"9":34,".":35,";":36,"?":37,"!":38,":":39,"""":40,"-":41,"_":42,"|":43,"/":44,"\":45,"(":46,")":47,"[":48,"]":49,"{":50,"}":51,"&":52,"@":53,"$":54,"=":55,"+":56,"*":57,"#":58,"`":59,"^":60,"~":61,:-1)
+    
+  s rank=""
+  for i=1:1:count {
+    s array(i,"key")=$r(100000000000)
+    s array(i,"type")="content"
+    s array(i,"extension")="txt"
+    s array(i,"description")=""
+    s array(i,"size")=$r(10000000)
+    s array(i,"humansize")=##class(content.human).sizeSI(array(i,"size"))
+    s rank=..getRanks(rank)
+    s array(i,"crank")=rank
+    s array(i,"origname")=rank_".txt"
+    
+    s a(" "_rank)=i ;_"|"_(($$$a($e(rank))*62)+$$$a($e(rank,2)))
+  }
+  zw a
+
+  b
+  k ^lnrank
+  m ^lnrank=array
+]]></Implementation>
+</Method>
+
+<Method name="getRanks">
+<Description><![CDATA[
+<pre> vraci rank/y uprostred mezi ranky first a second
+pokud je second "" / neuvedeny, vraci rank nasledujici za first 
+prvni vkladane polozce dat first prazdny
+
+w ##class(content.order).getRanks("")
+w ##class(content.order).getRanks("","AAAAAAAACB",10)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>first:%String,second:%String="",count=1</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  ;#define a(%c) $case(%c,"a":0,"A":1,"b":2,"B":3,"c":4,"C":5,"d":6,"D":7,"e":8,"E":9,"f":10,"F":11,"g":12,"G":13,"h":14,"H":15,"i":16,"I":17,"j":18,"J":19,"k":20,"K":21,"l":22,"L":23,"m":24,"M":25,"n":26,"N":27,"o":28,"O":29,"p":30,"P":31,"q":32,"Q":33,"r":34,"R":35,"s":36,"S":37,"t":38,"T":39,"u":40,"U":41,"v":42,"V":43,"w":44,"W":45,"x":46,"X":47,"y":48,"Y":49,"z":50,"Z":51,"0":52,"1":53,"2":54,"3":55,"4":56,"5":57,"6":58,"7":59,"8":60,"9":61,".":62,";":63,"?":64,":":65,"-":66,"_":67,"|":68,"/":69,"\":70,"[":71,"]":72,"<":73,">":74,"{":75,"}":76,"@":77,"=":78,"`":79,"^":80,"~":81,"'":-1)
+  ;#define c(%c) $case(%c,0:"a",1:"A",2:"b",3:"B",4:"c",5:"C",6:"d",7:"D",8:"e",9:"E",10:"f",11:"F",12:"g",13:"G",14:"h",15:"H",16:"i",17:"I",18:"j",19:"J",20:"k",21:"K",22:"l",23:"L",24:"m",25:"M",26:"n",27:"N",28:"o",29:"O",30:"p",31:"P",32:"q",33:"Q",34:"r",35:"R",36:"s",37:"S",38:"t",39:"T",40:"u",41:"U",42:"v",43:"V",44:"w",45:"W",46:"x",47:"X",48:"y",49:"Y",50:"z",51:"Z",52:"0",53:"1",54:"2",55:"3",56:"4",57:"5",58:"6",59:"7",60:"8",61:"9",62:".",63:";",64:"?",65:":",66:"-",67:"_",68:"|",69:"/",70:"\",71:"[",72:"]",73:"<",74:">",75:"{",76:"}",77:"@",78:"=",79:"`",80:"^",81:"~",-1:"'")
+  
+  #define a(%c) $case(%c,"A":0,"B":1,"C":2,"D":3,"E":4,"F":5,"G":6,"I":7,"J":8,"K":9,"L":10,"M":11,"N":12,"O":13,"P":14,"Q":15,"R":16,"S":17,"T":18,"U":19,"V":20,"W":21,"X":22,"Y":23,"Z":24,"0":25,"1":26,"2":27,"3":28,"4":29,"5":30,"6":31,"7":32,"8":33,"9":34,".":35,";":36,"?":37,"!":38,":":39,"""":40,"-":41,"_":42,"|":43,"/":44,"\":45,"(":46,")":47,"[":48,"]":49,"{":50,"}":51,"&":52,"@":53,"$":54,"=":55,"+":56,"*":57,"#":58,"`":59,"^":60,"~":61,:-1)
+  #define c(%c) $case(%c,0:"A",1:"B",2:"C",3:"D",4:"E",5:"F",6:"G",7:"I",8:"J",9:"K",10:"L",11:"M",12:"N",13:"O",14:"P",15:"Q",16:"R",17:"S",18:"T",19:"U",20:"V",21:"W",22:"X",23:"Y",24:"Z",25:"0",26:"1",27:"2",28:"3",29:"4",30:"5",31:"6",32:"7",33:"8",34:"9",35:".",36:";",37:"?",38:"!",39:":",40:"""",41:"-",42:"_",43:"|",44:"/",45:"\",46:"(",47:")",48:"[",49:"]",50:"{",51:"}",52:"&",53:"@",54:"$",55:"=",56:"+",57:"*",58:"#",59:"`",60:"^",61:"~",:"<")
+  
+  ;s alphaSize=126-40+1, offset=39, pow=1, diff=0, from=0, push=0
+  ;s alphaSize=126-$a("-")+1, offset=$a("-")-1, pow=1, diff=0, from=0, push=0
+  ;s alphaSize=3, offset=$a("a")-1
+  ;s just=$c(offset+1), ret=""
+  s alphaSize=62, pow=1, diff=0, from=0, push=0, just=$$$c(0), ret=""
+    
+  if second="" { 
+    s:first="" first=$tr($j("",12)," ",just) ; 7 ; 11
+    s push=2000000000000000  ; pres 25000*alphaSize ranku na zaznam
+    ;s push=100  ; 1000
+  } else {
+    q:(" "_second)']](" "_first) ""
+  }
+    
+  // Make positions equal
+  s first=first_$tr($j("",$l(second)-$l(first))," ",just)
+  s second=second_$tr($j("",$l(first)-$l(second))," ",just)
+  s sec=second
+  
+  for i=$l(first):-1:1 {
+    s f=$$$a($e(first,i)), s=$$$a($e(sec,i))
+    s:s<f s=s+alphaSize, x=$$$a($e(sec,i-1)), $e(sec,i-1)=$$$c(x-1)
+    s diff=s-f*pow+diff, from=f*pow+from  ; f-offset-1*pow+from
+    s pow=pow*alphaSize
+  }
+  s:push diff=push*2
+  
+  while diff<(count+1) {
+    s diff=diff*alphaSize, from=from*alphaSize
+    s first=first_"a" ; prodlouzeni delky
+    b ; xx
+  } 
+  
+  s step=diff\(count+1), to=from+diff
+  
+  for i=1:1:count {
+    ;s from=from+step, goal=from, new="", to=goal
+    s to=to-step, goal=to, new=""
+    do {
+      s new=$$$c(goal#alphaSize)_new ; +offset+1
+      s goal=goal\alphaSize
+    } while goal
+    s ret=$tr($j(new,$l(first))," ",just)_","_ret
+  }
+  
+  q $e(ret,1,*-1)
+]]></Implementation>
+</Method>
+
+<Method name="unify">
+<Description><![CDATA[
+<pre> Snaha nalezt minimalni pocet souboru se zmenenym poradim
+old a new musi byt serazene od nejnovejsich
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&old,&new,*changes]]></FormalSpec>
+<Implementation><![CDATA[
+  ;zw old
+  ;w !
+  
+  s node="" ; stabilizovat polozky co se nepohnuly
+  for { s node=$o(new(node),1,key) q:node=""
+    s val=old(node)
+    s:$p(val,",")=key new(node)=val    
+  }
+  ;w "stabilizace:",!
+  ;zw new
+  
+  s node="", last="" ; pomocna pole a1 a a2
+  for { s node=$o(old(node),1,val) q:node=""
+    s key=$p(val,",")
+    s a1(key)=last_","_$p(val,",",2)
+    s last=key
+    s a2(key)=node
+  }
+  ;w !
+  ;zw a1
+  ;w !
+  ;zw a2
+  
+  s node="" ; v a2 nechchat jen ty co nejsou v new
+  for { s node=$o(new(node),1,val) q:node=""
+    s key=$p(val,",")
+    k a2(key) 
+  }
+  ;w !,"a2 nechchat jen ty co nejsou v new",!
+  ;zw a2
+  
+  s node="", seq=$o(new(""),-1) ; do new pridat co prebyva v old (stabilizovane)
+  for { s node=$o(a2(node),1,val) q:node=""
+    s seq=seq+1
+    s new(seq)=old(val)
+  }
+  ;;w !,"do new pridat co prebyva v old (stabilizovane)",!
+  ;;zw new
+  
+  s gglob=1 ; nalezeni skupin, jednoclene rovnou vyradit jako presunute
+  s node=$o(new(""),1,val), len=1, first=node, prior=node, last=$p(val,",")
+  for { s node=$o(new(node),1,val) q:node=""
+    s key=$p(val,",")
+    if $p(a1(key),",")=last {
+      s len=len+1, last=key
+    } else {
+      if len>1 {
+        s g(len,gglob)=first_","_prior
+        s g1(gglob)=len
+        s gglob=gglob+1
+      } 
+      elseif '$f(new(prior),",") { 
+        s new(prior)=last_",m" ; move
+      } 
+      s first=node, len=1, last=key
+    }
+    s prior=node
+  }
+  if len>1 {
+	s g(len,gglob)=first_","_prior, g1(gglob)=len
+  }
+  elseif len=1 {
+    s:'$f(new(prior),",") new(prior)=last_",m" ; move
+  }
+  ;zw g
+  ;w !
+  ;zw g1
+  ;w !
+  
+  ; spojit navazujici skupiny s nezmenenym poradim
+  s node="", from="", to="", state=0
+  for { s node=$o(g1(node),1,len) q:node=""
+    s val=g(len,node)
+    s from1=$p(val,","), to1=$p(val,",",2)
+    s:from'="" key=$p(new(from),","), key1=$p(new(from1),",")
+    ;w !,$g(from),",",$g(to),",",$g(from1),",",$g(to1),",",$g(key),",",$g(key1),","
+    if (from'="") && (to+1=from1) && ($p(a1(key1),",",2) ]] $p(a1(key),",",2)) {
+	  ;w "bingo"
+	  s state=1
+      for i=from:1:to {
+        s keyx=$p(new(i),",")
+        s $p(new(i),",",2)=$p(a1(keyx),",",2)        
+      }
+      ;b ; ugh
+      s from=from1, to=to1
+    } else {
+      if state {
+        ;w "add"
+        for i=from:1:to {
+          s keyx=$p(new(i),",")
+          s $p(new(i),",",2)=$p(a1(keyx),",",2)
+        }
+      }
+      s from=from1, to=to1, state=0
+    }
+  }
+  if state {
+    ;w !,"end"
+    for i=from:1:to {
+      s key=$p(new(i),",")
+      s $p(new(i),",",2)=$p(a1(key),",",2)
+    }
+  }
+  ;w !
+  ;zw new
+  
+  
+  s len="" ; vyhodnoceni skupin od nejvetsi (male se presunuji)
+  for { s len=$o(g(len),-1) q:len=""
+    s grp=""
+    for { s grp=$o(g(len,grp),1,val) q:grp=""
+      s from=$p(val,","), to=$p(val,",",2)
+      continue:$f(new(from),",") ; stable nebo move
+      
+      s state="stable", tmp=""
+      s tmp2=$o(new(from),-1,tmp)
+      if len<6 {
+        s state="move" ; TODO vetsi sofistikovanost
+      }
+      elseif $f(tmp,",") && ($p(tmp,",",2)'="m") {
+        s state="move"
+      } else {
+        s tmp2=$o(new(to),1,tmp)
+        if $f(tmp,",") && ($p(tmp,",",2)'="m") {
+          s state="move"
+        }
+      }      
+      ;w !,"|",state,"|",grp
+      s node=from-1 ; aktualizace stavu new pro vsechny polozeky skupiny
+      for { s node=$o(new(node),1,key) q:node=""
+        b:$f(key,",") ; zatim pro jistotu
+        if state="stable" {
+          s $p(new(node),",",2)=$p(a1(key),",",2)
+        } else {
+          s $p(new(node),",",2)="m"
+        }
+        q:node=to
+      }
+      
+    }
+  }
+  
+  ; prirazeni ranku presunutym polozkam
+  s node="", len=0, start="", prior=""
+  for { s node=$o(new(node),1,val) q:node=""
+    s skey=$p(val,",",2)
+    if skey="m" {
+      s:'len start=node
+      s len=len+1
+    } 
+    elseif len {
+      s keys=..getRanks(prior,skey,len), seq=1
+      for i=start:1:node-1 {
+        s changes($p(new(i),","))=$p(keys,",",seq)
+        s $p(new(i),",",2)=$p(keys,",",seq), seq=seq+1        
+      }
+      
+      s prior=skey, len=0      
+    } else {
+      s prior=skey, len=0
+    }
+  }
+  
+  if len { ; rank pro presunute polozky na konci
+    s node=start-1, skey=prior
+    for { s node=$o(new(node),1,val) q:node=""
+      s skey=..getRanks(skey)
+      s changes($p(val,","))=skey
+      s $p(new(node),",",2)=skey
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="setup">
+<Description><![CDATA[
+<pre> globalka pro nastaveni ranku pro soubory zaznamu v aktivnim selectu
+nutne po obnoveni smazaneho souboru
+TODO: regenerace
+
+d ##class(content.order).setup()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  q:'##class(User.Util).XcheckActiveList()
+  s recs=0, fixed=0, saved=0  
+  
+  s rid="", recs=0
+  f { s rid=$o(^$$$ListsG($$$ListsActiveSel,$j,rid)) q:rid=""
+    s class=##class(User.MARC).getCLASS(rid)
+    continue:class="CmRecycled"
+    s t001=##class(User.MARC).getT001(rid)    
+    continue:'##class(User.MARC).readX(.handle,class,t001)
+    
+    s recs=recs+1, prank=""
+    //d ##class(content.api).selectRecAll(.output,class,t001)
+    s rset = ##class(%ResultSet).%New()
+    s rset.ClassName="content.metadata"
+    s rset.QueryName="RecAllStable"  ; ma spravne razeni od zacatku
+    d rset.Execute(class,t001)
+    
+    While (rset.Next(.sc)) {  
+      q:'$SYSTEM.Status.IsOK(sc)
+      
+      s id=rset.Data("ID")      
+      s obj=##class(content.metadata).%OpenId(id)
+      continue:obj.Version'="" ; po obnoveni smazaneho nutny ..setup()
+    
+    /*s item="", prank=""
+    f { s item=$o(output(item),-1) q:item=""
+      s repo=output(item,"repository")   ; ziskame repository
+      s key=output(item,"key")           ; klice
+  
+      continue:'##class(content.api).getBatch(.array,repo,key)
+      s obj=##class(content.engine).open(repo,key)
+      continue:'$isobject(obj)*/
+      
+      s fixed=fixed+1
+      s crank=..getRanks(prank)
+      s obj.CRank=crank
+      d obj.Array.SetAt(crank,"crank")
+      s res=obj.%Save()
+      
+      w !,"  ",obj.T001," - ",obj.CKey," - ",crank," - ",res
+      s:obj.%Save() saved=saved+1
+      s prank=crank
+    }
+  }
+  
+  w !," recs=",recs,", fixed=",fixed,", saved=",saved,!
+]]></Implementation>
+</Method>
+
+<Method name="exec">
+<Description><![CDATA[
+<pre> vykonny symbolic pro ..setupAll()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,ipref,&bChange]]></FormalSpec>
+<Implementation><![CDATA[
+  s bChange=0, repo=$zcvt(ipref,"L")_"repo"
+  s:ipref="Cav" repo="crepo1"
+  
+  s all=##class(User.MARC).getTagX(.handle,300,-1)
+  for i=1:1:$l(all,$c(10)) {
+    s line=$p(all,$c(10),i)
+    continue:line="" 
+    continue:##class(User.MARC).getSubTagStr(line,"a")'=repo
+    s class=##class(User.MARC).getSubTagStr(line,"d")
+    continue:class=""
+    
+    s mem(class)=""
+  }
+  
+  s class=""
+  for { s class=$o(mem(class)) q:class=""
+    w !, " ",class
+    d ##class(User.UtilSel).Xselect(class,0)    
+    w !," processing:"
+    
+    d ..setup()
+  }
+]]></Implementation>
+</Method>
+
+<Method name="setupAll">
+<Description><![CDATA[
+<pre> nastaveni/regenerace ranku vsem ictx
+d ##class(content.order).setupAll()
+
+11.04.23 ln; setupAll zakomentovan proti nechtenemu spusteni pri upgrade
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[  //d ##class(util.conv.base).run4AllTablesd(,"IMAGE_SERVER","##class(content.order).exec")
+]]></Implementation>
+</Method>
+</Class>
+</Export>

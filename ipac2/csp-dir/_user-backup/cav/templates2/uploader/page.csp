@@ -1,0 +1,63 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+<script language="cache" runat="server">
+s data("DESCRIPTION")=..tx("DESCRIPTION")_": "_"<cite>"_data("RECTITLE")_"</cite>"
+</script>
+<div id="outer" class="row#($s(..isOption("WIDELAYOUT")="1":" m-0",1:""))#">
+<div id="bside">
+<div id="inner" class="#($s(..isOption("WIDELAYOUT")="1":"container-fluid",1:"container"))#"><csp:if condition=(..getOption("BREADCRUMB")="in")><ipac:tpl page="parts" version="breadcrumb"/></csp:if>
+
+<h1>
+<csp:if condition=($g(data("REC_970b"))="DATA")>
+<ipac:txg param="PG_UPLOADER_TEXT2" />
+    <csp:else>
+<ipac:atext simple/>
+    </csp:if>
+</h1>
+
+<p class="summarypage">
+<csp:if condition=($g(data("REC_970b"))="DATA")>
+<ipac:tx param="DESCRIPTION2"/>
+    <csp:else>
+<ipac:tx param="DESCRIPTION"/>
+    </csp:if>
+: <cite>#($g(data("T001z")))#</cite><br>
+      <csp:if condition=($g(data("REC_970b"))'="DATA")>
+    <csp:if condition=('data("NODEMAIN"))>
+<ipac:tx param="HELP1"/>&nbsp; <a rel="external" href="#(..tx("HELPLINK"))###($g(data("DK")))#"><ipac:tx param="HELPLINK_T"></a>
+    <csp:else>
+<ipac:tx param="HELP1"/>&nbsp; <a rel="external" href="#(..tx("HELPLINK_DATA"))#"><ipac:tx param="HELPLINK_T"></a>
+    </csp:if>
+    <csp:if condition=($g(data("SHERPALINK")))>
+<a rel="external" href="https://v2.sherpa.ac.uk/romeo/issn/#(data("ISSN"))#/"><ipac:tx param="SHERPALINK_T"></a>
+    </csp:if>
+<ipac:tx param="HELP3" />
+     </csp:if>
+</p>
+
+<div>
+<p>#($g(data("RECTITLE_Z")))#</p>
+<p>#($g(data("DOI")))#</p>
+</div>
+
+    <ipac:report simple/>
+    <csp:if condition=$g(data("EXIT"))>
+		<ipac:tpl page="parts" version="erroraside"/>
+		<ipac:exit/>
+	</csp:if>
+
+<ipac:dtx param="CONTENT_UP"/>
+
+
+	<csp:if condition=('data("NODEMAIN"))>
+<ipac:tpl page="parts" version="tabs"/>
+	</csp:if>
+<ipac:tpl version="formsimple"/>
+
+<ipac:dtx param="CONTENT_DOWN"/>
+</div></div>
+
+<ipac:tpl version="aside"/>
+
+</div>
+
+<ipac:tpl version="jstemplate"/>

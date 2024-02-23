@@ -1,0 +1,34 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<div id="aside" class="navbar-expand-lg">
+<div class="collapse navbar-collapse" id="nav-aside">
+<aside aria-label="#(..txg("RELATED_PAGES"))#">
+
+<csp:if condition=($g(data("DATASET"))=1)>
+<ipac:asidepart title=#(..txg("OPERATION"))# id="cavoperation">
+<csp:if condition=($g(data("ZNewRecCav"))=1)><li class="nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="epca" param="recid=cav_un_epca*new&client_info=aRL i3 web client 1.0&language=#($$$GETLANGUAGE)#"><ipac:tx param="NEW_REC"/></ipac:sso></li></csp:if>
+<csp:if condition=($g(data("ZReportCavKont"))=1)><li class="nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="reports" param="rectables=cav_un_tablesd*REPORTS_TABLES_FORM_AUT&language=#($$$GETLANGUAGE)#"><ipac:tx param="KONT_REC"/></ipac:sso></li></csp:if>
+<csp:if condition=($g(data("ZReportCavExp"))=1)><li class="nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="reports" param="rectables=cav_un_tablesd*REPORTS_TABLES_FORM_ZPRAC&language=#($$$GETLANGUAGE)#"><ipac:tx param="RIV_REP"/></ipac:sso></li></csp:if>
+</ipac:asidepart>
+</csp:if>
+
+<ipac:tpl version="submenu"/>
+
+    <csp:if condition=(data("EASY")||$g(data("OLD_FACET")))>
+<ipac:tpl version="filters"/>
+    <csp:else>
+<div id="facetbox" class="#($s(data("NEWQUERY")&&data("IS_FACET"):"ajaxactive",1:"x"))#" data-text="#(..tx("FACETSLOADING"))#" data-ajax="#(..base(1))#iset=#(..encode($g(data("ISET"))))#&amp;st=ajax&amp;facet=1">
+        <csp:if condition=($d(data("FACETS"))||$d(data("FACET_OLD")))>
+<ipac:tpl version="filters"/>
+        </csp:if>
+</div>
+    </csp:if>
+    
+    <ipac:tpl page="parts" version="footeraside"/>
+</aside>
+
+<div id="newversionhtml" class="d-none">
+#(..txn("NEWVERSIONHTML"))#
+</div>
+
+</div></div>

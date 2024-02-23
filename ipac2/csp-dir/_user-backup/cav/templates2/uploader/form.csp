@@ -1,0 +1,82 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+    <csp:if condition=($g(data("REC_970b"))'="DATA")>
+
+<div class="row form-group" id="fg-accession#(node)#">
+<label for="accession#(node)#" class="col-form-label"><ipac:tx param="ACC"/>: <em>*</em></label>
+<div class="half fv-row">
+<select id="accession#(node)#" autofocus="autofocus" name="accession" class="form-control">
+    <ipac:loop1 param="UT_ASEP_ACCESS" load selected="#(..v("accession"))#">
+<option value="#(value1)#"#(selected1)#>#(text1)#</option>
+    </ipac:loop1>
+</select>
+</div>
+</div>
+
+<div class="row form-group calendar" id="fg-embargo#(node)#">
+    <csp:if condition=($g(data("463EMBARGO"))'="")>
+<p class="form-text"><ipac:tx param="EMABARGO_1"/> #(data("463EMBARGO"))# <ipac:tx param="EMABARGO_2"/></p>&nbsp;
+    </csp:if>
+    <csp:if condition=($g(data("POZNEMBARGO"))'="")>
+<p class="form-text">#(data("POZNEMBARGO"))#</p>
+    </csp:if>
+
+<label for="dayfrom#(node)#" class="col-form-label">#(..tx("DTZ"))#:</label>
+<div class="half fv-row date">
+<input type="text" id="dayfrom#(node)#" class="form-control clearable" inputmode="numeric" data-format="dd.MM.yyyy" placeholder="DD.MM.YYYY" name="dayfrom" value="#(..v("dayfrom"))#"/>
+</div>
+</div>
+
+<div class="row form-group" id="fg-version#(node)#">
+<label for="version#(node)#" class="col-form-label"><ipac:tx param="VER"/>: <em>*</em></label>
+<div class="half fv-row">
+<select id="version#(node)#" name="version" class="form-control">
+    <ipac:loop1 param="UT_ASEP_VERSION" load selected="#(..v("version"))#">
+<option value="#(value1)#"#(selected1)#>#(text1)#</option>
+    </ipac:loop1>
+</select>
+</div>
+</div>
+
+<div class="row form-group" id="fg-nusl#(node)#">
+<label for="nusl#(node)#" class="col-form-label"><ipac:abbr title="#(..tx("NUSLC"))#"><ipac:tx param="NUSL"/></ipac:abbr>: <em>*</em></label>
+<div class="half fv-row">
+<select id="nusl#(node)#" name="nusl" class="form-control">
+    <ipac:loop1 param="UT_ASEP_NUSL" load selected="#(..v("nusl"))#">
+<option value="#(value1)#"#(selected1)#>#(text1)#</option>
+    </ipac:loop1>
+</select>
+</div>
+</div>
+
+
+<div class="row form-group" id="fg-hodnoceni#(node)#">
+<label for="hodnoceni#(node)#" class="col-form-label"><ipac:tx param="HODNOCENI"/>:</label>
+<div class="half fv-row">
+<select id="hodnoceni#(node)#" name="hodnoceni" class="form-control">
+    <ipac:loop1 param="UT_ASEP_ANO_NE" load selected="#(..v("hodnoceni"))#">
+<option value="#(value1)#"#(selected1)#>#(text1)#</option>
+    </ipac:loop1>
+</select>
+</div>
+</div>
+
+
+<div class="row form-group" id="fg-recenze#(node)#">
+<label for="recenze#(node)#" class="col-form-label"><ipac:tx param="RECENZE"/>:</label>
+<div class="half fv-row">
+<select id="recenze#(node)#" name="recenze" class="form-control">
+    <ipac:loop1 param="UT_ASEP_ANO_NE" load selected="#(..v("recenze"))#">
+<option value="#(value1)#"#(selected1)#>#(text1)#</option>
+    </ipac:loop1>
+</select>
+</div>
+</div>
+
+<div class="row form-group" id="fg-description#(node)#">
+<label for="description#(node)#" class="col-form-label"><ipac:tx param="COMMENT"/>:</label>
+<div class="half fv-row">
+<textarea cols="30" class="form-control" rows="3" name="description" id="description#(node)#">#(..v("description"))#</textarea>
+</div>
+</div>
+    </csp:if>

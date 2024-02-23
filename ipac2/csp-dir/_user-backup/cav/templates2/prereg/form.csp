@@ -1,0 +1,140 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+    <csp:if condition=(data("HEADING")'="")>
+<div class="info">#(data("HEADING"))#</div>
+    </csp:if>
+
+<ipac:form id="#(data("PAGEID"))#-f" action="#(data("ACTION"))#" method="post">
+        <ipac:dtx param="FORM_UP"/>
+
+<p class="form-text">
+<ipac:a class="detail" op="privacy" data-modal-size="modal-lg" target="_blank"><ipac:txg param="PG_PRIVACY_TITLE"/></ipac:a><br>
+<span class="note-required"><ipac:txg param="FORM_NOTE_REQUIRED"/></span>
+</p>
+
+<fieldset class="container">
+<legend><ipac:tx param="OSOBNI"/></legend>
+
+    <ipac:tag param="100"/>
+    <ipac:iterate/>
+    <ipac:textfield subtag="a" options="R">
+<div class="row form-group">
+<label class="col-form-label">#(..ftx("PRIEZVISKO"))#: <em>*</em></label>
+<div class="half fv-row">
+<input type="text" autofocus="autofocus" class="form-control" required="required" autocomplete="family-name" value="#($s(data("POSTED"):data("value"),1:data("PRIEZVISKO")))#"
+data-fv-not-empty___message="#(..tx("ERR_SURNAME"))#">
+</div></div>
+    </ipac:textfield>
+
+    <ipac:textfield subtag="a" options="RMJ">
+<div class="row form-group">
+<label class="col-form-label">#(..ftx("MENO"))#: <em>*</em></label>
+<div class="half fv-row">
+<input type="text" class="form-control" required="required" autocomplete="given-name" value="#($s(data("POSTED"):data("value"),1:data("MENO")))#"
+ data-fv-not-empty___message="#(..tx("ERR_NAME"))#">
+</div></div>
+    </ipac:textfield>
+
+ <ipac:off>  
+    <ipac:textfield subtag="d" options="R">
+<div class="row form-group">
+<label class="col-form-label" for="dtnar">#(..ftx("DTNAR"))#: <em>*</em></label>
+<div class="half fv-row">
+<input type="text" class="form-control" required="required" id="dtnar" autocomplete="bday" value="#($s(data("POSTED"):data("value"),1:data("DTNAR")))#" aria-describedby="dtnar-desc"
+data-fv-not-empty___message="#(..tx("ERR_DTNAR"))#"
+data-fv-regexp="true" pattern="^(0[1-9]|1[0-9]|2[0-9]|3[01])([\.]{1})(0[1-9]|1[012])([\.]{1})[0-9]{4}$" data-fv-regexp___message="#(..tx("DTNAR_ERR"))#">
+<p class="form-text" id="dtnar-desc"><ipac:txg param="FORM_DATE_FORMAT"/></p>
+</div></div>
+    </ipac:textfield>
+
+    <ipac:select subtag="i" stable="STABLE_ISU_TITUL">
+<div class="row form-group">
+<label class="col-form-label">#(..ftx("AKADTIT"))#:</label>
+<div class="half fv-row">
+<select class="form-control" autocomplete="honorific-prefix">
+        <ipac:loop2 param="STABLE">
+<option value="#(..li2(2))#"#(..li2(1))#>#(..li2(3))#</option>
+        </ipac:loop2>
+</select>
+</div></div>
+    </ipac:select>
+
+    <ipac:select subtag="v" stable="STABLE_ISU_HODNOSTI">
+<div class="row form-group">
+<label class="col-form-label">#(..ftx("VEDHOD"))#:</label>
+<div class="half fv-row">
+<select class="form-control" autocomplete="honorific-suffix">
+        <ipac:loop2 param="STABLE">
+<option value="#(..li2(2))#"#(..li2(1))#>#(..li2(3))#</option>
+        </ipac:loop2>
+</select>
+</div></div>
+    </ipac:select>
+
+      <ipac:textfield subtag="g">
+<div class="row form-group">
+<label class="col-form-label" for="mobil">#(..ftx("MOBIL"))#:</label>
+<div class="half fv-row">
+<input type="tel" class="form-control clearable" placeholder="#($s(data("LANGINST")="1":"+421000000000",1:"+420000000000"))#" autocomplete="tel" inputmode="tel" pattern="#(..getOption("MOBIL_RE"))#" id="mobil" value="#($s(data("POSTED"):data("value"),1:data("MOBIL")))#"
+data-fv-regexp="true" data-fv-regexp___message="#(..tx("MOBIL_FORMAT"))#">
+</div></div>
+    </ipac:textfield>
+
+    <ipac:textfield subtag="f">
+<div class="row form-group">
+<label class="col-form-label" for="telf">#(..ftx("TEL"))#:</label>
+<div class="half fv-row">
+<input type="tel" class="form-control clearable" placeholder="#($s(data("LANGINST")="1":"+421000000000",1:"+420000000000"))#" id="telf" inputmode="tel" pattern="#(..getOption("TEL_RE"))#" value="#($s(data("POSTED"):data("value"),1:data("TEL")))#"
+data-fv-regexp="true" data-fv-regexp___message="#(..tx("TEL_FORMAT"))#">
+</div></div>
+    </ipac:textfield>
+</ipac:off>
+
+    <ipac:textfield subtag="e" options="R">
+<div class="row form-group">
+<label class="col-form-label">#(..ftx("EMAIL"))#: <em>*</em></label>
+<div class="half fv-row">
+<input type="email" class="form-control" required="required" autocomplete="email" inputmode="email" value="#($s(data("POSTED"):data("value"),1:data("EMAIL")))#"
+data-fv-email-address="true" data-fv-email-address___message="#(..tx("ERR_EMAIL_VALID"))#" data-fv-not-empty___message="#(..tx("ERR_EMAIL"))#">
+</div></div>
+    </ipac:textfield>
+</fieldset>
+
+    <ipac:note note="14.02.13 tt; uzivatelsky ciselnik">
+<fieldset class="container">
+<legend><ipac:tx param="DALSI"/></legend>
+
+        <ipac:tag param="600"/>
+        <ipac:iterate/>
+        <ipac:select subtag="b" stable="UT_WORKPLACE_PREREG" options="R">
+<div class="row form-group">
+<label class="col-form-label">#(..ftx("WORKPLACE"))#:<em>*</em></label>
+<div class="half fv-row">
+<select required="required"  class="form-control">
+            <ipac:loop2 param="STABLE">
+<option value="#(..li2(2))#"#(..li2(1))#>#(..li2(3))#</option>
+            </ipac:loop2>
+</select>
+</div></div>
+        </ipac:select>
+        </fieldset>
+</ipac:note>
+
+<ipac:tpl version="password" page="prereg"/>
+
+<ipac:tpl version="captcha" page="parts"/>
+
+    <ipac:dtx param="SEND_UP"/>
+
+
+<div class="submit">
+<button type="submit" class="btn btn-primary" id="btn-send" name="send" value="1"><ipac:tx param="SEND"/></button>
+<input type="hidden" name="send" value="1">
+<input type="hidden" name="op" value="#(data("OP_VALUE"))#">
+<input type="hidden" name="privacy" value="1">
+<input type="hidden" name="fnonce" value="#(data("FNONCE_VALUE"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
+</div>
+
+    <ipac:dtx param="FORM_DOWN"/>
+</ipac:form>

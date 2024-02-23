@@ -1,0 +1,1396 @@
+# @id CM_CONFIG AA_UN_TABLESD_CAV_TXT
+002    -
+002    (Pozn: $ICTX=CAV,$Ictx=Cav)
+002    -
+002    Subor pre $ICTX, ktory je mozne pouzit z IPAC1 a zaroven na serveri nacitat do [$Ictx]UnTablesd
+002    Tym padom sa da pouzit aj v klientovi. 
+002    NIE je ho potreba nacitavat do klienta via client_$ictx.ini pretoze sa da pouzit via "STX".
+002    -
+002    POZOR!!! Kedze pre zaznamy v $Ictx]UnTablesd je default, ze sa edituju mimo VCS-ko,
+002    ale tieto su editovane cez TXT subor musi KAZDY zaznam obsahovat info, z ktoreho suboru
+002    pochadza a ze sa edituje cez VCS. Dalej prefix databazy by vsade mal byt. 
+002    POZOR!!! nazov ciselnika musi byt CAV_UN_TABLESD nie CavUnTablesd!
+002             inak sa nenacita spravne v IPAC1
+002             na server nutne importovat s pouzitim parametra "class-CavUnTablesd"
+002    -
+002    04.12.15 tt; UN_POSKYT_EU: zalozeno
+002    03.07.14 tt; UN_T70XZ: doplnena hodnota A
+002    01.07.14 tt; UN_T70XU: doplneny ciselnik
+002    30.05.14 tt; UN_T70XZ: doplneny ciselnik
+002    05.02.14 tt; zalozeno UN_T970X5 aktualizace UN_T970X4
+002    07.02.13 tt; UN_T215C: zalozeny ciselnik kvuli zmenam v RIV 
+002    25.01.13 tt; UN_EPCA_RVO: pridana polozka NHU-C
+002    08.06.12 tt; UN_EPCA_RVO: upresneni ciselniku
+002    08.06.12 tt; UN_TC12D: zakomentovano I
+002    05.06.12 tt; UN_EPCA_RVO: zalozen ciselnik
+002    02.04.11 tt; UT_WORKPLACE: zmena nazvu pracoviste UEK-B
+002    01.04.11 tt; UN_POSKYT: upreven ciselnik
+002    01.04.11 tt; UT_COUNTRIES_CAV: zmena poradi
+002    31.03.11 tt; zmena zkratky u srbska
+002    17.02.11 tt; UN_TC12D: zmena ciselniku
+002    03.01.11 tt; UN_VYSKUM_ZAM_CAV: upraveny roky vyzkumnych zameru
+002    24.11.10 tt; pridano pracoviste UT_WORKPLACE a VZ
+002    10.06.10 tt; formalni uprava souboru
+002    01.03.10 tt; k vyzkumnemu zameru pribyly pracoviste
+002    29.10.09 tt; UT_COUNTRIES_CAV: odstranen z cisleniku 200    $$aWB$$bZápadní Berlín (do 1991)
+002    28.10.09 tt; UT_LANGUAGE_CAV: Presunuti nejvice pouzivanych jazyku na zacatek ciselniku 
+002    28.10.09 tt; UT_COUNTRIES_CAV: Presunuti nejvice pouzivanych zemi na zacatek ciselniku
+002    22.10.09 rs; nazov ciselnika musi byt CAV_UN_TABLESD nie CavUnTablesd!
+002    23.09.09 pb; UT_COUNTRIES_CAV: pridane kody SR a ME
+002    10.06.09 rs; zrusenie ciselnika UN_TC11O, nahradeny ciselnikom EPC_UN_TC11O z un_tables_epca.txt
+002                 (EPC_UN_TC11O sa nacitava na serveri do CavUnTablesd)
+002    15.04.09 tt; odmazany ciselniky pro C34L,N,M,Q,R
+002    18.03.09 rs; doplnenie $b do ciselnikov UN_T970X*
+002    13.03.09 pb; uprava UNA_T969F $f na Aktivní autor
+002    11.03.09 pb; uprava ciselnika UNA_T969F, UN_NEXT_PROCESSING_CAV - Generovany zaznam;
+002                 nove ciselniky UN_T970X1,2,3,4; UN_T970X zruseny
+002    05.03.09 pb; doplneny ciselnik UN_T970X, UNA_T969F
+002    20.02.09 rs; doplnenie BC-A, uprava textu 5-tich ustavov kt. sa spojili do BC-A (pridany text "do r. 2005")
+002    12.02.09 pb; presun UN_TABLES UN_NEXT_PROCESSING_CAV na CAV_UN_TABLESD UN_NEXT_PROCESSING_CAV;
+002                 UN_TABLES UT_RELATOR_CODE_SKR na CAV_UN_TABLESD UT_RELATOR_CODE_SKR;
+002                 UN_TC11O presunute z cm_config_cav.txt;
+002                 UN_TC34k presunute z cm_config_cav.txt
+002    10.02.09 rs; formalna uprava tx casti niektorych ciselnikov (zrusenie slovenskeho textu a prevod prveho pismena
+002                 na velke - zjednotenie formy zapisu)
+002    10.02.09 rs; presun X zaznamov z UnTablesd_cav.txt(povodny tables_cav.txt) sem viz. komentar
+002                 v subore UnTablesd_cav.txt
+002    20.05.08 rs; oprava nazvu databazy na CAV_* pre UN_TC11P,UN_TC12D
+002    20.05.08 rs; pridane UN_TC11P,UN_TC12D
+002    05.05.08 rs; oprava poradia AV0Z50520701 BTO-N (zaznamy maju byt podla abecedy)
+002    05.05.08 rs; oprava prazdneho riadku v UT_WORKPLACE (v tagu 002, chyba v MARC strukture)
+002    29.04.08 pb; doplneny ciselnik UT_WORKPLACE
+002    25.04.08 pb; aktualizacia ciselnika vyskumnych zamerov podla mailu od p.Dolezelovej (17.04.2008 10:46, cs21226)
+002    19.11.07 rs; aktualizacia ciselnika vyskumnych zamerov podla mailu od p.Dolezelovej (15.11.2007 15:22, cs20080)
+002    14.11.07 rs; ciselniky UT_COUNTRIES_CAV, UT_LANGUAGE_CAV presunute z cm_config_cav.txt do un_tablesd_cav.txt
+002    18.10.07 rs; zalozenie suboru
+###
+# @id CAV_UN_TABLESD UN_VYSKUM_ZAM_CAV
+002    Ciselnik vyskumnych zamerov pre CAV
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v [$Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    Historia: zaznam bol povodne umiestneny v cm_config_cav.txt/UT_V_ZAMER_CAV a zaroven v tables_cav.txt/UN_VYSKUM_ZAM
+002    ------------------------------------------------------------------------
+002    03.01.11 tt; upraveny roky vyzkumnych zameru
+002    01.03.10 tt; k vyzkumnemu zameru pribylo pracoviste.
+002    05.05.08 rs; oprava poradia AV0Z50520701 BTO-N (zaznamy maju byt podla abecedy)
+002    25.04.08 pb; aktualizacia podla mailu od p.Dolezelovej (17.04.2008 10:46, cs21226): pridany VZ CEZ:AV0Z50520701
+002    19.11.07 rs; aktualizacia podla mailu od p.Dolezelovej (15.11.2007 15:22, cs20080)
+002    18.10.07 rs; presun suboru do un_tablesd_cav.txt
+002    11.05.07 rs; poznamka o duplicite + zrovnanie verzii v cm_config/tables
+002    --
+002    |zaznamy maju byt podla abecedy (podla ustavu)
+002    |
+200    aCEZ:AV0Z8001916bARUB-Q
+200    aCEZ:AV0Z80010507bARUB-Q (2005-2011)
+200    aCEZ:AV0Z8002910bARU-G
+200    aCEZ:AV0Z80020508bARU-G (2005-2011)
+200    aCEZ:AV0Z1003909bASU-R
+200    aCEZ:AV0Z10030501bASU-R (2005-2011)
+200    aCEZ:AV0Z8077915bA-Z, MSUA-W
+200    aCEZ:AV0Z80770509bA-Z, MSUA-W (2005-2011)
+200    aCEZ:AV0Z5004920bBFU-R
+200    aCEZ:AV0Z50040507bBFU-R (2005-2011)
+200    aCEZ:AV0Z50040702bBFU-R (2007-2013)
+200    aCEZ:AV0Z50520701bBTO-N (2007-2013)
+200    aCEZ:AV0Z6005908bBU-J
+200    aCEZ:AV0Z60050516bBU-J (2005-2011)
+200    aCEZ:AV0Z5007907bENTU-I, BC-A
+200    aCEZ:AV0Z50070508bENTU-I, BC-A (2005-2011)
+200    aCEZ:AV0Z5011922bFGU-C
+200    aCEZ:AV0Z50110509bFGU-C (2005-2011)
+200    aCEZ:AV0Z5008914bFKU-U, UEM-P
+200    aCEZ:AV0Z9009908bFLU-F
+200    aCEZ:AV0Z90090514bFLU-F (2005-2011)
+200    aCEZ:AV0Z1010914bFZU-D
+200    aCEZ:AV0Z1010920bFZU-D
+200    aCEZ:AV0Z1010921bFZU-D
+200    aCEZ:AV0Z10100502bFZU-D (2005-2011)
+200    aCEZ:AV0Z10100520bFZU-D (2005-2011)
+200    aCEZ:AV0Z10100521bFZU-D (2005-2011)
+200    aCEZ:AV0Z10100522bFZU-D (2005-2011)
+200    aCEZ:AV0Z10100523bFZU-D (2005-2011)
+200    aCEZ:AV0Z3012916bGFU-E
+200    aCEZ:AV0Z30120515bGFU-E (2005-2011)
+200    aCEZ:AV0Z3013912bGLU-S
+200    aCEZ:AV0Z30130516bGLU-S (2005-2011)
+200    aCEZ:AV0Z6017912bHBU-Z, BC-A
+200    aCEZ:AV0Z60170517bHBU-Z, BC-A (2005-2011)
+200    aCEZ:AV0Z8015903bHIU-Y
+200    aCEZ:AV0Z80150510bHIU-Y (2005-2011)
+200    aCEZ:AV0Z7083919bKNAV-K
+200    aCEZ:AV0Z70830501bKNAV-K (2005-2011)
+200    aCEZ:AV0Z5020903bMBU-M
+200    aCEZ:AV0Z50200510bMBU-M (2005-2011)
+200    aCEZ:AV0Z7090911bMSU-R
+200    aCEZ:AV0Z70900502bMSU-R, MSUA-W (2005-2011)
+200    aCEZ:AV0Z1019905bMU-W
+200    aCEZ:AV0Z10190503bMU-W (2005-2011)
+200    aCEZ:MSM0021620846bNHU-C
+200    aCEZ:AV0Z7085904bNHU-N
+200    aCEZ:AV0Z70850503bNHU-N (2005-2011)
+200    aCEZ:AV0Z9021901bOU-W
+200    aCEZ:AV0Z90210515bOU-W (2005-2011)
+200    aCEZ:AV0Z6022909bPAU-O, BC-A
+200    aCEZ:AV0Z60220518bPAU-O, BC-A (2005-2011)
+200    aCEZ:AV0Z7025918bPSU-E
+200    aCEZ:AV0Z70250504bPSU-E (2005-2011)
+200    aCEZ:AV0Z9092920bSLU-S
+200    aCEZ:AV0Z90920516bSLU-S (2005-2011)
+200    aCEZ:AV0Z7028912bSOU-Z
+200    aCEZ:AV0Z70280505bSOU-Z (2005-2011)
+200    aCEZ:AV0Z00950701bSSC-A
+200    aCEZ:AV0Z4032918bUACH-T
+200    aCEZ:AV0Z40320502bUACH-T (2005-2011)
+200    aCEZ:AV0Z6093917bUBO-W
+200    aCEZ:AV0Z60930519bUBO-W (2005-2011)
+200    aCEZ:AV0Z9056905bUCL-M
+200    aCEZ:AV0Z90560517bUCL-M (2005-2011)
+200    aCEZ:AV0Z8033913bUDU-I
+200    aCEZ:AV0Z80330511bUDU-I (2005-2011)
+200    aCEZ:AV0Z5038910bUEB-Q
+200    aCEZ:AV0Z50380511bUEB-Q (2005-2011)
+200    aCEZ:AV0Z2057903bUE-C
+200    aCEZ:AV0Z20570509bUE-C, UT-L (2005-2011)
+200    aCEZ:AV0Z9058907bUEF-S
+200    aCEZ:AV0Z90580513bUEF-S (2005-2011)
+200    aCEZ:AV0Z6087904bUEK-B
+200    aCEZ:AV0Z60870520bUEK-B (2005-2011)
+200    aCEZ:AV0Z5039906bUEM-P
+200    aCEZ:AV0Z50390512bUEM-P (2005-2011)
+200    aCEZ:AV0Z50390703bUEM-P (2007-2013)
+200    aCEZ:AV0Z3042911bUFA-U, BC-A
+200    aCEZ:AV0Z30420517bUFA-U, BC-A (2005-2011)
+200    aCEZ:AV0Z4040901bUFCH-W
+200    aCEZ:AV0Z40400503bUFCH-W (2005-2011)
+200    aCEZ:AV0Z2041904bUFM-A
+200    aCEZ:AV0Z20410507bUFM-A (2005-2011)
+200    aCEZ:AV0Z2043910bUFP-V
+200    aCEZ:AV0Z20430508bUFP-V (2005-2011)
+200    aCEZ:AV0Z3086906bUGN-S
+200    aCEZ:AV0Z30860518bUGN-S (2005-2011)
+200    aCEZ:AV0Z2060917bUH-J
+200    aCEZ:AV0Z20600510bUH-J (2005-2011)
+200    aCEZ:AV0Z8059909bUHV-H, UEF-S
+200    aCEZ:AV0Z4072921bUCHP-M
+200    aCEZ:AV0Z40720504bUCHP-M (2005-2011)
+200    aCEZ:AV0Z4031919bUIACH-O
+200    aCEZ:AV0Z40310501bUIACH-O (2005-2011)
+200    aCEZ:AV0Z1030915bUIVT-O
+200    aCEZ:AV0Z10300504bUIVT-O (2005-2011)
+200    aCEZ:AV0Z9061902bUJC-A
+200    aCEZ:AV0Z90610518bUJC-A (2005-2011)
+200    aCEZ:AV0Z90610521bUJC-A (2005-2011)
+200    aCEZ:AV0Z1048901bUJF-V
+200    aCEZ:AV0Z10480505bUJF-V (2005-2011)
+200    aCEZ:AV0Z9062906bUKS-T, FLU-F
+200    aCEZ:AV0Z5051902bUMBR-M, BC-A
+200    aCEZ:AV0Z50510513bUMBR-M, BC-A (2005-2011)
+200    aCEZ:AV0Z5052915bUMG-J
+200    aCEZ:AV0Z50520514bUMG-J (2005-2011)
+200    aCEZ:AV0Z50520701bUMG-J (2007-2013)
+200    aCEZ:AV0Z4050913bUMCH-V
+200    aCEZ:AV0Z40500505bUMCH-V (2005-2011)
+200    aCEZ:AV0Z4055905bUOCHB-X
+200    aCEZ:AV0Z40550506bUOCHB-X (2005-2011)
+200    aCEZ:AV0Z6066911bUPB-H, BC-A
+200    aCEZ:AV0Z60660521bUPB-H, BC-A (2005-2011)
+200    aCEZ:AV0Z2065902bUPT-D
+200    aCEZ:AV0Z20650511bUPT-D (2005-2011)
+200    aCEZ:AV0Z2067918bURE-Y
+200    aCEZ:AV0Z20670512bURE-Y (2005-2011)
+200    aCEZ:AV0Z8063914bUSD-C
+200    aCEZ:AV0Z80630520bUSD-C (2005-2011)
+200    aCEZ:AV0Z3046908bUSMH-B
+200    aCEZ:AV0Z30460519bUSMH-B (2005-2011)
+200    aCEZ:AV0Z7068917bUSP-I
+200    aCEZ:AV0Z70680506bUSP-I (2005-2011)
+200    aCEZ:AV0Z2071913bUTAM-F
+200    aCEZ:AV0Z20710524bUTAM-F (2005-2011)
+200    aCEZ:AV0Z1075907bUTIA-B
+200    aCEZ:AV0Z10750506bUTIA-B (2005-2011)
+200    aCEZ:AV0Z2076919bUT-L
+200    aCEZ:AV0Z20760514bUT-L (2005-2011)
+200    aCEZ:AV0Z5045916bUZFG-Y
+200    aCEZ:AV0Z50450515bUZFG-Y (2005-2011)
+###
+# @id CAV_UN_TABLESD UT_COUNTRIES_CAV
+002    Ciselnik vyskumnych zamerov pre CAV
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    Historia: zaznam bol povodne umiestneny v cm_config_cav.txt
+002    ------------------------------------------------------------------------
+002    29.10.09 tt; odstranen z cisleniku 200    $$aWB$$bZápadní Berlín (do 1991)
+002    28.10.09 tt; Presunuti nejvice pouzivanych zemi na zacatek ciselniku 
+002    09.10.09 pb; zrusene predradene krajiny, zaradenie podla abecedneho poradia
+002    23.09.09 pb; pridane kody SR a ME
+002    14.11.07 rs; presun suboru do un_tablesd_cav.txt
+002    --
+200    aCZbÈeská republika
+200    aUSbSpojené státy americké
+200    aGBbVelká Británie
+200    aNLbNizozemí
+200    aDEbNìmecko (od r. 1991)
+200    aRUbRusko
+200    aAUbAustrálie
+200    aBEbBelgie
+200    aBYbBìlorusko
+200    aBAbBosna-Hercegovina
+200    aBGbBulharsko
+200    aCNbÈLR
+200    aMEbÈerná hora
+200    aCS1bÈeskoslovensko
+200    aDKbDánsko
+200    aEEbEstonsko
+200    aFIbFinsko
+200    aFRbFrancie
+200    aHRbChorvatsko
+200    aINbIndie
+200    aITbItálie
+200    aILbIzrael
+200    aJPbJaponsko
+200    aCAbKanada
+200    aCUbKuba
+200    aLTbLitva
+200    aLVbLotyšsko
+200    aLUbLucembursko
+200    aMXbMexiko
+200    aMNbMongolsko
+200    aDDbNDR (do r. 1990)
+200    aNObNorsko
+200    aNZbNovı Zéland
+200    aPTbPortugalsko
+200    aRObRumunsko
+200    aGRbØecko
+200    aSIbSlovinsko
+200    aESbŠpanìlsko
+200    aSEbŠvédsko
+200    aUAbUkrajina
+200    aVAbVatikán
+200    aAFbAfghánistán
+200    aALbAlbánie
+200    aDZbAlírsko
+200    aASbAmerická Samoa
+200    aADbAndorra
+200    aAObAngola
+200    aAIbAnguilla
+200    aAQbAntakrtida
+200    aAGbAntigua a Barbuda
+200    aARbArgentina
+200    aAMbArmenie
+200    aAWbAruba
+200    aAZbAzerbajdán
+200    aBSbBahamy
+200    aBHbBahrajn
+200    aBDbBangladéš
+200    aBBbBarbados
+200    aMMbBarma
+200    aBZbBelize
+200    aBJbBenin
+200    aBMbBermudy
+200    aBTbBhútánské království
+200    aBObBolívie
+200    aBWbBotswana
+200    aBVbBouvetùv ostrov
+200    aBRbBrazílie
+200    aIObBritské indickooceánské terit.
+200    aVGbBritské Panenské ostrovy
+200    aBNbBrunej Darussalam
+200    aBFbBurkina Faso
+200    aBIbBurundi
+200    aCTbCanton a Enderbury
+200    aCKbCookovy ostrovy
+200    aTDbÈad
+200    aDMbDominika
+200    aDObDominikánská republika
+200    aDJbDibutsko
+200    aEGbEgypt
+200    aECbEkvádor
+200    aERbEritrea
+200    aETbEtiopie
+200    aFObFaerské ostrovy
+200    aFKbFalklandy
+200    aFMbFederativní státy a Mikronésie
+200    aFJbFidi
+200    aPHbFilipíny
+200    aGFbFrancouzská Guayana
+200    aTFbFrancouzská jiní území
+200    aPFbFrancouzská Polynésie
+200    aGAbGabon
+200    aGMbGambie
+200    aGHbGhana
+200    aGIbGibraltar
+200    aGDbGrenada
+200    aGLbGrónsko
+200    aGEbGruzie
+200    aGPbGuadeloupe
+200    aGUbGuam
+200    aGTbGuatemala
+200    aGNbGuinea
+200    aGWbGuinea-Bissau
+200    aGYbGuyana
+200    aHTbHaiti
+200    aHMbHeardùv a MacDonaldùv o.
+200    aHNbHonduras
+200    aHKbHongkong 
+200    aCLbChile
+200    aIDbIndonésie
+200    aIQbIrák
+200    aIRbIrán
+200    aIEbIrsko
+200    aISbIsland
+200    aJMbJamajka
+200    aYEbJemen
+200    aZAbJihoafrická republika
+200    aGSbJiní Georgie a Jiní Sanwich. o.
+200    aYDbJiní Jemen
+200    aKRbJiní Korea
+200    aJTbJohnston I. 
+200    aJObJordánsko
+200    aKYbKajmanské ostrovy
+200    aKHbKamboda
+200    aCMbKamerun
+200    aCVbKapverdy
+200    aQAbKatar
+200    aKZbKazachstan
+200    aKEbKeòa
+200    aKIbKiribati
+200    aKPbKLDR
+200    aCCbKokosové ostrovy
+200    aCObKolumbie
+200    aKMbKomory
+200    aCGbKongo
+200    aCRbKostarika
+200    aKWbKuvajt
+200    aCYbKypr
+200    aKGbKyrgyzstán
+200    aLAbLaos
+200    aLSbLesotho
+200    aLBbLibanon
+200    aLRbLibérie
+200    aLYbLibye
+200    aLIbLichtenštejnsko
+200    aMObMacao
+200    aMGbMadagaskar
+200    aHUbMaïarsko
+200    aMKbMakedonie
+200    aMYbMalajsie
+200    aMWbMalawi
+200    aMVbMaledivy
+200    aMLbMali
+200    aMTbMalta
+200    aMAbMaroko
+200    aMHbMarshallovy ostrovy
+200    aMQbMartinik
+200    aMUbMauricius
+200    aMRbMauritánie
+200    aYTbMayotte
+200    aMIbMidwayské ostrovy
+200    aPCbMikronésie
+200    aMDbMoldavsko
+200    aMCbMonako
+200    aMSbMontserrat
+200    aMZbMosambik
+200    aMMbMyanmarskı svaz
+200    aNAbNamíbie
+200    aNRbNauru
+200    aNPbNepál
+200    aNTbNeutrální území
+200    aNEbNiger
+200    aNGbNigérie
+200    aNIbNikaragua
+200    aNUbNiue
+200    aANbNizozemské Antily
+200    aNFbNorfolk
+200    aNCbNová Kaledonie
+200    aOMbOmán
+200    aUMbOstrovy USA v Tichém o.
+200    aPKbPákistán
+200    aPWbPalau
+200    aPSbPalestina
+200    aPAbPanama
+200    aPZbPanamské prùpl. pásmo
+200    aVIbPanenské ostrovy (USA)
+200    aPGbPapua-Nová Guinea
+200    aPYbParaguay
+200    aPEbPeru
+200    aPNbPitcairnovy ostrovy
+200    aCIbPobøeí slonoviny
+200    aPLbPolsko
+200    aPRbPortoriko
+200    aATbRakousko
+200    aREbRéunion
+200    aGQbRovníková Guinea
+200    aRWbRwanda
+200    aPMbSaint Pierre a Miquelon
+200    aSVbSalvador
+200    aWSbSamoa
+200    aSMbSan Marino
+200    aSAbSaúdská Arábie
+200    aSNbSenegal
+200    aMPbSeverní Marianny
+200    aSCbSeychelly
+200    aSLbSierra Leone
+200    aSGbSingapur
+200    aSKbSlovenská republika
+200    aSObSomálsko
+200    aSUbSovìtskı svaz
+200    aAEbSpojené arabské emiráty
+200    aRSbSrbsko
+200    aCSbSrbsko a Èerná Hora (do r. 2006)
+200    aLKbSrí Lanka
+200    aCFbStøedoafrická republika
+200    aSDbSúdán
+200    aSRbSurinam
+200    aSHbSv. Helena
+200    aKNbSv. Kryštof
+200    aLCbSv. Lucie
+200    aSTbSv. Tomáš
+200    aVCbSv. Vincenc a Grenadiny
+200    aSZbSvazijsko
+200    aSYbSırie
+200    aSBbŠalomounovy ostrovy
+200    aSJbŠpicberky
+200    aCHbŠvıcarsko
+200    aTJbTádikistán
+200    aTZbTanzánie
+200    aTHbThajsko
+200    aTWbTchaj-wan
+200    aTGbTogo
+200    aTKbTokelau
+200    aTObTonga
+200    aTTbTrinidad a Tobago
+200    aTNbTunisko
+200    aTRbTurecko
+200    aTUbTurkmenistan
+200    aTCbTurks a Caicos
+200    aTVbTuvalu
+200    aUGbUganda
+200    aUYbUruguay
+200    aUZbUzbekistan
+200    aCXbVánoèní ostrovy
+200    aVUbVanuatu
+200    aVEbVenezuela
+200    aVNbVietnam
+200    aTPbVıchodní Timor
+200    aWKbWake I.
+200    aWFbWallisovy ostrovy
+200    aZRbZair
+200    aZMbZambie
+200    aEHbZápadní Sahara
+200    aXEbzemì EU (granty)
+200    aNQbzemì královny Maud
+200    aZWbZimbabwe
+005    20090923103414.2
+###
+# @id CAV_UN_TABLESD UT_LANGUAGE_CAV
+002    Ciselnik jazykov pre CAV
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    Historia: zaznam bol povodne umiestneny v cm_config_cav.txt
+002    ------------------------------------------------------------------------
+002    28.10.09 tt; Presunuti nejvice pouzivanych jazyku na zacatek ciselniku 
+002    19.10.09 pb; abecedne triedenie; zrusenie "mul"
+002    14.11.07 rs; presun suboru do un_tablesd_cav.txt
+002    --
+200    aczebèeština
+200    aengbangliètina
+200    agerbnìmèina
+200    afrebfrancouzština
+200    arusbruština
+200    aabababazština
+200    aabkbabchazština
+200    aadybadzghejština
+200    aafrbafrikaans
+200    aakhbachvaština
+200    aakkbakkadština
+200    aalbbalbánština
+200    aaltbaltajština
+200    aamhbamharština
+200    aarabarabština
+200    aarmbarménština
+200    aasabasámština
+200    aassbasyrština
+200    aayebázerbajdánština
+200    abalbbalúèština
+200    aburbbarmština
+200    abasbbaskiètina
+200    abaxbbaškirština
+200    abelbbìloruština
+200    abenbbengálština
+200    abhubbhútanština
+200    abihbbihárština
+200    abrebbretonština
+200    abulbbulharština
+200    abutbburajtština
+200    atsabcahurština
+200    agipbcikánština
+200    achebèeèenština
+200    achibèínština
+200    achkbèukètina
+200    achubèuvaština
+200    adanbdánština
+200    adarbdargština
+200    adunbdunganština
+200    aerzberzjanština
+200    aeskbeskymáètina
+200    aespbesperanto
+200    aestbestonština
+200    alambevenština(lamutština)
+200    atunbevenština(tunguzština)
+200    aewebeveština
+200    afarbfaerština
+200    afinbfinština
+200    afribfríština
+200    agaebgaelština
+200    agagbgagauzština
+200    ageobgruzínština
+200    aguabguaraní
+200    agujbgudarádština
+200    ahaubhauština
+200    ahinbhindština
+200    akhabchakaština
+200    aostbchantyjština
+200    ascrbchorvatština
+200    aibobiboština
+200    aindbindonéština
+200    aingbinguština
+200    aintbinterlingua
+200    airibirština
+200    asisbisiswati
+200    aicebislandština
+200    aitabitalština
+200    akambitelmenština
+200    ayakbjakutština
+200    ajapbjaponština
+200    ajavbjaváština
+200    ayorbjorubština
+200    ayukbjukagirština
+200    akabbkabardejština
+200    akalbkalmyètina
+200    akanbkanadština
+200    akaobkaraèajštinaabalkarština
+200    akapbkaraimština
+200    akaqbkarakalpaètina
+200    akarbkarelština
+200    acatbkatalánština
+200    akazbkazaština
+200    aquebkeèujština
+200    akhmbkhmerština
+200    akikbkikujština
+200    akirbkirgizština
+200    akinbkirundi
+200    azirbkomijština
+200    akorbkorejština
+200    akoybkorjaètina
+200    akumbkumyètina
+200    akurbkurdština
+200    alakblakština
+200    alaoblaoština
+200    alatblatina
+200    alazblazština
+200    alesblezgiština
+200    alinblingalština
+200    alitblitevština
+200    aletblotyština
+200    asorbluickásrbština
+200    ahunbmaïarština
+200    amacbmakedonština
+200    amajbmalajálamština
+200    amaibmalajština
+200    amagbmalgaština
+200    amalbmaltština
+200    avogbmansijština
+200    amarbmaráthština
+200    achhbmarijština
+200    aminbmegrelština
+200    amokbmokšanština
+200    amolbmoldavština
+200    amonbmongolština
+200    agolbnanajština
+200    anyabnanda
+200    ayurbnìnèina
+200    anepbnepálština
+200    agilbnivchština
+200    adutbnizozemština
+200    anogbnogajština
+200    anorbnorština
+200    ahebbnováhebrejština
+200    agrebnováøeètina
+200    aoccboccidental
+200    aossbosetština
+200    apunbpaòdabština
+200    apasbpaštština
+200    apembpermština
+200    aperbperština
+200    apolbpolština
+200    aporbportugalština
+200    arajbrádhasthánština
+200    arhabrétorománština
+200    arumbrumunština
+200    agrkbøeètinastará
+200    alapbsaami
+200    asambsamojština
+200    asanbsanskrt
+200    aselbselkupština
+200    asinbsinhalština
+200    aslobslovenština
+200    aslvbslovinština
+200    asombsomálština
+200    asotbsotho
+200    aserbsrbochorvatština
+200    asccbsrbština
+200    ahecbstaráhebrejština
+200    aoldbstaroslovìnština
+200    aswabsvahilština
+200    asvabsvanština
+200    ashobšorština
+200    aspabšpanìlština
+200    ashubšunghní
+200    aswebšvédština
+200    atabbtabasaránština
+200    atadbtádiètina
+200    atagbtagalština
+200    atalbtályština
+200    atambtamilština
+200    atarbtatarština
+200    acribtatarštinakrymská
+200    atatbtátština
+200    atelbtelugština
+200    athabthajština
+200    atibbtibetština
+200    aukrbukrajinština
+200    aturbtureètina
+200    atusbturkmenština
+200    asoybtuvština
+200    atwibvi
+200    audebudehejština
+200    avotbudmurština
+200    auigbujgurština
+200    aulcbulèština
+200    aurdburdština
+200    aoriburijština
+200    auzbbuzbeètina
+200    avepbvepština
+200    aviebvietnamština
+200    aflebvlámština
+200    awelbwaleština
+200    axhobxhosa
+200    azulbzulšitna
+200    ayidbidovština
+005    20090212113048.3
+###
+# @id CAV_UN_TABLESD UT_WORKPLACE
+002    Ciselnik pracovisk pre CAV
+002    * POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    * Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    * Obsah ciselnika UT_WORKPLACE v un_tablesd_cav.txt je totozny s I2_FLDDATA_PRA v i2_user_cav.txt,
+002    oba ciselniky treba menit naraz (meni sa vsetko s vynimkou tagu 210, ktory je v i2_user_cav.txt naviac)
+002    -
+002    02.04.11 tt; zmena nazvu pracoviste UEK-B
+002    20.02.09 rs; doplnenie BC-A, uprava textu 5-tich ustavov kt. sa spojili do BC-A (pridany text "do r. 2005")
+002    29.04.08 pb; zrovnanie un_tablesd_cav.txt s i2_user_cav.txt
+002    29.04.08 pb; doplneny riadok BTO-N a NHU-C
+002    =
+200    aARUB-QbArcheologickı ústav Brno##Institute of Archaeology (Brno)
+200    aARU-GbArcheologickı ústav Praha##Institute of Archaeology (Prague)
+200    aA-ZbArchiv AV ÈR (do r. 2005)##Archives of the ASCR (until 2005)
+200    aASU-RbAstronomickı ústav##Astronomical Institute
+200    aBC-AbBiologické centrum (od r. 2006)##Biology Centre (since 2006) 
+200    aBFU-RbBiofyzikální ústav##Institute of Biophysics
+200    aBTO-NbBiotechnologickı ústav##Institute of Biotechnology
+200    aBU-JbBotanickı ústav##Institute of Botany
+200    aUEK-BbCentrum vızkumu globální zmìny##Global Change Research Centre of the ASCR
+200    aENTU-IbEntomologickı ústav (do  r. 2005) ##Institute of Entomology (until 2005)
+200    aUEF-SbEtnologickı ústav##Institute of Ethnology
+200    aFLU-FbFilosofickı ústav##Institute of Philosophy
+200    aFZU-DbFyzikální ústav##Institute of Physics
+200    aFGU-CbFyziologickı ústav##Institute of Physiology
+200    aGFU-EbGeofyzikální ústav##Geophysical Institute
+200    aGLU-SbGeologickı ústav##Institute of Geology
+200    aHIU-YbHistorickı ústav##Institute of History
+200    aHBU-ZbHydrobiologickı ústav (do r. 2005)##Institute of Hydrobiology (until 2005)
+200    aKJ-FbKatedra jazykù AV ÈR##Department of Foreign Languages
+200    aKNAV-KbKnihovna AV ÈR##Library of ASCR
+200    aMSU-RbMasarykùv ústav (do r. 2005)##Masaryk Institute (until 2005)
+200    aMSUA-WbMasarykùv ústav - Archiv (od r. 2006)##Masaryk Institute - Archives (since 2006)
+200    aMU-WbMatematickı ústav##Mathematical Institute
+200    aMBU-MbMikrobiologickı ústav##Institute of Microbiology
+200    aNHU-CbNárodohospodáøskı ústav - CERGE##Economics Institute - CERGE
+200    aNHU-NbNárodohospodáøskı ústav##Economics Institute
+200    aOU-WbOrientální ústav##Oriental Institute
+200    aPAU-ObParazitologickı ústav (do  r. 2005) ##Institute of Parasitology (until 2005)
+200    aPSU-EbPsychologickı ústav##Institute of Psychology
+200    aSLU-SbSlovanskı ústav##Institute of Slavonic Studies
+200    aSOU-ZbSociologickı ústav##Institute of Sociology
+200    aSLCHPL-SbSpoleèná laboratoø chemie pevnıch látek AV ÈR a Univerzity Pardubice (do r. 2003)##Joint Laboratory of Solid State Chemistry (UP and ASCR) (until 2003)
+200    aSSC-AbStøedisko spoleènıch èinností##Centre for Administration and Operations of the ASCR
+200    aTS-NbTechnologické centrum AV ÈR##Technology Centre ASCR
+200    aUIACH-ObÚstav analytické chemie##Institute of Analytical Chemistry
+200    aUACH-TbÚstav anorganické chemie##Institute of Inorganic Chemistry
+200    aUBO-WbÚstav biologie obratlovcù##Institute of Vertebrate Biology
+200    aUDU-IbÚstav dìjin umìní##Institute of Art History
+200    aUEB-QbÚstav experimentální botaniky##Institute of Experimental Botany
+200    aUEM-PbÚstav experimentální medicíny##Institute of Experimental Medicine
+200    aURE-YbÚstav fotoniky a elektroniky##Institute of Radio Engineering and Electronics
+200    aUFCH-WbÚstav fyzikální chemie J.Heyrovského##J. Heyrovsky Institute of Physical Chemistry
+200    aUFY-GbÚstav fyzikálního inenırství##Institute of Physical of Engineering
+200    aUFA-UbÚstav fyziky atmosféry##Institute of Atmospheric Physics
+200    aUFM-AbÚstav fyziky materiálu##Institute of Physics of Materials
+200    aUFP-VbÚstav fyziky plazmatu##Institute of Plasma Physics
+200    aUGN-SbÚstav geoniky##Institute of Geonics
+200    aUCHP-MbÚstav chemickıch procesù##Institute of Chemical Process Fundamentals
+200    aUIVT-ObÚstav informatiky##Institute of Computer Science
+200    aUJF-VbÚstav jaderné fyziky##Nuclear Physics Institute
+200    aUMCH-VbÚstav makromolekulární chemie##Institute of Macromolecular Chemistry
+200    aUMBR-MbÚstav molekulární biologie rostlin (do r. 2005)##Institute of Plant Molecular Biology (until 2005)
+200    aUMG-JbÚstav molekulární genetiky##Institute of Molecular Genetics
+200    aUOCHB-XbÚstav organické chemie a biochemie##Institute of Organic Chemistry and Biochemistry
+200    aUCL-MbÚstav pro èeskou literaturu##Institute of Czech Literature
+200    aUE-CbÚstav pro elektrotechniku (do r. 2005)##Institute of Electrical Engineering (until 2005)
+200    aUHV-HbÚstav pro hudební vìdu (do r. 2002)##Institute of Musicology (until 2002)
+200    aUH-JbÚstav pro hydrodynamiku##Institute of Hydrodynamics
+200    aUJC-AbÚstav pro jazyk èeskı##The Czech Language Institute
+200    aUKS-TbÚstav pro klasická studia (do r. 2003)##Institute for Classical Studies (until 2003)
+200    aUSD-CbÚstav pro soudobé dìjiny##Institute for Contemporary History
+200    aUPT-DbÚstav pøístrojové techniky##Institute of Scientific Instruments
+200    aUPB-HbÚstav pùdní biologie (do r. 2005)##Institute of Soil Biology (until 2005)
+200    aUSP-IbÚstav státu a práva##Institute of State and Law
+200    aUSMH-BbÚstav struktury a mechaniky hornin##Institute of Rock Structure and Mechanics
+2xx    aUEK-BbÚstav systémové biologie a ekologie##Institute of Systems Biology and Ecology of the ASCR
+200    aUTAM-FbÚstav teoretické a aplikované mechaniky##Institute of Theoretical and Applied Mechanics
+200    aUTIA-BbÚstav teorie informace a automatizace##Institute of Information Theory and Automation
+200    aUT-LbÚstav termomechaniky##Institute of Thermomechanics
+200    aUZFG-YbÚstav ivoèišné fyziologie a genetiky##Institute of Animal Physiology and Genetics
+###
+# @id CAV_UN_TABLESD UN_TC11P
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    20.05.08 rs; pridane na poziadavku p.Dolezelovej
+100    aPatent, informace o vyuití
+200    aAbPouze udìlenı (dosud nevyuívanı) patent nebo patent vyuívanı jeho vlastníkem
+200    aBbPatent je vyuíván na základì uzavøené licenèní smlouvy mezi vlastníkem a uivatelem
+###
+# @id CAV_UN_TABLESD UN_TC12D
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    08.06.12 tt; zakomentovano I
+002    17.02.11 tt; zmena ciselniku
+002    20.05.08 rs; pridane na poziadavku p.Dolezelovej
+100    aTyp zdroje vısledku
+200    aObOperaèní programy
+200    aRbRámcovı projekt EK
+200    aVbJiné veøejné zdroje
+200    aNbNeveøejné zdroje
+2xx    aIbInstitucionální podpora na rozvoj VO
+###
+# @id CAV_UN_TABLESD UN_SIGLE_KOD
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+200    a01bAeronautika
+200    a010bAeronautika všeobecnı oddíl
+200    a01AbAerodynamika
+200    a01BbAeronautika
+200    a01CbLetadla 
+200    a01DbØízení letu a vybavení pøístroji
+200    a01EbPøíslušenství letadel
+200    a01FbPadáky a decelarátory
+200    a02bZemìdìlství, rostlinstvo a zvìrolékaøství
+200    a020bZemìdìlství, rostlinstvo a zvìrolékaøství všeobecnı oddíl
+200    a02AbZemìdìlská chemie
+200    a02BbEkonomie zemìdìlství
+200    a02CbAgrotechnika
+200    a02DbAgronomie, zahradnictví a nemoci rostlin
+200    a02EbChov dobytka
+200    a02FbLesnictví
+200    a02GbZvìrolékaøství
+200    a02HbRybáøství a hydroponie
+200    a03bZneèištìní ivotního prostøedí, ochrana a kontrola
+200    a030bZneèištìní ivotního prostøedí, ochrana a kontrola všeobecnı oddíl
+200    a03AbZneèištìní a kontrola vzduchu
+200    a03BbHluènost a kontrola hluku
+200    a03CbZneèištìní a kontrola vody
+200    a03DbZneèištìní prostøedí pesticidy, kontrola
+200    a03EbRadioaktivní zneèištìní a jeho kontrola, jadernı odpad
+200    a03FbTuhı odpad a jeho kontrola
+200    a03GbVliv ivotního prostøedí na zdraví a bezpeènost
+200    a03HbEkologické zákony
+200    a03IbRecyklování (nejaderného) odpadu
+200    a03JbRecyklování a zpracování jaderného odpadu
+200    a05bHumanitní vìdy, psychologie a sociální vìdy
+200    a050bHumanitní vìdy, psychologie a sociální vìdy všeobecnı oddíl
+200    a05AbØízení,správa a administrativa, vìdy o obchodu a podnikání
+200    a05BbDokumentace, informatika, knihovnictví
+200    a05CbErgonomika a vztahy èlovìk - stroj
+200    a05DbEkonomie, ekonomické dìjiny a záleitosti spotøebitele
+200    a05EbDìjiny
+200    a05FbArcheologie
+200    a05GbAntropologie, folklór
+200    a05HbFilosofie a náboenství
+200    a05IbPrávo a zákony
+200    a05JbPolitika a politické vìdy
+200    a05KbLingvistika
+200    a05LbPísemnictví, mas-media, reprodukèní umìní
+200    a05MbSport a aktivity volného èasu
+200    a05NbUmìní a øemesla
+200    a05ObArchitektura
+200    a05PbVıchova a školství
+200    a05QbPsychologie
+200    a05RbSociologie
+200    a05SbPracovní vztahy
+200    a05TbZdravotnictví - osvìta a plánování
+200    a05UbBydlení
+200    a05VbMìstské, oblastní a dopravní plánování
+200    a05WbDemografie
+200    a05XbDomácí obchod, trh a ekonomika
+200    a05YbMezinárodní obchod, trh a ekonomika
+200    a05ZbBankovnictví a penìnictví
+200    a06bBiologie a lékaøství
+200    a060bBiologie a lékaøství všeobecnı oddíl
+200    a06AbBiochemie
+200    a06BbBioinenırství vèetnì biotechnologií
+200    a06CbAnatomie èlovìka
+200    a06DbBionika a umìlá inteligence
+200    a06EbKlinické lékaøství
+200    a06FbEkologie
+200    a06GbZáchranáøství, první pomoc
+200    a06HbPotravináøská technologie, mikrobiologie a prùmysl
+200    a06IbHygiena a sanitární zaøízení
+200    a06JbPrùmyslové a pracovní lékaøství
+200    a06KbPodpora ivotních podmínek
+200    a06LbLékaøská zaøízení, pøístroje a vybavení nemocnic
+200    a06MbMikrobiologie
+200    a06NbOsobní hodnocení a zamìstnanecká zpùsobilost
+200    a06ObFarmakologie a lékárnická chemie
+200    a06PbFyziologie èlovìka
+200    a06QbOchranná vıbava
+200    a06RbRadiobiologie
+200    a06SbFyziologie stresu
+200    a06TbToxikologie
+200    a06UbZranìní a poškození
+200    a06VbGenetika, cytologie a molekulární biologie
+200    a06WbBotanika
+200    a06XbZoologie
+200    a06YbBiofyzika
+200    a06ZbAlternativní medicína
+200    a07bChemie
+200    a070bChemie všeobecnı oddíl
+200    a07AbPrùmyslová chemie a chemické inenırství
+200    a07BbAnorganická chemie
+200    a07CbOrganická chemie
+200    a07DbFyzikální chemie a teoretická chemie
+200    a07EbNukleární chemie, fotochemie a chemie záøení
+200    a08bVìdy o zemi a atmosféøe
+200    a080bVìdy o zemi a atmosféøe všeobecnı oddíl
+200    a08AbOceánografie
+200    a08BbHydrologie a limnologie
+200    a08CbLedovce, sníh, led a trvale zamrzlá pùda
+200    a08DbZemìpis
+200    a08EbGeologie a mineralogie
+200    a08FbNauka o zemìtøesení
+200    a08GbVulkanologie a tektonika
+200    a08HbVnitøní struktura zemì
+200    a08IbGeochemie
+200    a08JbZemskı magnetismus a geodesie
+200    a08KbNauka o pùdì
+200    a08LbBáòskı prùmysl
+200    a08MbVìdy o atmosféøe
+200    a08NbMeteorologie
+200    a09bElektronika a elektrotechnika, vıpoèetní technika
+200    a090bElektronika a elektrotechnika, vıpoèetní technika všeobecnı oddíl
+200    a09AbKomponenty, souèásti
+200    a09BbObvody
+200    a09CbElektromechanická a elektronická zaøízení
+200    a09DbOptoelektronická zaøízení, systémy a sensory
+200    a09EbEnergetická a signální pøenosová zaøízení
+200    a09FbElektrická mìøení
+200    a09GbPoèítaèovı hardware
+200    a09HbPoèítaèovı software
+200    a09IbSystémy øízení a teorie øízení
+200    a09JbTeorie informace
+200    a09KbRozpoznávání a zpracování obrazù, dálková èidla
+200    a09LbProjektování s pomocí poèítaèù
+200    a09MbVıroba s pomocí poèítaèù
+200    a09NbRobotika a její aplikace
+200    a10bEnergie a síla
+200    a100bEnergie a síla všeobecnı oddíl
+200    a10AbUhlí
+200    a10BbRopa
+200    a10CbPøírodní plyn
+200    a10DbRopné a uhelné bøidlice, dehtové písky
+200    a10EbŠtìpné materiály
+200    a10FbFúzní palivo
+200    a10GbIsotopy a technologie záøièù
+200    a10HbVodík
+200    a10IbOstatní syntetická a pøírodní paliva
+200    a10JbVodní energie
+200    a10KbSluneèní energie
+200    a10LbGeotermální energie
+200    a10MbEnergie pøílivu
+200    a10NbEnergie vìtru
+200    a10ObJaderné elektrárny
+200    a10PbTechnologie jadernıch reaktorù
+200    a10QbSkladování energie
+200    a10RbPøímá konverze energie
+200    a10SbUchování energie, spotøeba a vyuití
+200    a10TbOstatní elektrárny
+200    a10UbEnergie biomasy
+200    a10VbTermodynamické cykly
+200    a10WbKonvenèní elektrárny
+200    a11bMateriály
+200    a110bMateriály všeobecnı oddíl
+200    a11AbLepidla a isolace
+200    a11BbKeramika, áruvzdorné materiály a skla
+200    a11CbNátìry, barviva a povrchové úpravy
+200    a11DbKompositní materiály
+200    a11EbFíbrová vlákna a tkaniny
+200    a11FbHutnictví a metalografie
+200    a11GbRozmanité materiály
+200    a11HbOleje, mazadla a hydraulické tekutiny
+200    a11IbUmìlé hmoty
+200    a11JbElastomery
+200    a11KbRozpouštìdla, èistící prostøedky a brusiva
+200    a11LbDøevìné a papírové produkty
+200    a11MbÚnava materiálu, koroze, zabránìní korozi a lomová mechanika
+200    a12bMatematické vìdy
+200    a120bMatematické vìdy všeobecnı oddíl
+200    a12AbMatematika
+200    a12BbAplikovaná statistika, operaèní vızkum
+200    a12CbNumerická analıza
+200    a13bStrojírenství, stavebnictví, øízení vıroby a lodní stavitelství
+200    a130bStrojírenství, stavebnictví, øízení vıroby a lodní stavitelství všeobec. odd.
+200    a13AbVzduchotechnika, topení, osvìtlení, vìtrání a chladírenskı prùmysl
+200    a13BbStavebnictví
+200    a13CbStavební zaøízení, materiály a potøeby
+200    a13DbObaly a obalová technika
+200    a13EbSpojovací èlánky, armatury, sponky a spoje
+200    a13FbPozemní dopravní systémy a zaøízení
+200    a13GbHydraulická a pneumatická zaøízení
+200    a13HbPrùmyslové procesy a zpracování
+200    a13IbStrojní zaøízení a nástroje
+200    a13JbLodní stavitelství
+200    a13KbPumpy, filtry, roury, armatury, trubky, ventily, tlak. nádoby a parní generátory
+200    a13LbBezpeènostní technika
+200    a13MbInenırské stavitelství
+200    a13NbStavební vìda
+200    a14bPostupy a zaøízení
+200    a140bPostupy a zaøízení všeobecnı oddíl
+200    a14AbEfektivnost nákladù 
+200    a14BbLaboratoøe, zkušební pomùcky a zaøízení
+200    a14CbZáznamová zaøízení
+200    a14DbØízení spolehlivosti a kvality
+200    a14EbReprografie a fotografické procesy
+200    a15bVojenství
+200    a150bVojenství všeobecnı oddíl
+200    a15AbProtiponorková válka
+200    a15BbChemická, biologická a radiaèní válka
+200    a15CbObrana
+200    a15DbZpravodajská sluba
+200    a15EbLogistika
+200    a15FbJaderná válka
+200    a15GbVelení, strategie a taktika
+200    a16bRaketová technologie
+200    a160bRaketová technologie všeobecnı oddíl
+200    a16AbOdpalovací zaøízení raket a pozemní podpora
+200    a16BbDráhy raket
+200    a16CbRaketové hlavice a pojistky
+200    a16DbRakety
+200    a17bNavigace, spojení, detekce a protiopatøení
+200    a170bNavigace, spojení, detekce a protiopatøení všeobecnı oddíl
+200    a17AbAkustická detekce
+200    a17BbKomunikace, spojení, hromadné sdìlovací prostøedky
+200    a17CbNalezení smìru signálu
+200    a17DbElektromagnetická a akustická protiopatøení
+200    a17EbInfraèervená a ultrafialová detekce
+200    a17FbMagnetická detekce
+200    a17GbNavigace a navádìní
+200    a17HbOptická detekce
+200    a17IbRadarová detekce
+200    a17JbSeismická detekce
+200    a19bArzenály
+200    a190bArzenály všeobecnı oddíl
+200    a19AbMunice, vıbušniny a pyrotechnika
+200    a19BbBomby
+200    a19CbBojová vozidla
+200    a19DbVıbuchy, balistika a pancéøování
+200    a19EbØízení palby a bombardovací systémy
+200    a19FbStøelné zbranì
+200    a19GbRakety
+200    a19HbPodmoøské arzenály
+200    a20bFyzika
+200    a200bFyzika všeobecnı oddíl
+200    a20AbTeoretická fyzika
+200    a20BbElementární èástice a fyzika vysokıch energií
+200    a20CbJaderná fyzika a urychlovaèe
+200    a20DbAtomová a molekulární fyzika
+200    a20EbOptika, masery a lasery
+200    a20FbAkustika a kmity
+200    a20GbTermodynamika
+200    a20HbMetrologie
+200    a20IbMechanika tekutin
+200    a20JbFyzika plasmatu a vıboje v plynech
+200    a20KbFyzika pevnıch látek a magnetismus
+200    a20NbAstronomie a nebeská mechanika
+200    a20ObAstrofyzika
+200    a20PbVızkum kosmického záøení
+200    a20QbAstrogeologie a vızkum planet
+200    a21bPohon a paliva
+200    a210bPohon a paliva všeobecnı oddíl
+200    a21AbMotory spotøebovávající vzduch
+200    a21BbSpalování a zapalování
+200    a21CbElektrickı pohon
+200    a21DbPaliva
+200    a21EbTryskové motory a plynové turbíny
+200    a21FbJadernı pohon
+200    a21GbPístové motory
+200    a21HbRaketové motory
+200    a21IbPaliva pro rakety
+200    a22bKosmické technologie
+###
+# @id CAV_UN_TABLESD UNA_TC16A
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+200    aCSTbÈeská republika
+200    aEURbEvropa
+200    aWRDbCelosvìtovı
+###
+# @id CAV_UN_TABLESD UNA_TC20O
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+200    aKbKonference
+200    aWbWorkshop
+200    aEbVıstava
+###
+# @id CAV_UN_TABLESD UN_T700X
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+200    aXbNení uveden ústav AV ÈR
+200    aZbÚstav AV ÈR uveden na místì neobvyklém
+###
+# @id CAV_UN_TABLESD UN_TC26A
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+200    a1bbude se exportovat
+200    abnebude se exportovat
+###
+# @id CAV_UN_TABLESD UN_POSKYT
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    01.04.11 tt; upreven ciselnik
+002    -
+200    aGA AV ÈRbAkademie vìd
+200    aGA BISbBezpeènostní a informaèní sluba
+200    aGA ÈBÚbÈeskı báòskı úøad
+200    aGA ÈSÚbÈeskı statistickı úøad
+200    aGA ÈUZbÈeskı úøad zemìmìøièskı a katastrální
+200    aGA ÈRbGrantová agentura ÈR
+200    aGA MDSbMinisterstvo dopravy a spojù
+200    aGA MFbMinisterstvo financií
+200    aGA MKbMinisterstvo kultury
+200    aGA MMRbMinisterstvo pro místní rozvoj
+200    aGA MObMinisterstvo obrany
+200    aGA MPObMinisterstvo prùmyslu a obchodu
+200    aGA MPSbMinisterstvo práce a sociálních vìcí
+200    aGA MSbMinisterstvo spravedlnosti
+200    aGA MŠkbMinisterstvo školství, mládee a tìlovıchovy
+200    aGA MVbMinisterstvo vnitra
+200    aGA MZdbMinisterstvo zdravotnictví
+200    aGA MZebMinisterstvo zemìdìlství
+200    aGA MPbMinisterstvo ivotního prostøedí
+200    aGA MZVbMinisterstvo zahranièních vìcí
+200    aGA NBÚbNárodní bezpeènostní úøad
+200    aGA SÚJBbStátní úøad pro jadernou bezpeènost ÈR
+200    aGA TA ÈRbTechnologická agentura Èeské republiky
+200    aGA ÚVbÚøad vlády ÈR
+200    aGA ÚSCbÚzemnì samosprávné celky (nerozlišeno)
+###
+# @id CAV_UN_TABLESD UN_TC30G
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+100    aAk.tituly#Ak.tituly
+200    aCSc
+200    aDoc.
+200    aDSc
+200    aIng.
+200    amgr.
+200    aMPhil
+200    aPh.D.
+200    aPhDr.
+200    aProf.
+200    aRNDr.
+###
+# @id CAV_UN_TABLESD UN_TC11Q
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    05.02.09 pb; pridany ciselnik noveho subtagu pre CAV
+100    aUitnı a prùmyslovı vzor
+200    aUbUitnı vzor
+200    aPbPrùmyslovı vzor
+###
+# @id CAV_UN_TABLESD UN_TC34G
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+100    aDruh monosti vyuitia vısledku
+200    aAbPro vyuití vısledku jinım subjektem je vdy nutné nabytí licence
+200    aNbVyuití vısledku jinım subjektem je moné bez nabytí licence
+200    aPbVyuití vısledku jinım subjektem je v nìkterıch pøípadech moné bez nabytí licence
+###
+# @id CAV_UN_TABLESD UN_TC34H
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+100    aPoadavek na licenèní poplatek
+200    aAbPoskytovatel licence poaduje licenèní poplatek
+200    aNbPoskytovatel licence nepoaduje licenèní poplatek
+200    aZbPoskytovatel licence nepoaduje v nìkterıch pøípadech licenèní poplatek
+###
+# @id CAV_UN_TABLESD UN_TC34K
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    Vıše vyèerpané èásti z celkovıch uznanıch nákladù na dosaení vısledku je ..
+002    06.03.07 rs
+200    aAbVyèerpaná èást nákladù <= 5 mil. Kè
+200    aBbVyèerpaná èást nákladù > 5 mil. Kè a <= 10 mil. Kè
+200    aCbVyèerpaná èást nákladù > 10 mil. Kè a <= 50 mil. Kè
+200    aDbVyèerpaná èást nákladù > 50 mil. Kè a <= 100 mil. Kè
+200    aEbVyèerpaná èást nákladù > 100 mil. Kè
+###
+# @id CAV_UN_TABLESD UN_TC26M
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+100    aUplatnenie vysledku
+200    aUbUplatnené
+200    aNbNeuplatnené
+###
+# @id CAV_UN_TABLESD UNA_TC30A
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+100    aKod stavu
+200    aBbBìící víceletı projekt
+200    aJbJednoletı projekt
+200    aKbKonèící víceletı projekt
+200    aPbPøerušenı víceletı projekt
+200    aSbZastavenı víceletı projekt
+200    aUbUkonèenı projekt
+200    aZbZaèínající víceletı projekt
+###
+# @id CAV_UN_TABLESD UN_TC32X
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+100    aKód typu názvu
+200    a1bZkrácenı název SCI
+200    a2bNázev WOS
+200    a3bZkrácenı název WOS
+###
+# @id CAV_UN_TABLESD UN_NEXT_PROCESSING_CAV
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    11.03.09 pb;
+100    aKódovník ïal.spracovania
+200    abOdeslat
+200    aAbGenerovanı záznam
+200    aDbNeodeslat (rozpracované)
+###
+# @id CAV_UN_TABLESD UT_RELATOR_CODE_SKR
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+200    a070bAutor
+200    a340bRedaktor, editor
+200    a570bJiná role
+###
+# @id CAV_UN_TABLESD UN_T970X1
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    11.03.09 pb;
+100    aKódovník Uloi do RIV ako - prva mnozina hodnot
+200    aObOstatní vısledky
+200    aBbMonografie kniha jako celek
+###
+# @id CAV_UN_TABLESD UN_T970X2
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    11.03.09 pb;
+100    aKódovník Uloi do RIV ako - druha mnozina hodnot
+200    aObOstatní vısledky
+200    aJbÈlánek v odborném periodiku
+###
+# @id CAV_UN_TABLESD UN_T970X3
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    11.03.09 pb;
+100    aKódovník Uloi do RIV ako - tretia mnozina hodnot
+200    aObOstatní vısledky
+200    aMbÈást monografie knihy
+###
+# @id CAV_UN_TABLESD UN_T970X4
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    05.02.14 tt; pridany informace
+002    11.03.09 pb;
+100    aKódovník Uloi do RIV ako - stvrta mnozina hodnot
+200    aObOstatní vısledky
+200    aVbVızkumná zpráva
+200    aVSbSouhrnná vızkumná zpráva
+200    aVUbVızkumná zpráva s utajovanımi informacemi
+###
+# @id CAV_UN_TABLESD UN_T970X5
+002    -
+002    05.02.14 tt; pridany informace
+100    aKódovník Uloi do RIV ako - stvrta mnozina hodnot
+200    aObOstatní vısledky
+###
+# @id CAV_UN_TABLESD UN_POSKYT_EU
+002    04.12.15 tt; zalozeno
+200    aECbEuropean Commission
+200    aWTbWellcome Trust
+200    aFCTbFoundation for Science and Technology
+###
+# @id CAV_UN_TABLESD UNA_T969F
+002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt
+002    a MUSI sa editovat via VCS, nie priamo v $Ictx]UnTablesd.
+002    Zaroven po kazdej modifikacii je nutne cely subor nacitat na serveri do [$Ictx]UnTablesd.
+002    -
+002    05.03.09 pb; 11.03.09 pb;
+100    aKódovník Aktivita autora
+200    aAbGenerovanı záznam
+200    aACTVbAktivní autor
+###
+# @id CAV_UN_TABLESD UN_EPCA_RVO
+002    Vızkumné zámìry nahrazuje od roku 2012 Institucionální podpora na rozvoj VO (zkratka RVO).
+002    -
+002    25.01.13 tt; pridana polozka NHU-C
+002    05.06.12 tt; zalozen ciselnik
+200    aRVO:68081758bARUB-Q
+200    aRVO:67985912bARU-G
+200    aRVO:67985815bASU-R
+200    aRVO:68081707bBFU-R
+200    aRVO:60077344bBC-A
+200    aRVO:86652036bBTO-N
+200    aRVO:67985939bBU-J
+200    aRVO:67179843bUEK-B(CVGZ)
+200    aRVO:68378076bUEF-S(EU)
+200    aRVO:67985955bFLU-F
+200    aRVO:68378271bFZU-D
+200    aRVO:67985823bFGU-C
+200    aRVO:67985530bGFU-E
+200    aRVO:67985831bGLU-S
+200    aRVO:67985963bHIU-Y
+200    aRVO:67985971bKNAV-K
+200    aRVO:67985921bMSUA-W
+200    aRVO:67985840bMU-W
+200    aRVO:61388971bMBU-M
+200    aRVO:67985998bNHU-N
+200    aRVO:68378009bOU-W
+200    aRVO:68081740bPSU-E
+200    aRVO:68378017bSLU-S
+200    aRVO:68378025bSOU-Z
+200    aRVO:60457856bSSC-A
+200    aRVO:68081715bUIACH-O
+200    aRVO:61388980bUACH-T
+200    aRVO:68081766bUBO-W
+200    aRVO:68378033bUDU-I
+200    aRVO:61389030bUEB-Q
+200    aRVO:68378041bUEM-P
+200    aRVO:67985882bURE-Y(UFE)
+200    aRVO:61388955bUFCH-W
+200    aRVO:68378289bUFA-U
+200    aRVO:68081723bUFM-A
+200    aRVO:61389021bUFP-V
+200    aRVO:68145535bUGN-S
+200    aRVO:67985858bUCHP-M
+200    aRVO:67985807bUIVT-O(UI)
+200    aRVO:61389005bUJF-V
+200    aRVO:61389013bUMCH-V
+200    aRVO:68378050bUMG-J
+200    aRVO:61388963bUOCHB-X
+200    aRVO:68378068bUCL-M
+200    aRVO:67985874bUH-J
+200    aRVO:68378092bUJC-A
+200    aRVO:68378114bUSD-C
+200    aRVO:68081731bUPT-D
+200    aRVO:68378122bUSP-I
+200    aRVO:67985891bUSMH-B
+200    aRVO:68378297bUTAM-F
+200    aRVO:67985556bUTIA-B
+200    aRVO:61388998bUT-L
+200    aRVO:67985904bUZFG-Y
+200    aPRVOUK-P23bNHU-C
+###
+# @id CAV_UN_TABLESD UN_T215C
+002    -POZOR: ciselnik je uzivatelskou nahradou EPC_UN_T215C, ktera je soucasti
+002     sucastou C:\vcs\bin\un_tables_epca.txt, pouziva sa na klientovi aj na serveri (via XxxUnTablesd)  (editacie LEN cez VCS!)
+002    -
+002    07.02.13 tt; zalozeny ciselnik kvuli zmenam v RIV
+002    ---
+100    aCiselnik formy vydani
+002    ---
+200    aPbTištìná
+200    aEbOn-line
+200    aCbNosiè
+###
+# @id CAV_UN_TABLESD UN_T70XZ
+002    03.07.14 tt; doplnena hodnota A
+002    30.05.14 tt; doplneny ciselnik
+100    aTyp autora
+200    aKbKorespondující autor
+200    aSbSenior autor
+200    aAbKorespondující senior autor 
+###
+# @id CAV_UN_TABLESD UN_T70XU
+002    01.07.14 tt; UN_T70XU: doplneny ciselnik
+100    aHodnocení autora
+200    a1bVybrané pre hodnotenie#Vybrané pro hodnocení
+###
+# @id CAV_UN_TABLESD UN_TC64A
+002    18.10.14 tt; UN_TC64A: doplneny ciselnik
+100    aPøíznak exkluzivního vısledku
+200    a1bVısledek k hodnocení 2015
+###

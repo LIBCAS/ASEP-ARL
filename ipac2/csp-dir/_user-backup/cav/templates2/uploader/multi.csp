@@ -1,0 +1,61 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<ipac:form id="fileupload" action="#($s(data("NODEMAIN"):data("NODEURL")_"/multipart_upload/",1:..base(1)_"st=feed&amp;feed=json"))#" method="post" enctype="multipart/form-data">
+
+
+<div class="container">
+
+<ipac:loop param="dummy"/>
+<ipac:node param="1"/>
+<ipac:tpl version="form"/>
+</div>
+
+
+<div class="fileupload-buttonbar">
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="repository" value="#(data("REPO"))#"/>
+    <csp:if condition=(data("NODEMAIN"))>
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="st" value="rest"/>
+<input type="hidden" name="ictx" value="#($$$GETICTX)#"/>
+<input type="hidden" name="nodesid" value="#(..req("nodesid"))#"/>
+<input type="hidden" name="nodeuser" value="#(..req("nodeuser"))#"/>
+<input type="hidden" name="nodecred" value="#(..req("nodecred"))#"/>
+<input type="hidden" name="bigdata" value="true"/>
+<input type="hidden" name="test" value="#(data("ONTEST"))#"/>
+    </csp:if>
+<span class="fileinput">
+<button type="button" class="btn upload btn-success"><i class="icon-plus" aria-hidden="true"></i> &nbsp; <span id="files-desc"><ipac:tx param="ADDFILES"/></span></button>
+<label for="files">
+<input type="file" id="files" aria-labelledby="files-desc" name="files[]" multiple="multiple"/>
+</label>
+</span>
+<button class="start btn btn-primary" type="submit"><i class="icon-upload" aria-hidden="true"></i> &nbsp;<ipac:tx param="STARTUPLOAD"/></button>
+<button class="cancel btn btn-warning" type="reset"><i class="icon-ban" aria-hidden="true"></i> &nbsp;<ipac:tx param="CANCELUPLOAD"/></button>
+</div>
+<br>
+<span class="fileupload-process"></span>
+
+<div class="fileupload-progress">
+<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+<div class="progress-bar progress-bar-success" style="width:0%;"></div>
+</div>
+<div class="progress-extended">&nbsp;</div>
+</div>
+
+
+
+<table
+class="table table-striped"
+id="#(data("PAGEID"))#-t"
+role="presentation"
+data-txcancel="#(..tx("CANCEL"))#"
+data-txerror="#(..tx("ERROR"))#"
+data-txok="#(..tx("OK"))#"
+data-txstart="Spustit"
+>
+<tbody class="files"></tbody>
+</table>
+
+
+</ipac:form>

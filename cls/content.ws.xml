@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-20 13:59:33">
+<Class name="content.ws">
+<Description><![CDATA[
+<pre> webove sluzby pro praci s contentServerem
+
+20.04.23 ln; podpora vice repozitaru
+</pre>]]></Description>
+<IncludeCode>I2,Common</IncludeCode>
+<TimeChanged>66584,50190.7514078</TimeChanged>
+<TimeCreated>65056,36137.052463</TimeCreated>
+
+<Method name="cmdTransferContent">
+<Description><![CDATA[
+<pre> command transfercontent
+prenos jednoho souboru (pripadne vsech) od jednoho zaznamu k druhemu
+v pripade uspechu je odpovedi pocet prenesenych souboru
+pro tridu je potreba mit pravo zapisu
+
+parametry: 1 - t001 zdrojoveho zaznamu
+           2 - t001 ciloveho zaznamu
+           3 - key souboru zdrojoveho zaznamu (nebo "all")
+           4 - (volitelny) trida ciloveho zaznamu
+           5 - (volitelny) repozitar pro key
+           
+20.04.23 ln; podpora vice repozitaru
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pEnvironment,class,params]]></FormalSpec>
+<Implementation><![CDATA[
+  s t001From=$p(params," ",1)  
+  s t001To=$p(params," ",2)
+  s key=$p(params," ",3)
+  s classTo=$p(params," ",4)
+  s:classTo="" classTo=class
+  s repo=$p(params," ",5) ; 20.04.23 ln; podpora vice repozitaru
+  s count=1, ipref=##class(User.Util).getClassPrefixParam(class)
+  
+  s ls=##class(User.Util).objectName2lname(class)
+  if (t001From="") || '##class(User.MARC).readX(.hs,class,t001From) {
+    d ##class(i2.ws.output).showErr($$$I2WSErrCommand(0),"source record invalid")
+    q
+  }
+  
+  s lt=##class(User.Util).objectName2lname(classTo)
+  if (t001To="") || '##class(User.MARC).readX(.ht,classTo,t001To) {
+    d ##class(i2.ws.output).showErr($$$I2WSErrCommand(1),"target record invalid")
+    q
+  }
+  
+  s table=$zcvt(lt,"U")
+  if (table="") || '##class(i2.ws.auth).checkRights(table,"w") {
+    d ##class(i2.ws.output).showErr($$$I2WSErrCommand(2),"target rights invalid")
+    q
+  }
+  
+  if key="all" { ; prenos vsech souboru
+    s info="transfer"
+    if '##class(content.engine).moveAll(class,t001From,classTo,t001To,.info) {
+      d ##class(i2.ws.output).showErr($$$I2WSErrCommand(3),"transfer all failed")
+      q
+    }
+    
+    ; slouceni pole C52 ze zdrojoveho a ciloveho zaznamu
+    s c52=##class(User.MARC).getTagX(.hs,"C52")
+    if c52'="" {
+      d ##class(User.MARC).delTagX(.hs,"C52")
+      s sc=##class(User.MARC).writeX(.hs)
+      f i=2:1:$l(c52,$c(31)) {
+        s sub=$p(c52,$c(31),i)
+        s:sub'="" dedup(sub)=""
+      }
+      s c52=##class(User.MARC).getTagX(.ht,"C52")
+      f i=2:1:$l(c52,$c(31)) {
+        s sub=$p(c52,$c(31),i)
+        s:sub'="" dedup(sub)=""
+      }
+      s c52="C52    ", node=""
+      f { s node=$o(dedup(node)) q:node=""
+        s c52=c52_$c(31)_node
+      }      
+      d ##class(User.MARC).setTagX(.ht,c52)
+      s sc=##class(User.MARC).writeX(.ht)
+    }    
+    s count=$o(info(""),-1)    
+  
+  } else { ; prenos jednoho souboru
+    
+    ;20.04.23 ln; podpora vice repozitaru
+    s:repo="" repo=$zcvt(ipref,"L")_"repo"
+    s:ipref="Cav" repo="crepo1"
+    
+    if (key="") || '##class(content.api).getBatch(.array,repo,key) {
+      d ##class(i2.ws.output).showErr($$$I2WSErrCommand(4),"tranfer key invalid")
+      q
+    }    
+        
+    ; novy zaznam (target)
+    s obj=##class(content.engine).open(repo,key), version=obj.Version
+    m orig=array
+    s array("class")=classTo
+    s array("t001")=t001To
+    s transfer=$g(array("transfer"))
+    s array("transfer")=$s(transfer'="":transfer_",",1:"")_ls_"*"_t001From
+    d ##class(content.engine).set(.array,obj)
+    if 'obj.%Save() {
+      d ##class(i2.ws.output).showErr($$$I2WSErrCommand(5),"tranfer key failed")
+      q
+    }
+    d:version="" ##class(content.engine).toImageServer(.array)
+    
+    d ##class(content.stat).addEdit(.orig,1,.array)
+    if ##class(content.engine).setC52(.ht,.array,$g(orig("status")),$g(orig("accession")),$g(orig("type"))) {
+      s sc=##class(User.MARC).writeX(.ht)
+    }
+    
+    ; puvodni zaznam (source)    
+    ;k array m array=orig
+    d ##class(content.engine).delImageServer(.orig)
+    ;s array("transferTo")=lt_"*"_t001To
+    ;d ##class(content.stat).addEdit(.orig,1,.array)
+    if ##class(content.engine).setC52(.hs,,$g(orig("status")),$g(orig("accession")),$g(orig("type"))) {
+      s sc=##class(User.MARC).writeX(.hs)
+    }
+  }
+  
+  d ##class(i2.ws.output).showOK("OKCS01#"_count,0)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

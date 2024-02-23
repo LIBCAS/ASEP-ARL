@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1 (Build 209U)" ts="2023-08-09 08:56:46">
+<Class name="content.uploader">
+<Description><![CDATA[
+<pre> uploader souboru pro contentServer
+
+09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
+20.04.23 ln; metoda userRepo
+06.01.23 kp; Doplnen data("REPO")
+06.11.22 kp; Doplnen data("DESCRIPTION") a data("TABS")
+07.04.22 ln; CRank generovat vzdy
+06.01.22 ln; podpora CRank
+30.03.21 kp; uprava drobeckove navigace
+26.03.21 kp; Oprava submenu, pridano idx
+18.12.20 ln; preformatovat dayto
+13.09.20 kp; Pridani submenu
+21.03.17 ln; inicializace pro big data uploader
+24.11.16 ln; big data uploader (node)
+16.10.15 ln; podpora kontroly prav podle nahravaneho souboru
+26.09.14 ln; zrusena kontrola data v minulosti
+23.05.14 ln; podpora multiupload
+03.04.14 ln; oprava aplikace formatu dayfrom
+11.03.14 tt; pridana ORIG_QUERY kvuli zablone
+27.11.13 kp; Pridany parametry do restore
+18.10.13 ln; osetreni pole C52
+01.11.12 ln; upraveno pro ipac31
+30.10.12 kp; Smazani internich JS.
+26.09.12 jk; metody getUseStat1, getUseStat2, getUseStat3
+27.07.12 ln; metoda getSupervisor
+04.01.12 kp; parametr CurrentScripts
+18.11.11 tt; drobne zmeny ve tride
+11.11.11 ln; upraveno pro ipac3
+01.11.11 tt; zmena v linku napovedy
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66695,32180.228812</TimeChanged>
+<TimeCreated>62186,26198.687005</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}  "uploader"]]></Description>
+<Default>uploader</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>uploader#uploader#uploader</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("idx,status,iset,disprec")
+  ; multiupload
+  s data("MULTI")=$$$GETREQVAR("multi")=1
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+
+ 21.03.17 ln; inicializace pro big data uploader
+ 24.11.16 ln; big data uploader (node)
+ 23.05.14 ln; podpora multiupload
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("RECTITLE")=""
+  s data("REPO")=..userRepo()
+  s data("KEY")=""
+  s data("DESCRIPTION")=""
+  s data("TABS")=""
+  s data("ONTEST")=##class(User.Util).onTestNamespace()
+  s data("ORIG_QUERY")=$$$GETSESSVAR("q")
+  s data("MULTI")=$$$GETREQVAR("multi")
+  s data("ORIGNAME")=""
+  s data("FINISHED")=0
+  s data("PATH")=""
+  s data("CREDUSER")=""
+  s data("NODEMAIN")=$$$GETREQVAR("node")="main"
+  
+  d ..getSubSite(.data)
+  
+  if data("ERRORS")'="" {
+    s data("EXIT")=1 
+    q
+  }
+  
+  ;  23.05.14 ln; podpora multiupload
+  if ($$$GETREQVAR("st")="feed") && ($$$GETREQVAR("resume")="true") {
+    d ..resume(.data)
+    q
+  }  
+  
+  s idx=$$$GETREQVAR("idx")
+  s data("IDX")=idx  
+  if idx="" {
+    s data("ERRORS")=..tx("CONTSERERR1")
+    s data("EXIT")=1 
+    q
+  } 
+  
+  //if '##class(User.MARC).readLX(.handle,idx) {
+  if '##class(i2.dblink).recordReadLX(.handle,idx,"T") {
+    s data("ERRORS")=..tx("CONTSERERR2")_": "_idx
+    s data("RECTITLE")=""
+    s data("REPO")=""        
+    q
+  }
+   
+  ; 11.03.14 tt; pridana ORIG_QUERY kvuli zablone
+  s data("ORIG_QUERY")=$$$GETSESSVAR("q")
+  s data("RECTITLE")=##class(i2.data.layer).title(.handle)
+  s maintain=##class(content.service).getPageID()
+  s data("MAINTAIN")=##class(i2.html.tpl).getLink(maintain,"idx="_idx)  
+
+  d ..userData(.data,.handle)  
+  
+  s runtime("class")=##class(User.Util).lname2objectName($p($p(idx,"*",1),"-",1))
+  s runtime("t001")=$p(idx,"*",2)  
+  
+  ; 24.11.16 ln; big data uploader (node)
+  s nodesid=$$$GETREQVAR("nodesid")'=""  
+  d:data("NODEMAIN") ..nodelogin(.data)
+  if ('nodesid || data("NODEMAIN")) && '##class(content.api).engineUpload(data("REPO"),,.runtime) { 
+    s data("ERRORS")=..tx("CONTSERERR3")
+    s data("EXIT")=1  
+    q
+  }      
+  
+  if '..upload(.data) && nodesid {
+    if data("NODEMAIN") && (data("ERRORS")'="") { s data("EXIT")=1 }
+    d ##class(%File).Delete(data("PATH"))
+  }
+  d:nodesid ##class(i2.ws.auth).setLoginInfo("") ; pro jistotu
+    if ('data("NODEMAIN")) {
+      s data("TABS")=1
+  } 
+  d ..userDataFinal(.data,.handle)
+]]></Implementation>
+</Method>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi hlavne pro nacteni vsech ciselniku formulare
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+</Method>
+
+<Method name="userRepo">
+<Description><![CDATA[
+<pre> Repozitar pro upload
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q $$$GETICTX_"repo"
+]]></Implementation>
+</Method>
+
+<Method name="userDataFinal">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+umoznuje modifikovat chybove hlasky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+</Method>
+
+<Method name="apply">
+<Description><![CDATA[
+<pre> Umoznuje modifikovat metadata pred ulozenim
+
+18.12.20 ln; preformatovat dayto
+26.09.14 ln; zrusena kontrola data v minulosti
+03.04.14 ln; oprava aplikace formatu dayfrom
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s dayfrom=$g(array("dayfrom"))
+  if dayfrom'="" {
+    try { s dayfrom=$zd($zdh($tr(dayfrom,".","/"),4),8) } catch { s dayfrom=0 }
+    /*if ($zd($h,8)>dayfrom) {
+      s data("ERRORS")=..tx("ERR_DATE") ; ERR_DATE_3
+      q 0
+    }*/
+    s array("dayfrom")=dayfrom
+  }
+  
+  ; 18.12.20 ln; preformatovat dayto
+  s dayto=$g(array("dayto"))
+  if dayto'="" {
+    try { s dayto=$zd($zdh($tr(dayto,".","/"),4),8) } catch { s dayto=0 }
+    s array("dayto")=dayto
+  }
+  
+  s userT001=##class(i2.access).getLoginId()
+   
+  s array("supervisor")=..getSupervisor(userT001,data("IDX"))
+  s array("status")="1"
+   
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="runtime">
+<Description><![CDATA[
+<pre> Generovani runtime (promenlivych, neulozenych) dat do pole runtime
+parametry: class a t001 zaznamu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&runtime,class,t001]]></FormalSpec>
+<Implementation><![CDATA[  ; s user=##class(i2.access).getLoginId()
+]]></Implementation>
+</Method>
+
+<Method name="isSupervisor">
+<Description><![CDATA[
+<pre> Pokud je uzivatel supervizor contentServeru, vrati neprazdny retezec
+parametry: t001 uzivatele
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>t001:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q ""
+]]></Implementation>
+</Method>
+
+<Method name="getSupervisor">
+<Description><![CDATA[
+<pre> Vraci identifikator supervizora zadaneho uzivatele viz isSupervisor()
+parametry: t001 uzivatele, idx zaznamu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>t001:%String,idx:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q ""
+]]></Implementation>
+</Method>
+
+<Method name="getUseStat1">
+<Description><![CDATA[
+<pre> Naplneni uzivatelske polozky c.1 statistik
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,operation:%String,succes:%Boolean]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q ""
+]]></Implementation>
+</Method>
+
+<Method name="getUseStat2">
+<Description><![CDATA[
+<pre> Naplneni uzivatelske polozky c.2 statistik
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,operation:%String,succes:%Boolean]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q ""
+]]></Implementation>
+</Method>
+
+<Method name="getUseStat3">
+<Description><![CDATA[
+<pre> Naplneni uzivatelske polozky c.3 statistik
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&array,operation:%String,succes:%Boolean]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[  q ""
+]]></Implementation>
+</Method>
+
+<Method name="getCustom">
+<Description><![CDATA[
+<pre> Naplneni uzivatelskho C52$$c zaznamu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,&array]]></FormalSpec>
+<Implementation><![CDATA[  q ""
+]]></Implementation>
+</Method>
+
+<Method name="upload">
+<Description><![CDATA[
+<pre> Atomicke ulozeni souboru a metadat
+
+09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
+07.04.22 ln; CRank generovat vzdy
+06.01.22 ln; podpora CRank
+24.11.16 ln; big data uploader (node)
+16.10.15 ln; podpora kontroly prav podle nahravaneho souboru
+23.05.14 ln; podpora multiupload
+18.10.13 ln; osetreni pole C52
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  /*
+  w !,"<pre>"
+  d $system.OBJ.Dump(%request)
+  w !,"</pre>"
+  */
+  
+  s rest=$$$GETREQVAR("st")="rest"
+  s multi=$$$GETREQVAR("st")="feed"   
+  s stream=$g(%request.MimeData("FileStream",1))
+  s nodefirst=$$$GETREQVAR("nodefirst")
+  
+  ; 24.11.16 ln; big data uploader (node)
+  if rest && ($$$GETREQVAR("nodesid")'="") {    
+    s ret=..node(.data)
+    q:'ret 0
+    s multi=1
+  }  
+  elseif '$isobject(stream) || (stream.Size="") {
+    s stream=$g(%request.MimeData("files[]",1))
+    if 'multi || '$isobject(stream) || (stream.Size="") {    
+      s:rest||multi data("ERRORS")="NOSTREAM"
+      //w !,"stream"
+      ;d ..getCred(.data) - volat uzivatelsky
+      q 0   
+    } else {
+      s ret=..multi(.data,stream)
+      q:'ret 0
+    }
+  } else {
+    s origname=stream.FileName
+    ; ziskani origname pro ie
+    if $e(origname,2,3)=":\" {
+      s origL=$l(origname,"\")
+      s origname=$p(origname,"\",origL,origL)
+    }
+    s data("ORIGNAME")=origname
+    s data("SIZE")=stream.Size
+    s data("CTYPE")=stream.ContentType
+  }
+  s data("EXT")=$zcvt($p(data("ORIGNAME"),".",$l(data("ORIGNAME"),".")),"L")
+  
+  /*
+  w !,"<pre>"
+  d $system.OBJ.Dump(stream)
+  w !,"</pre>"  
+  
+  s bytes=stream.Read(200)
+  s bytes=##class(%CSP.Utils).DecodeData(bytes)  ; vypise netiskunelne znaky jako $c()
+  w bytes,!
+  d stream.Rewind()
+  */  
+  
+  d ##class(i2.base.request).get(.array)
+  d ##class(i2.base.request).pure(.array)
+  d ##class(i2.base.request).purge(.array)
+  d ##class(i2.base.request).first(.array)
+  
+  s idx=$g(array("idx"))
+  k array("idx")
+    
+  q:'..apply(.data,.array) 0
+  
+  s class=##class(User.Util).lname2objectName($p($p(idx,"*",1),"-",1))
+  s t001=$p(idx,"*",2)
+  
+  ; 16.10.15 ln; podpora kontroly prav podle nahravaneho souboru
+  s runtime("class")=class
+  s runtime("t001")=t001
+  s runtime("origname")=data("ORIGNAME")
+  s runtime("extension")=data("EXT")
+  s runtime("size")=data("SIZE")
+  s runtime("ctype")=data("CTYPE")
+  s type=$g(array("type"))
+  s:type="" type="content"
+  s runtime("type")=type
+  
+  ; apply muze zmeni repozitar, takze kontrola jeste jednou
+  if '##class(content.api).engineUpload(data("REPO"),,.runtime) {
+    s data("ERRORS")=..tx("CONTSERERR3")
+    s data("EXIT")=1  
+    d ##class(content.stat).addUpload(.array,0)
+    q 0
+  }  
+  q:nodefirst 1
+  
+  if multi && $d(data("FILE")) {
+    s array("FILE")=1
+    s array("origname")=data("ORIGNAME")
+    s array("size")=data("SIZE")
+    s array("ctype")=data("CTYPE")
+    s stream=data("FILE")
+  }
+  
+  /*
+  w !,"<pre>"
+  zw array
+  w !,"</pre>"
+  q 0
+  */
+  
+  s ret=##class(content.api).import(idx,stream,.array)
+  d:multi ##class(%File).Delete(data("PATH"))
+  if ret'="" {
+    s data("ERRORS")=ret
+    d ##class(content.stat).addUpload(.array,0)
+    q 0
+  }
+  
+  d ##class(content.stat).addUpload(.array,1)
+  
+  ; 18.10.13 ln; osetreni pole C52
+  if ##class(i2.dblink).recordReadLX(.handle,idx,"T") {   
+    if ##class(content.engine).setC52(.handle,.array) {
+      ; 09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
+      $$$NULLDEVStartProc
+      s sc=##class(User.MARC).writeX(.handle)
+      $$$NULLDEVStop
+      if $$$ISERR(sc) {
+        w:'rest !,"ERROR: (C52) write failed - "_$System.Status.GetErrorText(sc)
+      }
+    }
+  }
+  
+  s data("KEY")=array("key")
+  s data("REPORTS")=..tx("SAVEOK")_" "_array("origname")
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="multi">
+<Description><![CDATA[
+<pre> hlavni metoda pro zpracovani multiuploadu, volano ajaxem
+zde se spoji jednotlivych casti souboru dohromady
+vraci 1 pokud je jiz soubor cely, jinak 0
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,stream:%CSP.BinaryStream]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  
+  s data("PREVIEW")=""  
+  s data("FILEEXIST")=""
+  s data("RANGE")=""  
+  
+  ;s stream=$g(%request.MimeData("files[]",1))
+  q:'$isobject(stream) 0
+  
+  /*
+    s val=stream.Read(100)    
+    s data("PREVIEW")=##class(util.ie.json).encode(val)
+    d stream.Rewind()
+  */
+  
+  s origname=stream.FileName
+  ; ziskani origname pro ie
+  if $e(origname,2,3)=":\" {
+    s origL=$l(origname,"\")
+    s origname=$p(origname,"\",origL,origL)
+  }
+  s data("ORIGNAME")=origname
+  s data("SIZE")=stream.Size
+  s data("CTYPE")=stream.ContentType
+    
+  s range=$g(%request.CgiEnvs("HTTP_CONTENT_RANGE"))
+  s rangeStart=$p($p(range,"-",1)," ",2)
+  s rangeEnd=$p($p(range,"/",1),"-",2)
+  s rangeSize=$p(range,"/",2)
+  s data("RANGE")=rangeStart
+  
+  s pathSepp=$$$PathSepp
+  s path=##class(util.common).getArlDir("DB_SUBDIR")_pathSepp_"contmp"_pathSepp
+  if '##class(%File).DirectoryExists(path) { 
+    if '##class(%File).CreateDirectoryChain(path) {
+      s data("ERRORS")="tmpdir"
+      q 0
+    }
+  }
+  
+  s path=path_$tr($$$GETSID_"_"_data("ORIGNAME"),"""*:<>?\/|","_________")
+  s:'##class(User.Util).isWindows() path=$zcvt(path,"O","UTF8")
+  s data("PATH")=path
+  s file=##class(%FileBinaryStream).%New()  
+  s file.Filename=path
+  if file.Size && (range'="") && (rangeStart'="0") {
+    s data("FILEEXIST")="yes"
+    d file.MoveToEnd()
+    Set sc1=$$$OK,sc2=$$$OK
+    For  Quit:(stream.AtEnd)||($$$ISERR(sc1)||($$$ISERR(sc2)))  Set len=32000,sc1=file.Write(stream.Read(len,.sc2))
+    d file.SaveStream()
+    s data("SIZE")=file.Size
+    s data("FINISHED")=rangeSize=data("SIZE")    
+    s data("FILE")=file
+    
+    if ((rangeEnd+1)=rangeSize) && (data("SIZE")'=rangeSize) {
+      d ##class(%File).Delete(path)
+      s data("ERRORS")="size"
+      q 0
+    }
+  } 
+  elseif range'="" {    
+    d file.CopyFromAndSave(stream)
+  } else {
+    s data("FINISHED")=2
+  }
+  
+  q +data("FINISHED")
+]]></Implementation>
+</Method>
+
+<Method name="resume">
+<Description><![CDATA[
+<pre> zpracovani ajax dotazu pro moznost navazat na nedokonceny mltiupload
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+    
+  s origname=$$$GETREQVAR("file")
+  ; ziskani origname pro ie
+  if $e(origname,2,3)=":\" {
+    s origL=$l(origname,"\")
+    s origname=$p(origname,"\",origL,origL)
+  }
+  s data("ORIGNAME")=origname
+  s data("SIZE")=0  
+  
+  s pathSepp=$$$PathSepp
+  s path=##class(util.common).getArlDir("DB_SUBDIR")_pathSepp_"contmp"_pathSepp
+  s path=path_$tr($$$GETSID_"_"_data("ORIGNAME"),"""*:<>?\/|","_________")
+  s:'##class(User.Util).isWindows() path=$zcvt(path,"O","UTF8")  
+  s data("PATH")=path
+  if ##class(%File).Exists(path) {
+    s data("SIZE")=##class(%File).GetFileSize(path)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="nodelogin">
+<Description><![CDATA[
+<pre> Prihlaseni uzivatele pomoci jednorazoveho klice pro bigdata (node)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s user=$$$GETREQVAR("nodeuser")
+  if user="" {
+    s data("ERRORS")="NOUSER"
+    q 0
+  }
+  s class=$$$IPREF_"IsUser"  
+  
+  if '##class(User.MARC).readX(.handle,class,user,"T") {
+    s data("ERRORS")=class_"|"_user_"|"
+    q 0
+  }
+    
+  s loginInfo=##class(i2.ws.auth).createLoginInfo(.handle,1,.sErrNo,.sErrMsg)
+  d ##class(i2.ws.auth).setLoginInfo(loginInfo)
+  
+  s cred=$$$GETREQVAR("nodecred")
+  if '..validateCred(cred) {
+    s data("ERRORS")="CRED"
+    q 0
+  }
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="node">
+<Description><![CDATA[
+<pre> hlavni metoda pro zpracovani multiuploadu pro bigdata (node)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  
+  s nodesid=$$$GETREQVAR("nodesid")
+  s nodefirst=$$$GETREQVAR("nodefirst")
+  
+  s data("ORIGNAME")=$$$GETREQVAR("origname")
+  s rangeSize=$$$GETREQVAR("size")
+  s data("CTYPE")=$$$GETREQVAR("ctype")
+  
+  s pathSepp=$$$PathSepp
+  s repo=$$$GETREQVAR("repository")
+  s path=##class(User.Util).sXlate("IMAGE_SERVER",repo,"N",$$$IPREF,"b")
+  if path="" {
+    s data("ERRORS")="tmpdir"
+    q 0
+  }
+  s path=path_pathSepp_"contmp"_pathSepp
+  s path=path_$tr("node_"_nodesid_"_"_data("ORIGNAME"),"""*:<>?\/|","_________")
+  s:'##class(User.Util).isWindows() path=$zcvt(path,"O","UTF8")
+  s data("PATH")=path
+  q:'..nodelogin(.data) 0  ; potrepujeme PATH pro odmazani souboru
+  q:data("NODEMAIN") 0
+  
+  s file=##class(%FileBinaryStream).%New()  
+  s file.Filename=data("PATH")
+  s data("FILE")=file
+  
+  if nodefirst {
+    s data("SIZE")=nodefirst
+    q 1
+  }
+  
+  s data("SIZE")=file.Size
+  s data("FINISHED")=rangeSize=data("SIZE")    
+    
+  if 'data("FINISHED") {
+    h 1
+    s file=##class(%FileBinaryStream).%New()
+    s file.Filename=data("PATH")
+    s data("FILE")=file
+    s data("SIZE")=file.Size
+    s data("FINISHED")=rangeSize=data("SIZE")
+  }
+    
+  if 'data("FINISHED") {
+    ;d ##class(%File).Delete(path)
+    s data("ERRORS")="size"
+    q 0
+  }
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="getCred">
+<Description><![CDATA[
+<pre> Ziskani jednorazovaho hesla pro bigdata upload (node)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:'##class(i2.access).isLoggedIn() 0
+  
+  s user=##class(i2.access).getLoginId()
+  s data("CREDUSER")=user
+  s data("CRED")=$SYSTEM.Encryption.TOTP("c3&z*"_user_"\m4T<",,600,8)
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="validateCred">
+<Description><![CDATA[
+<pre> Kontrola platnosti jednorazovaho hesla pro bigdata upload (node)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>topt:%Integer</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:'##class(i2.access).isLoggedIn() 
+  
+  s user=##class(i2.access).getLoginId()
+  q $SYSTEM.Encryption.TOTPValidate(topt,"c3&z*"_user_"\m4T<",,,600,48,8)
+]]></Implementation>
+</Method>
+
+<Method name="getSubSite">
+<Description><![CDATA[
+<pre>
+Zalozky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data:%Binary]]></FormalSpec>
+<Implementation><![CDATA[
+  s idx=$$$GETREQVAR("idx")
+  s data("SUBMENU")=0
+  s i = 0
+  
+  s i = i + 1
+  s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"idx="_idx)
+  s data("SUBMENU",i,"pageid")=..#PageID
+  s data("SUBMENU",i,"param")="idx="_idx
+  s data("SUBMENU",i,"title")=""
+  s data("SUBMENU",i,"text")=..tx("SIMPLEUPLOAD")
+  s data("SUBMENU",i,"active")=$s(data("MULTI")="":"1",1:"")
+  s data("SUBMENU",i,"tpl")=""
+  s data("SUBMENU",i,"tab")=i
+  
+  s i = i + 1
+  s data("SUBMENU",i,"pageid")=..#PageID
+  s data("SUBMENU",i,"param")="multi=1&idx="_idx
+  s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,data("SUBMENU",i,"param"))
+  s data("SUBMENU",i,"title")=""
+  s data("SUBMENU",i,"text")=..tx("MULTIUPLOAD")
+  s data("SUBMENU",i,"active")=$s(data("MULTI")=1:"1",1:"")
+  s data("SUBMENU",i,"tpl")=""
+  s data("SUBMENU",i,"tab")=i
+  
+  s data("SUBMENU")=i
+]]></Implementation>
+</Method>
+
+<Method name="getBreadCrumb">
+<Description><![CDATA[
+<pre> vraci drobeckove menu
+
+10.09.20 ln; uzel BREADCRUMB predan pres data
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    d ##class(i2.ui.menu).getBreadCrumbIdx(.data,..#PageID)
+    q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

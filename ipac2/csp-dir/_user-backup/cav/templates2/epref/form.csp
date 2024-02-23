@@ -1,0 +1,139 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<ipac:form id="#(data("PAGEID"))#-f" action="#(data("ACTION"))#" method="post">
+    <ipac:dtx param="FORM_UP"/>
+
+<ul class="list-group">
+<li class="list-group-item">
+<fieldset id="searcher">
+<legend><ipac:tx param="WOS_TITLE"/></legend>
+
+<div class="form-check">
+<input type="radio" class="form-check-input" id="wosano" name="wos" value="#($li(data("WOSOPTION_YES"),2))#"#($li(data("WOSOPTION_YES"),1))#/>
+<label for="wosano" class="form-check-label"><ipac:tx param="WOS_YES"/></label>
+</div>
+
+<div class="form-check">
+<input type="radio" class="form-check-input" id="wosne" name="wos" value="#($li(data("WOSOPTION_NO"),2))#"#($li(data("WOSOPTION_NO"),1))#/>
+<label for="wosne" class="form-check-label"><ipac:tx param="WOS_NO"/></label>
+</div>
+
+</fieldset>
+</li>
+
+
+<ipac:off>
+<ipac:note param="skiny stránky">
+  <csp:if condition=(data("SKINOPTION"))>
+<li class="list-group-item">
+<fieldset id="skiner">
+<legend><ipac:tx param="SKIN"/></legend>
+    <ipac:loop param="SKINOPTION">
+<div class="form-check" id="s-skin#(..li(2))#">
+<input type="radio" class="form-check-input" id="skin#(..li(2))#" name="skin" value="#(..li(2))#" #(..li(1))#/>
+<label for="skin#(..li(2))#" class="col-form-label">#(..li(3))#</label>
+</div>
+    </ipac:loop>
+</fieldset>
+</li>
+</csp:if>
+</ipac:note>
+</ipac:off>
+
+<ipac:note param="Nastavení výchozího vyhledávání (jednoduché, rozšířené, expertní)">
+<li class="list-group-item">
+<fieldset id="searcher">
+<legend><ipac:tx param="DEFAULTSEARCH"/></legend>
+
+<div class="form-check">
+<input type="radio" class="form-check-input" id="search_base" name="search" value="#($li(data("SEARCHOPTION_BASE"),2))#"#($li(data("SEARCHOPTION_BASE"),1))#/>
+<label for="search_base" class="form-check-label"><ipac:tx param="SEARCH_BASE"/></label>
+</div>
+
+<div class="form-check">
+<input type="radio" class="form-check-input" id="search_adv" name="search" value="#($li(data("SEARCHOPTION_ADV"),2))#"#($li(data("SEARCHOPTION_ADV"),1))#/>
+<label for="search_adv" class="form-check-label"><ipac:tx param="SEARCH_ADV"/></label>
+</div>
+
+<ipac:off>
+<div class="form-check">
+<input type="radio" class="form-check-input" id="search_exp" name="search" value="#($li(data("SEARCHOPTION_EXP"),2))#"#($li(data("SEARCHOPTION_EXP"),1))#/>
+<label for="search_exp" class="form-check-label"><ipac:tx param="SEARCH_EXP"/></label>
+</div>
+</ipac:off>
+
+</fieldset>
+</li>
+</ipac:note>
+
+<csp:if condition=(data("LANGUAGEOPTION"))>
+<li class="list-group-item">
+<fieldset id="langer">
+<legend><ipac:tx param="LANGUAGE"/></legend>
+    <ipac:loop param="LANGUAGEOPTION">
+<div class="form-check" id="s-lang#(..li(2))#">
+<input type="radio" class="form-check-input" id="language#(..li(2))#" name="language" value="#(..li(2))#" #(..li(1))#/>
+<label for="language#(..li(2))#" class="form-check-label">#(..li(3))#</label>
+</div>
+    </ipac:loop>
+</fieldset>
+</li>
+</csp:if>
+
+
+<ipac:note param="Nastavení výchozího chování komentářů">
+<csp:if condition=($$$I2isOp("RATING")) note="Knihovna nemusí mít komentáře nastavené vůbec">
+<csp:if condition=(data("RATINGOPTION_SHOW")) note="Nebo může mít explicitně vyplé">
+
+<li class="list-group-item">
+<fieldset id="ratings">
+<legend><ipac:tx param="DEFAULTRATING"/></legend>
+
+<div class="form-check" id="s-rating_base">
+<input type="radio" class="form-check-input" id="rating_base" name="rating" value="#($li(data("RATINGOPTION_BASE"),2))#"#($li(data("RATINGOPTION_BASE"),1))#/>
+<label for="rating_base" class="form-check-label"><ipac:tx param="RATING_BASE"/></label>
+</div>
+
+<div class="form-check" id="s-rating_nocomments">
+<input type="radio" class="form-check-input" id="rating_nocomments" name="rating" value="#($li(data("RATINGOPTION_NOCOMMENTS"),2))#"#($li(data("RATINGOPTION_NOCOMMENTS"),1))#/>
+<label for="rating_nocomments" class="form-check-label"><ipac:tx param="RATING_NOCOMMENTS"/></label>
+</div>
+
+</fieldset>
+</li>
+
+</csp:if>
+</csp:if>
+</ipac:note>
+
+<ipac:off>
+<li class="list-group-item">
+<fieldset>
+<legend><ipac:tx param="ELINK"/></legend>
+
+<div class="checkbox switch switch-sm mt-1">
+  <csp:if condition=(data("EXTERNAL"))>
+<input type="checkbox" class="form-check-input" id="elink" name="elink" value="1" checked="checked"/>
+  <csp:else>
+<input type="checkbox" class="form-check-input" id="elink" name="elink" value="1"/>
+  </csp:if>
+<label for="elink" id="elinktext" class="form-check-label"><ipac:tx param="ELINK_TEXT"/></label>
+</div>
+
+</fieldset>
+</li>
+</ipac:off>
+
+
+</ul>
+
+  <ipac:dtx param="SEND_UP"/>
+
+<div class="submit">
+<button type="submit" class="btn btn-primary" name="save" value="1"><ipac:tx param="SAVE_VALUE"/></button>
+<input type="hidden" name="save" value="1"/>
+<input type="hidden" name="fnonce" value="#(data("FNONCE_VALUE"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+&nbsp;<ipac:dtx param="FORM_DOWN"/>
+</ipac:form>

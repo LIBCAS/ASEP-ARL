@@ -1,0 +1,47 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream/><ipac:off><du>2</du></ipac:off>
+<ipac:tpl version="mailhead" page="parts"/>
+<h2><ipac:tx param="EMAIL_TITLE"/></h2>
+
+
+<p>English version below#</p>
+
+<br>
+Vážená paní/ vážený pane,<br>
+<br>
+do Institucionálního repozitáře <ipac:abbr lang="cs-CZ" title="Evidence publikační činnosti Akademie věd České republiky">ASEP AV ČR</ipac:abbr>,
+který je spravován Knihovnou <ipac:abbr lang="cs-CZ" title="Akademie věd České republiky">AV ČR</ipac:abbr>, v. v. i.
+byl uložen plný text práce, jejímž jste (spolu)autorem/autorkou.
+<br>
+#(data("sZf"))#
+<br>
+<ipac:off>Plný text práce bude dostupný u záznamu: <ipac:a op="detail" param="idx=#(data("IDX"))#"></ipac:a></ipac:off>
+Trvalý odkaz: #(data("sTC60a"))# <br>
+<br>
+S pozdravem<br>
+<br>
+Správa repozitáře: <a href="mailto:arl@lib.cas.cz">arl@lib.cas.cz</a><br>
+URL: <a href="https:/asep.lib.cas.cz/i2/arl-cav/cs/">https:/asep.lib.cas.cz/i2/arl-cav/cs/</a><br>
+<br>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+Dear Sir or Madam,<br>
+<br>
+the fulltext of the bellow mentioned work of which you are the (co-)author has been archived 
+in the Institutional Repository of <ipac:abbr lang="en-GB" title="Czech Academy of Sciences">AS CR</ipac:abbr><br>
+<br>
+#(data("sZf"))#
+<br>
+Permanent link: #(data("sTC60a"))# <br>
+<br>
+Yours faithfully<br>
+<br>
+The administration of The Institutional Repository: <a href="mailto:arl@lib.cas.cz">arl@lib.cas.cz</a><br>
+URL: <a href="https:/asep.lib.cas.cz/arl-cav/en/expanded-search/">https:/asep.lib.cas.cz/arl-cav/en/expanded-search/</a><br>
+<br>
+
+<ipac:tpl version="mailfoot" page="parts"/>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.2.4 (Build 903U)" ts="2016-12-05 09:50:51">
+<Class name="i2.cust.cav.stats">
+<Description>
+05.12.16 kp; Pridana podpora pro JSON
+09.03.16 tt; upravena funkcnost trideni u vystupu - PT ústavy ve spolupráci. Oprava chybneho 
+               trideni s vkladanim 0
+</Description>
+<Super>content.stats</Super>
+<TimeChanged>64257,35422.072771</TimeChanged>
+<TimeCreated>63690,58864.633666</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+ictx instituce</Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="userData">
+<Description><![CDATA[
+<pre>Uzivatelska data pro HTML sablonu stranky
+slouzi pro odchylky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; pro statistiku Počet uložených PT ústavy ve spolupráci
+  ; 09.03.16 tt; upravena funkcnost trideni u vystupu - PT ústavy ve spolupráci. Oprava chybneho trideni s vkladanim 0
+  if data("NAME")="ptustavspol"
+  { ; setridim PODLE  data("TABLE","1","2")=78
+    ; setrideni dat podle poctu od nejvetsiho po nejmensi. Musim upravit primo data pro zobrazeni pro konkretni statistiku
+    s sRet=""   ; procistim si promenne
+    k a
+    for 
+    { ; ulozim si je do struktury podle cetnosti
+      s sRet=$o(data("TABLE",sRet)) q:(sRet="")  ; posledni cast tagove mapy       
+      s sHod=data("TABLE",sRet,"2")
+      s sText=data("TABLE",sRet,"1")
+      s a($tr($j(sHod,20,0)," ","0")_" "_sRet)=sText
+      //s a(sHod)=sText
+    }
+
+    s sRet="" ; promazu promenne
+    k data("TABLE")
+    for i=1:1
+    { ; ulozim si zpet data do data("TABLE") tak, jak je chci zobrazene
+      s sRet=$o(a(sRet),-1) q:(sRet="")             ; posledni cast tagove mapy       
+      s sText=a(sRet)
+      s sPocet=+($p(sRet," ",1))
+      if (sPocet>0)
+      {
+        s data("TABLE",i,1)=sText
+        s data("TABLE",i,2)=sPocet
+      }
+    }
+  }
+  
+  if data("NAME")="accession"
+  { ; osetreni poradi pristupu
+    s sRet="",j=6   ; procistim si promenne
+    k a
+    for 
+    { ; ulozim si je do struktury podle cetnosti
+      s sRet=$o(data("TABLE",sRet)) q:(sRet="")  ; posledni cast tagove mapy       
+      s sHod=data("TABLE",sRet,"2")
+      s sText=data("TABLE",sRet,"1")
+      if (sText="Archív") { s nPoc=1 }
+      elseif (sText="Veřejně nepřístupný") { s nPoc=2 }
+      elseif (sText="Přístupný pro ústav") { s nPoc=3 }
+      elseif (sText="Veřejně přístupný s embargem") { s nPoc=4 }
+      elseif (sText="Veřejně přístupný") { s nPoc=5 }
+      else { s nPoc=j,j=j+1 }
+      s a(nPoc,"1")=sText
+      s a(nPoc,"2")=sHod
+    }
+    s sRet="",x=1 ; promazu promenne
+    k data("TABLE")
+    for i=1:1:(j+1)
+    { ; ulozim si zpet data do data("TABLE") tak, jak je chci zobrazene
+      if ($g(a(i,"1"),"")'="")
+      {
+        s data("TABLE",x,1)=a(i,"1")
+        s data("TABLE",x,2)=a(i,"2")
+        s x=x+1  ; inkrementace
+      }
+    }  
+  }
+  
+  
+  //d ##class(content.human).stable(.data,"CONTENT_WORKPLACE")
+  d ##class(content.human).stable(.data,"CONTENT_REC_KIND")
+  d ##class(content.human).xlate(.data,"CONTENT_WORKPLACE")
+]]></Implementation>
+</Method>
+
+<Method name="configData">
+<Description><![CDATA[
+<pre> Vlastni konfiguracni podpole pro stranku dedici od i2.base.chart
+volano na konci ..data() pred ..userData()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s sYear = ""
+  if ($$$GETREQVAR("year")) {
+      s node=""
+      for { 
+         s node=$o(%request.Data("year",node),1,val) q:node=""
+         s sYear=sYear_"&year="_val
+      }
+  }
+  s data("TESTDIR")=""
+  s data("TYPE")=$$$GETREQVAR("type")
+  if ($$$GETREQVAR("test")=1) {
+      s data("TESTDIR")="test."
+      s data("JSONURL")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"st=ajax&type=json&name="_$$$GETREQVAR("name")_sYear_"&test=1")
+  } else {
+      s data("JSONURL")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"st=ajax&type=json&name="_$$$GETREQVAR("name")_sYear)
+  }
+  s data("AJAX") = $$$GETREQVAR("st")="ajax"
+  
+  s data("ZF_SEL")=##class(User.Util).sXlate("CONTENT_STATS",data("NAME"),"N",$$$IPREF,"z")
+  s data("NUMBERING")=1  
+  s data("TERMLIST")=""
+  s data("ISET")=""
+  s data("RECORDS_COUNT")=0
+  s data("NOCOVER")=1
+  d ##class(i2.ui.result).setup(.data)
+  
+  s data("SQL")=$replace(data("SQL"),"%repo%","'"_data("REPO")_"'")
+  
+  /////////////////////////////////////////////////////////////////////////////////
+  /// reseni vednich oboru. Nahrada primo v SQL rozepsanim
+  for i=1:1:3
+  {
+    s:(i=1) sCis="UT_ASEP_OBOR1"
+    s:(i=2) sCis="UT_ASEP_OBOR2"
+    s:(i=3) sCis="UT_ASEP_OBOR3"
+    
+    ; 18.05.15 tt; obory rules - je potreba nahradit
+    if $f(data("SQL"),"VedniObor = '"_i_"'")
+    { ; precteme si vsechny hodnoty ciselniku
+      s sObor1=""
+      if ##class(User.MARC).readX(.handle,"CavUnTablesd",sCis) 
+      {
+        s c=0
+        d {
+          s sT200=$$$getTagXC(.handle,"200",.c) ; vsetky citacie
+          continue:((sT200="")&&(c'=0))
+          if (sT200'="")
+          { ; pokud mame vyplnene data, muzeme provadet akce 
+            s sT200a=$$$getSubTagStr(sT200,"a")
+            s:(sObor1'="") sObor1=sObor1_" OR $PIECE(UserVal1,',') = '"_sT200a_"'"
+            s:(sObor1="") sObor1="$PIECE(UserVal1,',') = '"_sT200a_"'"
+          }
+        } while (c'=0)  
+      }
+      s:(sObor1="") sObor1="VedniObor = '"_i_"'"   ; dame stejnou hodnotu
+      s sObor1="("_sObor1_")"   
+    
+      s data("SQL")=$replace(data("SQL"),"VedniObor = '"_i_"'",sObor1)
+    }
+  }
+  /*
+  if $f(data("SQL"),"FOR SOME %ELEMENT(Array) (%KEY='recenze' AND %VALUE='false')")
+  {
+    s data("SQL")=$replace(data("SQL"),"FOR SOME %ELEMENT(Array) (%KEY='recenze' AND %VALUE='false')"
+      ,"FOR SOME %ELEMENT(Array) (%KEY='recenze' AND %VALUE='false') OR FOR SOME %ELEMENT(Array) (%KEY='recenze' AND %VALUE='')")
+    ;  $$ptypdok,,UT_ASEP_TYPFULL
+    ; je potreba rozepsat (typdok = 'false') za ((typdok = 'false') OR (typdok = ''))
+    ; (SELECT $EXTRACT(mt.Array,$FIND(mt.Array,'accession')+2)
+    ; s:($g(array("hodnoceni"),"")="true") sSTc=$g(sSTc,"")_$c(31)_"c"_"hod"
+  }*/
+  
+  
+  ; - barvy v podpoli o
+  ; $$o{"height":800,"slices":[{"color":"yellow"},{"color":"transparent"}]}
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,3942 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2015.2.3 (Build 855U)" ts="2018-07-24 20:57:56">
+<Class name="User.CavSymConv">
+<Description><![CDATA[
+symboliky z konverzie - vacsina uz nie je aktualnych + nejake pomocne testovacie a kontrolne
+24.07.18 tt; aktualizace pro import IF roku 2017
+20.06.17 tt; symGetIF2005: zmenen index v symGetIF2005 z issn na issns kvuli eissn
+22.02.17 jk; zruseno table name
+19.06.17 tt; symGetIF2005: aktualizace pro import IF roku 2016
+10.07.15 tt; symGetIF2005: aktualizace pro import IF roku 2014
+01.09.14 tt; AuthProjObory: zalozena metoda pro import udaju do projektu
+26.08.14 tt; oprava tagu "c99" -> "C99
+02.07.13 tt; symGetIF2005: aktualizace pro import IF roku 2012
+15.08.12 tt; zalozena metoda pro import Elsevieru
+16.08.11 tt; symGetIF2005: aktualizace pro import IF roku 2010
+28.07.11 tt; symGetIF: uprava logiky pro rok 2010
+22.07.10 tt; symGetIF: úprava logiky metody pro zpracování ISSN a pridani IF
+             podpora doplneni 978c
+22.06.10 tt; symGetIF2005: aktualizace pro import IF roku 2009
+25.08.09 pb; symJoinBCA: symbolik na zlucenie 5 ustavov do noveho ustavu BC-A
+16.09.08 pb; symGetIF: nova metoda na import Impact Faktoru priamo z CSV suboru;
+             symGetIF2005genSZP: uprava 200a a podpola C32x, pridany parameter t001SZP
+27.07.07 lp; aktualizace pro import IF roku 2006,
+             pokud neni hledane periodikum v databazi,
+             vygenerovat novy zaznam SZP
+24.01.07 rs; oddelenie od CavUnEpca
+--
+]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<TimeChanged>64853,72185.42454</TimeChanged>
+<TimeCreated>60654,25745.991303</TimeCreated>
+
+<Method name="genMx">
+<Description>
+vygeneruje MAX zaznamy ("najvacsie zaznamy pre dany formular")
+podla celeho obsahu CavUnEpca
+zapise do suboru MX.TXT
+
+SPUSTENIE: d ##class(CavUnEpca).genMx()
+
+
+Pozor pouziva global ^x2 ktory pred/po pouziti ZMAZE !!
+
+08.04.05 rs;
+</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s cl=##class(CavUnEpca).classNameX()
+  d ^X("s "_cl_" T001 ] mx")
+  if ##class(Util).XcheckActiveList() 
+  {
+     w !,"ERROR: existing MX records found!",
+       !,"you should delete ALL MX* records from "_##class(CavUnEpca).classNameX()
+     w !,"enter d ^X(""d"") now & retry"
+     q
+       
+  }
+  
+  k ^x2
+  d ^X("s "_cl)
+  s sy="##class(CavUnEpca).symGenMaxRec(.handle)"
+  d ##class(Util).XglobalBatch(sy,0, 0, 0, 0)
+  d ..printMaxRecords("mx.txt")
+
+  ;k ^x2
+]]></Implementation>
+</Method>
+
+<Method name="symGenMaxRec">
+<Description><![CDATA[
+- viz. genMx()
+
+
+
+generovanie "MAX" zaznamov pre jednotlive formulare<br>
+Spustenie: viz. genMx()
+              
+15.03.05 rs;]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<Implementation><![CDATA[
+ s fo=##class(MARC).getTagX(.handle,"C99d")
+ s fo=$p(fo,"_",4)
+ if fo="" s fo="?"
+ s brk=0
+ 
+ 
+ ; pole bX sluzi na zistenie indexov tagov/podpoli v ramci jedneho zaznamu
+ ;
+ f i=1:1:9999 set lsLine=##class(MARC).getLineX(.handle,i)  q:brk>1  d
+ . if lsLine="" s brk=brk+1 q
+ . s tag=" "_$e(lsLine,1,3)
+ . s tagidx=$o(bX(tag,""),-1)+1
+ . s bX(tag,tagidx)=""
+ .  
+ . s c=$l(lsLine,$c(31))
+ . if c=1 q  ; tagy bez podpoli pre nase spacialne ucely nepotrebujeme
+ . 
+ . if $e(lsLine)="4" d  q
+ . . ; 4xx riesime inym algoritmom
+ . . s c=$l(lsLine,$c(31)_"1")
+ . . f j=2:1:c d
+ . . . s line2=$p(lsLine,$c(31)_"1",j)
+ . . . ;w !," tag: "_tag_" line2: "_line2
+ . . . s tag2=$e(line2,1,3)
+ . . . s tag2idx=$o(bX(tag,tagidx,tag2,""),-1)+1
+ . . . s bX(tag,tagidx,tag2,tag2idx)=""
+ . . . 
+ . . . s c2=$l(line2,$c(31))
+ . . . f k=2:1:c2 d
+ . . . . s stx=$p(line2,$c(31),k)
+ . . . . s st=$e(stx),stval=$e(stx,2,9999)
+ . . . . s stidx=$o(bX(tag,tagidx,tag2,tag2idx,st,""),-1)+1
+ . . . . s bX(tag,tagidx,tag2,tag2idx,st,stidx)=""
+ . . . . ;w !,tag_","_tagidx_"/"_tag2_","_tag2idx_" $"_st_"["_stidx_"]="_stval
+ . . . . s ^x2(fo,tag,tagidx,tag2,tag2idx,st,stidx)=stval
+ . 
+ . f j=2:1:c d
+ . . s stx=$p(lsLine,$c(31),j)
+ . . s st=$e(stx),stval=$e(stx,2,9999)
+ . . s stidx=$o(bX(tag,tagidx,st,""),-1)+1
+ . . s bX(tag,tagidx,st,stidx)=""
+ . . 
+ . . ;w !,"["_tag_","_tagidx_","_st_","_stidx_"]="_stval
+ . . if $d(^x2(fo,tag,tagidx,st,stidx)) q
+ . . s ^x2(fo,tag,tagidx,st,stidx)=stval
+]]></Implementation>
+</Method>
+
+<Method name="printMaxRecords">
+<Description>
+d ##class(CavVf).printMaxRecords("mx.txt")
+vypis MAX zaznamov
+
+
+15.03.05 rs;</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ofn</FormalSpec>
+<Implementation><![CDATA[
+  ; n=new w=write s=stream
+  open ofn:("NWS":/CREATE):0
+  if '$t d  q ""
+  . w !,"error: sorry open file redirect FAILED!,"
+  use ofn
+  
+  s bFirst=1
+   
+  s fo=""
+  f   
+  {  
+     s fo=$o(^x2(fo)) q:fo=""
+     
+     w:'bFirst ! s bFirst=0 ; nerobit "!" pred prvym riadkom
+     
+     w "# @id CavUnEpca mx_"_$zcvt(fo,"L")
+     s tag=""
+     f   
+     {  
+       ; Tag zacina medzeroiu - takze prve pismenko je druhy znak
+       s tag=$o(^x2(fo,tag)) q:tag=""
+
+       
+       s tagidx=""
+       f    
+       {  
+          s tagidx=$o(^x2(fo,tag,tagidx)) q:tagidx=""
+          ; vypisat bez uvodnej medzery
+          
+          s ind="  "
+          s tagT=$e(tag,2,99)
+          if tagT="200" s ind="1 " ;; kvoli allowSave
+          
+          w !,tagT_" "_ind_" "
+   
+          if ($e(tag,2)="4")
+          {
+            // 4xx tagy   
+            d MXt4xx   
+            continue 
+          }
+          
+          s st=""
+          f     
+          { 
+             s st=$o(^x2(fo,tag,tagidx,st)) q:st=""
+             
+             s stidx=""
+             f    
+             {  
+                s stidx=$o(^x2(fo,tag,tagidx,st,stidx),1,stval) q:stidx=""
+                
+                /// ako vyplnit 999$e - t.j. aby sa nam zaznamy naviazali
+                /// na konkretneho uzivatela
+                if tagT="999",st="e" s stval="cav_is_user*0000003"
+                if tagT="200",st="a" s stval="TEST MX RECORD - "_stval
+                
+                
+                w $c(31)_st_stval
+             }
+          
+          }
+       
+       }
+       
+       s tagidx=""    
+     
+     }
+     w !,"###"
+  }
+  
+  
+  close ofn
+  W !,!,!,"ok. Enter d ^X(""im mx.txt"") to import records"
+  q ""
+  
+  
+MXt4xx  
+          s tag2=""
+          f   
+          { 
+            s tag2=$o(^x2(fo,tag,tagidx,tag2)) q:tag2=""
+            
+            
+            
+            s tag2idx=""
+            f   
+            {  
+               s tag2idx=$o(^x2(fo,tag,tagidx,tag2,tag2idx)) q:tag2idx=""
+               w $c(31)_"1"_tag2_"  "  ; 11.04.05 rs; oprava
+               s st=""
+               f     
+               { 
+                  s st=$o(^x2(fo,tag,tagidx,tag2,tag2idx,st)) q:st=""
+             
+                  s stidx=""
+                  f    
+                  {  
+                    s stidx=$o(^x2(fo,tag,tagidx,tag2,tag2idx,st,stidx),1,stval) q:stidx=""
+                    w $c(31)_st_stval
+                  }
+               }
+             
+            }
+          }
+          q
+]]></Implementation>
+</Method>
+
+<Method name="clearDot">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>s</FormalSpec>
+<Implementation><![CDATA[
+   if ($e(s,$l(s))=".") && ($e(s,$l(s)-1,$l(s))'="..") s s=$e(s,1,$l(s)-1)
+   q s
+]]></Implementation>
+</Method>
+
+<Method name="symFix541">
+<Description><![CDATA[
+symbolik pre opravu 541 na CavUnEpca
+povodne sli 290+288 do 541 
+
+s sy="##class(CavUnEpca).symFix541(.handle)"
+
+teraz 290->541
+      288->C20$b
+06.04.05 rs;       ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf",t001) ztrap "XX"
+ 
+ s tag288=..clearDot(##class(MARC).getTagX(.handlevf,"288x"))
+ if tag288="" q // no chanhes required
+
+ ; tag 541
+ s tag=..clearDot(##class(MARC).getTagX(.handlevf,"290x"))
+ if (tag '="")
+ {
+    s t541="541    "_$c(31)_"a"_tag_$c(31)_"zeng"
+    d ##class(MARC).setTagX(.handle,t541)
+ } 
+ else 
+ { d ##class(MARC).delTagX(.handle,"541") }
+ 
+ // preklad nazvu konf
+ if (1)
+ {
+    s tC20=##class(MARC).getTagX(.handle,"C20")
+    if (tC20'="")
+    {
+        s tC20=##class(MARC).setSubTagStr(tC20,$c(31)_"b"_tag288)
+        d ##class(MARC).setTagX(.handle,tC20)
+    }
+ }
+]]></Implementation>
+</Method>
+
+<Method name="sym7024">
+<Description>
+MK: pre vsetky 702 by malo byt kod role 340 - asi zavolat na konci konv.symboliku
+alebo zakomponovat do exist kodu
+===
+
+symbolik pre opravu 702$4 na editor (340)
+
+s sy="##class(CavUnEpca).sym7024(.handle)"
+06.04.05 rs;       </Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s tag=##class(MARC).getTagX(.handle,"702") 
+ q:tag=""
+ s c=$l(tag,$c(10))
+ f i=1:1:c  
+ {
+     s t1=$p(tag,$c(10),i)
+     s t1=##class(MARC).setSubTagStr(t1,$c(31)_"4340")
+     s $p(tag,$c(10),i)=t1
+ }
+ d ##class(MARC).setTagX(.handle,tag)
+]]></Implementation>
+</Method>
+
+<Method name="symMoveTo463">
+<Description>
+MK: tie iste udaje maju ist raz do 010,011,... inokedy dovnutra 463
+asi zavolat na konci konv.symboliku - POZOR v zavislosti na 
+druhu dok. POZOR R2,T2 sa generuju algoritmicky viz nizsie
+===
+symbolik pre presun 210,010,011 do vnutra 463
+pre formular A2,C,R2,T2,K,M
+
+s sy="##class(CavUnEpca).symMoveTo463(.handle)"
+07.04.05 rs;       </Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s t463=##class(MARC).getTagX(.handle,"463"),t463o=t463
+ if t463="" q
+  
+ s tag="010"
+ s tval=##class(MARC).getTagX(.handle,tag) 
+ if (tval'="") && ('$f(t463,$c(31)_"1"_tag))
+ {
+     // ok mame dany tag & v 463 nie je
+     s tval=$e(tval,5,6)_$e(tval,8,9999) ; nechat len indikatory a hodnotu
+     s t463=t463_$c(31)_"1"_tag_tval 
+     d ##class(MARC).delTagX(.handle,tag)
+ }
+ s tag="011"
+ s tval=##class(MARC).getTagX(.handle,tag) 
+ if (tval'="") && ('$f(t463,$c(31)_"1"_tag))
+ {
+     // ok mame dany tag & v 463 nie je
+     s tval=$e(tval,5,6)_$e(tval,8,9999) ; nechat len indikatory a hodnotu
+     s t463=t463_$c(31)_"1"_tag_tval 
+     d ##class(MARC).delTagX(.handle,tag)
+ }
+ s tag="210"
+ s tval=##class(MARC).getTagX(.handle,tag) 
+ if (tval'="") && ('$f(t463,$c(31)_"1"_tag))
+ {
+     // ok mame dany tag & v 463 nie je
+     s tval=$e(tval,5,6)_$e(tval,8,9999) ; nechat len indikatory a hodnotu
+     s t463=t463_$c(31)_"1"_tag_tval 
+     d ##class(MARC).delTagX(.handle,tag)
+ }
+
+ s tag="225"
+ s tval=##class(MARC).getTagX(.handle,tag) 
+ if (tval'="") && ('$f(t463,$c(31)_"1"_tag))
+ {
+     // ok mame dany tag & v 463 nie je
+     s tval=$e(tval,5,6)_$e(tval,8,9999) ; nechat len indikatory a hodnotu
+     s t463=t463_$c(31)_"1"_tag_tval 
+     d ##class(MARC).delTagX(.handle,tag)
+ }
+ 
+ s tag="205"
+ s tval=##class(MARC).getTagX(.handle,tag) 
+ if (tval'="") && ('$f(t463,$c(31)_"1"_tag))
+ {
+     // ok mame dany tag & v 463 nie je
+     s tval=$e(tval,5,6)_$e(tval,8,9999) ; nechat len indikatory a hodnotu
+     s t463=t463_$c(31)_"1"_tag_tval 
+     d ##class(MARC).delTagX(.handle,tag)
+ }
+
+ s t200=##class(MARC).getTagX(.handle,"200")
+ s sI=##class(MARC).getSubTagStr(t200,"i")
+ s sH=##class(MARC).getSubTagStr(t200,"h")
+ if (sI_sH)'=""
+ {
+    s t200=##class(MARC).setSubTagStr(t200,$c(31)_"i") ; odmazat
+    s t200=##class(MARC).setSubTagStr(t200,$c(31)_"h")
+    ; odmazat zo zaznamu
+    d ##class(MARC).setTagX(.handle,t200)
+    
+    
+    s q=$f(t463,$c(31)_"1200") ; najdeme tag 200
+    if 'q ztrap "DD"
+    s p1=$e(t463,1,q+1) ; po "200.." vcetne
+    s p2=$e(t463,q+2,99999)
+    
+    s t200x=$p(p2,$c(31)_"1",1)
+    if sI'="" s t200x=t200x_$c(31)_"i"_sI
+    if sH'="" s t200x=t200x_$c(31)_"h"_sH
+    
+    s t463=p1_t200x
+    ; zvysok
+    s p2=$p(p2,$c(31)_"1",2,99)
+    if p2'="" s t463=t463_$c(31)_"1"_p2
+     
+ }
+ 
+
+ d:t463'=t463o ##class(MARC).setTagX(.handle,t463)
+]]></Implementation>
+</Method>
+
+<Method name="symFixRT">
+<Description><![CDATA[
+MK: toto je urcenie 1/2 u R,T a nasledne volanie vyssie uvedeneho symboliku
+t.j. nejakym sposobom spojit; najpr urcit R/T 1/2 a potom volat presun pod 463
+===
+symbolik pre presun rozdelenie R,T->R1,R2,T1,T2 
+  + presun 210 pod 463 (vyuziva symMoveTo463)
+  
+pre formular R,T
+
+d ^X("s CavUnEpca dk ] r"),^X("s ||CavUnEpca dk ] t")
+
+s sy="##class(CavUnEpca).symFixRT(.handle)"
+07.04.05 rs;       ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s t210=##class(MARC).getTagX(.handle,"210")
+ s tC99=##class(MARC).getTagX(.handle,"C99") 
+ if tC99="" zt "XX" ; nezmysel
+ 
+ s sD=##class(MARC).getSubTagStr(tC99,"d") zt:sD="" "X2"
+ 
+ s sD1=$p(sD,"_",4)
+ q:((sD1'="R") && (sD1'="T"))
+ 
+ if t210="" { s suff="1"  } else { s suff="2" }
+ s tC99=##class(MARC).setSubTagStr(tC99,$c(31)_"d"_sD_suff)
+ d ##class(MARC).setTagX(.handle,tC99)
+ 
+ 
+ ; tu je poistka ze presun pod 463 ide len vtedy ak je tag 210
+ ; ten u clankov nama co hladat
+ if t210'="" d ..symMoveTo463(.handle)
+]]></Implementation>
+</Method>
+
+<Method name="symFix205">
+<Description>
+MK: opravit v povodnom kode
+===
+symbolik pre opravu 205 - vsade bolo 2x (ponecha len prve opakovanie-zvysok zahodi)
+  
+
+d ^X("s CavUnEpca tag = 205")
+
+s sy="##class(CavUnEpca).symFix205(.handle)"
+07.04.05 rs;       </Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s t205=##class(MARC).getTagX(.handle,"205") q:t205=""
+ d ##class(MARC).setTagX(.handle,t205)
+]]></Implementation>
+</Method>
+
+<Method name="symMoveTo463WhereMissing463">
+<Description><![CDATA[
+MK: TOTO je specialitka asi spustit rucne presne ako je uvedene
+jedna sa o zaznamy, kde sa niektore polia maju presunut ale chyba nazov
+zbornika, teda neni 463-ka
+tu sa vytvori prazdny nazov a potom pomocou vyssie uvedeneho symboliku sa
+zvysok presunie pod 463
+===
+
+
+
+doplnit 463 s nazvom prazdnym + presun pod 463
+d ^X("s CavUnEpca dk ] r"),^X("s ||CavUnEpca dk ] t"),^X("s && 210")
+s sy="##class(CavUnEpca).symMoveTo463WhereMissing463(.handle)"
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>handle</FormalSpec>
+<Implementation><![CDATA[
+    d ##class(MARC).setTagX(.handle,##class(MARC).setSubTagStr(##class(MARC).getTagX(.handle,"463"),$c(31)_"1"_"2001 "_$c(31)_"a-","463   "))
+    d ..symMoveTo463(.handle)
+]]></Implementation>
+</Method>
+
+<Method name="symFixU">
+<Description><![CDATA[
+MK: volat na konci pre uvedeny typ dokumentu
+tento ma vynimku na polia
+===
+
+
+presun 102a -> C20p
+       215a -> C20q
+
+
+d ^X("s CavUnEpca dk ] u")
+s sy="##class(CavUnEpca).symFixU(.handle)"]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>handle</FormalSpec>
+<Implementation><![CDATA[
+    s C20=##class(MARC).getTagX(.handle,"C20"),C20o=C20
+    if C20="" zt "X"
+
+    s v=##class(MARC).getTagX(.handle,"102a")
+    if v'=""
+    {
+      d ##class(MARC).delTagX(.handle,"102")
+      s C20=##class(MARC).setSubTagStr(C20,$c(31)_"p"_v)
+    }
+    s v=##class(MARC).getTagX(.handle,"215a")
+    if v'=""
+    {
+      d ##class(MARC).delTagX(.handle,"215")
+      s v=$p(v," ",1)
+      s C20=##class(MARC).setSubTagStr(C20,$c(31)_"q"_v)
+    }
+    
+    d:C20'=C20o ##class(MARC).setTagX(.handle,C20)
+]]></Implementation>
+</Method>
+
+<Method name="symFix856s">
+<Description><![CDATA[
+MK: tu chybal prevod opravit v povodnej konverzii
+===
+
+
+VF044^f -> 856$s
+(495 records)
+ 
+d ^X("s CavVf 044f")
+d ^X("slf a.txt")
+d ^X("glf a.txt")   // do triedy CavUnEpca
+s sy="##class(CavUnEpca).symFix856s(.handle)"
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>handle</FormalSpec>
+<Implementation><![CDATA[
+   s class=##class(MARC).recordClassX(.handle)
+   s t001=##class(MARC).recordT001X(.handle)
+   if '##class(MARC).readX(.handlevf,"CavVf",t001) ztrap "XX"
+ 
+   s tag44f=..clearDot(##class(MARC).getTagX(.handlevf,"044f"))
+   if tag44f="" q
+   
+   s C20=##class(MARC).getTagX(.handle,"856")
+   s C20=##class(MARC).setSubTagStr(C20,$c(31)_"s"_tag44f,"856    ")
+   d ##class(MARC).setTagX(.handle,C20)
+]]></Implementation>
+</Method>
+
+<Method name="symGenPw">
+<Description>
+MK: nic tyka sa citatelov
+===
+
+symbolik na vygenerovanie nahodnych hesiel (2 pismenka + 4 cisla)
+hesla sa ukladaju v sifrovanej podobe
+
+d ^X("s CavIsUser")
+s sy="##class(CavUnEpca).symGenPw(.handle)"</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>handle</FormalSpec>
+<Implementation><![CDATA[
+ s t001=$$$HandleT001(handle),name=##class(MARC).getTagX(.handle,"100a")
+ s name2=##class(MARC).getTagX(.handle,"100b")
+ s pw=""
+ s countCh=$a("z")-$a("a")+1
+ s pw=$c($a("A")+$random(countCh))           ; jedno velke pismeno
+ s pw=pw_$c($a("a")+$random(countCh))           ; jedno male pismeno
+ f i=1:1:4 s pw=pw_$c($a("0")+$random(10))   ; jedno cislo
+ w !,"nr."_t001_" - "_$$$lj($e(name,1,39),40)_" "_$$$lj(name2,9)_" pw: "_pw
+ 
+ s t400=##class(MARC).getTagX(.handle,"400")
+ s pw=$system.Encryption.Base64Encode($system.Encryption.MD5Encode(pw))
+ s t400=##class(MARC).setSubTagStr(t400,$c(31)_"w"_pw,"400")
+ 
+ 
+ d ##class(MARC).setTagX(.handle,t400)
+]]></Implementation>
+</Method>
+
+<Method name="symMove702To463">
+<Description><![CDATA[
+MK: toto opravit v povodnej konverzii
+symbolik pre presun 702 do vnutra 463
+702 sa musi znova vygenerovat podla 014 pretoze povodne sa skonvertovalo
+len jedno opakovanie
+===
+
+pre formulare A2,C,K,M
+d ^X("s CavUnEpca dkf [] a2"),^X("s ||CavUnEpca dk ] c"),^X("s ||CavUnEpca dk ] k"),^X("s ||CavUnEpca dk ] m")
+d ^X("s && 702")
+
+s sy="##class(CavUnEpca).symMove702To463(.handle)"
+07.04.05 rs;       ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s t463=##class(MARC).getTagX(.handle,"463"),t463o=t463
+ if t463="" q
+ 
+ if $f(t463,$c(31)_"1702") q
+ 
+ 
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf",t001) ztrap "XX"
+ 
+ s tag014=##class(MARC).getTagX(.handlevf,"014",-1)
+ s cc=$l(tag014,$c(10)),tvalx=""
+ f i=1:1:cc
+ {
+  s tval=$p(tag014,$c(10),i) if tval="" continue
+  
+  ; ^k -> $b; ^p -> $a
+  s sB=$$$trim(##class(MARC).getSubTagStr(tval,"k"))
+  s sA=$$$trim(##class(MARC).getSubTagStr(tval,"p"))
+  if sA="" continue
+  s li="702    "_$c(31)_"a"_sA
+  if sB'="" s li=li_$c(31)_"b"_sB
+  
+  s li=li_$c(31)_"4340"  ; rola editor
+  if tvalx'="" s tvalx=tvalx_$c(10)
+  s tvalx=tvalx_li
+ }
+
+  
+ s tag="702"
+ //s tvalx=##class(MARC).getTagX(.handle,tag,-1) 
+ s cc=$l(tvalx,$c(10))
+ f i=1:1:cc
+ {
+  s tval=$p(tvalx,$c(10),i)
+  if (tval'="")
+  { 
+     // ok mame dany tag & v 463 nie je
+     s tval=$e(tval,5,6)_$e(tval,8,9999) ; nechat len indikatory a hodnotu
+     s t463=t463_$c(31)_"1"_tag_tval 
+  }
+ }
+ d:cc ##class(MARC).delTagX(.handle,tag)
+ 
+
+ d:t463'=t463o ##class(MARC).setTagX(.handle,t463)
+]]></Implementation>
+</Method>
+
+<Method name="symFixRep702">
+<Description>
+MK: toto je zrejme oprava chybne prevedeneho pola z VF
+asi opravit v povodnej konverzii
+===
+
+zvysne kde zostalo 702 (po presune 702 dovnutra 463 u A2,C,K,M)
+d ^X("s CavUnEpca 702")
+s sy="##class(CavUnEpca).symFixRep702(.handle)"
+opravit obsah 702 - opakovania</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf",t001) ztrap "XX"
+ 
+ s tag014=##class(MARC).getTagX(.handlevf,"014",-1)
+ s cc=$l(tag014,$c(10)),tvalx=""
+ f i=1:1:cc
+ {
+  s tval=$p(tag014,$c(10),i) if tval="" continue
+  
+  ; ^k -> $b; ^p -> $a
+  s sB=$$$trim(##class(MARC).getSubTagStr(tval,"k"))
+  s sA=$$$trim(##class(MARC).getSubTagStr(tval,"p"))
+  if sA="" continue
+  s li="702    "_$c(31)_"a"_sA
+  if sB'="" s li=li_$c(31)_"b"_sB
+  
+  s li=li_$c(31)_"4340"  ; rola editor
+  if tvalx'="" s tvalx=tvalx_$c(10)
+  s tvalx=tvalx_li
+ }
+ d ##class(MARC).setTagX(.handle,tvalx)
+]]></Implementation>
+</Method>
+
+<Method name="symJoinGetNew200a">
+<Description>
+MK: nic
+
+
+len vizualne vypisat stary+novy nazov
+
+s sy="ret1=##class(CavUnEpca).symJoinGetNew200a(.handle)"
+</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf","a"_t001) q
+ s t500=##class(MARC).getTagX(.handlevf,"500a")
+ s t200a=##class(MARC).getTagX(.handle,"200a")
+ q "orig: "_t200a_$c(13,10)_"new:  "_t500
+]]></Implementation>
+</Method>
+
+<Method name="symJoinDiffTitle">
+<Description>
+MK: nic
+
+len select kde je prvych X znakov nazvu roznych
+
+s sy="ret1=##class(CavUnEpca).symJoinDiffTitle(.handle)"
+</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf","a"_t001) q
+ s t500=##class(MARC).getTagX(.handlevf,"500a")
+ s t200a=##class(MARC).getTagX(.handle,"200a")
+ if t500="" q 0
+ 
+ s c=10
+ s t500=$zcvt($tr(t500," "),"L")
+ s t200a=$zcvt($tr(t200a," "),"L")
+ q $e(t500,1,c)'=$e(t200a,1,c)
+]]></Implementation>
+</Method>
+
+<Method name="symJoinImport">
+<Description>
+MK: nic
+
+spojenie pomocneho zaznamu "a....." z CavVf so zaznamom v CavUnEpca
+t.j. k "0000001" zaznamu EPCA sa pritiahnu polia 500* z CavVf "a0000001")
+
+
+s sy="##class(CavUnEpca).symJoinImport(.handle)"
+d ^X("s CavUnEpca @"_sy)
+</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf","a"_t001) w !,"WARN: "_t001_" NF!" q
+ 
+ s t500=##class(MARC).getTagX(.handlevf,"500a")
+ s t501=##class(MARC).getTagX(.handlevf,"501a")
+ s t502=##class(MARC).getTagX(.handlevf,"502a")
+ s t503=##class(MARC).getTagX(.handlevf,"503a")
+ 
+ ;if t500'="" s t500="%%CHG%% "_..trimPoint(t500)
+ ;if t501'="" s t501="%%CHG%% "_..trimPoint(t501)
+ ;if t502'="" s t502="%%CHG%% "_..trimPoint(t502)
+ ;if t503'="" s t503="%%CHG%% "_..trimPoint(t503)
+ 
+ s t200=##class(MARC).getTagX(.handle,"200") if t200="" ztrap "X"
+ s tC15=##class(MARC).getTagX(.handle,"C15")
+ 
+ if t500'="",'$f(t200,t500)
+ {
+     s t200=##class(MARC).setSubTagStr(t200,$c(31)_"a"_t500) 
+     d ##class(MARC).setTagX(.handle,t200)
+ }
+ if (t502_t503)'="" 
+ {
+      s m=0
+      if t502'="",'$f(tC15,t502) s tC15=##class(MARC).setSubTagStr(tC15,$c(31)_"a"_t502,"C15"),m=1
+      if t503'="",'$f(tC15,t503) s tC15=##class(MARC).setSubTagStr(tC15,$c(31)_"c"_t503,"C15"),m=1
+      d:m ##class(MARC).setTagX(.handle,tC15)
+ }
+ 
+ s t541=##class(MARC).getTagX(.handle,"541",-1)
+ if t501'="",'$f(t541,t501)
+ {
+   s c=$l(t541,$c(10)),bSet=0
+   f i=1:1:c
+   {
+     s v=$p(t541,$c(10),i)
+     s sz=##class(MARC).getSubTagStr(v,"z")
+     if sz="cze" 
+     {
+          s v=##class(MARC).setSubTagStr(v,$c(31)_"a"_t501) 
+          s $p(t541,$c(10),i)=v,bSet=1
+          q
+     }
+   }
+   if 'bSet
+   {
+       if t541'="" s t541=t541_$c(10)
+       s t541=t541_"541    "_$c(31)_"a"_t501_$c(31)_"zcze"
+   }
+   d ##class(MARC).setTagX(.handle,t541)
+ }
+ 
+ if '##class(MARC).recordModifiedX(.handle) w !,"WARN: no modif in "_t001 q
+ w !,t001_" OK"
+]]></Implementation>
+</Method>
+
+<Method name="symAuthNoRC">
+<Description><![CDATA[
+MK: nic
+
+10.05.05 jj; symAuthNoRC() - symbolik ktory pre handle autoritneho
+               zaznamu najde vsetky zaznamy podla indexu "audk" ktore 
+               sa viazu k danemu autorovi a postupne ich prejde. 
+               Ak najde prvy ktory ide do RIV vrati 1 inak vrati 0.
+             Pouziti:
+             s sy="ret1=##class(CavUnEpca).symAuthNoRC(.handle)"
+             d ^X("s CavUnAuth 200a")
+             d ^X("s &&CavUnAuth C06d")
+             d ^X("s && @"_sy)
+             d ^X("la")
+             d ^X("pdisk RIV_no_RC.txt")
+             d ^X("la")
+             d ^X("pdisk")
+             <br>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+  //    vybrat zaznamy z katalogu, ktere se odkazuji na tuto autoritu:
+  //    v audk obsahuji kod "cav_un_auth*"_T001, kde T001 patri
+  //    autorite z handle
+  s sIdx="audk"
+  ; nacteni T001
+  s t001=$$$HandleT001(handle)
+  s skey=" "_"cav_un_auth*"_t001
+  s classSrch="CavUnEpca",sIdx="audk",q=0,id="",handleC=""
+  
+  for  s id=$o(^$$$MarcIndexG(classSrch,sIdx,skey,id)) q:((id="") || q)  d
+  . //    projit vybrane katalog. zaznamy a zjistit, neni-li alespon
+  . //    jeden z nich exportovan do RIV (C26b=1)
+  . //    je-li export do RIV - q 1, jinak q 0
+  . s idC=##class(MARC).getT001(id)
+  . s idC="cav_un_epca*"_idC
+  . if ##class(MARC).readLX(.handleC,idC) d  
+  . . s t001C=$$$HandleT001(handleC)
+  . . s goRIV=##class(MARC).getTagX(.handleC,"C26b")
+  . . if (goRIV) s q=1
+  
+  //    pro vsechny zaznamy, pro nez se mi vratila 1, vyberu ty,
+  //    ktere nemaji rodne cislo (C06e="")
+  if q  d
+  . s sRC=##class(MARC).getTagX(.handle,"C06e")
+  . if (sRC='"") s q=0
+
+  // navratova hodnota - bud 0 nebo 1
+  q q
+]]></Implementation>
+</Method>
+
+<Method name="genAutProjektVfToUn">
+<Description><![CDATA[
+<pre>
+11.01.06 jj; oprava pro indexove pole X - na konci zaznamu odmazavat
+05.08.05 jj; rutina pro vygenerovani SZP pro CAV
+05.08.05 jj; zbyva po reakci ze strany NA, p. Dolezelove doplnit
+             zprac. tagu 653, 654, 658, 659            
+11.08.05 jj; oprava zprac. IF
+18.08.05 jj; doplneni setrideni 978 dle roku, 
+             nastaveni pocitadla T001, doplneni zprac. UN_C32
+24.08.05 jj; doplneni tagu 110 kvuli tiasz
+</pre>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>inf:%String,knihovna:%String="CAV",trida:%String="CavUnEpca"</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s OU=$IO
+ ; kontrola parametru
+ if inf="" q "Input file name empty !"
+ 
+ ; otevrit vstupni soubor
+ open inf:(/READ):0
+ s te=$test
+ if 'te q "failed to open the input file ('"_inf_"')!!"
+ use inf:/POSITION=0 use OU
+ ; disable <ENDOFFILE> error
+ d $ZU(68,40,1)
+
+ s sSK=250000
+ s nNazev200a=0
+
+ s brk=0,li="",handle="",sSubTag=""
+ for nLine=1:1 q:brk  d
+ . use inf read li if $zeof'=0 s brk=1
+ . ; nacten 1 radek
+ . ; uprava jednoho radku
+ . if (li'="") d
+ . . ; zapis do zaznamu
+ . . if ($e(li,1,5)="# @id") d
+ . . . s nNazev200a=0
+ . . . d ##class(MARC).newX(.handle,trida,"0"_sSK)
+ . . . s sSK=sSK+1
+ . . . d ##class(MARC).setTagX(.handle,"000    00240nx   22001213  450")
+ . . . d ##class(MARC).setTagX(.handle,"100    "_$c(31)_"a"_##class(Util).date()_"aczey0103    ba")
+ . . . d ##class(MARC).setTagX(.handle,"110    "_$c(31)_"aa")
+ . . if ($e(li,1,3)="066") d  ; zeme vydani - opak.
+ . . . s sZV=""
+ . . . for  s sSubTag=##class(MARC).getSubTagStr(.li,"x") q:sSubTag=""  d
+ . . . . s sZV=sZV_$c(31)_"a"_sSubTag
+ . . . if sZV'="" d ##class(MARC).setTagX(.handle,"102    "_sZV)
+ . . if ($e(li,1,3)="652") d  ; ISSN
+ . . . s sSubTag=##class(MARC).getSubTagStr(li,"x")
+ . . . d ##class(MARC).setTagX(.handle,"011    "_$c(31)_"a"_sSubTag)
+ . . if ($e(li,1,3)="651") d  ; nazev
+ . . . s sSubTag=##class(MARC).getSubTagStr(li,"x")
+ . . . d ##class(MARC).setTagX(.handle,"200 1  "_$c(31)_"a"_sSubTag)
+ . . . s nNazev200a=1
+ . . if ($e(li,1,3)="654") d  ; zkraceny SCI
+ . . . s sSubTag=##class(MARC).getSubTagStr(li,"x")
+ . . . d ##class(MARC).appendTagX(.handle,"C32    "_$c(31)_"a"_sSubTag_$c(31)_"x1")
+ . . . if (nNazev200a=0) d
+ . . . . s nNazev200a=1
+ . . . . d ##class(MARC).setTagX(.handle,"200 1  "_$c(31)_"a"_sSubTag)
+ . . if ($e(li,1,3)="658") d  ; WOS
+ . . . s sSubTag=##class(MARC).getSubTagStr(li,"x")
+ . . . d ##class(MARC).appendTagX(.handle,"C32    "_$c(31)_"a"_sSubTag_$c(31)_"x2")
+ . . . if (nNazev200a=0) d
+ . . . . s nNazev200a=1
+ . . . . d ##class(MARC).setTagX(.handle,"200 1  "_$c(31)_"a"_sSubTag)
+ . . if ($e(li,1,3)="659") d  ; zkraceny WOS
+ . . . s sSubTag=##class(MARC).getSubTagStr(li,"x")
+ . . . d ##class(MARC).appendTagX(.handle,"C32    "_$c(31)_"a"_sSubTag_$c(31)_"x3")
+ . . . if (nNazev200a=0) d
+ . . . . s nNazev200a=1
+ . . . . d ##class(MARC).setTagX(.handle,"200 1  "_$c(31)_"a"_sSubTag)
+ . . if ($e(li,1,3)="900") d  ; poznamka
+ . . . s sSubTag=##class(MARC).getSubTagStr(li,"x")
+ . . . d ##class(MARC).setTagX(.handle,"300    "_$c(31)_"a"_sSubTag)
+ . . if ($e(li,1,3)="650") d  ; IF; patri do 978, odkud se vytv. v T16
+ . . . s sT978=""
+ . . . s nCount=$l(li,$c(31))
+ . . . ; 18.08.05 jj; doplneni setrideni 978 dle roku
+ . . . for i=1:1:nCount d
+ . . . . s sSubTag=$p(li,$c(31),i+1)
+ . . . . if sSubTag'="" d
+ . . . . . s year=$case($e(sSubTag,1,1),"d":"1988","e":"1989","f":"1990","g":"1991","h":"1992","i":"1993","j":"1994","k":"1995","l":"1996","m":"1997","n":"1998","o":"1999","p":"2000","q":"2001","r":"2002","s":"2003","t":"2004",:"1000")
+ . . . . . s X(year)=sSubTag
+ . . . s sAktYear=""
+ . . . for  s sAktYear=$o(X(sAktYear)) q:sAktYear=""  d
+ . . . . s sT978=$c(31)_"a"_sAktYear_$c(31)_"c"_$e(X(sAktYear),2,99)
+ . . . . d ##class(MARC).appendTagX(.handle,"978    "_sT978)
+ . . . ;
+ . . ; zapis do zaznamu - dokonceni
+ . . if ($e(li,1,3)="###") d
+ . . . d ##class(MARC).setTagX(.handle,"801    "_$c(31)_"aCZ"_$c(31)_"b"_knihovna_$c(31)_"c"_##class(Util).date())
+ . . . d ##class(MARC).setTagX(.handle,"970    "_$c(31)_"b"_"BCA3")
+ . . . d ##class(MARC).setTagX(.handle,"999    "_$c(31)_"a1"_$c(31)_"b"_knihovna_$c(31)_"d"_"arl-"_##class(Util).date())
+ . . . d ##class(MARC).setTagX(.handle,"C99    "_$c(31)_"dDFLT_EPCA3")
+ . . . d ##class(MARC).writeX(.handle)
+ . . . ; vymazani X
+ . . . k X
+ 
+ close inf use OU
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+ q ""
+]]></Implementation>
+</Method>
+
+<Method name="genSZPfromArticles">
+<Description><![CDATA[
+<pre>
+08.06.06 jj; oprava tagu "c99" -> "C99"
+20.02.06 jj; doplneni par. replaceData: pri generovani kodu nahradit
+             nazev, radu, zemi ze SZP  
+14.02.06 jj; nastaveni ISSN
+07.09.05 jj; osetreni writeX()
+30.08.05 jj; oprava podminky pro osetreni delky polozky vkladane do tiasz
+29.08.05 jj; doplneni par. genKod
+             doplneni zprac. casopisu obs. ISBN nebo neobs. ISSN/ISBN
+              - prepracovani na index tiasz
+26.08.05 jj; vygenerovani SZP z clanku v databaze
+</pre>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String,knihovna:%String="CAV",trida:%String="CavUnEpca",genKod:%Integer=0,replaceData:%Integer=0]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ ; kontrola parametru
+ if ((knihovna="") || (trida="")) q
+ 
+ s t463=##class(MARC).getTagX(.handle,"463")
+ if t463="" q
+
+ s ISSN="",Nazev="",Rada="",Zeme="",T001="",t463backup=t463,SetT001=1
+ s ISBN=""
+
+ f  s sTag = ##class(MARC).getSubTagStr4xx(.t463) q:sTag=""  d
+ . if ($e(sTag,1,3)="010") s ISBN = ##class(MARC).getSubTagStr(.sTag,"a")
+ . if ($e(sTag,1,3)="011") s ISSN = ##class(MARC).getSubTagStr(.sTag,"a")
+ . if ($e(sTag,1,3)="200") d 
+ . . s Nazev = ##class(MARC).getSubTagStr(.sTag,"a")
+ . . s Rada = ##class(MARC).getSubTagStr(.sTag,"i")
+ . if ($e(sTag,1,3)="102") s Zeme = ##class(MARC).getSubTagStr(.sTag,"a")
+ . ;
+ . if ($e(sTag,1,3)="001") s T001 = $p(sTag,"*",2),SetT001=0
+
+ s t463=t463backup
+ 
+ if Zeme="" s Zeme=##class(MARC).getTagX(.handle,"102a")
+ 
+ ; 13.02.06 jj
+ if ISSN="" q
+ if Nazev="" q
+ 
+ s indNazev=##class(CavUnEpca).corrTias2(Nazev)
+ ; if $l(Nazev)>88 s Nazev=$e(Nazev,1,40)_"//"_$e(Nazev,$l(Nazev)-40,9999)
+ s indNazev=$zcvt(indNazev,"L")
+ s s1="[]'"_$c(34)
+ s indNazev=" "_##class(Util).trim($tr(indNazev,s1))
+ ; doplneni kodu casopisu do 463; kod natvrdo pro CAV
+ if (genKod=1)
+ {
+   if (SetT001=1)
+   {
+     ; 13.02.06 jj
+     s id=$o(^ooDataTableI(trida,"issns"," "_$zcvt(ISSN,"L"),""))
+     ; s id=$o(^ooDataTableI(trida,"tias2",indNazev,""))
+     if (id'="")
+     {
+       s T001=##class(MARC).getT001(id)
+       s t463=$e(t463backup,1,7)_$c(31)_"1001  cav_un_epca*"_T001_$e(t463backup,8,999)
+       ; 20.02.06 jj; doplneni par. replaceData: pri generovani kodu
+       ;              nahradit nazev, radu, zemi ze SZP  
+       ;              
+       if (replaceData=1)
+       {
+         if (##class(MARC).readX(.handleRD,trida,T001))
+         {
+           s s200SZP=##class(MARC).getTagX(.handleRD,"200")
+           if (s200SZP'="")
+           {
+             s nazevSZP=##class(MARC).getSubTagStr(.s200SZP,"a")
+             s radaSZP=##class(MARC).getSubTagStr(.s200SZP,"i")
+             if ((nazevSZP'="") || (radaSZP'="")) ; polopojistka
+             {
+               if (radaSZP'="")
+               {
+                 if (Rada'="") s t463=##class(Util).strswap(t463,$c(31)_"i"_Rada,$c(31)_"i"_radaSZP)
+                 else  s nazevSZP=nazevSZP_$c(31)_"i"_radaSZP
+               }
+               s t463=##class(Util).strswap(t463,$c(31)_"a"_Nazev,$c(31)_"a"_nazevSZP)
+             }  
+           }  
+           s t102=##class(MARC).getTagX(.handleRD,"102")
+           if (t102'="") 
+           {
+             s zemeSZP=##class(MARC).getSubTagStr(t102,"a")
+             if (zemeSZP'="") 
+             {
+               d ##class(MARC).setSubTagStr(t102,$c(31)_"a"_zemeSZP)
+               d ##class(MARC).setTagX(.handle,t102)
+             }  
+           }
+         }  
+       }
+     }  
+   }  
+   ; zapsani modifikovaneho 463
+   if (t463 '= t463backup) 
+   {
+     d ##class(MARC).setTagX(.handle,t463)
+     s sc=##class(MARC).writeX(.handle)
+     if $$$ISERR(sc) w !, "Nezdaril se update zaznamu T001 = "_T001
+   }
+   ; v teto variante uz symbolik svou funkci splnil  
+   q
+ }
+ 
+ ; kontrola zaznamu v indexe issns, aby se nevytvarely duplicity
+ s indISSN=" "_$zcvt(ISSN,"L")
+ if $d(^ooDataTableI(trida,"issns",indISSN)) d  q
+ ;if $d(^ooDataTableI(trida,"tias2",indNazev)) d  q
+ 
+ ; zapis do zaznamu
+ d ##class(MARC).newX(.handleSZP,trida,"new2")
+ d ##class(MARC).setTagX(.handleSZP,"000    00240nx   22001213  450")
+ if ISBN'="" d ##class(MARC).setTagX(.handleSZP,"010    "_$c(31)_"a"_ISBN)
+ if ISSN'="" d ##class(MARC).setTagX(.handleSZP,"011    "_$c(31)_"a"_ISSN)
+ d ##class(MARC).setTagX(.handleSZP,"100    "_$c(31)_"a"_##class(Util).date()_"aczey0103    ba")
+ d ##class(MARC).setTagX(.handleSZP,"110    "_$c(31)_"aa")
+ if Zeme'="" d ##class(MARC).setTagX(.handleSZP,"102    "_$c(31)_"a"_Zeme)
+ d ##class(MARC).setTagX(.handleSZP,"200 1  "_$c(31)_"a"_Nazev)
+ d ##class(MARC).setTagX(.handleSZP,"801    "_$c(31)_"aCZ"_$c(31)_"b"_knihovna_$c(31)_"c"_##class(Util).date())
+ d ##class(MARC).setTagX(.handleSZP,"970    "_$c(31)_"b"_"BXX")
+ d ##class(MARC).setTagX(.handleSZP,"999    "_$c(31)_"a1"_$c(31)_"b"_knihovna_$c(31)_"d"_"arl-"_##class(Util).date())
+ d ##class(MARC).setTagX(.handleSZP,"C99    "_$c(31)_"dDFLT_EPCA3")
+ s sc=##class(MARC).writeX(.handleSZP)
+ if $$$ISERR(sc) w !, "Nezdaril se zapis zaznamu s nazvem: """_Nazev_""""
+ 
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symIdxSel">
+<Description><![CDATA[
+05.09.05 jj; symbolik na zjisteni <br>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>handle:%Library.Binary,trida:%Library.String="CavUnEpca",index:%Library.String="dk"</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s t463=##class(MARC).getTagX(.handle,"463")
+ if t463="" q 0
+
+ s T001=""
+ f  s sTag = ##class(MARC).getSubTagStr4xx(.t463) q:sTag=""  d
+ . if ($e(sTag,1,3)="001") s T001 = $p(sTag,"*",2)
+ if T001="" q 0
+ 
+ s id=##class(MARC).existsT001(trida,T001)
+ if id="" q 0
+
+ s idx=" bxx"
+ if $d(^ooDataTableI(trida,index,idx,id)) q 1
+
+ q 0
+]]></Implementation>
+</Method>
+
+<Method name="sym463001rem">
+<Description><![CDATA[
+05.09.05 jj; symbolik na odstraneni 463/001<br>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>handle:%Library.Binary</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s t463=##class(MARC).getTagX(.handle,"463")
+ if t463="" q
+ s t463backup=t463
+
+ s T001=""
+ f  s sTag = ##class(MARC).getSubTagStr4xx(.t463) q:sTag=""  d
+ . if ($e(sTag,1,3)="001") s T001 = sTag
+ if T001="" q
+ 
+ s t463backup=##class(Util).strswap(t463backup,$c(31)_"1"_T001,"") 
+ if ($l(t463backup)<8) q
+ 
+ d ##class(MARC).setTagX(.handle,t463backup)
+ ;d ##class(MARC).writeX(.handle)
+ 
+ s sc=##class(MARC).writeX(.handle)
+ if $$$ISERR(sc) w !, "Nezdarilo se odmazani 463/001: """_T001_""""
+
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symGenUser">
+<Description>
+16.09.05 rs; jednoucelovy symbolik na dogenerovanie loginov pre anonym uzivatelov
+</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<Implementation><![CDATA[
+    s t400=##class(MARC).getTagX(.handle,"400")
+    s t400=##class(MARC).setSubTagStr(t400,$c(31)_"wT0PbC2qB1xwBKuNLuZbODA==")
+    d ##class(MARC).setTagX(.handle,t400)
+    
+    
+    s t100b=##class(MARC).getTagX(.handle,"100b")
+    s t100a=##class(MARC).getTagX(.handle,"100a")
+    
+    s t100=##class(MARC).getTagX(.handle,"100")
+    s t100=##class(MARC).setSubTagStr(t100,$c(31)_"b"_t100b_"-A")
+    s t100=##class(MARC).setSubTagStr(t100,$c(31)_"a"_t100a_" (anonymní uživatel)")
+    d ##class(MARC).setTagX(.handle,t100)
+
+    ; "00001xx"
+    s t001=$$$HandleT001(handle)
+    if $e(t001,5)'="1" zt "XX"
+    s $e(t001,5)="0"
+    s t600="600    "_$c(31)_"acav_is_user*"_t001_$c(31)_"b"_t100b
+    d ##class(MARC).setTagX(.handle,t600)
+]]></Implementation>
+</Method>
+
+<Method name="symCompArticles">
+<Description><![CDATA[
+13.10.05 jj; zalozeni
+14.10.05 jj; do selektu jdou jen zaznamy clanku s ISSN
+             sy="ret1=##class(CavUnEpca).symCompArticles(.handle)"
+             d ^X("s CavUnEpca dk = N")  //J
+             d ^X("s &&CavUnEpca @"_sy)
+21.10.05 jj; dodatecne upravy<br>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<Implementation><![CDATA[
+    s t001=$$$HandleT001(handle)
+    
+    // 1. faze - provereni
+    /*
+    if ##class(MARC).readX(.handlevf,"CavVf",t001) q 1
+    q 0
+    */
+    // 1. faze je OK
+    
+    // 2. faze - zjistovani dle ISSN
+    /*
+    s t463011=""
+    s t463=##class(MARC).getTagX(.handle,"463")
+    if (t463'="") s t463011=##class(MARC).getTag4xx(t463,"011")
+    if (t463011="") q 0
+    q 1
+    */
+    // 2. faze je OK
+    
+    // 3. faze - zjistovani dle ISSN
+    ; viz faze 1 
+    if '##class(MARC).readX(.handlevf,"CavVf",t001)
+    {
+     w !,"T001: "_t001
+     q 0
+    } 
+    
+    ; viz faze 2
+    s t463=##class(MARC).getTagX(.handle,"463")
+
+    /*
+    ; overovani situace ohledne rady periodika
+    ///
+    if (t463="") q 0
+    s t463011=##class(MARC).getTag4xx(t463,"011")
+    s t463011=##class(MARC).getSubTagStr(t463011,"a")
+    if (t463011="") q 0
+    
+    s tVfISSN=##class(MARC).getTagX(.handlevf,"015i")
+    if (tVfISSN="") q 0
+    if (tVfISSN'=t463011) q 0
+
+    s RadaVf=##class(MARC).getTagX(.handlevf,"015n")
+    if (RadaVf="") q 0
+    s RadaEpca1=##class(MARC).getTag4xx(.t463,"200")
+    if (RadaEpca1'="") s RadaEpca1=##class(MARC).getSubTagStr(RadaEpca1,"i")
+    if (RadaEpca1="") q 1
+    if (RadaEpca1=RadaVf) q 0
+    q 1
+    ///
+    */
+    
+    s t463011=##class(MARC).getTag4xx(t463,"011")
+    s t463011=##class(MARC).getSubTagStr(t463011,"a")
+    if (t463011="") q 0
+    
+    s tVfISSN=##class(MARC).getTagX(.handlevf,"015i")
+    if (tVfISSN="") q 0
+    if (tVfISSN=t463011) q 0
+    
+    // puvodni ISSN v CavVf je tedy odlisne od toho v CavUnEpca
+    
+    // spec. modifikace
+    // 
+    /*
+    if ((tVfISSN="-") || (t463011="-")) q 0
+    if (($f(tVfISSN,"F 5168")) || ($f(t463011,"F 5168")) ) q 0
+    if (($f(tVfISSN,"X")) || ($f(t463011,"X")) ) q 0
+    if (($f(tVfISSN,"x")) || ($f(t463011,"x")) ) q 0
+    */
+    
+    s NazevZDVF=##class(MARC).getTagX(.handlevf,"614x")
+    if (NazevZDVF="") s NazevZDVF=##class(MARC).getTagX(.handlevf,"015f")
+    if (NazevZDVF'="") s NazevZDVF=##class(User.Util).strswap(NazevZDVF,";","$")
+    s RadaEpca=##class(MARC).getTag4xx(t463,"200")
+    if (RadaEpca'="") s RadaEpca=##class(MARC).getSubTagStr(RadaEpca,"i")
+    if (RadaEpca'="") s RadaEpca=##class(User.Util).strswap(RadaEpca,";","$")
+
+    s t463200a=##class(MARC).getTag4xx(t463,"200")
+    if (t463200a'="") s t463200a=##class(MARC).getSubTagStr(t463200a,"a")
+    if (t463200a'="") s t463200a=##class(User.Util).strswap(t463200a,";","$")
+
+    s RadaVf=##class(MARC).getTagX(.handlevf,"015n")
+    if (RadaVf'="") s RadaVf=##class(User.Util).strswap(RadaVf,";","$")
+    s NazevVF=##class(MARC).getTagX(.handlevf,"X01x")
+    if (NazevVF'="") s NazevVF=##class(User.Util).strswap(NazevVF,";","$")
+
+    s t999a=##class(MARC).getTagX(.handle,"999a")
+    s t999d=##class(MARC).getTagX(.handle,"999d")
+    s sAsep=##class(MARC).getTagX(.handle,"C26e")
+    s sAsep=sAsep_" "_##class(MARC).getTagX(.handle,"C26d")
+    s sAsep=sAsep_" "_t001
+    
+    //"T001 = "_
+    w !,t001_";"_t463011_";"_tVfISSN_"; "_t463200a
+    _";"_RadaEpca_";"_RadaVf_";"_t999a
+    _";"_t999d_";"_sAsep
+    _";"_NazevVF_";"_NazevZDVF
+    q 1
+]]></Implementation>
+</Method>
+
+<Method name="symRokV">
+<Description><![CDATA[
+31.10.05 mk; globalka na rok vykazovania <br>      ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ ; globalka sluzi k zmene C26d tagu
+ s TC26=##class(MARC).getTagX(.handle,"C26",-1) ;tag je opakovatelny subtagy nie
+ s c=$l(TC26,$c(10))   ;pocet opakovani tagu
+ s subd="",subdnew="",TC26new="",n=0,tag=""
+  
+ f n=1:1:c 
+ {
+   s tag=$p(TC26,$c(10),n)  ; nacitanie jedneho tagu 
+   s subd=##class(MARC).getSubTagStr(tag,"d") ; rok
+   if subd'="" 
+   {
+     if $e(subd,1,1)'="20"  ; ak je iny letopocet
+     {
+       s subdnew="19"_$e(subd,1,2)   
+       s tag=##class(Util).strswap(tag,subd,subdnew) 
+       s subdnew="" 
+     } 
+   }
+   if tag'="" 
+   {
+     if TC26new'="" d  s TC26new=TC26new_$c(10)_tag
+     if TC26new="" d  s TC26new=tag
+   }
+ }
+ if TC26new'="" d ##class(MARC).setTagX(.handle,TC26new)
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symRokV1">
+<Description><![CDATA[
+02.11.05 mk; globalka na rok vykazovania posunutie +1 <br>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ ; globalka sluzi k zmene C26d tagu
+ s TC26=##class(MARC).getTagX(.handle,"C26",-1) ;tag je opakovatelny subtagy nie
+ s c=$l(TC26,$c(10))   ;pocet opakovani tagu
+ s subd="",subdnew="",TC26new="",n=0,tag=""
+  
+ f n=1:1:c 
+ {
+   s tag=$p(TC26,$c(10),n)  ; nacitanie jedneho tagu 
+   s subd=##class(MARC).getSubTagStr(tag,"d") ; rok
+   if subd'="" 
+   {
+     if (subd'="2004") && (subd'="2005") && (subd'="2006")
+     {
+       s subdnew=subd+1  
+       s tag=##class(Util).strswap(tag,subd,subdnew) 
+       s subdnew="" 
+     } 
+   }
+   if tag'="" 
+   {
+     if TC26new'="" d  s TC26new=TC26new_$c(10)_tag
+     if TC26new="" d  s TC26new=tag
+   }
+ }
+ if TC26new'="" d ##class(MARC).setTagX(.handle,TC26new)
+ q
+]]></Implementation>
+</Method>
+
+<Method name="restoreT463FromLog">
+<Description><![CDATA[
+
+02.11.05 pb: globalka na import dat z auth_cleanup.log, ktory nespravne prepisal udaje
+             v CavUnEpca v tagu463<br>
+             kontroluje sa Tittle+ISSN a vazba na SZP. Ak je nespravna, kontroluje sa,
+             ci uz taky SZP (podla 463) existuje, ak nie, vygeneruje sa novy SZP<br>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+
+ /// d ##class(CavUnEpca).restoreT463FromLog()
+ /// v logu su data:
+ 
+ s startText="about to run the global change"
+ s OU=$IO
+ s imp="auth_cleanup.txt"
+ s outf="restoreT463_"_$r(999)_".log"
+ ; otevrit vstupni soubor
+ open imp:(/READ):0
+ s te=$test
+ if 'te w "failed to open the input file ('"_imp_"')!!" q
+ use imp:/POSITION=0 use OU
+ d $ZU(68,40,1)
+ ; otevrit vystupni soubor
+ open outf:("NWS":/CREATE):0
+ s te=$test
+ if 'te w "failed to open the output file ('"_outf_"')!!" q
+ 
+ s brk=0,li="",lBer=""
+ s i=0,ix=0,ix2=0
+ s index="T001",class="CavUnEpca",classVf="CavVf",knihovna="CAV"
+ s ixEpcaRead=0,ixUpd463=0,ixNewSzp=0
+ for nLine=1:1 q:brk  d
+ . use imp read li if $zeof'=0 s brk=1
+ . ; nacitany 1 riadok do li
+ . if (li'="") d  
+ . . if li=startText s lBer=1
+ . . s t463Bad="", t463Good=""
+ . . s i=i+1
+ . . if $l(li,"zmena: 463")>1 d
+ . . . s sX=$p(li,"zmena: ",2)
+ . . . s sT001=$p($p(sX," (CavUnEpca/",2),")",1)
+ . . . s sX=$p(sX," (CavUnEpca/",1)
+ . . . s t463Good=$p(sX," =>> ",1)
+ . . . s t463Bad=$p(sX," =>> ",2)
+ . . if ((t463Bad="")||(t463Good="")) use outf w "nepotrebny riadok: ",li,!
+ . . else  d
+ . . . s ix=ix+1
+ . . . 
+ . . . if lBer="" q
+ . . . 
+ . . . ;s brk=1
+ . . . 
+ . . . ;if $l(t463Good,"epca*029") > 1 d  ///////////  toto su smerniky k nami vygenerovanym zaznamom
+ . . . if 1=1  d  ///////////////////////////////////  toto su smerniky ku vsetkym zaznamom,
+ . . . .                                          //   "epca*025" v zazname znaci, ze si to rucne nasmerovali
+ . . . . s ix2=ix2+1
+ . . . . use outf
+ . . . . w !,"+++++++++++++++++++++++++",!
+ . . . . w "T001=",sT001," Ori",": ",t463Good,!!,"              GV: ",t463Bad
+ . . . . 
+ . . . . // vyhladaj podla indexu zaznam
+ . . . . s id=$o(^ooDataTableI(class,index," "_sT001,""))
+ . . . . if id'="" d 
+ . . . . . // mam zaznam Epca
+ . . . . . s ixEpcaRead=ixEpcaRead+1
+ . . . . . s t001=##class(MARC).getT001(id)
+ . . . . . d ##class(MARC).readX(.recepca,class,t001)
+ . . . . . s t200Rec=##class(MARC).getTagX(.recepca,"200")
+ . . . . . s t463Rec=##class(MARC).getTagX(.recepca,"463")
+ . . . . . s t999Rec=##class(MARC).getTagX(.recepca,"999")
+ . . . . . s t999dRec=##class(MARC).getTagX(.recepca,"999d")
+ . . . . . use outf w !!,"      463 in rec: ",t463Rec,!!,"      999 in rec: ",t999Rec,!!,"      200 in rec: ",t200Rec,!
+ . . . . . 
+ . . . . . s sUserOpravil=""
+ . . . . . for iy=1:1:$l(t999dRec,"#") d
+ . . . . . . s sX=$p(t999dRec,"#",iy)
+ . . . . . . 
+ . . . . . . //w !,$e(sX,1,3),",",$p(sX,"-",2),"."
+ . . . . . . if (($e(sX,1,3)="cav") && ($p(sX,"-",2)>"20051011")) s sUserOpravil=1
+ . . . . . 
+ . . . . . ;if sUserOpravil=1  w !,"  Data repaired with user 'cav*' after 20051011: no action.",!! q - posunute dalej
+ . . . . . 
+ . . . . . // if $l(t463Rec,"epca*025")>1   w !,"  Data repaired to 'epca*025*' : no action.",!! q ;; nespravne, lebo prave GV tam pomenila data
+ . . . . . 
+ . . . . . 
+ . . . . . s idVf=$o(^ooDataTableI(classVf,index," "_sT001,""))
+ . . . . . if idVf'="" d 
+ . . . . . . // mam zaznam Vf
+ . . . . . . s t001Vf=##class(MARC).getT001(idVf)
+ . . . . . . d ##class(MARC).readX(.recvf,classVf,t001) 
+ . . . . . . 
+ . . . . . . s t015Vf=##class(MARC).getTagX(.recvf,"015")
+ . . . . . . s tX01Vf=##class(MARC).getTagX(.recvf,"X01")
+ . . . . . . 
+ . . . . . . s t015VfF=##class(MARC).getTagX(.recvf,"015f") ;nazov periodika
+ . . . . . . s t015VfN=##class(MARC).getTagX(.recvf,"015n")  ;rad periodika
+ . . . . . . s t015VfI=##class(MARC).getTagX(.recvf,"015i") ;ISSN periodika
+ . . . . . . 
+ . . . . . . 
+ . . . . . . use outf w !!,"      015 in VF: ",t015Vf,!,"      X01 in VF: ",tX01Vf,!!
+ . . . . . 
+ . . . . . 
+ . . . . . 
+ . . . . . s t200aGood=##class(MARC).getTag4xx(t463Good,"200a")
+ . . . . . s t200iGood=##class(MARC).getTag4xx(t463Good,"200i")
+ . . . . . s t011aGood=##class(MARC).getTag4xx(t463Good,"011a")
+ . . . . . 
+ . . . . . s sX=##class(MARC).getTag4xx(t463Good,"200")
+ . . . . . if $l(sX,$c(31)_"a") >=3  d  //podla zapisanych dat: maju v 463/200a zapisane 200a 2-krat (napr. 0140847)
+ . . . . . . s sX2=""
+ . . . . . . for sXi=1:1:$l(sX,$c(31)) d
+ . . . . . . . if $e($p(sX,$c(31),sXi),1,1)="a" s sX2=sX2_"$c(31)_"_$p(sX,$c(31),sXi)
+ . . . . . . .
+ . . . . . . if sX2'="" s t200aGood=sX2
+ . . . . . 
+ . . . . . s t200aBad=##class(MARC).getTag4xx(t463Bad,"200a")
+ . . . . . s t200iBad=##class(MARC).getTag4xx(t463Bad,"200i")
+ . . . . . s t011aBad=##class(MARC).getTag4xx(t463Bad,"011a")
+ . . . . . 
+ . . . . . if ((t200aGood'=t200aBad) || (t011aGood'=t011aBad) || (t200iGood'=t200iBad)) d  //iba ak nasa globalka zmenila udaje
+ . . . . . . // idem skontrolovat SZP
+ . . . . . . s t001GoodLname=##class(MARC).getTag4xx(t463Good,"001")
+ . . . . . . s t001GoodLname=$p(t001GoodLname," ",5)
+ . . . . . . s t001Good=$p(t001GoodLname,"*",2)
+ . . . . . . 
+ . . . . . . // vyhladaj podla indexu zaznam
+ . . . . . . s idSzp=$o(^ooDataTableI(class,index," "_t001Good,""))
+ . . . . . . if idSzp'="" d 
+ . . . . . . . // mam zaznam SZP
+ . . . . . . . s t001Szp=##class(MARC).getT001(idSzp)
+ . . . . . . . d ##class(MARC).readX(.recszp,class,t001Szp)
+ . . . . . . . s t200aSzp=##class(MARC).getTagX(.recszp,"200a")
+ . . . . . . . s t011aSzp=##class(MARC).getTagX(.recszp,"011a")
+ . . . . . . . 
+ . . . . . . . s t001Szp=##class(MARC).getTagX(.recszp,"001")
+ . . . . . . . s t200Szp=##class(MARC).getTagX(.recszp,"200")
+ . . . . . . . s t011Szp=##class(MARC).getTagX(.recszp,"011")
+ . . . . . . . 
+ . . . . . . . use outf w !,"      001 in SZP: ",t001Szp,!,"      200 in SZP: ",t200Szp,!,"      011 in SZP: ",t011Szp,!!
+ . . . . . . . 
+ . . . . . . else  d
+ . . . . . . . s t200aSzp="",t011aSzp=""
+ . . . . . . 
+ . . . . . . s sKeyGood=$zcvt(t200aGood_"#"_t011aGood,"l")
+ . . . . . . s sKeySzp=$zcvt(t200aSzp_"#"_t011aSzp,"l")
+ . . . . . . 
+ . . . . . . w !,"  Key_Ori ? Key_SZP :",sKeyGood,"\",!
+ . . . . . .   w "                    :",sKeySzp,"\",!
+ . . . . . .  
+ . . . . . .  if $l(sKeyGood,"$c(31)")>1  d
+ . . . . . .  . w !!,"  Tag ori 463/200a is multi: not allowed. Please, Repair it, please !!??",!
+ . . . . . . 
+ . . . . . . //if 1=1 d  //fiktivny if, lebo sa mi nechce zrusit 1 vnutorny cyklus
+ . . . . . . if t011aGood'=t011aSzp d
+ . . . . . . . 
+ . . . . . . . if sUserOpravil=1  w !,"  Data repaired with user 'cav*' after 20051011. Is it OK?? Data not changed",!! q
+ . . . . . . . 
+ . . . . . . . if sKeyGood'=sKeySzp d  //nespravna vazba na SZP, treba skontrolovat,
+ . . . . . . . .                       // ci uz taky SZP existuje, ak nie, vygenerovat novy SZP
+ . . . . . . . . 
+ . . . . . . . . w !,"  Searching an existing 'SZP' or create a new 'SZP'",!!
+ . . . . . . . . s t001New=""
+ . . . . . . . . s t200aGood2=##class(Util).strswap(t200aGood,$c(39),"")  //apostrof v nazve
+ . . . . . . . . if t200aGood'=""  d ^X("si "_class_" ti ] "_$e(t200aGood2,1,80))  //ideme hladat SZP 
+ . . . . . . . . if ##class(Util).XcheckActiveList() d
+ . . . . . . . . . if t011aGood'=""  d ^X("s && !issn = "_t011aGood)
+ . . . . . . . . . if ##class(Util).XcheckActiveList() d
+ . . . . . . . . . . 
+ . . . . . . . . . . s idSel="",brkSel=0,retSel=""
+ . . . . . . . . . . for  s idSel=$o(^Lists("tmp",$j,idSel)) q:((idSel="") || t001New)  d
+ . . . . . . . . . . . 
+ . . . . . . . . . . . s t001Sel=##class(MARC).getT001(idSel)
+ . . . . . . . . . . . //w !!,"t001Sel=",t001Sel
+ . . . . . . . . . . . d ##class(MARC).readX(.recsel,class,t001Sel)
+ . . . . . . . . . . . s t200aSel=##class(MARC).getTagX(.recsel,"200a")
+ . . . . . . . . . . . s t011aSel=##class(MARC).getTagX(.recsel,"011a")
+ . . . . . . . . . . . s sKeySel=$zcvt(t200aSel_"#"_t011aSel,"l")
+ . . . . . . . . . . .
+ . . . . . . . . . . . if sKeySel=sKeyGood d
+ . . . . . . . . . . . . s t001New=t001Sel
+ . . . . . . . . . . . . w !!,"  Found an existing 'SZP': T001=",t001Sel,!
+ . . . . . . . . . 
+ . . . . . . . . . 
+ . . . . . . . . if t001New=""  d  //nenasiel sa SZP, ideme generovat
+ . . . . . . . . . d ##class(MARC).newX(.recszp,class,"new2")
+ . . . . . . . . . 
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,"000    00240nx   22001213  450")
+ . . . . . . . . . if t011aGood'="" d ##class(MARC).setTagX(.recszp,"011    "_$c(31)_"a"_t011aGood)
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,"100    "_$c(31)_"a"_##class(Util).date()_"aczey0103    ba")
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,"102    "_$c(31)_"a"_"CZ")
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,"110    "_$c(31)_"aa")
+ . . . . . . . . . s sX="200 1  "_$c(31)_"a"_t200aGood
+ . . . . . . . . . if t200iGood'="" s sX=sX_$c(31)_"i"_t200iGood
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,sX)
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,"801    "_$c(31)_"aCZ"_$c(31)_"b"_knihovna_$c(31)_"c"_##class(Util).date())
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,"970    "_$c(31)_"b"_"BXX")
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,"999    "_$c(31)_"a1"_$c(31)_"b"_knihovna_$c(31)_"d"_"arlpb-"_##class(Util).date())
+ . . . . . . . . . d ##class(MARC).setTagX(.recszp,"C99    "_$c(31)_"dDFLT_EPCA3")
+ . . . . . . . . .
+ . . . . . . . . . ; zapis SZP
+ . . . . . . . . . d ##class(MARC).recordSetupMarcSkipAllowSaveX(.recszp,"1")
+ . . . . . . . . . s sc=##class(MARC).writeX(.recszp)
+ . . . . . . . . . if $$$ISERR(sc) w !, "Nuspesny zapis zaznamu s nazvom: """_t200aGood_""""
+ . . . . . . . . . 
+ . . . . . . . . . s t001New=$g(recszp("t001"))
+ . . . . . . . . . 
+ . . . . . . . . . w !!,"  New SZP: T001=",$g(recszp("t001"))
+ . . . . . . . . . w !, "            200=",##class(MARC).getTagX(.recszp,"200")
+ . . . . . . . . . w !, "            011=",##class(MARC).getTagX(.recszp,"011")
+ . . . . . . . . . w !  
+ . . . . . . . . . s ixNewSzp=ixNewSzp+1
+ . . . . . . . . . 
+ . . . . . . . . 
+ . . . . . . . . 
+ . . . . . . . . if ((t001New'="")&&(t001Good'="")) d
+ . . . . . . . . . 
+ . . . . . . . . . //w !!,t001Good,",",t001New,!,t463Good,!!    
+ . . . . . . . . . 
+ . . . . . . . . . s t463Good=##class(Util).strswap(t463Good,t001Good,t001New)  // zapis do epca
+ . . . . . . . . . d ##class(MARC).setTagX(.recepca,t463Good) 
+ . . . . . . . . . d ##class(MARC).recordSetupMarcSkipAllowSaveX(.recepca,"1")
+ . . . . . . . . . s ret=##class(MARC).writeX(.recepca,,,,2_$c(10)_"syspb")
+ . . . . . . . . . 
+ . . . . . . . . . use outf
+ . . . . . . . . . w !!,"    NEW 463 in rec: ",t463Good,!!
+ . . . . . . . . . s ixUpd463=ixUpd463+1
+ . . . . . . . . 
+ . . . . . . . . else  d
+ . . . . . . . . . w !,"    t001Good/t001New invalid: ",t001Good,"/",t001New,". No action in 'rec'.",!!
+ . . . . . . . . . 
+ . . . . . . . . 
+ . . . . . . . . 
+ . . . . . . . else  d  // vazba na SZP je spravna, netreba robit nic
+ . . . . . . . .
+ . . . . . . . . w !,"  Title+ISSN_Ori = Title+ISSN_SZP. Join accepted. Is it OK? Data not changed.",!!
+ . . . . . . . . 
+ . . . . . . else  d  // vazba na SZP je spravna, netreba robit nic; ISSN povodne a v SZP sa zhoduju ==> akceptujem
+ . . . . . . . 
+ . . . . . . . if sKeyGood=sKeySzp d
+ . . . . . . . . w !,"  Title+ISSN_Ori = Title+ISSN_SZP. Join accepted. Is it OK? Data not changed.",!!
+ . . . . . . . . 
+ . . . . . . . else  d
+ . . . . . . . . w !,"  ISSN_Ori = ISSN_SZP. Join accepted. Is it OK?? Data not changed.",!!
+ . . . . . . .
+ . . . . . else  d
+ . . . . . . w !,"  GV without changes: nothing to do.",!!
+ . . . . . .
+ . . . . . .
+ 
+ 
+ use outf
+ 
+ w !,"PocetVietEpcaNacitanych     = ",ixEpcaRead
+ w !,"PocetVietEpcaAktualizovanych= ",ixUpd463
+ w !,"PocetVietSzpNovych          = ",ixNewSzp
+ w !!,"  koniec"
+ 
+ use OU w "koniec"
+ close imp close outf use OU
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+ q ""
+]]></Implementation>
+</Method>
+
+<Method name="sym463200vRok">
+<Description><![CDATA[
+04.11.05 mk globalka na opravu v 463 200v rok () podla 015r - rok<br>      ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s t463=##class(MARC).getTagX(.handle,"463"),t463o=t463
+ s t300=##class(MARC).getTagX(.handle,"300") ; poznamka
+ if t463="" q
+ s t463new=t463
+ 
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf",t001) ztrap "XX"
+ 
+ s tag015=##class(MARC).getTagX(.handlevf,"015")
+ s subr=##class(MARC).getSubTagStr(tag015,"r") ; rok
+ s subd=##class(MARC).getSubTagStr(tag015,"d") ; datum do poznamky
+ if subd'=""
+ {
+   if t300'="" s t300=t300_" ; "_subd
+   if t300="" s t300=subd
+ }
+ 
+ ; rok zo 463 200v ( )
+ s rok=""
+ if ($f(t463,"(")>0) && ($f(t463,")")>0)
+ {
+   s rok=$p(t463,"(",2)
+   s rok=$p(rok,")",1)   
+ }
+ if (rok'="") && (subr'="")
+ {
+   ; vyswapovat za novy rok z 015r
+   s t463new=##class(Util).strswap(t463new,rok,subr)
+ }   
+
+ d:t463'=t463new ##class(MARC).setTagX(.handle,t463new)
+ if t300'="" 
+ {
+   s t300="300    "_$c(31)_"a"_t300  
+   d ##class(MARC).setTagX(.handle,t300)
+ }
+]]></Implementation>
+</Method>
+
+<Method name="sym463702">
+<Description><![CDATA[
+10.11.05 mk globalka na zmenu x08 zo 701 do 463 702<br>      ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+     s t463=##class(MARC).getTagX(.handle,"463"),t463o=t463
+ s t701=##class(MARC).getTagX(.handle,"701",-1) ;nacitane vsetky opakovania 701
+ if t463="" q
+ s t463new=t463
+ 
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf",t001) ztrap "XX"
+ 
+ s tag008=##class(MARC).getTagX(.handlevf,"X08",-1)  ; opakovatelne pole
+ 
+ if tag008="" q
+ s c=$l(tag008,$c(10)) ; pocet opakovani tagu (subtagy a,b,4)
+ 
+ ; teraz v cykle nacitavat tag 008 a pridavat do 463 
+ ; musi tam byt aj kontrola ci uz tam neexistuje rovnake meno
+ 
+ s t702new=""
+ s t701zal=t701
+ s t701new=""
+ ;w !, "stav 701 pred ",t701
+ 
+ f i=1:1:c 
+ {
+   s t008=$p(tag008,$c(10),i) ; jedno opakovanie c08
+   ;w !, "xx1 ",t008
+   ; rozobrat a,b,4 a pre    
+   s ta=##class(MARC).getSubTagStr(t008,"p") ; priezvisko
+   s tb=##class(MARC).getSubTagStr(t008,"k") ; meno 
+   if ta="" s ta="."
+   if tb="" s tb="."
+   ;w !, "xxx ",ta,tb
+   ; po nacitani porovnat ci sa nenachadza v 463
+
+   s nasiel=""
+   s nasiel2=""
+   ; nacitat ak existuje 702 v 463 vsetky jej opakovania
+   s c2=$c(t463,$c(31)_"1")  ; pocet casti 463 tagu
+   f j=2:1:c2   ; zacina od 2 prva cast je def tagu
+   {
+     s cast=$p(t463,$c(31)_"1",j)  ; jedna cast 463
+     s tag4=$e(cast,1,3)
+     if tag4="702"
+     {
+       if ($f(cast,ta)>0) && ($f(cast,tb)>0) s nasiel="1" ; meno uz v 463 702 existuje
+       ; v takomto pripade by sa uz nemalo prenasat             
+     }   
+   }
+   if nasiel=""   ; zapis do 702 463
+   { 
+     if t702new'="" s t702new=t702new_$c(31)_"1702 1"_$c(31)_"a"_ta_$c(31)_"b"_tb_$c(31)_"4070"
+     if t702new="" s t702new=$c(31)_"1702 1"_$c(31)_"a"_ta_$c(31)_"b"_tb_$c(31)_"4070"
+   } 
+   ; vymaz zo 701 ak tam existuje zhodny autor
+   ;s nasiel2=""
+   ; nacitat ak existuje 702 v 463 vsetky jej opakovania
+   if t701new'="" s t701zal=t701new
+   s t701new=""
+   s c3=$l(t701zal,$c(10))  ; pocet tagov 701
+   ;w !, "pocet opakovani 7xx ",c3
+   f k=1:1:c3   
+   {
+     s t701s=$p(t701zal,$c(10),k)  ; jeden tag
+     ;w !, "701single ",t701s
+     if ($f(t701s,ta)>0) && ($f(t701s,tb)>0) s nasiel2="1" ; zhoda
+     if nasiel2=""   ; ak nie su zhodne ponechat autora v 701
+     { 
+       if t701new'="" s t701new=t701new_$c(10)_t701s
+       if t701new="" s t701new=t701s
+       ;w !, "pridavam ",t701s
+     } 
+     s nasiel2=""
+     ;w !, "po spracovani jedneho autora ",t701new
+   }
+
+ } 
+ if t702new'="" s t463new=t463new_t702new ; pridanie do 463 tagu
+ ;w !, "pred zapisom"
+ ;w !, "**************"
+ ;w !, "xxx ",t463new
+ ;w !, "7xx ",t701new
+ ;w !, "**************"
+ ;w !, "po upravach"
+
+ 
+ if t463'=t463new d ##class(MARC).setTagX(.handle,t463new) ; zapis
+ if t701new = "" d ##class(MARC).delTagX(.handle,"701") ; vymaz
+ if t701new'=""
+ {
+  if t701'=t701new d ##class(MARC).setTagX(.handle,t701new) ; vymaz
+ }
+]]></Implementation>
+</Method>
+
+<Method name="convAsepT001">
+<Description><![CDATA[
+16.11.05 mk nova konverzia textu podla cisla asep najdeny kod a znova to txt<br>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>inf:%String,outf:%String=""</FormalSpec>
+<Implementation><![CDATA[
+ ; parametre
+ ; vstupny subor
+ ; vystupny subor
+    
+ s OU=$IO
+ ; kontrola parametru
+ if inf="" q "Input file name empty !"
+ s ext=$p(inf,".",2) s:ext'="" ext="."_ext
+ if outf="" s outf=$p(inf,".",1)_"_00"_ext
+ 
+ ; otevrit vstupni soubor
+ open inf:(/READ):0
+ s te=$test
+ if 'te q "failed to open the input file ('"_inf_"')!!"
+ use inf:/POSITION=0 use OU
+ ; disable <ENDOFFILE> error
+ d $ZU(68,40,1)
+
+ ; otevrit vystupni soubor
+ open outf:("NWS":/CREATE):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+
+ s brk=0,li="",asep="",edicia=""
+ for nLine=1:1 q:brk  d
+ . use inf read li if $zeof'=0 s brk=1
+ . ; nacitany 1 riadok
+ . s asep=$p(li,";",1)   ; cislo asepu
+ . s edicia=$p(li,";",2)   ; nazov edicie
+ . s hladaj=asep
+ . s hladaj=" "_##class(Util).trim(hladaj)
+ . s s1="[]'"_$c(34)  
+ . s hladaj=$tr(hladaj,s1)
+ . s hladaj=$zcvt(hladaj,"l")
+ . s hladaj=$e(hladaj,1,90) ; orezanie na 90 znakov
+ . s id=""
+ . s id=$o(^ooDataTableI("CavUnEpca","t001n",hladaj,""))
+ . s t001=""
+ . if id'="" d  ; nasiel 
+ . . s t001=##class(MARC).getT001(id)  ; zistenie kodu zaznamu
+ . else  d
+ . . s t001 = "xxx"
+ . s li=t001_";"_li
+ . use outf w li_$c(13)_$c(10) use OU
+
+ ;use outf w li_$c(13)_$c(10) use OU  ; zapis riadku
+ close inf close outf use OU
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+ q ""
+]]></Implementation>
+</Method>
+
+<Method name="sym463010">
+<Description><![CDATA[
+16.11.05 mk globalka na zmenu v 463 vymaz 010 tagu<br>      ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s t463=##class(MARC).getTagX(.handle,"463") ; nacitanie tagu
+ if t463="" q
+ 
+ s t463new=""
+ 
+ s c=$l(t463,$c(31)_"1")  ; pocet casti 463 tagu
+ f i=1:1:c   
+ {
+   s cast=$p(t463,$c(31)_"1",i)  ; jedna cast 463
+   s tag4=$e(cast,1,3)  ; cislo tagu 
+   if tag4'="010"  ;ak to nie je isbn tak zapisat
+   {
+     if t463new'="" s t463new=t463new_$c(31)_"1"_cast
+     if t463new="" s t463new=cast               
+   }
+         
+ }
+ 
+ if t463'=t463new d ##class(MARC).setTagX(.handle,t463new) ; zapis
+]]></Implementation>
+</Method>
+
+<Method name="sym010">
+<Description><![CDATA[
+16.11.05 mk globalka na dotiahnutie 010 isbn z 047 VF druhe opakovanie<br>      ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s tag010=##class(MARC).getTagX(.handle,"010") 
+
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf",t001) ztrap "XX"
+ 
+ s tag047=##class(MARC).getTagX(.handlevf,"047",-1)  ; opakovatelne pole
+ 
+ if tag047="" q
+ s c=$l(tag047,$c(10)) ; pocet opakovani tagu
+ 
+ s tag010new=tag010
+ 
+ f i=1:1:c 
+ {
+   s t047=$p(tag047,$c(10),i) ; jedno opakovanie 047
+   ; malo by sa vyskytnut v 2. opakovani, ale pre istotu 
+   s ti=##class(MARC).getSubTagStr(t047,"i") ; isbn
+   if ti'="" s tag010new="010    "_$c(31)_"a"_ti
+ } 
+ 
+ if tag010'=tag010new d ##class(MARC).setTagX(.handle,tag010new) ; zapis
+]]></Implementation>
+</Method>
+
+<Method name="sym410C20r">
+<Description><![CDATA[
+22.11.05 mk globalka na doplnenie 410 tagu do autority z C20r CavUnEpa<br>      ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ s tc20=##class(MARC).getTagX(.handle,"C20")  ; dotahnutie tagu C20
+ s t001=##class(MARC).getSubTagStr(tc20,"3") ; kod zaznamu autority
+ 
+ if t001="" q
+ s t001=$p(t001,"*",2)
+ if '##class(MARC).readX(.handlea,"CavUnAuth",t001) ztrap "XX"
+ 
+ s tag410=##class(MARC).getTagX(.handlea,"410")  ; dotiahnutie tagu 410 ak je
+ if tag410'="" q
+ 
+ s tc20r=##class(MARC).getSubTagStr(tc20,"r") ; preklad nazvu
+ if tc20r'=""
+ {
+   s tag410="410 12 "_$c(31)_"a"_tc20r_"8eng"
+ }
+ 
+ if tag410'=""
+ {
+   d ##class(MARC).setTagX(.handlea,tag410) ; zapis
+   s st=##class(MARC).writeX(.handlea,1)
+ }
+]]></Implementation>
+</Method>
+
+<Method name="sym470">
+<Description><![CDATA[
+01.12.05 mk; globalka na 470 podla 033<br>      ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<Implementation><![CDATA[
+ ; nemala by existovat ziadna 470 spravny select 030 z VF ak nie je 280 a 211   
+ s tag470=##class(MARC).getTagX(.handle,"470") 
+ ;if tag470'="" q
+ 
+ s t470=""
+  
+ s class=##class(MARC).recordClassX(.handle)
+ s t001=##class(MARC).recordT001X(.handle)
+ if '##class(MARC).readX(.handlevf,"CavVf",t001) ztrap "XX"
+ 
+ s tag033=##class(MARC).getTagX(.handlevf,"033",-1)  ; opakovatelne pole
+ 
+ if tag033="" q
+ s c=$l(tag033,$c(10)) ; pocet opakovani tagu (subtagy pkr)
+ s autori=""
+ s nazov=""
+ 
+ f i=1:1:c 
+ {
+   s autor=""    
+   s t033=$p(tag033,$c(10),i) ; jedno opakovanie 033
+   s ta=##class(MARC).getSubTagStr(t033,"p") ; priezvisko
+   if ta="-" s ta=""
+   s tb=##class(MARC).getSubTagStr(t033,"k") ; meno 
+   if tb="-" s tb=""
+   s t200a=##class(MARC).getSubTagStr(t033,"r") ; nazov 
+   if t200a="-" s t200a=""
+   ; vsetko sa sklada do jednej 470 
+   if (ta'="") || (tb'="") 
+   {
+     s autor=$c(31)_"1702 1"  
+     if ta'="" s autor=autor_$c(31)_"a"_ta
+     if tb'="" s autor=autor_$c(31)_"b"_tb
+     s autor=autor_$c(31)_"xP"_$c(31)_"4340"
+   }
+   if t200a'="" 
+   { 
+     s nazov=$c(31)_"12001 "_$c(31)_"a"_t200a 
+   }
+   if (autor'="") 
+   {
+     s autori=autori_autor 
+   } 
+
+  } 
+  ; poskladat 470 dohromady najprv nazov a nasledne autori
+  if (nazov'="") || (autori'="") 
+  { 
+         if tag470'="" s t470=tag470
+    if tag470="" s t470="470  1 "
+    if nazov'="" s t470=t470_nazov
+    if autori'="" s t470=t470_autori
+  
+  }
+  if t470'="" d ##class(MARC).setTagX(.handle,t470) ; zapis
+]]></Implementation>
+</Method>
+
+<Method name="symIssnCompare">
+<Description><![CDATA[
+<pre>
+12.01.06 jj; symbolik pro kontrolu IF v CavUnEpca
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String,Class:%Library.String="CavUnEpca",Class1:%Library.String="TestUnEpca"]]></FormalSpec>
+<Implementation><![CDATA[
+ ; nacteni ISSN
+ s sISSN=##class(MARC).getTagX(.handle,"011a") 
+ if (sISSN="") q
+ 
+ ; zjisteni odpovidajiciho id v TestUnEpca
+ s sISSN=" "_$zcvt(sISSN,"L")
+ s id=##class(MARC).getIDByIndex(Class1,"issn",sISSN)
+ if ((id="") || (id=0)) q
+ 
+ ; prevod id na T001
+ s t001=##class(MARC).getT001(id) 
+ if (t001="") q
+ 
+ ; nacteni zaznamu v TestUnEpca
+ if '##class(MARC).readX(.handleTest,Class1,t001) q
+ 
+ ; nacteni pole 978 v TestUnEpca
+ s tag978=##class(MARC).getTagX(.handleTest,"978",-1)  ; opakovatelne pole
+ if (tag978="") q
+ 
+ ; zapis 978 z TestUnEpca do CavUnEpca
+ d ##class(MARC).setTagX(.handle,tag978)
+ 
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symFind978Chg">
+<Description><![CDATA[
+<pre>
+symbolik kt. detekuje ci na aktualnom zaznam doslo
+od jeho zalozenia k zmene 978 tagu
+
+specialne jednoucelovo vytvorene na detekciu rucne zmenenych 978 (Impakt f.)
+</pre>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<Implementation><![CDATA[
+    s t978=##class(MARC).getTagX(.handle,"978",-1)
+    s t001=$$$HandleT001(handle)    
+    s cl=$$$HandleClass(handle) 
+    //s tn=##class(Util).objectName2tableName(cl)
+    ; 22.02.17 jk; zruseno table name
+    s tn=##class(Util).objectName2lname(cl)
+    if tn="" zt "X1" ; err
+    
+    w !,"t001: "_t001_" "
+    
+    s chid=$o(^ooDataTableI("CmChronology","srca"," "_tn_"*"_t001,""))
+    if 'chid w " no entry in chronology yet" q 0
+    if '##class(MARC).getDATAX(.handlech,chid) zt "X2" ; err2
+    
+    ; OK mame zaznam z chronologie
+    s t978o=##class(MARC).getTagX(.handlech,"978",-1)
+    
+    if t978o="" w "missing 987o in chrol.entry" q 1
+    if t978="" w "missing 987o in current record entry" q 1
+    if t978'=t978o w "DIFF in 987" q 1
+    
+    w "OK"
+    q 0
+]]></Implementation>
+</Method>
+
+<Method name="symCheckDupl">
+<Description><![CDATA[
+<pre>
+12.01.06 jj; symblik na zjištění duplicitních ISSN
+             volá se na setřízený list 
+</pre>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>inf:%String,trida:%String="CavUnEpca",tagSubtag:%String="011a"</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s OU=$IO
+ ; kontrola parametru
+ if inf="" q "Input file name empty !"
+ 
+ ; otevrit vstupni soubor
+ open inf:(/READ):0
+ s te=$test
+ if 'te q "failed to open the input file ('"_inf_"')!!"
+ use inf:/POSITION=0 use OU
+ ; disable <ENDOFFILE> error
+ d $ZU(68,40,1)
+
+ s sLastIssn="", sIssn="", brk=0, sT001="", sT001All="XXX"
+ for nLine=1:1 q:brk  d
+ . use inf read li if $zeof'=0 s brk=1
+ . ; nacten 1 radek
+ . if (li'="") d
+ . . ; t001
+ . . if ($e(li,1,6)'=" "_tagSubtag_":") d
+ . . . s sT001=$p(li," ",1)
+ . . ; test radku
+ . . if ($e(li,1,6)=" "_tagSubtag_":") d
+ . . . s sIssn=$p(li," ",2)
+ . . . if (sLastIssn=sIssn) d 
+ . . . . s sT001All=sT001All_"*"_sT001 ;w !,"T001: "_sT001
+ . . . s sLastIssn=sIssn
+ 
+ close inf use OU
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+ 
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symSet999b">
+<Description><![CDATA[
+<pre>
+10.03.06 lp; symbolik na jednorazove doplneni pracovni skupiny toho,
+             kdo zaznam vytvoril, do 999b (z C26e)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary]]></FormalSpec>
+<Implementation><![CDATA[
+  ; 10.03.06 lp; do 999b ulozit pracovni skupinu toho, kdo zaznam vytvoril
+  s sWGrp=$tr(##class(MARC).getTagX(.handle,"C26e"),"-")
+  if sWGrp'=""
+  {
+    s t999=##class(MARC).getTagX(.handle,"999")
+    s t999=##class(MARC).setSubTagStr(t999,$c(31)_"b"_sWGrp,"999")
+    d ##class(MARC).setTagX(.handle,t999)
+  }
+  q
+]]></Implementation>
+</Method>
+
+<Method name="symPrintProj">
+<Description><![CDATA[
+<pre>
+05.05.06 jj; doplneni parametru posk - je-li zapojen, 
+             vypisi se jen projekty bez poskytovatelu
+17.03.06 jj; symbolik na vypsani daneho selektu projektu
+             v urcitem tvaru
+              s sy="##class(CavUnEpca).symPrintProj(.handle)"
+              d ^X("s CavUnEpca yev = 2006")
+              d ^X("s &&CavUnEpca !gra")
+              d ^X("sort !ustav")
+              d ^X("s &&CavUnEpca @"_sy)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,outf:%String="vystup.txt",posk:%Integer=0]]></FormalSpec>
+<Implementation><![CDATA[
+ ; otevrit vystupni soubor
+ open outf:("WS":/APPEND):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+
+ s id=##class(MARC).getTagX(.handle,"001")
+ s ustav=##class(MARC).getTagX(.handle,"C26e")
+ s C12=##class(MARC).getTagX(.handle,"C12",-1)
+ s grant1="",grant2="",cislo="",grant="",nGO=1,nChybPosk=0
+ 
+ if (C12'="")
+ { 
+   s count=$l(C12,$c(10)) 
+   f i=1:1:count
+   { s sC12=$p(C12,$c(10),i)
+     s cislo=##class(MARC).getSubTagStr(.sC12,"a")
+     s grant1=##class(MARC).getSubTagStr(.sC12,"b")
+     s grant2=##class(MARC).getSubTagStr(.sC12,"c")
+     if (posk) { if (grant1_grant2="") s nChybPosk=1}
+     d ##class(Util).strswap(cislo_grant1_grant2,"%","")
+     d ##class(Util).strswap(cislo_grant1_grant2,"#","")
+     if (grant'="") s grant=grant_" # "
+     s grant=grant_cislo_" CEP:"_grant1_" OST:"_grant2
+   }  
+ }
+ d ##class(Util).strswap(ustav_id_grant,";","@")
+ 
+ if (posk) {if (nChybPosk=0) s nGO=0}
+ if (nGO)
+ {
+   if (ustav_id_grant'="") 
+   { use outf w ustav_";"_id_";"_grant,!
+     use outf
+   } 
+ }   
+
+ close outf  
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symPrintSbornikID">
+<Description><![CDATA[
+<pre>
+ 09.05.06 jj; symb. na vypsani id
+              sbornik:"A2","C","K","M","R2","T2"
+              s sy="##class(CavUnEpca).symPrintSbornikID(.handle)"
+              d ^X("s CavUnEpca dk = r") 
+              d ^X("s ||CavUnEpca !dk = t") 
+              d ^X("s &&CavUnEpca C99d != DFLT_CZ_EPCA_R1") 
+              d ^X("s &&CavUnEpca C99d != DFLT_CZ_EPCA_T1") 
+              d ^X("s ||CavUnEpca !dk = a2")
+              d ^X("s ||CavUnEpca !dk = c")
+              d ^X("s ||CavUnEpca !dk = k")
+              d ^X("s ||CavUnEpca !dk = m")
+              d ^X("s &&CavUnEpca @"_sy)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,outf:%String="sbornik_id.txt"]]></FormalSpec>
+<Implementation><![CDATA[
+ ; otevrit vystupni soubor
+ open outf:("WS":/APPEND):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+
+ s s463=##class(MARC).getTagX(.handle,"463")
+ if (s463'="")
+ {
+   s id=##class(MARC).getTag4xx(s463,"001")
+   if (id'="") s id=$p(id,"*",2) 
+
+
+   if (id'="") 
+   { use outf w id,!
+     use outf
+   } 
+ }  
+
+ close outf  
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symCleanSbornikID">
+<Description><![CDATA[
+<pre>
+ 09.05.06 jj; symb. na odstraneni dupl. id v setrizenem souboru
+ 22.05.06 jj; doplneni par single - v pripade hodnoty 0 odmaze single id
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>inf:%String="sbornik_id.txt",outf:%String="sbornik_id_short.txt",single:%Integer=1</FormalSpec>
+<Implementation><![CDATA[
+ ; otevrit vystupni soubor
+ open outf:("WS":/APPEND):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+
+ ; otevrit vstupni soubor
+ s OU=$IO
+ open inf:(/READ):0
+ s te=$test
+ if 'te q "failed to open the input file ('"_inf_"')!!"
+ 
+ use inf:/POSITION=0 use OU
+ ; disable <ENDOFFILE> error
+ d $ZU(68,40,1)
+
+ s brk=0,li="",liOld=""
+ 
+ ; 22.05.06 jj
+ if (single=1) d
+ . for nLine=1:1 q:brk  d
+ . . use inf read li if $zeof'=0 s brk=1
+ . . if (liOld'="") d
+ . . . if (liOld'=li) d  use outf w li,!
+ . . s liOld=li
+ else  d
+ . use inf read li if $zeof'=0 s brk=1
+ . s liOld=li
+ . for nLine=2:1 q:brk  d
+ . . use inf read li if $zeof'=0 s brk=1
+ . . if (liOld=li) d  use outf w li,!
+ . . s liOld=li
+ 
+
+ close inf use OU
+
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+
+ use outf
+ close outf  
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symPrintProj2">
+<Description><![CDATA[
+<pre>
+ 16.05.06 jj; symPrintProj2 - nastaveni kontroly pro vsechny polozky "gra"
+ 10.05.06 jj; symb. na vypsani projektu koncicich v roce 2005
+              nebo 2006 a nemajicich vystup do RIV
+              s sy="##class(CavUnEpca).symPrintProj2(.handle)"
+              d ^X("s CavUnAuth proj")
+              d ^X("s &&CavUnEpca @"_sy)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,outf:%String="proj0506_not_riv.txt"]]></FormalSpec>
+<Implementation><![CDATA[
+ ; otevrit vystupni soubor
+ open outf:("WS":/APPEND):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+
+ 
+ s riv=""
+ s konec=##class(MARC).getTagX(.handle,"C29b")
+ if ((konec'="2005") && (konec'="2006"))
+ { 
+   close outf  
+   q
+ }
+
+ s cislo=##class(MARC).getTagX(.handle,"230h")
+
+ ; 16.05.06 jj; symPrintProj2 - nastaveni kontroly pro vsechny polozky "gra"
+ ; s id=##class(MARC).getIDByIndex("CavUnEpca","gra"," "_$zcvt(cislo,"L")) 
+ s id="",rivTemp=""
+ f   s id=##class(MARC).getIDByIndex("CavUnEpca","gra"," "_$zcvt(cislo,"L"),id) q:(id="" || id=0)  d
+ . s T001=##class(MARC).getT001(id)
+ . if (##class(MARC).readLX(.handlec,"cav_un_epca*"_T001)) d
+ . . s rivTemp=##class(MARC).getTagX(.handlec,"C26b")
+ . if (rivTemp'="") s riv=rivTemp
+
+ 
+ if (riv'="1")
+ {
+   s prijemce=##class(MARC).getTagX(.handle,"C31a")
+   s poskytovatel=##class(MARC).getTagX(.handle,"C28a")
+   d ##class(Util).strswap(cislo_prijemce_poskytovatel,";","@")
+   use outf w prijemce_";"_poskytovatel_";"_cislo,!
+   use outf
+ }
+
+ close outf  
+ q
+]]></Implementation>
+</Method>
+
+<Method name="sym4xxSel">
+<Description><![CDATA[
+19.05.06 jj; selekcni symbolik na vyhledani zaznamu obs. konkretni 4xx/yyy$z
+30.05.06 jj; rozsireni o par. pHodnota - do selektu pujdou jen tagy/subtagy 
+               s danou hodnotou; v pripade hodnoty "123@#$NN$#@321" se do selektu
+               zaradi zaznamy nezacinajici cislici.
+
+    s sy="ret1=##class(CavUnEpca).sym4xxSel(.handle,""463010"",""a"",""123@#$NN$#@321"")"
+    d ^X("s &&CavUnEpca @"_sy)        ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,pTag:%String,pSubtag:%String,pHodnota:%String=""]]></FormalSpec>
+<Implementation><![CDATA[
+  if ($l(pTag)'=6) q 0
+  if ($e(pTag,1,1)'="4") q 0
+  if ($l(pSubtag)'=1) q 0
+  
+  s s4xx=##class(MARC).getTagX(.handle,$e(pTag,1,3))
+  if (s4xx="") q 0
+  s sYyy=$e(pTag,4,6)
+  
+  s c=$l(s4xx,$c(31)_"1"), err=""
+  f i=1:1:c
+  { s find=""
+    s s4xxPart=$p(s4xx,$c(31)_"1",i) 
+    if ($e(s4xxPart,1,3)=sYyy) 
+    { 
+      s s4xxPart=$e(s4xxPart,1,3)_" "_$e(s4xxPart,4,5)_" "_$e(s4xxPart,6,999)
+      s find = ##class(MARC).getSubTagStr(.s4xxPart,pSubtag)
+    }
+    if ((pHodnota'="") && (find'=""))
+    { 
+      if (pHodnota="123@#$NN$#@321") 
+      { s sAscii=$a(find,1)
+        if ((sAscii>47) && (sAscii<58)) s find=""
+      }
+      else { if (pHodnota'=find) s find=""}
+    }
+    if (find'="") q 
+  }
+  if (find'="") q 1
+  q 0
+]]></Implementation>
+</Method>
+
+<Method name="symCheck">
+<Description>
+23.05.06 jj; symbolik na kontrolu dat</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>inf:%String</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s OU=$IO
+ ; kontrola parametru
+ if inf="" q "Input file name empty !"
+ 
+ ; otevrit vstupni soubor
+ open inf:(/READ):0
+ s te=$test
+ if 'te q "failed to open the input file ('"_inf_"')!!"
+ use inf:/POSITION=0 use OU
+ ; disable <ENDOFFILE> error
+ d $ZU(68,40,1)
+
+ s brk=0,li="",handle="",sSubTag="",id="",n=0
+ for nLine=1:1 q:brk  d
+ . use inf read li if $zeof'=0 s brk=1
+ . ; nacten 1 radek
+ . if (li'="") d
+ . . if ($e(li,1,5)="# @id") d
+ . . . s id=$p(li," ",4)
+ . . if ($e(li,1,3)="999") d  ; 
+ . . . s sSubTag=##class(MARC).getSubTagStr(li,"e")
+ . . if ($e(li,1,3)="###") d
+ . . . if ((sSubTag'="") && (id'="")) d 
+ . . . . if ##class(MARC).readLX(.handle,"cav_un_epca*"_id) d  
+ . . . . . s sber=##class(MARC).getTagX(.handle,"C26d")
+ . . . . . s s999e=##class(MARC).getTagX(.handle,"999e")
+ . . . . . if ((sber="2007") && (s999e="")) d 
+ . . . . . . s TAG=##class(MARC).getTagX(.handle,"999")
+ . . . . . . d ##class(MARC).setTagX(.handle,TAG_$c(31)_"e"_sSubTag)
+ . . . . . . s st=##class(MARC).writeX(.handle,1)
+ . . . . . . if $$$ISERR(st) s err="ERRW001#"_##class(Util).status2str(st) q
+ . . . s id="", sSubTag=""
+ 
+ close inf use OU
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+ q
+]]></Implementation>
+</Method>
+
+<Method name="symGetIF2005">
+<Description>
+24.07.18 tt; aktualizace pro import IF roku 2017
+19.06.17 tt; aktualizace pro import IF roku 2016
+20.08.14 tt; aktualizace pro import IF roku 2013
+02.07.13 tt; aktualizace pro import IF roku 2012
+12.07.12 tt; aktualizace pro import IF roku 2011 
+16.08.11 tt; aktualizace pro import IF roku 2010 
+22.06.10 tt; aktualizace pro import IF roku 2009
+27.07.07 lp; aktualizace pro import IF roku 2006,
+             pokud neni hledane periodikum v databazi,
+             vygenerovat novy zaznam SZP
+14.07.06 lp; doplneni impakt faktoru pro rok 2005 do zaznamu periodik,
+             spojovacim klicem je ISSN+nazev (samotne ISSN ma duplicity)
+
+1. zdrojova data jsou v xls souboru: nazev, ISSN, IF
+2. data z Excelu ulozit jako csv
+3. pomoci SQL Manageru naimportovat data do Cache tabulky CAV.IF2005
+4. spustit symGetIF2005()</Description>
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ #define RokIF "2017" 
+ #define ClassName "CavUnEpca"
+ 
+ ; pro pristup k naimportovanym datum vyuzijeme objekt ResultSet
+ set resultSet=##class(%Library.ResultSet).%New()
+ set sql="select * from CAV.IF2005"
+
+ ; prepare the query
+ set sc=resultSet.Prepare(sql)
+ if $$$ISERR(sc) set err="ERR999#"_##class(Util).status2str(sc) write !,err quit err
+
+ ; execute the query
+ set sc=resultSet.Execute()
+ if $$$ISERR(sc) set err="ERR999#"_##class(Util).status2str(sc) write !,err quit err
+ 
+ ; projdeme a zpracujeme celou tabulku
+ set i=1,err=""
+ for  
+ {
+   if 'resultSet.Next() quit
+   set done=$get(resultSet.Data("Done"),0)
+   if done continue
+   
+   set nazev=$get(resultSet.Data("Nazev"))
+   set issn=$get(resultSet.Data("ISSN")),idxissn=" "_$zcvt(issn,"L")
+   set if=$get(resultSet.Data("IF"))
+   set updt=0
+   write !,$justify(i,5)_": "_issn_", "_nazev_", "_if
+   
+   ; najit zaznam v CavUnEpca podle ISSN a nazvu v C32a
+   if $data(^$$$MarcIndexG($$$ClassName,"issns",idxissn))
+   {
+     set id=""
+     for  
+     {
+       /// 20.06.17 tt; zmenen index v symGetIF2005 z issn na issns kvuli eissn
+       set id=$order(^$$$MarcIndexG($$$ClassName,"issns",idxissn,id))
+       quit:id=""
+       if '##class(MARC).getDATAX(.handle,id) set err="ERR999#error reading record id "_id write !,err quit
+
+       set tc32=##class(MARC).getTagX(.handle,"C32",-1)
+       ;write !,"     C32="_tc32
+       if tc32="" continue
+       if '$find($tr(tc32," -.,/"),$char(31)_"a"_$tr(nazev," -.,/")) continue
+       
+       ; nasli jsme zaznam pro doplneni impakt faktoru
+       set t978="978    "_$char(31)_"a"_$$$RokIF_$char(31)_"c"_if
+       do ##class(MARC).appendTagX(.handle,t978)
+       
+       ; zapsat zaznam
+       set t001=$$$HandleT001(handle),class=$$$HandleClass(handle)
+       d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handle,1)
+       set sc=##class(MARC).writeX(.handle,1,,,3_$c(10)_"arl"_$c(10)_"127.0.0.1")
+       d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handle,0)
+       if $$$ISERR(sc) set err="ERRW001#"_class_"/"_t001_"#"_##class(Util).status2str(sc) write !,err quit
+       set updt=1
+       write !,"     record "_class_"/"_t001_" - added "_t978
+     }
+   }
+   quit:err'=""
+   
+   ; nastavit priznak, ze je radek zpracovany
+   set done=0
+   if updt {
+     set done=1
+   }
+   else {
+     ; 27.07.07 lp; pokud neni hledane periodikum v databazi,
+     ;              vygenerovat novy zaznam SZP
+     set errg=..symGetIF2005genSZP($$$ClassName,nazev,issn,if,$$$RokIF)
+     if errg="" { set done=2 }
+     else {
+       write !,"     error generating new SZP record, msg="_errg
+     }
+   }
+   write !,"     set CAV.IF2005 Done="_done
+   &sql(update CAV.IF2005 set Done = :done where ISSN = :issn and Nazev = :nazev)
+   if SQLCODE=0 {write " ... OK"}
+   else {w !,"SQL update failed, SQLCODE=",SQLCODE }
+   
+   set i=i+1
+ }
+ quit:err'="" err
+
+ ; close the cursor
+ set sc=resultSet.Close()
+ if $$$ISERR(sc) set err="ERR999#"_##class(Util).status2str(sc) write !,err quit err
+
+ quit ""
+]]></Implementation>
+</Method>
+
+<Method name="symGetIF2005genSZP">
+<Description><![CDATA[
+<pre>
+08.10.09 pb; rozlisenie CAV a SAV
+16.09.08 pb; uprava 200a a podpola C32x, pridany parameter t001SZP
+27.07.07 lp; vygenerovani noveho zaznamu SZP pri importu IF
+</pre>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pClass:%String="",pNazev:%String="",pISSN:%String="",pIF:%String="",pRokIF:%String="",&t001SZP:%Library.String]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ ; kontrola parametru
+ if ((pClass="")||(pNazev="")||(pISSN="")) q "ERRI001#missing parameter"
+ s t001SZP=""
+ 
+ ; vygenerovani noveho zaznamu SZP
+ d ##class(MARC).newX(.handleSZP,pClass,"new")
+
+ d ##class(MARC).setTagX(.handleSZP,"000    00240nx   22001213  450")
+ d ##class(MARC).setTagX(.handleSZP,"011    "_$c(31)_"a"_pISSN)
+ 
+ if (pClass="CavUnEpca") {
+   d ##class(MARC).setTagX(.handleSZP,"100    "_$c(31)_"a"_##class(Util).date()_"aczey0103    ba")
+ }
+ if (pClass="SavUnEpca") {
+   d ##class(MARC).setTagX(.handleSZP,"100    "_$c(31)_"a"_##class(Util).date()_"asloy0103    ba")
+ }
+ 
+ d ##class(MARC).setTagX(.handleSZP,"110    "_$c(31)_"aa")
+ ; 16.09.08 pb; uprava nazvu
+ ;d ##class(MARC).setTagX(.handleSZP,"200 1  "_$c(31)_"a"_pNazev)
+ d ##class(MARC).setTagX(.handleSZP,"200 1  "_$c(31)_"a"_"NEW SZP IF "_pRokIF_": "_pNazev)
+ ; 16.09.08 pb; uprava podpola x
+ ;d ##class(MARC).setTagX(.handleSZP,"C32    "_$c(31)_"a"_pNazev_"x1")
+ d ##class(MARC).setTagX(.handleSZP,"C32    "_$c(31)_"a"_pNazev _$c(31)_"x3")
+ d ##class(MARC).setTagX(.handleSZP,"978    "_$c(31)_"a"_pRokIF_$c(31)_"c"_pIF)
+ 
+ if (pClass="CavUnEpca") {
+   d ##class(MARC).setTagX(.handleSZP,"801    "_$c(31)_"aCZ"_$c(31)_"bCAV"_$c(31)_"c"_##class(Util).date())
+   d ##class(MARC).setTagX(.handleSZP,"970    "_$c(31)_"b"_"BCA")
+   d ##class(MARC).setTagX(.handleSZP,"999    "_$c(31)_"a1"_$c(31)_"bCAV"_$c(31)_"d"_"arl-"_##class(Util).date())
+   d ##class(MARC).setTagX(.handleSZP,"C99    "_$c(31)_"dDFLT_EPCA3")
+ }
+ if (pClass="SavUnEpca") {
+   d ##class(MARC).setTagX(.handleSZP,"801    "_$c(31)_"aSK"_$c(31)_"bSAV"_$c(31)_"c"_##class(Util).date())
+   d ##class(MARC).setTagX(.handleSZP,"970    "_$c(31)_"b"_"B")
+   d ##class(MARC).setTagX(.handleSZP,"999    "_$c(31)_"a1"_$c(31)_"bSAV"_$c(31)_"d"_"arl-"_##class(Util).date())
+   d ##class(MARC).setTagX(.handleSZP,"C99    "_$c(31)_"dDFLT_EPCA8")
+ }
+ 
+ 
+ ; zapis
+ s sc=1
+ s sc=##class(MARC).writeX(.handleSZP)
+ if $$$ISERR(sc) set err="ERRW001#"_pClass_"/<new>#"_##class(Util).status2str(sc) write !,err quit err
+
+ set t001SZP=$$$HandleT001(handleSZP)
+ write !,"          added new SZP record "_pClass_"/"_t001SZP
+ 
+ q ""
+]]></Implementation>
+</Method>
+
+<Method name="symImElsevier">
+<Description><![CDATA[
+<pre> Metoda pro import embarga Elsevieru. Importuje se csv soubor.
+Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV/import_Elsevier
+Parametry: pSoub  - nazev soubroru
+           pTyp   - typ vystupu
+           pText  - text, ktery se zapise do C58$a a 210$c
+           pClass - trida se zaznamy
+
+gnDEBUG - globalni promenna
+
+15.08.12 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pSoub,pTyp=1,pText="Elsevier",pClass="CavUnEpca"</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+  s file=##class(%FileCharacterStream).%New() ; otevreni vstupniho souboru
+  s file.Filename=pSoub
+  d file.TranslateTableSet("UTF8")  ; otevreni v UTF8
+  s sLine=file.ReadLine()           ; nacten prvni radek s hlavickou
+  
+  S sLog=pSoub
+  s $p(sLog,$$$PathSepp,$l(sLog,$$$PathSepp))="Import_Elsevier_"_##class(User.Util).date()_".log"
+  
+  f i=2:1
+  { ; cyklus pres cely soubor
+    s sLine=file.ReadLine()         ; cten 1 radek
+    
+    if (sLine'="")
+    { ; pokud mame data
+      d ##class(User.Util).xlogf(sLog,"---------------------------------------------") ; Zacatek vypisu informaci pro jeden zaznam
+      d ##class(User.Util).xlogf(sLog,"  Radek ("_i_"): "_sLine) ; Zacatek vypisu informaci pro jeden zaznam
+
+      ; osetreni proti padu importu
+      try 
+      { ; zpracovani jednoho radku      
+        d ..symImElsevierRec(sLog, pTyp, pText, sLine,pClass)      
+      }
+      catch exceptionvar 
+      { ; pokud objevime chybu, zapiseme ji do logu a pokracujeme
+        d ##class(User.Util).xlogf(sLog,"  ERROR exception:"_exceptionvar.Name_exceptionvar.Location)     
+      }           
+    }
+    
+    ; pokud konec souboru, konec zpacovani
+    q:(file.AtEnd)    
+  }
+  d file.%Close()                   ; zavreni souboru
+]]></Implementation>
+</Method>
+
+<Method name="symImElsevierRec">
+<Description><![CDATA[
+<pre> Metoda pro import embarga Elsevieru, zpracovava jeden radek po druhem
+Parametry: pLog - log soubor
+           pTyp   - typ vystupu
+           pText  - text, ktery se zapise do C58$a a 210$c
+           pLine  - aktualni zpracovavany radek
+           pClass - trida se zaznamy
+
+15.08.12 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pLog,pTyp,pText,pLine,pClass</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<PublicList>gnDEBUG</PublicList>
+<Implementation><![CDATA[
+  s sName=$p(pLine,";",1), sISSN=$p(pLine,";",2), sEmbargo=$p(pLine,";",3) ; nacteme data jednoho radku
+  s bFind=0,bWrite=0 ; promenne s informaci jestli byl nalezen zaznam s issn a jestli byla zapsana informace
+   
+  if ((sName="")||(sISSN="")||(sEmbargo="")) 
+  { ; pokud nemame kompletni data, vypiseme chybu a pokracujeme dal
+    d ##class(User.Util).xlogf(pLog,"  Error: chybi data na radku: "_pLine) ; Zacatek vypisu informaci pro jeden zaznam
+    q
+  }
+  s sIssnF=" "_$zcvt(sISSN,"L")
+  
+  if $data(^$$$MarcIndexG(pClass,"issn",sIssnF))
+  { ; najit zaznam v CavUnEpca podle ISSN a nazvu v C32a - zjistime jestli existuje zaznam s issn 
+    s id=""
+    for  
+    { ; snazime se projit jednotlive zaznamy a urcit ten spravny
+      set id=$o(^$$$MarcIndexG(pClass,"issn",sIssnF,id))
+      q:(id="")
+      
+      if ##class(MARC).getDATAX(.handle,id) 
+      { ; nacteme handle
+        s sT001=$$$HandleT001(handle),sClass=$$$HandleClass(handle)
+        s sTC32=$$$getTagXC(.handle,"C32",-1)
+        s sT011a=$$$getTagX(.handle,"011a")
+        continue:(sT011a="")  
+        
+        s bFind=1             ; byly nalezeny nejake zaznamy s danym ISSN        
+        if (pTyp=1)
+        { ; pokud nemame editovat existujici, ukocnime cyklus
+          d ##class(User.Util).xlogf(pLog,"  Mame nastaveny typ=1, byl nalezen zaznam v databazi(T001 "_sT001_"), zazname needitujeme!")
+          q           
+        }
+        
+        if ('$find(sTC32,$char(31)_"a"_sName))
+        { ; pokud neni nalezeno C32$a - osetrime 
+          continue:(pTyp'=4) ; pokud nemame vkladat nove, pokracujeme
+          ; pokud mame typ 4 - pridame C32$a pokud neexistuje
+          d ##class(User.MARC).appendTagX(.handle,"C32    "_$c(31)_"a"_sName_$c(31)_"x4")
+        }
+        
+        s sT210=$$$getTagXC(.handle,"210",-1)
+        if ('$find(sT210,$char(31)_"c"))
+        { ; pokdu nemame vyplnene 210c, doplnime
+          s:(sT210'="") sT210=sT210_$char(31)_"c"_pText
+          s:(sT210="") sT210="210    "_$char(31)_"c"_pText
+          d $$$setTagX(.handle,sT210)
+        }
+        
+        ;C58    $$aElsevier$$b24
+        s c=0,sTC58New=""
+        d { ; tento kod slouzi pri aktualizaci C58
+           s sTC58=$$$getTagXC(.handle,"C58",.c) ; vsetky citacie
+           continue:((sTC58="")&&(c'=0))
+           if (sTC58'="")
+           { ; pokud mame vyplnene data, muzeme provadet akce 
+             s sTC58a=$$$getSubTagStr(sTC58,"a")
+             if (pText=sTC58a)
+             { ; pokud nam sedi jmeno, proverima embargo
+               if ($$$getSubTagStr(sTC58,"b")'=sEmbargo)
+               { ; pokud existuje 
+                 s sTC58a=$$$setSubTagStr(sTC58,$c(31)_"b"_sEmbargo)
+                 d ##class(User.Util).xlogf(pLog,"  Embargo("_sEmbargo_") bylo aktualizovano u zaznamu 001:"_sT001)
+               }
+               else 
+               { ; nemusime provadet akci, embargo je spravne
+                 d ##class(User.Util).xlogf(pLog,"  Embargo u zaznamu 001:"_sT001_" jiz existovalo, neprovadi se zadna akce.")
+               }
+             }
+             s:(sTC58New'="") sTC58New=sTC58New_$c(10)_sTC58  ; dalsi opakovani popridavame postupne
+             s:(sTC58New="") sTC58New=sTC58                   ; pridame prvni opakovani
+           }                    
+        } while (c'=0)
+        if ((sTC58New="")||('$f(sTC58New,$c(31)_"a"_pText_$c(31)_"b"_sEmbargo)))
+        { ; pokud jeste hodnota nebyla pridana, pridame
+          d ##class(User.MARC).appendTagX(.handle,"C58    "_$c(31)_"a"_pText_$c(31)_"b"_sEmbargo)
+          d ##class(User.Util).xlogf(pLog,"  U zaznamu 001:"_sT001_" bylo pridano nove opakovani pole: C58    "_$c(31)_"a"_sName_$c(31)_"b"_sEmbargo)
+        }
+        elseif ((sTC58New'="")&&($f(sTC58New,$c(31)_"a"_pText_$c(31)_"b"_sEmbargo)))
+        { ; ulozime si modifikovane data
+          d $$$setTagX(.handle,sTC58New)
+        }
+        else
+        { ; pokud se nam data nepodarilo pridat, ukoncime
+          d ##class(User.Util).xlogf(pLog,"  Error: Embargo u zaznamu 001:"_sT001_" nemohlo byt pridano") ; Zacatek vypisu informaci pro jeden zaznam
+        }
+                
+        ; zapsat zaznam
+        d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handle,1)
+        s sc=1
+        s:($g(gnDEBUG)'=1) sc=##class(MARC).writeX(.handle,1,,,3_$c(10)_"arl"_$c(10)_"127.0.0.1")
+        d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handle,0)
+        if $$$ISERR(sc) 
+        { ; neprobehlo ulozeni zaznamu. Vypiseme chybu
+          d ##class(User.Util).xlogf(pLog,"  Error: "_sClass_"/"_sT001_" Nepodaril se zapis zaznamu!") 
+          d ##class(User.Util).xlogf(pLog,"       : "_##class(Util).status2str(sc)) 
+          q   ; ukoncime zapis, kdyz se nepodaril
+        }
+        else
+        { ; uspesne zapsan zaznam
+          d:($g(gnDEBUG)=1) ##class(User.Util).xlogf(pLog,"  !!!Testovaci spusteni - zaznam se realne nezapise!!!")
+          d ##class(User.Util).xlogf(pLog,"  Zaznam 001:"_sT001_" byl uspesne zapsan")          
+        }        
+      }
+    }
+  }
+  
+  if ((bFind=0)&&(pTyp'=3))
+  { ; pokud nebyl zadny zaznam nalezen a muzeme zalozit novy zaznam
+    d ..symImElseviergenSZP(pLog,pClass,pText,sName,sISSN,sEmbargo)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="symImElseviergenSZP">
+<Description><![CDATA[
+<pre> Metoda pro lazozeni jednoho zaznamu pri importu Embarg elsevieru
+Parametry: pLog - log soubor
+           pClass - trida se zaznamy
+           pText  - text, ktery se zapise do C58$a a 210$c
+           pNazev - nazev 200$a nebo C32$a
+           pISSN  - issn
+           pEmbargo  - hodnota embarga
+
+09.08.12 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pLog,pClass,pText,pNazev:%String="",pISSN:%String="",pEmbargo:%String=""</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<PublicList>gnDEBUG</PublicList>
+<Implementation><![CDATA[
+ ; kontrola parametru
+ d:((pClass="")||(pNazev="")||(pISSN="")) ##class(User.Util).xlogf(pLog,"  Error: (symImElseviergenSZP) Chybi povinne parametry metody!")
+ 
+ s sInst=$zcvt(##class(User.Util).getClassPrefixParam(pClass),"U")
+ ; vygenerovani noveho zaznamu SZP
+ d ##class(MARC).newX(.handleSZP,pClass,"new")
+ d $$$setTagX(.handleSZP,"000    00240nx   22001213  450")
+ d $$$setTagX(.handleSZP,"011    "_$c(31)_"a"_pISSN)
+ d $$$setTagX(.handleSZP,"100    "_$c(31)_"a"_##class(Util).date()_"aczey0103    ba")
+ d $$$setTagX(.handleSZP,"110    "_$c(31)_"aa")
+ d $$$setTagX(.handleSZP,"200 1  "_$c(31)_"a"_"NEW SZP ELSEVIER: "_pNazev)
+ d $$$setTagX(.handleSZP,"210    "_$c(31)_"c"_pText)
+ d $$$setTagX(.handleSZP,"C32    "_$c(31)_"a"_pNazev _$c(31)_"x4")
+ d $$$setTagX(.handleSZP,"C58    "_$c(31)_"a"_pText _$c(31)_"b"_pEmbargo)
+ d $$$setTagX(.handleSZP,"801    "_$c(31)_"aCZ"_$c(31)_"b"_sInst_$c(31)_"c"_##class(User.Util).date())
+ d $$$setTagX(.handleSZP,"970    "_$c(31)_"b"_"BCA")
+ d $$$setTagX(.handleSZP,"999    "_$c(31)_"a1"_$c(31)_"b"_sInst_$c(31)_"d"_"arl-"_##class(User.Util).date())
+ d $$$setTagX(.handleSZP,"C99    "_$c(31)_"dDFLT_EPCA3")
+
+ ; zapis 
+ s sc=1
+ s:($g(gnDEBUG)'=1) sc=##class(User.MARC).writeX(.handleSZP)
+ if $$$ISERR(sc) 
+ { ; neprobehlo ulozeni zaznamu. Vypiseme chybu
+   d ##class(User.Util).xlogf(pLog,"  Error: symImElseviergenSZP - "_pClass_"/NEW  - Nepodaril se zapis zaznamu!") 
+   d ##class(User.Util).xlogf(pLog,"       : "_##class(Util).status2str(sc)) 
+ }
+ else
+ { ; uspesne zapsan zaznam   
+   d:($g(gnDEBUG)=1) ##class(User.Util).xlogf(pLog,"  !!!Testovaci spusteni - zaznam se realne nezapise!!!")
+   d ##class(User.Util).xlogf(pLog,"  Zaznam 001:"_$$$HandleT001(handleSZP)_" byl uspesne zapsan")
+ }
+]]></Implementation>
+</Method>
+
+<Method name="symGetIF">
+<Description>
+28.07.11 tt; uprava logiky pro rok 2010
+22.07.10 tt; úprava logiky metody pro zpracování ISSN a pridani IF
+             podpora doplneni 978c
+07.12.09 pb; uprava cyklov
+08.10.09 pb; aktualizacia pre SAV
+03.08.09 pb; aktualizacia pre rok 2008
+16.09.08 pb; nova metoda na import Impact Faktoru priamo z CSV suboru;
+             ak nie je hladane periodikum v databaze,
+             vygenerovat novy zaznam SZP
+
+1. zdrojove data su v xls subore: nazov; ISSN; IF
+2. data z Excelu ulozit ako CSV
+3. spustit symGetIF()</Description>
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ /// d ##class(User.CavSymConv).symGetIF()
+ #define RokIF "2016"
+ #define ClassName "SavUnEpca"
+ 
+ s OU=$IO
+ s imp="IF_2010_sav.csv"
+ s outf="sav_IF2010_vystup4.txt"
+ s outfSZP="sav_IF2010SZP_vystup4.txt"
+  
+ ; otevrit vstupni soubor
+ open imp:(/READ):0
+ s te=$test
+ if 'te w "failed to open the input file ('"_imp_"')!!" q
+ use imp:/POSITION=0 use OU
+ d $ZU(68,40,1)
+ 
+ ; otevrit vystupni soubor
+ open outfSZP:("NWS":/CREATE):0
+ s te=$test
+ if 'te w "failed to open the output file ('"_outfSZP_"')!!" q
+ 
+ ; otevrit vystupni soubor
+ open outf:("NWS":/CREATE):0
+ s te=$test
+ if 'te w "failed to open the output file ('"_outf_"')!!" q
+ 
+ use outf
+ w !,$$$ClassName," - Import impakt faktoru pre rok ",$$$RokIF,"    ",$zdt($h,4)
+ w !!
+ 
+ s brk=0,li="",ix=0,err=""
+ for 
+ { use imp read li if $zeof'=0 s brk=1
+   q:brk 
+   ; nacitany 1 riadok do li
+   s ix=ix+1
+   if ix<=0 CONTINUE
+   if (li="") CONTINUE
+   
+   s nazov=##class(Util).trim($p(li,";",1))
+   s issn=##class(Util).trim($p(li,";",2)),idxissn=" "_$zcvt(issn,"L")
+   s impactFactor=##class(Util).trim($p(li,";",3))
+   ; 28.07.11 tt; osetreni, aby impakt faktor nebyl prazdny; pokud je, nezpracovavame
+   continue:($tr(impactFactor," ")="")
+      
+   use outf
+   write !,"---------------------------------------------------------------"
+   write !,$justify(ix,5)_": "_issn_", "_nazov_", "_impactFactor
+      
+   set id="",updt="0", nOfR=1
+   
+   ; 22.07.10 tt; úprava logiky metody pro zpracování ISSN a pridani IF
+   for  
+   {  ;use outf w !," idem0"
+      set id=$o(^$$$MarcIndexG($$$ClassName,"issn",idxissn,id))
+      quit:id=""
+      ;use outf w " idem0.1"
+      if '##class(MARC).getDATAX(.handle,id) set err="ERR999#error reading record id "_id use outf write !,err quit
+      ;use outf w " idem0.2"
+      set t001=$$$HandleT001(handle),class=$$$HandleClass(handle)
+      use outf
+      write !,"  -------------------------------------"
+      w !,"  t001=",t001
+         
+      set t011a=##class(MARC).getTagX(.handle,"011a")
+      set t970b=##class(MARC).getTagX(.handle,"970b")
+         
+      if $e($zcvt(t970b,"U"),1,1)'="B" CONTINUE  ; musi to byt B (casopis)
+      if (t011a'=issn) CONTINUE   ; issn sa musi zhodovat
+      w:(nOfR>10) !,"  ERROR: !!!!!!!!!!!  Records with the same ISSN !!!!!!!!!!!"      
+      
+      ; ano, ISSN sa zhoduje   
+      set updt=1 ; ak existuje issn aspon v 1 zazname, negenerovat SZP
+      ;use outf w " idem1"
+      ;
+         
+      set tc32=##class(MARC).getTagX(.handle,"C32",-1)
+      set t978=##class(MARC).getTagX(.handle,"978",-1)
+         
+      ; 16.09.08 pb; ci je C32 prazdne nerozhoduje
+      ;if tc32="" continue
+         
+      ; 16.09.08 pb; ak nie je "nazov" v C32 - nerozhoduje
+      ;if '$find(tc32,$char(31)_"a"_nazov) continue
+      ;if $find(t978,$char(31)_"a"_$$$RokIF) continue  ; rok impakt faktoru, ktory chcem vlozit do 978, uz tam je
+      
+      s sPomConti=1        ; 
+      f t=1:1:$l(t978,$c(10))
+      { ; prochazeni jednotlivych opakovani 210
+        continue:(sPomConti=0)
+        s t9781=$p(t978,$c(10),t) ; ziskani i-teho tagu 210
+        s t9781a = ##class(User.MARC).getSubTagStr(t9781,"a")  ; ziskame rok
+        s t9781c = ##class(User.MARC).getSubTagStr(t9781,"c")  ; ziskame IF
+        if ('$find(t978,$char(31)_"a"_$$$RokIF))
+        { ; pokud neni rok vubec vyplneny
+          ; ulozim hodnoty
+          s:(t978'="") t978=t978_$c(10)_"978    "_$char(31)_"a"_$$$RokIF_$char(31)_"c"_impactFactor
+          s:(t978="") t978="978    "_$char(31)_"a"_$$$RokIF_$char(31)_"c"_impactFactor
+          s sPomConti=0 ; priznak, ze jsme zapsali          
+        }
+        if (($$$RokIF=t9781a)&&(t9781c'=impactFactor))
+        { ; pokud mame shodu roku
+          w:(t9781c'="") !,"  ERROR: !!!!!!!!!!!  Records with the different IF !!!!!!!!!!!"
+          write !,"      change 978 ("_$$$RokIF_")= ",t9781
+          s t9781 = ##class(User.MARC).setSubTagStr(t9781,$c(31)_"c"_impactFactor)
+          write !,"      to 978 ("_$$$RokIF_")= ",t9781
+          s $p(t978,$c(10),t)=t9781    ; ulozime zmenu
+          s sPomConti=0 ; priznak, ze jsme zapsali
+        }
+      }
+      continue:sPomConti ; pokracujeme, pokud jsme nezmenily data
+      write !,!,"    Result 978=",!,"      "_##class(User.Util).strswap(t978,$c(10),$c(10)_"      ")
+      
+      ; vlozeni hodnoty 978 tagu
+      d ##class(User.MARC).setTagX(.handle,t978)
+         
+      ; zapis zaznamu
+      d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handle,1)
+      s sc=1
+      set sc=##class(MARC).writeX(.handle,1,,,3_$c(10)_"arl"_$c(10)_"127.0.0.1")
+         
+      d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handle,0)
+      if $$$ISERR(sc) set err="ERRW001#"_class_"/"_t001_"#"_##class(Util).status2str(sc) use outf write !,err quit
+      set updt=2  ; po OK zapise
+         
+      use outf
+      write !,"      record "_class_"/"_t001  
+      s nOfR=nOfR+10
+   }
+   
+   if err'=""
+   {
+      use outf
+      write !,"     error1, msg="_err
+   }
+   quit:(err'="")
+      
+   if updt<1
+   {
+     ; ak nie je hladane periodikum v databaze, vygenerovat novy zaznam SZP
+     s errg="", t001SZP="0000000"
+     set errg=..symGetIF2005genSZP($$$ClassName,nazov,issn,impactFactor,$$$RokIF,.t001SZP)
+     use outf
+     if errg=""
+     {
+         write !,"     issn="_issn_" - NEW SZP IF "_$$$RokIF_" - t001="_t001SZP_": "_nazov
+         use outfSZP
+         write !,     "issn="_issn_" - NEW SZP IF "_$$$RokIF_" - t001="_t001SZP_": "_nazov       
+     }
+     else
+     {
+       write !,"     error generating new SZP record, msg="_errg
+     }
+    }
+   
+ }
+ if err'=""
+ {
+    use outf
+    write !,"     error2, msg="_err
+ }
+ 
+ use outf
+ w !!!,"End of report                 ",$zdt($h,4)
+
+ ; zatvorit subory
+ close imp
+ close outf
+ close outfSZP
+]]></Implementation>
+</Method>
+
+<Method name="symGetKarentPer">
+<Description>
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+07.12.09 pb; nova metoda na import karentovanych periodik z CSV suboru;
+             ak nie je hladane periodikum v databaze,
+             novy zaznam SZP sa negeneruje
+
+1. zdrojove data su v xls subore: nazov; ISSN; impakt faktor; Karentovane_Periodikum (c=karentovane, null=nekarentovane)
+2. data z Excelu ulozit ako CSV
+3. spustit symGetKarentPer()
+</Description>
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ /// d ##class(User.CavSymConv).symGetKarentPer()
+ #define RokKarentPer "2009"
+ #define ClassName "SavUnEpca"
+  
+ s OU=$IO
+ s imp="sav_KarentPer2009.txt"
+ s outf="sav_KarentPer2009_vystup3.txt"
+ ;;;s outfSZP="sav_IF2008SZP_vystup4.txt"
+  
+ ; otevrit vstupni soubor
+ open imp:(/READ):0
+ s te=$test
+ if 'te w "failed to open the input file ('"_imp_"')!!" q
+ use imp:/POSITION=0 use OU
+ d $ZU(68,40,1)
+ 
+ ;;;; otevrit vystupni soubor pre log SZP
+ ;;;open outfSZP:("NWS":/CREATE):0
+ ;;;s te=$test
+ ;;;if 'te w "failed to open the output file ('"_outfSZP_"')!!" q
+ 
+ ; otevrit vystupni soubor
+ open outf:("NWS":/CREATE):0
+ s te=$test
+ if 'te w "failed to open the output file ('"_outf_"')!!" q
+ 
+ use outf
+ w !,$$$ClassName," - Import karentovanych periodik pre rok ",$$$RokKarentPer,"    ",$zdt($h,4)
+ w !!
+ 
+ s brk=0,li="",ix=0,err=""
+ for 
+ { use imp read li if $zeof'=0 s brk=1
+   q:brk 
+   ; nacitany 1 riadok do li
+   s ix=ix+1
+   if ix<=0 CONTINUE
+   if (li="") CONTINUE
+   
+   s nazov=##class(Util).trim($p(li,";",1))
+   s issn=##class(Util).trim($p(li,";",2)),idxissn=" "_$zcvt(issn,"L")
+   s impactFactor=##class(Util).trim($p(li,";",3))
+   s karentPer=##class(Util).trim($p(li,";",4))
+      
+      
+   use outf
+   write !!,$justify(ix,5)_": "_issn_", "_nazov_", ",  impactFactor_", "_karentPer
+   
+   if (karentPer'="") {s karentPer="A"} else {s karentPer="N"}
+      
+   set id="",updt="1"
+   for  
+   {  ;use outf w !," idem0"
+      s id=$o(^$$$MarcIndexG($$$ClassName,"issn",idxissn,id))
+      quit:(id="")
+      ;use outf w " idem0.1"
+      if '##class(MARC).getDATAX(.handle,id) set err="ERR999#error reading record id "_id use outf write !,err quit
+      ;use outf w " idem0.2"
+      s t001=$$$HandleT001(handle),class=$$$HandleClass(handle)
+      use outf
+      w !,"t001=",t001
+         
+      s t011a=##class(MARC).getTagX(.handle,"011a")
+      s t970b=##class(MARC).getTagX(.handle,"970b")
+         
+      if $e($zcvt(t970b,"U"),1,1)'="B" CONTINUE  ; musi to byt B (casopis)
+      if (t011a'=issn) CONTINUE   ; issn sa musi zhodovat
+      
+      
+      ; ano, ISSN sa zhoduje   
+      s updt=1 ; ak existuje issn aspon v 1 zazname, negenerovat SZP
+      ;use outf w " idem1"
+         
+      s t978=##class(MARC).getTagX(.handle,"978",-1)
+      use outf ;w " idem2"
+      write !,"978=",!,t978
+      
+         
+         
+         
+      s addRow=1
+      s cnt=$l(t978,$c(10))
+      for iy=1:1:cnt
+      {
+        quit:(addRow="")
+        s t978row=$p(t978,$c(10),iy)
+        if t978row="" CONTINUE
+           
+        ; ak rok karentovania periodika (978$a) uz je
+        if ($p(t978row,$char(31)_"a"_$$$RokKarentPer,2)'="")
+        {
+           s addRow=""  ; uz nepridavat novy riadok
+           
+           ; ak hodnota karentovanosti (978$b), ktory chcem vlozit do 978, uz tam je
+           if ($p(t978row,$char(31)_"b",2)'="") CONTINUE
+           
+           ; hodnota karentovanosti (978$b), ktory chcem vlozit do 978, este nie je
+           if ($p(t978row,$char(31)_"b",2)="")
+           {
+              s t978row=##class(MARC).setSubTagStr(t978row,$c(31)_"b"_karentPer)  ; hodnota karentovanosti (978$b)
+              s $p(t978,$c(10),iy)=t978row
+              d ##class(MARC).setTagX(.handle,t978)
+           }
+        }
+      }
+                 
+      if (addRow=1)
+      {
+        ; doplnenie karentovanosti
+        set t978="978    "_$char(31)_"a"_$$$RokKarentPer_$char(31)_"b"_karentPer
+        d ##class(MARC).appendTagX(.handle,t978)
+      }
+         
+         
+         
+      ; zapis zaznamu
+      d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handle,1)
+      s sc=1
+      set sc=##class(MARC).writeX(.handle,1,,,3_$c(10)_"arl"_$c(10)_"127.0.0.1")
+         
+      d ##class(MARC).recordSetupMarcSkipAllowSaveX(.handle,0)
+      if $$$ISERR(sc) set err="ERRW001#"_class_"/"_t001_"#"_##class(Util).status2str(sc) use outf write !,err quit
+      set updt=2  ; po OK zapise
+         
+      s t978=##class(MARC).getTagX(.handle,"978",-1)  ; nove uplne data tagu 978
+      use outf
+      write !,"       record "_class_"/"_t001_" - added: ",!,t978
+   }
+   
+   
+   if err'=""
+   {
+      use outf
+      write !,"     error1, msg="_err
+   }
+   quit:err'=""
+   
+   
+   
+   s updt=999
+   if updt<1  ; tato podmienka nikdy nenastane, lebo updt je vzdy >=1; ak by bolo v buducnosti potrebne pouzit
+   {
+     ; ak nie je hladane periodikum v databaze, vygenerovat novy zaznam SZP
+     s errg="", t001SZP="0000000"
+     set errg=..symGetIF2005genSZP($$$ClassName,nazov,issn,karentPer,$$$RokKarentPer,.t001SZP)
+     use outf
+     if errg=""
+     {
+         write !,"     issn="_issn_" - NEW SZP IF "_$$$RokKarentPer_" - t001="_t001SZP_": "_nazov
+         use outfSZP
+         write !,     "issn="_issn_" - NEW SZP IF "_$$$RokKarentPer_" - t001="_t001SZP_": "_nazov
+     }
+     else
+     {
+       write !,"     error generating new SZP record, msg="_errg
+     }
+      
+   
+     if err'=""
+     {
+       use outf
+       write !,"     error2, msg="_err
+     }
+   }   
+ }
+ 
+ 
+ use outf
+ w !!!,"End of report                 ",$zdt($h,4)
+
+ ; zatvorit subory
+ close imp
+ close outf
+ ;;;close outfSZP
+ ;;; ---------------------------------------------------------
+]]></Implementation>
+</Method>
+
+<Method name="symCompareLinkWithChronRecord">
+<Description><![CDATA[
+<pre>
+08.12.06 pb; globalka na zistenie rozdielov v  datach 463 a zaznamami v chronology.
+             Ak maju zaznamy v epca a chronologii rovnaky odkaz 001, hladam rozdiely v niektorych (definovanych)
+             vlozenych tagoch. Nejaky cas bolo totiz mozne menit vsetky(!) tagy vlozeneho tagu (200, 011)
+</pre>
+]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.Binary,sLinkTagList:%Library.String="463",sCompareTagList:%Library.String="200a,010a,011a"]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ ; select podla potreby
+ ; s sy="##class(CavUnEpca).symCompareLinkWithChronRecord(.handle)"
+ 
+ s bEqual=999
+ 
+ s t001=$$$HandleT001(handle)
+ s cl=$$$HandleClass(handle)    
+ ///s tn=##class(Util).objectName2tableName(cl)
+ ; 22.02.17 jk; zruseno table name
+ s tn=##class(Util).objectName2lname(cl)
+ ;w !,"t001: "_t001_" "        
+
+ 
+ s cnt=$l(sLinkTagList,",")
+ for i=1:1:cnt
+   {
+      s sTag=$p(sLinkTagList,",",i)
+      if $l(sTag)'=3 q
+     
+      s sSource200=##class(MARC).getTagX(.handle,"200")
+      s sSource005=##class(MARC).getTagX(.handle,"005")
+      s sSource005H=##class(Util).date2Hdt($e(sSource005,8,15))
+      
+      s sSourceRow=##class(MARC).getTagX(.handle,sTag,-1)
+      s c=$l(sTag,$c(10))
+      for j=1:1:c
+      {
+         s sSourceRowDet=$p(sSourceRow,$c(10),j)
+         if $e(sSourceRowDet,1,3)="463"
+         {
+            s sSourceTag001Content=##class(MARC).getTag4xx(sSourceRowDet,"001")
+            s chid=""
+            for
+            {   
+               s chid=$o(^ooDataTableI("CmChronology","srca"," "_tn_"*"_t001,chid),-1) q:(chid="")||(bEqual="")
+               if '##class(MARC).getDATAX(.handlech,chid) zt "X2" ; err2
+               
+                s sChron005=##class(MARC).getTagX(.handlech,"005")
+               s sChron005H=##class(Util).date2Hdt($e(sChron005,8,15))
+               s sChronRow=##class(MARC).getTagX(.handlech,sTag,-1)
+               s sChronRowDet=$p(sChronRow,$c(10),j)
+               s sChronTag001Content=##class(MARC).getTag4xx(sChronRowDet,"001")
+ 
+               if (sSourceTag001Content'=""),(sChronTag001Content'=""),(sSourceTag001Content=sChronTag001Content)
+               {
+                  s c2=$l(sCompareTagList,",")
+                  for j2=1:1:c2  
+                  {
+                  q:(bEqual="")
+                     s sTagFind=$p(sCompareTagList,",",j2)
+                     s sChronTagContent=##class(MARC).getTag4xx(sChronRowDet,sTagFind)
+                     s sSourceTagContent=##class(MARC).getTag4xx(sSourceRowDet,sTagFind)
+                     if (sSourceTagContent'="")||(sChronTagContent'="")
+                     {
+                        s sChronTagContent=sChronTagContent
+                        if sSourceTagContent'=sChronTagContent
+                        {
+                           s sSourceTagContentWork=$zstrip(sSourceTagContent,"<>W")
+                           s sSourceTagContentWork=$$$strswap(sSourceTagContentWork," ","")
+                           s sSourceTagContentWork=$$$strswap(sSourceTagContentWork,",","")
+                           s sSourceTagContentWork=$$$strswap(sSourceTagContentWork,".","")
+                           s sSourceTagContentWork=$$$strswap(sSourceTagContentWork,"/","")
+                           s sSourceTagContentWork=$$$strswap(sSourceTagContentWork,";","")
+                           s sSourceTagContentWork=$$$strswap(sSourceTagContentWork,":","")
+                           s sSourceTagContentWork=$$$strswap(sSourceTagContentWork,"-","")
+                           s sSourceTagContentWork=$zcvt(sSourceTagContentWork,"L")
+                           
+                           s sChronTagContentWork=$zstrip(sChronTagContent,"<>W")
+                           s sChronTagContentWork=$$$strswap(sChronTagContentWork," ","")
+                           s sChronTagContentWork=$$$strswap(sChronTagContentWork,",","")
+                           s sChronTagContentWork=$$$strswap(sChronTagContentWork,".","")
+                           s sChronTagContentWork=$$$strswap(sChronTagContentWork,"/","")
+                           s sChronTagContentWork=$$$strswap(sChronTagContentWork,";","")
+                           s sChronTagContentWork=$$$strswap(sChronTagContentWork,":","")
+                           s sChronTagContentWork=$$$strswap(sChronTagContentWork,"-","")
+                           s sChronTagContentWork=$zcvt(sChronTagContentWork,"L")
+                           
+                           s len=$l(sSourceTagContentWork)
+                           if $l(sChronTagContentWork)<$l(sSourceTagContentWork) s len=$l(sChronTagContentWork)
+                           if len>10 s len=10
+                           if $e(sSourceTagContentWork,1,len)'=$e(sChronTagContentWork,1,len)
+                           {
+                              s bEqual=""
+                              s ^x4pb("CavUnEpca",t001)=""
+                              
+                              ; toto nema vyznam, lebo cistenie autorit neaktualizovalo tag 999
+                              s ^x4pb("CavUnEpca",t001,"005","Source")=sSource005H
+                              s ^x4pb("CavUnEpca",t001,"005","Chron")=sChron005H
+                              s ^x4pb("CavUnEpca",t001,"005Delta")=sSource005H-sChron005H
+                              
+                              s ^x4pb("CavUnEpca",t001,"Tag")=sTagFind
+                              s ^x4pb("CavUnEpca",t001,"Source")=sSourceTagContent
+                              s ^x4pb("CavUnEpca",t001,"Chron")=sChronTagContent
+                              
+                              s ^x4pb("CavUnEpca",t001,"SourceWork")=sSourceTagContentWork
+                              s ^x4pb("CavUnEpca",t001,"ChronWork")=sChronTagContentWork
+                              
+                              s ^x4pb("CavUnEpca",t001,"200")=sSource200
+                              s ^x4pb("CavUnEpca",t001,"463")=sSourceRowDet
+                              
+                              s sX=$g(^x4pb("CavUnEpca"))
+                              s sX=sX+1
+                              s ^x4pb("CavUnEpca")=sX
+                              
+                           }
+                           else
+                           {
+                              s bEqual=11
+                           }
+                           
+                        }
+                        else
+                        {
+                           s bEqual=1
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         
+      }
+   }  
+   
+   if bEqual=""
+   {
+      w !,"t001: "_t001_" "_"NEROVNA SA"
+   }
+   elseif bEqual=1
+   {
+      ;;;;;;;;;;;;;;;;;w !,"t001: "_t001_" "_"rovna sa uplne"
+   }
+   elseif bEqual=11
+   {
+      ;;;;;;;;;;;;;;;;;w !,"t001: "_t001_" "_"rovna sa skratene"
+   }
+   else
+   {
+      ;;;;;;;;;;;;;;;;;w !,"t001: "_t001_" "_"netestovane"
+   }
+]]></Implementation>
+</Method>
+
+<Method name="listCompareLinkWithChronRecord">
+<Description><![CDATA[
+<pre>
+15.12.06 pb; vypis globalu x4pb vytvoreneho symbolikom symCompareLinkWithChronRecord
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.Binary,sLinkTagList:%Library.String="463",sCompareTagList:%Library.String="200a,010a,011a"]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ ; select podla potreby
+ ; d ##class(CavUnEpca).listCompareLinkWithChronRecord()
+ 
+ s oldio=$io
+ s sFN="list_compare_"_$p(##class(Util).date005(),".",1)_".txt"
+ s sLOGFile=##class(UtilBackup).taskOpenLog(sFN)  ;uplna adr aj s cestou
+ use sLOGFile
+ 
+ s t001="", i=0
+ for
+ {
+ ;w !,"t001=",t001,", i=",i
+    s t001=$o(^x4pb("CavUnEpca",t001)) q:(t001="")||(i>=999999999)
+    s i=i+1
+    if i=1
+    {
+       w "Rozdiely v zapise v tagu 463 v CavUnEpca (0) a v historii zmien (-1)"
+       w !
+    }
+    
+    s textSource=$g(^x4pb("CavUnEpca",t001,"Source"))
+    s textChron=$g(^x4pb("CavUnEpca",t001,"Chron"))
+    s t200=$g(^x4pb("CavUnEpca",t001,200))
+    s t200a=##class(MARC).getSubTagStr(t200,"a")
+    
+    w !!,"(",i,") t001: ", t001," 200a: ",$e(t200a,1,50)
+    if $l(t200a)>50 w "..."
+    w !,"  463( 0): ",textSource,!,"  463(-1): ",textChron
+    
+ }
+ 
+ w !
+ close sLOGFile
+ use oldio
+]]></Implementation>
+</Method>
+
+<Method name="symJoinBCA">
+<Description><![CDATA[
+
+symbolik na zlucenie 5 ustavov do noveho ustavu BC-A;
+
+   zaznamy CavUnAuth, ktore obsahuju pracovisko (C06$d) 1-ho z 5 ustavov
+   sa skopirovali v ramci CavUnAuth pod novym 001 tak, ze 001 zacina s "1"
+   (najvyssi 001 mal hodnotu 0253616);
+   
+   globalka sa robi na selekte zaznamov, ktorych rok vykazovania je >= 2006
+   
+
+s sy="##class(User.CavSymConv).symJoinBCA(.handle)"
+25.08.09 pb;]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+   s dbg=""
+   // cyklus pre tag 700
+   w:(dbg) !!,"idem1"
+   s tag=##class(MARC).getTagX(.handle,"700") 
+   w:(dbg) !,"idem2"
+   s sUpd7xx=""
+   s c=$l(tag,$c(10))
+   f i=1:1:c  
+   {
+      q:tag=""
+      s t1=$p(tag,$c(10),i)
+      w:(dbg) !,"t1=",t1,!
+      s t7xxp=##class(MARC).getSubTagStr(t1,"p")
+      w:(dbg) !,"t7xxp=",t7xxp,!
+      if (($e(t7xxp,1,4)="ENTU")||($e(t7xxp,1,4)="UMBR")||($e(t7xxp,1,3)="HBU")||($e(t7xxp,1,3)="PAU")||($e(t7xxp,1,3)="UPB"))
+      {
+         s sUpd7xx="1"
+         w:(dbg) !,"idem2A"
+         s t7xx3=##class(MARC).getSubTagStr(t1,"3")
+         s t7xx3=##class(User.Util).strswap(t7xx3,"cav_un_auth*0","cav_un_auth*1")  ; kod zaznamu bude zacinat s "1"
+         w:(dbg) !,"idem2B"
+         s t7xxPracovisko="BC-A"
+         
+         if ($e(t7xxp,1,4)="ENTU") s t7xxOddelenie="ENTU"
+         if ($e(t7xxp,1,4)="UMBR") s t7xxOddelenie="UMBR"
+         if ($e(t7xxp,1,3)="HBU") s t7xxOddelenie="HBU"
+         if ($e(t7xxp,1,3)="PAU") s t7xxOddelenie="PAU"
+         if ($e(t7xxp,1,3)="UPB") s t7xxOddelenie="UPB"
+     
+         w:(dbg) !,"idem2C"
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"3"_t7xx3)
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"p"_t7xxPracovisko)
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"o"_t7xxOddelenie)
+         s $p(tag,$c(10),i)=t1
+         w:(dbg) !,"idem2D"
+         w:(dbg) !,"t1=",t1
+      }
+   }
+   w:(dbg) !,"idem3"
+   if (sUpd7xx'="") d ##class(MARC).setTagX(.handle,tag)
+   w:(dbg) !,"idem4"
+   
+   
+   // cyklus pre tag 701
+   w:(dbg) !!,"idem1"
+   s tag=##class(MARC).getTagX(.handle,"701",-1) 
+   w:(dbg) !,"idem2"
+   s sUpd7xx=""
+   s c=$l(tag,$c(10))
+   f i=1:1:c  
+   {
+      q:tag=""
+      s t1=$p(tag,$c(10),i)
+      w:(dbg) !,"t1=",t1,!
+      s t7xxp=##class(MARC).getSubTagStr(t1,"p")
+      w:(dbg) !,"t7xxp=",t7xxp,!
+      if (($e(t7xxp,1,4)="ENTU")||($e(t7xxp,1,4)="UMBR")||($e(t7xxp,1,3)="HBU")||($e(t7xxp,1,3)="PAU")||($e(t7xxp,1,3)="UPB"))
+      {
+         s sUpd7xx="1"
+         w:(dbg) !,"idem2A"
+         s t7xx3=##class(MARC).getSubTagStr(t1,"3")
+         s t7xx3=##class(User.Util).strswap(t7xx3,"cav_un_auth*0","cav_un_auth*1")  ; kod zaznamu bude zacinat s "1"
+         w:(dbg) !,"idem2B"
+         s t7xxPracovisko="BC-A"
+         
+         if ($e(t7xxp,1,4)="ENTU") s t7xxOddelenie="ENTU"
+         if ($e(t7xxp,1,4)="UMBR") s t7xxOddelenie="UMBR"
+         if ($e(t7xxp,1,3)="HBU") s t7xxOddelenie="HBU"
+         if ($e(t7xxp,1,3)="PAU") s t7xxOddelenie="PAU"
+         if ($e(t7xxp,1,3)="UPB") s t7xxOddelenie="UPB"
+     
+         w:(dbg) !,"idem2C"
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"3"_t7xx3)
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"p"_t7xxPracovisko)
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"o"_t7xxOddelenie)
+         s $p(tag,$c(10),i)=t1
+         w:(dbg) !,"idem2D"
+         w:(dbg) !,"t1=",t1
+      }
+   }
+   w:(dbg) !,"idem3"
+   if (sUpd7xx'="") d ##class(MARC).setTagX(.handle,tag)
+   w:(dbg) !,"idem4"
+   
+   
+   // cyklus pre tag 702
+   w:(dbg) !!,"idem1"
+   s tag=##class(MARC).getTagX(.handle,"702",-1)
+   w:(dbg) !,"idem2"
+   s sUpd7xx=""
+   s c=$l(tag,$c(10))
+   f i=1:1:c  
+   {
+      q:tag=""
+      s t1=$p(tag,$c(10),i)
+      w:(dbg) !,"t1=",t1,!
+      s t7xxp=##class(MARC).getSubTagStr(t1,"p")
+      w:(dbg) !,"t7xxp=",t7xxp,!
+      if (($e(t7xxp,1,4)="ENTU")||($e(t7xxp,1,4)="UMBR")||($e(t7xxp,1,3)="HBU")||($e(t7xxp,1,3)="PAU")||($e(t7xxp,1,3)="UPB"))
+      {
+         s sUpd7xx="1"
+         w:(dbg) !,"idem2A"
+         s t7xx3=##class(MARC).getSubTagStr(t1,"3")
+         s t7xx3=##class(User.Util).strswap(t7xx3,"cav_un_auth*0","cav_un_auth*1")  ; kod zaznamu bude zacinat s "1"
+         w:(dbg) !,"idem2B"
+         s t7xxPracovisko="BC-A"
+         
+         if ($e(t7xxp,1,4)="ENTU") s t7xxOddelenie="ENTU"
+         if ($e(t7xxp,1,4)="UMBR") s t7xxOddelenie="UMBR"
+         if ($e(t7xxp,1,3)="HBU") s t7xxOddelenie="HBU"
+         if ($e(t7xxp,1,3)="PAU") s t7xxOddelenie="PAU"
+         if ($e(t7xxp,1,3)="UPB") s t7xxOddelenie="UPB"
+     
+         w:(dbg) !,"idem2C"
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"3"_t7xx3)
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"p"_t7xxPracovisko)
+         s t1=##class(MARC).setSubTagStr(t1,$c(31)_"o"_t7xxOddelenie)
+         s $p(tag,$c(10),i)=t1
+         w:(dbg) !,"idem2D"
+         w:(dbg) !,"t1=",t1
+      }
+   }
+   w:(dbg) !,"idem3"
+   if (sUpd7xx'="") d ##class(MARC).setTagX(.handle,tag)
+   w:(dbg) !,"idem4"
+   
+   
+   s tag=##class(MARC).getTagX(.handle,"C26")
+   s tC26e=##class(MARC).getSubTagStr(tag,"e")
+   if (($e(tC26e,1,4)="ENTU")||($e(tC26e,1,4)="UMBR")||($e(tC26e,1,3)="HBU")||($e(tC26e,1,3)="PAU")||($e(tC26e,1,3)="UPB"))
+   {
+      s tag=##class(MARC).setSubTagStr(tag,$c(31)_"e"_"BC-A")
+      d ##class(MARC).setTagX(.handle,tag)
+   }
+   
+   
+   s tag=##class(MARC).getTagX(.handle,"999")
+   s t999b=##class(MARC).getSubTagStr(tag,"b")
+   if (($e(t999b,1,4)="ENTU")||($e(t999b,1,4)="UMBR")||($e(t999b,1,3)="HBU")||($e(t999b,1,3)="PAU")||($e(t999b,1,3)="UPB"))
+   {
+      s tag=##class(MARC).setSubTagStr(tag,$c(31)_"b"_"BCA")  ; pre 999$b BC-A bez pomlcky
+      d ##class(MARC).setTagX(.handle,tag)
+   }
+]]></Implementation>
+</Method>
+
+<Method name="AuthProjJmena">
+<Description>
+symbolik na kontrolu vyplnenych jmen u projektu
+pPar : Paremtry oddelene -
+       1. Paremetr:
+         0 - testovaci spousteni bez upravy
+         1 - ostre 
+
+d ##class(User.CavSymConv).AuthProjJmena()
+26.08.14 tt; zalozena metoda</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pPar="0-"</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+  s pPar1=$p(pPar,"-",1)
+  s sFileC="d:\aRL\_tmp\tt\cav\20140826 - obory projekty\"
+  s file=##class(%FileCharacterStream).%New() ; otevreni vstupniho souboru
+  s file.Filename=sFileC_"projekty_jmena.csv"
+  s sLog=sFileC_"AuthProjJmena.log"
+  s sLogERR=sFileC_"AuthProjJmenaErr.log"
+  d file.TranslateTableSet("UTF8")  ; otevreni v UTF8
+  s sLine=file.ReadLine()           ; preskocime hlavicku
+  for ii=1:1
+  {
+    if (file.AtEnd) q  
+    s sLine=file.ReadLine()             ; cten 1 radek 
+    d ##class(User.Util).xlogf(sLog,"Radek:"_ii_" -------------------------------------------------------------")
+    d ##class(User.Util).xlogf(sLog,"  "_sLine)
+    s sCProj=$zstrip($p(sLine,"@",1),"<>WP")
+    s sPozn=$zstrip($p(sLine,"@",2),"<>WP")
+    s sAuth=$zstrip($p(sLine,"@",4),"<>WP")
+    
+    s sPrijmA=$p(sAuth," ",$l(sAuth," "))
+    s sJmenoA=$p(sAuth," ",1,($l(sAuth," ")-1))
+    if (sPrijmA="ml.") 
+    {
+      s sPrijmA=$p(sAuth," ",($l(sAuth," ")-1),$l(sAuth," "))
+      s sJmenoA=$p(sAuth," ",1,($l(sAuth," ")-2))
+    }
+    
+    s idProj=""
+    f xx=1:1  
+    {
+      s idProj=$o(^$$$MarcIndexG("CavUnAuth","proj",$zcvt(" "_sCProj,"L"),idProj))  
+      if ((idProj="")&&(xx=1))
+      { ; nepodarilo se najit prijekt
+        d ##class(User.Util).xlogf(sLogERR,"Radek:"_ii_" -------------------------------------------------------------")
+        d ##class(User.Util).xlogf(sLogERR,"  "_sLine)
+        d ##class(User.Util).xlogf(sLogERR,"  Nepodarilo se najit v databazi odpovidajici projekt!")              
+      }        
+      q:(idProj="")
+      s sT001=##class(User.MARC).getT001(idProj)
+               
+      if ##class(User.MARC).readX(.handle,"CavUnAuth",sT001)
+      { 
+        s sA230h=$$$getTagX(.handle,"230h") 
+        if (sA230h=sCProj)
+        {
+          s sAC35=$$$getTagX(.handle,"C35") 
+          if (sAC35'="")
+          { ; C35       $3 cav_un_auth*0106631 $a Stuchlík $b Stanislav    
+            s sAAa=$$$getSubTagStr(sAC35,"a")
+            s sAAb=$$$getSubTagStr(sAC35,"b")
+            d ##class(User.Util).xlogf(sLog,"  Nalezena osoba:"_sAAb_" "_sAAa) 
+          }
+          else
+          { ; nemame vyplnene autory
+            d ##class(User.Util).xlogf(sLog,"  Nenalezena osoba, zkusime dohledat") 
+            ; zkusime dohledat osobu
+            
+            s idAuth=$o(^$$$MarcIndexG("CavUnAuth","aup",$zcvt(" "_sPrijmA_" "_sJmenoA,"L"),""))  
+            q:(idAuth="")
+            s sT001a=##class(User.MARC).getT001(idAuth)
+                
+            if ##class(User.MARC).readX(.handleA,"CavUnAuth",sT001a)
+            {   ; 
+              s sOs200=$$$getTagX(.handleA,"200") 
+              d ##class(User.Util).xlogf(sLog,"  Nalezena osoba T001: "_sT001a) 
+              d ##class(User.Util).xlogf(sLog,"    "_sOs200)
+              s sAC35="C35    "_$c(31)_"3cav_un_auth*"_sT001a_$c(31)_"a"_sPrijmA_$c(31)_"b"_sJmenoA
+              d ##class(MARC).setTagX(.handle,sAC35) 
+              s sA300="300    "_$c(31)_"a"_sPozn
+              d ##class(MARC).setTagX(.handle,sA300) 
+              s:(pPar1="0") st=1  ; doplneni podminky pri testovacim spusteni
+              s:(pPar1="1") st=##class(User.MARC).writeX(.handle)
+              if ('$$$ISOK(st))
+              { ; neni zapis ok
+                d ##class(User.Util).xlogf(sLogERR,"Radek:"_ii_" -------------------------------------------------------------")
+                d ##class(User.Util).xlogf(sLogERR,"  "_sLine)
+                d ##class(User.Util).xlogf(sLogERR,"  Nepodarilo se do zaznamu "_sT001_" zapsat nalezenou autoritu:")
+                d ##class(User.Util).xlogf(sLogERR,"  "_sAC35)                
+              }
+              else
+              {
+                d ##class(User.Util).xlogf(sLog,"    Do zaznamu projektu doplneno: "_sAC35)  
+                d ##class(User.Util).xlogf(sLog,"                                  "_sA300) 
+              }
+            }
+            else
+            { ; nepodarilo se nalezt autoritu
+              d ##class(User.Util).xlogf(sLogERR,"Radek:"_ii_" -------------------------------------------------------------")
+              d ##class(User.Util).xlogf(sLogERR,"  "_sLine)
+              d ##class(User.Util).xlogf(sLogERR,"  Nepodarilo se najit v databazi odpovidajici autoritu pro zapsani do projektu!")              
+            }           
+          }
+        }
+      }
+      else
+      { ; nepodarilo se najit prijekt
+        d ##class(User.Util).xlogf(sLogERR,"Radek:"_ii_" -------------------------------------------------------------")
+        d ##class(User.Util).xlogf(sLogERR,"  "_sLine)
+        d ##class(User.Util).xlogf(sLogERR,"  Nepodarilo se najit v databazi odpovidajici projekt!")              
+      }  
+    }  
+  }
+  d file.%Close()
+]]></Implementation>
+</Method>
+
+<Method name="AuthProjObory">
+<Description>
+symbolik na kontrolu vyplnenych jmen u projektu
+pPar : Paremtry oddelene -
+       1. Paremetr:
+         0 - testovaci spousteni bez upravy
+         1 - ostre 
+
+d ##class(User.CavSymConv).AuthProjObory()
+01.09.14 tt; zalozena metoda</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pPar="0-"</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+  s pPar1=$p(pPar,"-",1)
+  s sFileC="d:\aRL\_tmp\tt\cav\20140826 - obory projekty\"
+  s file=##class(%FileCharacterStream).%New() ; otevreni vstupniho souboru
+  s file.Filename=sFileC_"projekty_obory.csv"
+  s sLog=sFileC_"AuthProjObory.log"
+  s sLogERR=sFileC_"AuthProjOboryErr.log"
+  d file.TranslateTableSet("UTF8")  ; otevreni v UTF8
+  s sLine=file.ReadLine()           ; preskocime hlavicku
+  for ii=1:1
+  {
+    if (file.AtEnd) q  
+    s sLine=file.ReadLine()             ; cten 1 radek 
+    d ##class(User.Util).xlogf(sLog,"Radek:"_ii_" -------------------------------------------------------------")
+    d ##class(User.Util).xlogf(sLog,"  "_sLine)
+     
+    s sCProj=$zstrip($p(sLine,"@",1),"<>WP")       ; Identifikacni kod projektu
+    s sIKR=$zstrip($p(sLine,"@",2),"<>WP")         ; @Identifikacni kod resortu - poskytovatele
+    ;  @Nazev projektu v puvodnim jazyce (cesky do r. sberu 2009)
+    s sNazevAng=$zstrip($p(sLine,"@",4),"<>WP")    ; @Nazev projektu anglicky
+    s sRokZah=$zstrip($p(sLine,"@",5),"<>WP")      ; @Rok zahajeni reseni projektu
+    s sRokUkon=$zstrip($p(sLine,"@",6),"<>WP")     ; @Rok ukonceni reseni projektu
+    s sHlavniObor=$p($zstrip($p(sLine,"@",7),"<>WP")," - ",1)  ; @Hlavni obor projektu
+    s sVedlObor1=$p($zstrip($p(sLine,"@",8),"<>WP")," - ",1)   ; @Vedlejsi obor projektu
+    s sVedlObor2=$p($zstrip($p(sLine,"@",9),"<>WP")," - ",1)   ; @Dalsi vedlejsi obor projektu
+    s sUstav=$zstrip($p(sLine,"@",10),"<>WP")      ; @Nazev partnera - hlavniho prijemce
+       
+    s idProj=""
+    f xx=1:1  
+    {
+      s idProj=$o(^$$$MarcIndexG("CavUnAuth","proj",$zcvt(" "_sCProj,"L"),idProj))  
+      if ((idProj="")&&(xx=1))
+      { ; nepodarilo se najit prijekt
+        /*d ##class(User.Util).xlogf(sLogERR,"Radek:"_ii_" -------------------------------------------------------------")
+        d ##class(User.Util).xlogf(sLogERR,"  "_sLine)
+        d ##class(User.Util).xlogf(sLogERR,"  Nepodarilo se najit v databazi odpovidajici projekt!") */             
+      }        
+      q:(idProj="")
+      s sT001=##class(User.MARC).getT001(idProj)
+               
+      if ##class(User.MARC).readX(.handle,"CavUnAuth",sT001)
+      { 
+        s sA230h=$$$getTagX(.handle,"230h") 
+        if (sA230h=sCProj)
+        {
+          ; zapisu, ze jsem nasel projekt
+          d ##class(User.Util).xlogf(sLog,"   Nalezen projekt cav_un_auth*"_sT001)
+         
+          ; C29a - rok zacatek
+          ; C29b - rok konec
+          ; C29o - hlavni obor
+          ; C29v - vedlejsi obor
+          s sC29=$$$getTagX(.handle,"C29"), bC29Zmena=0
+          d ##class(User.Util).xlogf(sLog,"   Puvodni C29: "_sC29)
+          if (sC29'="")
+          { ; mame vyplnene nejake data o projektu  
+            s sC29a=$$$getSubTagStr(sC29,"a")
+            if (sC29a="")
+            { ; pokdu neni vyplnen rok zacatek, vyplnime
+              if (sRokZah'="")
+              {
+                s sC29=$$$setSubTagStr(sC29,$c(31)_"a"_sRokZah)
+                d ##class(User.Util).xlogf(sLog,"   Byl doplnen rok zahajeni C29a: "_sRokZah)
+                s bC29Zmena=1
+              }
+            }
+            else
+            { ; jinak zkontrolujeme
+              d:(sC29a'=sRokZah) ##class(User.Util).xlogf(sLog,"   Nesedi rok zahajeni C29a s hodnotou:"_sRokZah)
+            }
+            
+            s sC29b=$$$getSubTagStr(sC29,"b")
+            if (sC29b="")
+            { ; pokdu neni vyplnen rok zacatek, vyplnime
+              if (sRokUkon'="")
+              {
+                s sC29=$$$setSubTagStr(sC29,$c(31)_"b"_sRokUkon)
+                d ##class(User.Util).xlogf(sLog,"   Byl doplnen rok zahajeni C29b: "_sRokUkon)
+                s bC29Zmena=1
+              }
+            }
+            else
+            { ; jinak zkontrolujeme
+              d:(sC29b'=sRokUkon) ##class(User.Util).xlogf(sLog,"   Nesedi rok zahajeni C29b s hodnotou:"_sRokUkon)
+            }
+            
+            if (sHlavniObor'="")
+            { ; vlozen hlavni obor
+              s sC29=$$$setSubTagStr(sC29,$c(31)_"o"_sHlavniObor)
+              s bC29Zmena=1
+            }
+            
+            if ((sVedlObor1'="")||(sVedlObor2'=""))
+            { ; vlozeny vedlejsi obory
+              s:(sVedlObor1'="") sVedlObor1=$c(31)_"v"_sVedlObor1
+              s:(sVedlObor2'="") sVedlObor2=$c(31)_"v"_sVedlObor2
+              s sC29=$$$setSubTagStr(sC29,sVedlObor1_sVedlObor2)              
+              s bC29Zmena=1
+            }
+            d $$$setTagX(.handle,sC29)
+          }
+          else
+          { ; C29 neni vyplnene
+            s bC29Zmena=1
+            s sC29="C29    "            
+            s:(sRokZah'="") sC29=$$$setSubTagStr(sC29,$c(31)_"a"_sRokZah)
+            s:(sRokUkon'="") sC29=$$$setSubTagStr(sC29,$c(31)_"b"_sRokUkon)
+            s:(sHlavniObor'="") sC29=$$$setSubTagStr(sC29,$c(31)_"o"_sHlavniObor)
+            s:(sVedlObor1'="") sVedlObor1=$c(31)_"v"_sVedlObor1
+            s:(sVedlObor2'="") sVedlObor2=$c(31)_"v"_sVedlObor2
+            s:((sVedlObor1'="")||(sVedlObor2'="")) sC29=$$$setSubTagStr(sC29,sVedlObor1_sVedlObor2)         
+            d $$$setTagX(.handle,sC29)            
+          }        
+          d:(bC29Zmena=1) ##class(User.Util).xlogf(sLog,"   Nova C29: "_sC29) 
+        
+          if (sNazevAng'="")
+          { ; 430 $8eng - jazyková mutace + $aPřeklad
+            d ##class(MARC).setTagX(.handle,"430    "_$c(31)_"8eng"_$c(31)_"a"_sNazevAng) 
+            d:(bC29Zmena=1) ##class(User.Util).xlogf(sLog,"   Nova 430: "_"430    "_$c(31)_"8eng"_$c(31)_"a"_sNazevAng) 
+          }
+          ; C31a - ustav
+          if (sUstav'="")
+          {
+            s sC31=$$$getTagX(.handle,"C31")
+            if (sC31'="")
+            { ; mame data ustavu
+              s sC31a=$$$getSubTagStr(sC31,"a")
+              if (sC31a'="")
+              {
+                if $tr($zcvt(sC31a,"L"),",.","")'=$tr($zcvt(sUstav,"L"),",.","")
+                {
+                  d ##class(User.Util).xlogf(sLogERR,"Radek:"_ii_" -------------------------------------------------------------")
+                  d ##class(User.Util).xlogf(sLogERR,"  "_sLine)
+                  d ##class(User.Util).xlogf(sLogERR,"  Nesouhlasi ustav:")           
+                  d ##class(User.Util).xlogf(sLogERR,"     C31: "_sC31)           
+                  d ##class(User.Util).xlogf(sLogERR,"     v souboru: "_sUstav)           
+                }
+              }           
+            }           
+            else 
+            { ; index posk
+              s idAuth=$o(^$$$MarcIndexG("CavUnAuth","aucr",$zcvt(" "_sUstav,"L"),""))  
+              q:(idAuth="")
+              s sT001a=##class(User.MARC).getT001(idAuth)
+                
+              if ##class(User.MARC).readX(.handleA,"CavUnAuth",sT001a)
+              {   ; 
+                ; C31       $3 cav_un_auth*p0000057 $a Ústav státu a práva AV ČR, v. v. i. $d 68378122 
+                s sA210a=$$$getTagX(.handleA,"210a") 
+                if ($tr($zcvt(sA210a,"L"),",.","")=$tr($zcvt(sUstav,"L"),",.",""))
+                { ; nelezen ustav
+                 d ##class(User.Util).xlogf(sLog,"  Nalezen ustav T001: "_sT001a) 
+                 s sA982d=$$$getTagX(.handleA,"982d")
+                 s:(sA982d'="") sA982d=$c(31)_"d"_sA982d
+                 s sAC31="C31    "_$c(31)_"3cav_un_auth*"_sT001_$c(31)_"a"_sUstav_sA982d
+                 d:($l(sAC31>15)) ##class(MARC).setTagX(.handle,sAC31) 
+                 d ##class(User.Util).xlogf(sLog,"  Zapsan ustav C31: "_sAC31) 
+                 ;210 02    $a Ústav státu a práva AV ČR, v. v. i. 
+                 ;982       $d 68378122 
+                } 
+              }             
+            }
+          }
+        }
+       
+        s:(pPar1="0") st=1  ; doplneni podminky pri testovacim spusteni
+        s:(pPar1="1") st=##class(User.MARC).writeX(.handle)
+        if ('$$$ISOK(st))
+        { ; neni zapis ok
+          d ##class(User.Util).xlogf(sLogERR,"Radek:"_ii_" -------------------------------------------------------------")
+          d ##class(User.Util).xlogf(sLogERR,"  "_sLine)
+          d ##class(User.Util).xlogf(sLogERR,"  Nepodarilo se do zaznamu "_sT001_" zapsat nalezenou autoritu:")
+          d ##class(User.Util).xlogf(sLogERR,"  "_sAC35)                
+        }
+        else
+        {
+          d ##class(User.Util).xlogf(sLog,"    Byl zapsan zaznam projektu")           
+        }
+      }
+      else
+      { ; nepodarilo se najit prijekt
+        /*d ##class(User.Util).xlogf(sLogERR,"Radek:"_ii_" -------------------------------------------------------------")
+        d ##class(User.Util).xlogf(sLogERR,"  "_sLine)
+        d ##class(User.Util).xlogf(sLogERR,"  Nepodarilo se najit v databazi odpovidajici projekt!")   */           
+      }  
+    }  
+  }
+  d file.%Close()
+]]></Implementation>
+</Method>
+
+<Method name="test">
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>1</ProcedureBlock>
+</Method>
+</Class>
+</Export>

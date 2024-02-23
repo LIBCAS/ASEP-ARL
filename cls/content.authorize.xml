@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865_3U)" ts="2022-11-06 22:58:47">
+<Class name="content.authorize">
+<Description><![CDATA[
+<pre> Souhlas se zpristupnenim
+
+06.11.22 kp; Doplnen data("DESCRIPTION")
+22.04.20 kp; Zrusena napoveda
+21.10.19 js; sendMail: doplneny anglicky odkaz
+10.10.19 ln; pro setC52 nacist handle
+09.10.19 jk; zmenena trida pro praci s emaily
+18.07.19 ln; stadardni verze metody getZpracIdx
+30.04.19 js; upravené posielanie mailov
+19.07.19 kp; Pridan iset do restore
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66419,82708.612614</TimeChanged>
+<TimeCreated>64993,34989.935462</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contauthor</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>contauthor#contauthor#contauthor</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+   s data("RESTORE")=##class(i2.base.request).restore("idx,repo,key,iset")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("AUTHORIZE")=0
+  s data("DESCRIPTION")=..txn("DESCRIPTION")
+  s data("DESC")=""
+  
+  s idx=$$$GETREQVAR("idx")
+  s data("IDX")=idx
+  s repo=$$$GETREQVAR("repo")
+  s data("REPO")=repo
+  s key=$$$GETREQVAR("key")
+  s data("KEY")=key
+  s token=$$$GETREQVAR("token")
+  s data("TOKEN")=token
+  
+  if (repo="") || (key="") || ((idx="") && (token="")) {
+    s data("ERRORS")=data("ERRORS")_..tx("MISSING_INFO")
+    q
+  } 
+  
+  d ..getData(.data)
+  
+  if token="" { ; rozesilani
+    if '##class(i2.access).isLoggedIn() ||
+       (data("FROMSTATE")'=##class(content.api).engineState(repo,key,.array)) || 
+       ($g(array("status"))'=data("ORIGSTATE")) 
+    {
+      s data("ERRORS")=data("ERRORS")_..tx("NOPERM")   ;"nejsou prava"
+      q
+    }
+    
+    s data("EMAILSALL")=$$$GETREQVAR("emailsall")
+    s data("TXSEND")=..tx("SEND")
+    d ..processSend(.data,.array)
+  } else { ; prijimani odpovedi
+    if '##class(content.api).get(.array,repo,key) {
+      s data("ERRORS")=data("ERRORS")_..tx("NOPERM")   ;"nejsou prava"
+      q
+    }  
+    
+    s data("AUTHORIZE")=1
+    s data("DESC")="_A"
+    s data("TXSEND")=..tx("AUTHORIZE")
+    s data("AUTHOR")=$g(array("mails",token))
+    if data("AUTHOR")="" {
+      s data("ERRORS")=data("ERRORS")_..tx("E_OPAK")
+      q
+    }       
+    d ..autorize(.data,.array)
+  }
+  s data("FNONCE_VALUE")=##class(i2.base.forms).initFormNonce(..#PageID)
+  s data("DESCRIPTION") = ..tx("DESCRIPTION"_data("DESC"))
+ 
+  d ..userData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="processSend">
+<Description><![CDATA[
+<pre> hlavni metoda pro formular a samotne rozeslani mailu 
+zadosti vyjadreni souhlasu/nesouhlasu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  if '##class(i2.dblink).recordReadLX(.handle,data("IDX")) {
+    s data("ERRORS")=data("ERRORS")_..tx("ERROR_OPEN")
+    q
+  }
+  
+  s data("RECTITLE")=##class(i2.data.layer).title(.handle)
+  s data("RECLINK")=##class(i2.html.tpl).getPermalink2(data("IDX"),data("RECTITLE"))
+   
+  
+  if $$$GETREQVAR("send")=data("TXSEND") {
+    d ..sendAll(.data,.array)
+  } else {
+    d ..getEmails(.data)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="getEmails">
+<Description><![CDATA[
+<pre> Naplneni pole data doplnijicimi informacemi
+Parametry: data - byref pole pro ulozeni vysledku
+
+30.04.19 js; upravené posielanie mailov
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data:%Binary]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  q:'##class(i2.dblink).recordReadLX(.handle,data("IDX")) 0
+  s callBack=##class(i2.init).getCallBack($$$GETICTX,"contclaim")
+  q:callBack="" 0
+  
+  s data("RECTITLE")=##class(i2.data.layer).title(.handle)
+  ; uspesne se podarilo otevrit zaznam, zjistime autory
+  
+  ; doplnenie rozbočky podľa basetype
+  s class=##class(User.MARC).recordClassX(.handle)
+  s basetype=##class(User.Util).getBaseType(class)
+  if basetype="C2" {
+     s auttag1="100", auttag2="700", pracstag="u", autlinkstag="7"
+  }
+  elseif basetype="C" {
+    s auttag1="70*", auttag2="", pracstag="p", autlinkstag="3"
+  } else {
+    s auttag1="", auttag2="", pracstag="", autlinkstag=""
+  }
+  
+  s c=0,ustavy="",autori=""
+  d {    
+    s line="", line2=""
+    s:auttag1'="" line=$$$getTagXC(.handle,auttag1,.c)
+    s:auttag2'="" line2=$$$getTagXC(.handle,auttag2,.c) ; vsetky citacie
+    s:((line'="") && (line2'="")) line=line_$c(10)_line2
+    s:((line="") && (line2'="")) line=line2
+    continue:(line="")&&(c'=0)
+    
+    if line'="" { ; pokud mame vyplnene data, muzeme provadet akce 
+      s:autlinkstag'="" sub3=$$$getSubTagStr(line,autlinkstag)              ; nacteme link na autoritu
+      s:(sub3'="")&&('$f(","_autori_",",","_sub3_",")) autori=autori_","_sub3
+
+      s:pracstag'="" subp=$$$getSubTagStr(line,pracstag)              ; nacteme si ustav
+      s:((subp'="")&&('$f(","_ustavy_",",","_subp_","))) ustavy=ustavy_","_subp
+    }
+  } while (c'=0)
+  
+  s data("USTAVY")=ustavy
+  s data("AUTORI")=autori
+    
+  ; zpracovani autoru
+  s nPoc=0
+  for i=1:1:$l(autori,",")
+  { ; ziskame emaily autoru
+    s autor1=$p(autori,",",i)    ; ziskame jednoho autora
+    continue:($tr(autor1," ")="") ; pokud nemame data, nema cenu pokracovat 
+    
+    if ##class(User.MARC).readLX(.handleA,autor1)
+    { ; pokud se podarilo otevrit zaznam autority
+      s sPomEmail=$$$getTagX(.handleA,"C01f")
+      if (sPomEmail'="")
+      { ; pokud jsme ziskali email, ulozim si ho do struktury
+        s nPoc=nPoc+1                            ; zvysim pocitadlo
+        s data("EMAILA",nPoc)=sPomEmail          ; ulozim si email
+        s sPrijm=$$$getTagX(.handleA,"200a")
+        s sJm=$$$getTagX(.handleA,"200b")
+        s:sJm'="" sPrijm=sPrijm_", "_sJm       ; slozim si jmeno
+        s data("EMAILA",nPoc,"name")=sPrijm      ; ulozim pro zobrazeni
+      }
+    }
+  }
+  
+  ; 30.04.19 js; upravené posielanie mailov
+  ; vypnutie spracovania ústavov do mailov
+  s authorizeUstavy=$$$I2getOpN("CONTAUTH",1)
+  if authorizeUstavy'="1"
+  {
+    s nPoc=0
+    ; zpracovani ustavu
+    for i=1:1:$l(ustavy,",")  { ; ziskame jednotlive ustavy
+      s ustav1=$p(ustavy,",",i)       ; ziskame jeden ustav
+      continue:$tr(ustav1," ")=""  ; pokud nemame data, nema cenu pokracovat 
+      
+      s zpraco=..getZpracIdx(ustav1)
+      for j=1:1:$l(zpraco,",") { ; jednotlivi zpracovatele za ustav
+        s zprac1=$p(zpraco,",",j)
+        continue:zprac1=""
+      
+        ; ziskani emailu zpracovatele
+        s email=$ZOBJCLASSMETHOD(callBack,"getEmail",zprac1)
+        continue:email=""
+        ; pokud jsme ziskali email, ulozim si ho do struktury
+        s nPoc=nPoc+1                            ; zvysim pocitadlo
+        s data("EMAILU",nPoc)=email          ; ulozim si email
+        s data("EMAILU",nPoc,"name")=ustav1         ; ulozim pro zobrazeni
+      }
+    }
+  }
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="getZpracIdx">
+<Description><![CDATA[
+<pre> Vraci carkou oddeleny seznam idx zpracevatelu za ustav
+
+18.07.19 ln; stadardni verze metody getZpracIdx
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ustav:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s class=$$$IPREF_"IsUser", lname=$$$GETICTX_"_is_user"
+  
+  s ret="", idZpac=""      ; definice pomocnych promennych
+  f 
+  { ; podle indexu si najdeme vsechny zpracovatele
+    s idZpac=$o(^$$$MarcIndexG(class,"zzpra"," "_$zcvt(ustav,"L"),idZpac))
+    q:(idZpac="")
+    s t001=##class(User.MARC).getT001(idZpac)  ; zjistime si 001, aby jsme mohli slozit idx
+    if (t001'="")
+    { ; samotne seskladani idx
+      s ret=ret_","_lname_"*"_t001
+    }
+  }    
+  
+  s:(ret'="") $e(ret,1)=""  ; osetreni uvodni carky u navratove hodnoty    
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="sendAll">
+<Description><![CDATA[
+<pre> Metoda pro rozeslání emailů uživatelům pro schválení souboru
+ziska emaily z formulare, email po emailu zpracovava.
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  if '##class(i2.base.forms).checkFormNonce(..#PageID) {
+    s data("ERRORS")=data("ERRORS")_" "_..txg("FORM_CSRF_DETECTED")
+    q
+  }
+  
+  ; definice pomocnych promennych
+  s sRet="", node="", emails=data("EMAILSALL")
+  
+  ; ziskani vsech emailu autoru
+  f { s node=$o(%request.Data("autor",node),1,val) q:node=""
+    s emails=emails_","_val             ; ulozim si emaily autoru
+  }
+  
+  s node=""  ; ziskani vsech emailu zpracovatelu
+  f { s node=$o(%request.Data("zprac",node),1,val) q:node=""
+    s emails=emails_","_val             ; pridam si emaily zpracovatelu
+  }
+  
+  ; pridano overeni na vyplnene emaily
+  if $tr(emails," ,","")="" {
+    s data("ERRORS")=data("ERRORS")_..tx("NOMAIL")
+    q
+  }
+  
+  s data("DATE")=$tr($zd($h+data("INTERVAL"),4),"/",".")  ; aktualni datum + 31 dni
+  
+  for i=1:1:$l(emails,",") { ; po jednotlive emailu budeme odesilat
+    s email1=$p(emails,",",i)    ; ziskame jeden email
+    continue:email1=""
+    
+    d ..sendMail(.data,email1)
+  }
+  
+  if $d(data("tokens")) {
+    k array("mails")
+    k array("refuse")
+    
+    m array("tokens")=data("tokens")
+    m array("mails")=data("mails")
+    s array("status")=data("FROMSTATE")
+    s array("dayauthor")=$zd($h,8)
+    d ##class(content.api).update(.array)
+    
+    s data("REPORTS")=data("REPORTS")_..tx("SEND_OK")
+    ;s:data("ERRORS")'="" data("ERRORS")=data("ERRORS")_"<br>"_data("REPORTS")
+  }
+  
+  d ##class(i2.base.forms).clearFormNonce(..#PageID)
+]]></Implementation>
+</Method>
+
+<Method name="sendMail">
+<Description><![CDATA[
+<pre> Metoda pro zaslani mailu jednomu uzivateli s unikatnim tokenem
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,email:%String]]></FormalSpec>
+<Implementation><![CDATA[
+  for 
+  { ; zkousime ziskat token, dokud neziskame jednoznacny 
+    s pToken = $r(1000000)                        ; ziskame nahodny token
+    q:($g(data("tokens",pToken),"") = "")         ; overime jestli jiz neexistuje
+  }
+  
+  s data("tokens",pToken)=1
+  s data("mails",pToken)=email  ; ulozime si email do sturktury
+  
+  s sBaseURL = ##class(i2.html.tpl).getBaseURL()  ; www adresa do rootu stránek IPCu
+  s urlparams="repo="_data("REPO")_"&amp;key="_data("KEY")_"&amp;token="_pToken
+  s data("LINK")="<a href="""_sBaseURL_##class(i2.html.tpl).getLinkURL(..#PageID,urlparams)_""">"_..tx("HERE")_"</a>"  
+  s data("LINKENG")="<a href="""_sBaseURL_##class(i2.html.tpl).getLinkURL(..#PageID,urlparams)_""">"_..tx("HEREENG")_"</a>"  
+  
+  ; zpracovani sablon
+  d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailsendhtml")
+  s bodyHtml=data("stream").Read()
+  s data("stream")=##class(%GlobalCharacterStream).%New()
+  d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailsendtxt")
+  s bodyTxt=data("stream").Read()
+  
+  ; odeslani emailu
+  d ##class(util.emailgw).send($$$IPREF,bodyHtml,bodyTxt,.ret,"contauthor",..tx("MAILSUBJ"),$$$GETLANGUAGE,,email)
+  
+  if ret="" {
+  } else {
+    s data("ERRORS")=data("ERRORS")_"<br>"_..tx("MAIL_ERR")_" ("_ret_")"
+  }
+]]></Implementation>
+</Method>
+
+<Method name="autorize">
+<Description><![CDATA[
+<pre> Hlavni metoda pro samotne vyjadreni souhlasu/nesouhlasu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("IDX")=##class(User.Util).objectName2lname(array("class"))_"*"_array("t001")
+  
+  if '##class(i2.dblink).recordReadLX(.handle,data("IDX")) {
+    s data("ERRORS")=data("ERRORS")_..tx("ERROR_OPEN")
+    q
+  }
+  
+  s data("RECTITLE")=##class(i2.data.layer).title(.handle)
+  s data("RECLINK")=##class(i2.html.tpl).getPermalink2(data("IDX"),data("RECTITLE"))
+  
+  if ($$$GETREQVAR("radio")'="") {    
+    if '##class(i2.base.forms).checkFormNonce(..#PageID) {
+      s data("ERRORS")=data("ERRORS")_" "_..txg("FORM_CSRF_DETECTED")
+      q
+    }
+    s data("AUTHORIZE")=2    
+    d ..processAuthorize(.data,.array)
+    
+    d ##class(i2.base.forms).clearFormNonce(..#PageID)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="processAuthorize">
+<Description><![CDATA[
+<pre>Metoda, ktera pri vyjadreni souhlasu/nesouhlasu uzivatele zkotroluje, jestli jiz nema
+byt soubor ulozen nebo ulozen se zamitnutim. Tedy jestli uz posledni uzivatel se vyjadril.
+pri vyjadreni posledniho uzivatele se generuji C52 podle nastaveni. 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  k array("mails",data("TOKEN"))
+  
+  s author=data("AUTHOR")
+  s filelink=##class(content.csg2).getLink(data("REPO"),data("KEY"))
+  
+  if $$$GETREQVAR("radio")="yes" {      
+    s array("approvals",author)=$zd($h,8)    
+    
+    if '$d(array("mails")) && '$d(array("refuse")) { ; vsichni souhlasi
+      s array("status")=data("TOSTATE")
+      
+      s node="", mails=""
+      f { s node=$o(array("approvals",node)) q:node=""
+        s mails=mails_","_node      
+      }      
+      
+      s res=..sendMailBatch(mails,data("RECTITLE"),data("RECLINK"),filelink)
+      if res="" {
+        s:$e(mails)="," $e(mails)=""
+        s data("REPORTS")=data("REPORTS")_mails_"<br>"
+      }
+    }
+  } else {
+    s array("refuse",author)=$zd($h,8)    
+    ; jeden nesouhlasi
+    s array("status")=data("REFUSESTATE")
+    
+    s node="", mails=""
+    f { s node=$o(array("mails",node),1,val) q:node=""
+      s mails=mails_","_val     
+    }
+    s mails=mails_","_author
+    s res=..sendMailBatch(mails,data("RECTITLE"),data("RECLINK"),filelink,"refuse")
+    if res="" {
+      s:$e(mails)="," $e(mails)=""
+      s data("REPORTS")=data("REPORTS")_mails_"<br>"
+    }
+  }  
+  
+  ; zmenit jen metadata tykajici se souhlasu autoru
+  ; stranka je autorizovana pouze klicen, nikoli identitou
+  ; neda se zjistit, kdo na odkaz klik
+  if '##class(content.api).update(.array) {
+    s data("ERRORS")=data("ERRORS")_..tx("FALSE")
+  } else {  
+    s data("REPORTS")=data("REPORTS")_..tx("OK")
+  }
+  ; vygenerovani tagu C52 pro indexovani
+  d ##class(User.MARC).readX(.handle,array("class"),array("t001"))
+  if ##class(content.engine).setC52(.handle,.array,data("FROMSTATE"),$g(array("accession")),$g(array("type"))) {
+    s sc=##class(User.MARC).writeX(.handle)
+    ;w:$$$ISERR(sc) !,"C52 write failed - "_$System.Status.GetErrorText(sc)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="getData">
+<Description><![CDATA[
+<pre> metoda pro nacteni uzivatelske konfigurace
+volano take z contser
+
+30.04.19 js; upravené posielanie mailov
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("ORIGSTATE")="1" ; stav ze ktereho se prechazi na tuto stranku z contser
+  s data("FROMSTATE")="2" ; vychozi stav
+  s data("TOSTATE")="3"   ; schvaleny stav
+  s data("REFUSESTATE")="4" ; zamitnuty stav
+  
+  ; 30.04.19 js; upravené posielanie mailov
+  s data("INTERVAL")=$$$I2getOpN("CONTAUTH",2)  ; po kolika dnech schvalit automaticky
+  s:data("INTERVAL")="" data("INTERVAL")=31
+]]></Implementation>
+</Method>
+
+<Method name="batch">
+<Description><![CDATA[
+<pre> Davkova zmena stavu souboru s proslou lhutou autorsekno souhlasu
+soucasne rozeslani informacnich mailu
+zapojit jako planovanou ulohu
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class:%String</FormalSpec>
+<Implementation><![CDATA[
+  w !,"Planovana uloha spustena content.authorize.batch()"
+  ; aby se spravne rozeslaly emaily, musi se nasimulovat prostredi ipacu
+  s ipref=##class(User.Util).getClassPrefixParam(class)  
+  s lang=+##class(User.Util).getServerLanguage(ipref)
+  d ##class(i2.init).batchinit(ipref,lang)
+  
+  d ..getData(.data)
+  
+  ; seskladani zakladnich linku
+  s link=##class(i2.html.tpl).getBaseURL()_"content.csg.cls?"
+  s date=$zd($h-data("INTERVAL"),8) ; datum poravnavany s datem odsouhlaseni licence - za 31 dni
+  ;s date=$zd($h+3,8) ; pro testy vracene datum do minulosti
+   
+  ; seskladani dotazu co cache 
+  s rset = ##class(%ResultSet).%New()              ; sekladani
+  s rset.ClassName = "content.metadata"
+  s rset.QueryName = "DateStatus"
+  d rset.Execute(class,date,data("FROMSTATE"))   
+  d ##class(content.engine).loop(rset,.output)     ; vysledek vracen v promenne output
+   
+  s item="", seq=0                                 ; inicializace cyklu
+  f { s item=$o(output(item)) q:item=""
+    w !,"Byly nalezeny soubory, ktere jiz maji byt dostupne" 
+    s key=$g(output(item,"key"))
+    s repo=$g(output(item,"repository"))
+    d ##class(content.api).getBatch(.array,repo,key)
+    continue:'$g(array("dayauthor"))
+    continue:array("dayauthor")'<date
+    continue:$d(array("refuse"))
+       
+    s t001=array("t001")
+    s idx=##class(User.Util).objectName2lname(class)_"*"_t001
+    s reclink=##class(i2.html.tpl).getPermalink2(idx),rectitle=reclink
+    s filelink=##class(content.csg2).getLink(repo,key,1)
+    
+    s node="", mails=""
+    f { s node=$o(array("approvals",node)) q:node=""
+        s mails=mails_","_node      
+    }
+    
+    s node=""
+    f { s node=$o(array("mails",node),1,val) q:node=""
+      s mails=mails_","_val     
+    }    
+    
+    w !,"ID:"_t001_"  URL:"_link
+    w !,"Seznam emailu pro rozeslani: "_mails
+    
+    w !,"Odeslani: "_..sendMailBatch(mails,rectitle,reclink,filelink)    
+    s array("status")=data("TOSTATE")
+    w !,##class(content.api).update(.array)
+    
+    ; vygenerovani tagu C52 pro indexovani
+    d ##class(User.MARC).readX(.handle,class,t001)
+    if ##class(content.engine).setC52(.handle,.array,data("FROMSTATE"),$g(array("accession")),$g(array("type"))) {
+      s sc=##class(User.MARC).writeX(.handle)
+      w:$$$ISERR(sc) !,"C52 write failed - "_$System.Status.GetErrorText(sc)
+    }
+    
+  }
+  
+  w !,"Konec planovane ulohy"
+]]></Implementation>
+</Method>
+
+<Method name="sendMailBatch">
+<Description><![CDATA[
+<pre> Metoda pro rozeslání emailu uživatelům jako informaci o
+ulozeni souboru do repozitare
+musi fungovat mimo CSP
+
+Parametry: emails   - seznam emailu oddeleni
+           rectitle - title zaznamu
+           reclink  - link na zaznam 
+           filelink - link na soubor 
+           version  - "" - odsouhlaseno
+                      "refuse" - zamitnuto uzivatelem
+Navratova hodnota: "" - vse ok
+                   chyba
+
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>emails,rectitle,reclink,filelink,version=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  ; definice pomocnych promennych
+  s ret=""    
+  
+  q:version="refuse" "no"
+  
+  s data("RECTITLE")=rectitle
+  s data("RECLINK")=reclink
+  s data("FILELINK")=filelink
+  s subject=##class(User.Util).sXlate("IPAC2_TX_CONTAUTHOR","MAILSUBJ_A",,$$$IPREF,,$$$GETLANGUAGE)
+  s mailerr=##class(User.Util).sXlate("IPAC2_TX_CONTAUTHOR","MAIL_ERR",,$$$IPREF,,$$$GETLANGUAGE)
+  
+  ; zpracovani sablon
+  d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailauthorhtml")
+  s bodyHtml=data("stream").Read()
+  s data("stream")=##class(%GlobalCharacterStream).%New()
+  d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailauthortxt")
+  s bodyTxt=data("stream").Read()
+  
+  ; odeslani emailu
+  d ##class(util.emailgw).send($$$IPREF,bodyHtml,bodyTxt,.err,"contauthor",subject,$$$GETLANGUAGE,,emails)
+  s:err'="" ret=ret_mailerr_"<!-- "_err_" -->"  
+
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="mailBodyBatch">
+<Description><![CDATA[
+<pre> Telo emailu planovane
+parametry viz sendMailBatch
+mail se neodesle pokud je telo mailu prazdne
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>rectitle,reclink,filelink,version=""</FormalSpec>
+<ReturnType>%CharacterStream</ReturnType>
+<Implementation><![CDATA[
+  q:version="refuse" ""
+  
+  s data("RECTITLE")=rectitle
+  s data("RECLINK")=reclink
+  s data("FILELINK")=filelink
+  
+  d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emailauthor")
+  
+  q data("stream")
+]]></Implementation>
+</Method>
+</Class>
+</Export>

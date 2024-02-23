@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-20 14:00:03">
+<Class name="content.stats">
+<Description><![CDATA[
+<pre> Stranka statisktik contentServeru
+
+20.04.23 ln; podpora vice repozitaru
+26.04.19 ln; pridano RESTORE
+31.08.18 ln; optimalizace: zruseno druhe volani stejne statistiky pres ajax
+05.12.16 kp; Pridana podpora pro JSON
+</pre>]]></Description>
+<Super>i2.base.chart</Super>
+<TimeChanged>66584,49636.2260349</TimeChanged>
+<TimeCreated>63336,28482.933366</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contstat</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+   s data("RESTORE")=##class(i2.base.request).restore("idx,iset")
+]]></Implementation>
+</Method>
+
+<Method name="initData">
+<Description><![CDATA[
+<pre> Inicializace, volano na zacatku ..data()
+20.04.23 ln; podpora vice repozitaru
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("CONFREC")="CONTENT_STATS"  
+  ; 20.04.23 ln; podpora vice repozitaru
+  s data("REPO")=##class(content.human).getRepo()
+]]></Implementation>
+</Method>
+
+<Method name="configData">
+<Description><![CDATA[
+<pre> Vlastni konfiguracni podpole pro stranku dedici od i2.base.chart
+volano na konci ..data() pred ..userData()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("ZF_SEL")=##class(User.Util).sXlate("CONTENT_STATS",data("NAME"),"N",$$$IPREF,"z")
+  if data("ZF_SEL")'="" {
+    s data("NUMBERING")=1  
+    s data("TERMLIST")=""
+    s data("ISET")=""
+    s data("RECORDS_COUNT")=0
+    s data("NOCOVER")=1
+    d ##class(i2.ui.result).setup(.data)
+  }
+  
+  s data("SQL")=$replace(data("SQL"),"%repo%","'"_data("REPO")_"'")
+]]></Implementation>
+</Method>
+
+<Method name="recordData">
+<Description><![CDATA[
+<pre> Doplneni dat na zaklade zaznamu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle,seq]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  d ##class(i2.ui.result).recordCommon(.data,.handle,seq)
+  s custClassRec="i2.cust."_$$$GETICTX_".result"
+  if ##class(%Dictionary.MethodDefinition).%ExistsId(custClassRec_"||recordUser") {             
+    d $ZOBJCLASSMETHOD(custClassRec,"recordUser",.data,.handle,seq)
+  }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

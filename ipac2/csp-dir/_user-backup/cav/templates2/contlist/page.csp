@@ -1,0 +1,37 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:layout1 report="simple" tabs="1">
+
+    <csp:if condition=($d(data("CONTENT")))>
+
+<table class="table table-sm" id="#(data("PAGEID"))#-t">
+    <ipac:loop param="CONTENT">
+<tr>
+
+<td class="detail">#(node)#: <ipac:a class="name" op="detail" idx="#(..li(1))#" restore>#(..li(2))#</ipac:a>
+<ul class="list-group">    
+        <ipac:loop2 param="CONTENT">
+            <csp:if condition=('..v2("isimage"))>
+<li class="list-group-item #(..v2("extension"))#"><ipac:a href="#(..v2("csg"))#">#(..v2("origname"))#</ipac:a></li>
+            <csp:else>
+<li class="list-group-item #(..v2("extension"))#"><ipac:a data-toggle="lightbox" data-type="image" data-title="#(..v2("origname"))#" title="#(..v2("origname"))#" href="#(..v2("csg"))#">#(..v2("origname"))#</ipac:a></li>
+            </csp:if>
+        </ipac:loop2>
+</ul>
+</td>
+<td class="count"><span title="#(..tx("COUNT_FILES"))#">(#(..li(3))#)</span></td>
+		<csp:if condition=(data("EDIT"))>
+<td class="edit"><ipac:a class="btn btn-light" op="contser" param="idx=#(..li(1))#&status=#(data("STATUS"))#">
+<span class="icon-edit" aria-hidden="true"></span>&nbsp;
+<ipac:tx param="ADMIN_ANNEXES"/></ipac:a></td>
+        </csp:if>
+
+</tr>
+    </ipac:loop>
+</table>
+
+    </csp:if>  
+
+</ipac:layout1>
+
+<ipac:tpl page="result" version="jstemplate"/>

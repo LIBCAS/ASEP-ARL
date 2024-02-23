@@ -1,0 +1,58 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<h2>Display formats</h2>
+<p>
+It is possible to display search results in several formats, which are created following the requirements of the departments and the offer of which is determined by the ASEP administration (CAS library).
+For each format, links to WOS, SCOPUS, PUBMED, DOI, RIV - if the record contains an identifier.
+</p>
+
+<h3>Short</h3>
+<ul>
+<li><strong>Header</strong> Format with header (system number in ASEP, institute shortcut –owner of the record, year of collection, RIV, information about the RIV entry designation, country of publication, the language of the work, and type of document.</li>
+<li><strong>Bibliographic description</strong> contains information based on the type of document.</li>
+<li><strong>Funding</strong> Under which funding the result was produced. CEP grants, CAS grants, funding from EU programmes, institutional funding, etc.</li>
+<li>Classifications - keywords and OECD categories (FORD).</li>
+<li><strong>Persistent link</strong> handle.</li>
+<li><strong>Full texts and datasets</strong> – If full text and dataset information is contained in the record, the basic format displays information about the availability of full texts and datasets in the ASEP Repository or external repositories. Contains information based on the type of document.</li>
+</ul>
+
+<h3>Short+ annotation, Short + citation</h3>
+<p>
+ The short format is enhanced with annotations in the language of the work and translation of the annotation into English, or information on citations.
+</p>
+
+
+<h3> Citation CSN ISO 690</h3>
+<p>
+ Contains the information required by this standard. Citation according to the standard CSN ISO 690 is required in bachelor's, master's and doctoral theses.
+</p>
+
+<h3> Citation Institution AV reports</h3>
+<p>
+ The display is identical to the CSN ISO 690 standard, authors' surnames and first names are in lowercase.
+</p>
+
+<h3> Citations authors AV</h3>
+<p>
+ The display is identical to the CSN ISO 690 standard; the authors of the CAS are listed by their full name, not their initials.
+</p>
+
+<h3> User format</h3>
+<ul>
+<li>This format contains links to authority records in the ASEP database. The ASEP database contains authorities of authors, source documents (periodicals and proceedings), conferences, collaborating institutions, and projects. The link is marked with a "magnifying glass" (e.g. for the name of the main author, it will search) and display the authority of the author.</li>
+<li>Department abbreviations and links to RID, ORCID, and SCOPUS are displayed for author authority.</li>
+<li>Information about the full text is displayed if it is attached and available in the ASEP Repository.</li>
+</ul>
+
+<h3> Data for RIV</h3>
+<p>
+ The display format contains the data to be submitted to RIV for a particular record.
+</p>
+
+<h3><ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr></h3>
+<p>
+It is a specialized format that displays a record in an exchange format 
+<ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> - 
+every line displays one 
+<ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> record field.
+</p>

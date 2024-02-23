@@ -1,0 +1,43 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:form id="#(data("PAGEID"))#-f" action="#(..base())#" method="get">
+    <ipac:dtx param="FORM_UP"/>
+
+<div class="container">
+
+<h2><ipac:tx param="NADPIS"/></h2>
+
+<p><ipac:tx param="TEXT1"/></p>
+
+<p><ipac:tx param="TEXT2"/></p>
+
+<p><ipac:tx param="TEXT3"/></p>
+
+<ol class="type-a">
+<li><ipac:tx param="BODA"/></li>
+<li><ipac:tx param="BODB"/></li>
+<li><ipac:tx param="BODC"/></li>
+</ol>
+
+<p><ipac:tx param="TEXT4"/></p>
+
+<p><ipac:tx param="TEXT5"/></p>
+
+<p><ipac:tx param="TEXT6"/></p>
+
+<p><ipac:tx param="TEXT7"/></p>
+
+</div>
+
+<ipac:dtx param="SEND_UP"/>
+
+<div class="submit">
+<button type="submit" class="btn btn-primary" name="send" value="1"><ipac:tx param="SAVE"/></button>
+<input type="hidden" name="send" value="1"/>
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="repo" value="#(data("REPO"))#"/>
+<input type="hidden" name="key" value="#(data("KEY"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+
+</ipac:form>

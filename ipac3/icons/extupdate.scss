@@ -1,0 +1,141 @@
+﻿@charset "UTF-8";
+
+/* -------------------------------------------------------------------------- *\
+			Ikonky
+\* -------------------------------------------------------------------------- */
+
+// Nastylovani menu
+.x-menu-item [class^="icon-"] {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    background-image: none;
+    font-size: 15px;
+}
+
+// Uprava tlacitka s ikonkou
+.i-btn {
+    background-color: transparent;
+    border: 0;
+    text-decoration: none;
+
+    span {
+        font-size: 15px;
+    }
+}
+
+// Uprava ikony hlavniho menu
+#menu-ic {
+    top: -2px;
+    position: relative;
+}
+
+// Nastylovani ikony pro dialogove okno
+.x-window-dlg .ext-mb-icon::before {
+    font-size: 40px;
+    text-shadow: 2px 2px silver;
+}
+
+/* -------------------------------------------------------------------------- *\
+			Hlavicka
+\* -------------------------------------------------------------------------- */
+
+$img-url: "../images/";
+
+#header {
+    background: #7f99be url("#{$img-url}header-bg.gif") repeat-x center;
+
+    .logo, .h1 {
+        padding: 3px 0 3px 10px;
+        display: inline-block;
+    }
+
+    .h1 {
+        font-size: 16px;
+        color: #fff;
+        font-weight: normal;
+    }
+
+    .logo {
+        width: 25px;
+        float: left;
+        top: -2px;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .user, .logout {
+        color: #fff;
+        font-size: 16px;
+        float: right;
+        margin-right: 10px;
+        margin-top: 5px;
+    }
+
+    button#menu-logout {
+        color: #fff;
+    }
+
+    .icon-logout {
+        color: red;
+    }
+}
+
+/* -------------------------------------------------------------------------- *\
+			Paticka
+\* -------------------------------------------------------------------------- */
+
+#footer {
+    padding: 10px 0;
+    text-align: right;
+}
+
+/* -------------------------------------------------------------------------- *\
+			Ostatni
+\* -------------------------------------------------------------------------- */
+*::after, *::before {
+    box-sizing: border-box;
+}
+
+// Chybove hlaseni o vypnutem JavaScriptu
+noscript p {
+    font-size: 200%;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    margin: 30px 0;
+}
+
+/* -------------------------------------------------------------------------- *\
+			Animace - zatreseni
+\* -------------------------------------------------------------------------- */
+.shake {
+    animation: a_shake 0.4s 1 linear;
+}
+
+
+@keyframes a_shake {
+    0% {
+        transform: translate(30px);
+    }
+
+    20% {
+        transform: translate(-30px);
+    }
+
+    40% {
+        transform: translate(15px);
+    }
+
+    60% {
+        transform: translate(-15px);
+    }
+
+    80% {
+        transform: translate(8px);
+    }
+
+    100% {
+        transform: translate(0);
+    }
+}

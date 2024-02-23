@@ -1,0 +1,14 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+<ipac:modal id="modal-cavdelete" title="#(..txg("PG_CAVDELETE_TEXT"))#">
+<div class="modal-body">
+<div class="delete-ajax">
+<ipac:report simple/>
+<csp:if condition=(..isReport()'="error")>
+<csp:if condition=($g(data("CONFIRM"))=0)>
+<ipac:tpl page="detail" version="short"/>
+</csp:if>
+<ipac:tpl version="form"/>
+</csp:if>
+</div>
+</div>
+</ipac:modal>

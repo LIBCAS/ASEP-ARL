@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Routine name="%ZSTART" type="MAC" languagemode="0"><![CDATA[
+%ZSTART	
+    ; 30.11.16 jk; zalozeno
+    ; --	
+SYSTEM	
+  
+	n sIO s sIO=$io
+	
+	#define NS "CAV"
+	zn $$$NS 
+	n ZT s ZT=$zt,$ZT="ERROR" 
+	open 1 use 1
+	w "*Cosmotron %ZSTART: d ##class(Util).cacheStartup(1)"
+	use sIO
+	d ##class(User.Util).cacheStartup(1)
+	
+	zn $$$NS 
+	use 1
+	
+	w "*Cosmotron %ZSTART: d ##class(ChangeLog).startupCFSIndexProcess(2)"
+	d ##class(User.ChangeLog).startupCFSIndexProcess(2)
+	
+ 
+ #define NULLDEV        ##class(User.Util).getNullDeviceName()
+ 
+ ; verzia pre procedureblock
+ #define NULLDEVStartProc   s sSaveIO=$io o $$$NULLDEV:("NWS":/CREATE):0 zt:'$t "NOP" u $$$NULLDEV
+ ; verzia normalna pre NOT procedureblock
+ #define NULLDEVStart   n sSaveIO $$$NULLDEVStartProc
+ 
+ #define NULLDEVStop    u sSaveIO c $$$NULLDEV 
+ 
+ 
+	
+	w "*Cosmotron %ZSTART: ##class(Util).X(""i2e start 5"")"
+	$$$NULLDEVStart
+	d ##class(Util).X("i2e start 5")
+	
+    
+    ; start  WatchDog
+    ;zn $$$NS 
+    ;use 1
+    ;w "*Cosmotron %ZSTART: d ##class(UtilTasks).startupWatchDogProcess(2)"
+    ;d ##class(UtilTasks).startupWatchDogProcess(2)
+	
+	zn "%SYS" 
+	use 1
+	w "*Cosmotron %ZSTART: startup OK"
+	
+	close 1	use sIO	S $ZT=ZT
+	q
+	
+ERROR
+	S $ZT=ZT 
+	zn "%SYS" 
+	open 1 use 1
+	w "*Cosmotron %ZSTART: error: "_$zerror,!
+	close 1
+	use sIO
+	
+	q
+ 
+]]></Routine>
+</Export>

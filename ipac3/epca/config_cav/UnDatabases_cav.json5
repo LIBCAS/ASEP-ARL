@@ -1,0 +1,21 @@
+[{
+	id : 'CavUnEpca',
+	text : 'Publikace, datasety##Publications,datasets'.ls(),
+	index : '12',
+	shortdf : 'TF_T001',
+	formtype : 'B#C#E'
+	//limits : '@attr 1=1 \'%ISUSERIDX%\''
+}, {
+	id : 'CavUnAuth',
+	text : 'Autority##Authority'.ls(),
+	index : '12',
+	//shortdf : 'TF_UNA_BASIC_I3',
+	shortdf : 'TF_T001',
+	formtype : 'A'
+}, {
+	id : 'CavUnOhlCat',
+	text : 'Ohlasy##Citations'.ls(),
+	index : '12',
+	shortdf : 'TF_T001',
+	formtype : 'D'
+}]

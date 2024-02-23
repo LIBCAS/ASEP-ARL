@@ -1,0 +1,33 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<h2>Operations with a record</h2>
+
+<p>
+Following operations are available for every record: 
+</p>
+
+<ul>
+
+<csp:if condition=(..isPage("basket"))>
+<li class="basket"><ipac:a op="help" key="basket"><ipac:txg param="BASKET_TO"/></ipac:a> 
+ – this function puts a record to the basket. 
+</li>
+</csp:if>
+
+<csp:if condition=(..isPage("detail"))>
+<li class="permalink">Permanent Link – link (URL address) for displaying this record.</li>
+</csp:if>
+
+<csp:if condition=(..isPage("bookmark"))>
+<li class="bookmark"><ipac:a op="help" key="bookmark"><ipac:atext/></ipac:a> 
+ – offer other possibilities for searching, sharing records, or operations with the record. 
+</li>
+</csp:if>
+
+<csp:if condition=(..isPage("export"))>
+<li class="dds"><ipac:a op="help" key="export"><ipac:atext/></ipac:a>
+ – Export a record in the selected format.
+</li>
+</csp:if>
+
+</ul>

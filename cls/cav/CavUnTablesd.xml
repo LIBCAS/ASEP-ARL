@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1.4 (Build 505_1U)" ts="2021-11-09 20:11:55">
+<Class name="User.CavUnTablesd">
+<Description><![CDATA[
+dynamic user  tables
+
+09.11.21 jk; zmena na ProcedureBlock
+07.04.20 tt; genEpcaOddel: zalozena metoda pro doplnovani oddeleni automaticky
+18.06.03 rs; vyhodene ixIndexValues a pridany typ tabulky B<br>
+21.02.03 lp; vyhodene parametry .c, .cs z ixIndexValues()<br>
+19.12.02 ja; prevzaty z GA pre PU
+---from top]]></Description>
+<ClassType>persistent</ClassType>
+<Super>User.DataTable</Super>
+<TimeChanged>66057,72702.587216</TimeChanged>
+<TimeCreated>59575,83515.846714</TimeCreated>
+
+<Parameter name="INDEXPARAMS">
+<Description><![CDATA[
+Toto su parametre pre indexovaciu rutinu.
+viz. ..ixUpdate(), ixIndexValues(), ixIndexValuesEx()
+a tiez ##class(SPIndex).ixIndexValues()<br><br>
+
+Popis obsahu parametrov viz. desciption u SpIndex.ixIndexValues()<br><br>
+
+
+POZOR: i ked je tento param pomenovany INDEXPARAMS
+sluzi aj pre getDATA,allowSave,allowDelete a mozno neskor
+aj dalsie callbacky. 
+
+23.01.03 rs; prva verzia<br>]]></Description>
+<Final>0</Final>
+<Default>B</Default>
+</Parameter>
+
+<Method name="classNameX">
+<Description>
+return current class unlike %ClassName this is a class method</Description>
+<Final>0</Final>
+<ClassMethod>1</ClassMethod>
+<CodeMode>code</CodeMode>
+<FormalSpec/>
+<Private>0</Private>
+<ReturnType>%Library.String</ReturnType>
+<SqlProc>0</SqlProc>
+<Implementation><![CDATA[ quit "CavUnTablesd"
+]]></Implementation>
+</Method>
+
+<Method name="getDATA">
+<Description>
+28.11.01 rs; minor fixups
+15.10.01 rs; prva verzia
+---from top
+
+vrati DATA pre dane "id"
+
+do buducna bude prerobena kvoli prechodu na BLOB...</Description>
+<Final>0</Final>
+<ClassMethod>1</ClassMethod>
+<CodeMode>code</CodeMode>
+<FormalSpec>id:%Library.Integer,fmt:%Library.String</FormalSpec>
+<Private>0</Private>
+<ReturnType>%Library.String</ReturnType>
+<SqlProc>0</SqlProc>
+<Implementation><![CDATA[
+ ; trivilana verzia - moze byt prepisane v potomkovi
+ ; "fmt" moze udavat format v kt. sa ma zaznam vratit
+
+ s t001=##class(MARC).getT001(id)
+
+ ; vynimka pre generovany zaznam CHANGE_LOG
+ if t001="CHANGE_LOG" d  q res
+ . s res="001 .. CHANGE_LOG"
+ . s t005=""
+ . for  set t005=$order(^ooDataTableI("CavUnTablesd","dt",t005)) quit:t005=""  do
+ . . s id2=$order(^ooDataTableI("CavUnTablesd","dt",t005,""))
+ . . s t001=$lg(^ooDataTableD(id2),1) if t001="" s t001="?"
+ . . s res=res_$c(10)_"200 .. "_$c(31)_"a"_t001_$c(31)_"b"_$zstrip(t005,"<>W")
+
+ ; inak standardna metoda (28.11.01 rs; call to class MARC)
+ q ##class(MARC).getDATA(id)
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+</Storage>
+
+<Method name="allowSaveEx">
+<Description>
+Navrat:
+ pri chybe "|ERR..." jinak prazdne nebo nejake info (INF, WARN, text)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=""
+
+  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  s sClass=$$$HandleClass(handle)     ; ziskani tridy
+  if (sT001="EPCA_ODDEL")
+  { ; při uložení záznamu EPCA_ODDEL, přegenerujeme záznamy, které s ním souvisí
+    d ..genEpcaOddel(.handle)
+  }
+
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="genEpcaOddel">
+<Description><![CDATA[
+<pre> Metoda pro vygenerovani pomocnych ciselniku pro plneni oddeleni u autorit a autoru
+dokumentace:
+
+07.04.20 tt; zalozena metoda pro doplnovani oddeleni automaticky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret="", sKV1="$$eKV,"
+  
+  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  s sClass=$$$HandleClass(handle)     ; ziskani tridy
+   
+  s nC=##class(User.MARC).recordLineCountX(.handle) ; ziskani poctu radku v zaznamu 
+  f i=1:1:nC 
+  { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
+    s lsLine=##class(User.MARC).getLineX(.handle,i) continue:lsLine="" 
+    s sTag=$e(lsLine,1,3)
+    if (sTag="200")
+    {
+      s sUstav= $zstrip($$$getSubTagStr(lsLine,"a"),"<>W")        ; $a - ústav - ASEP zkratka
+      continue:(sUstav="")
+      s sUstavCiselnik=$tr(sUstav,"-","")
+      s sOddCz= $zstrip($$$getSubTagStr(lsLine,"b"),"<>W")        ; $b - Název_cze_nový
+      s sOddCz=$tr(sOddCz,",",";")
+      s sOddEng= $zstrip($$$getSubTagStr(lsLine,"c"),"<>W")       ; $c - Název_eng_nový
+      s:(sOddEng="") sOddEng="''" 
+      s sZkOddCz= $zstrip($$$getSubTagStr(lsLine,"d"),"<>W")      ; $d - Zkratka_cze
+      s:(sZkOddCz="") sZkOddCz="''"
+      s sZkOddEng= $zstrip($$$getSubTagStr(lsLine,"e"),"<>W")     ; $e - Zkratka_eng       
+      s:(sZkOddEng="") sZkOddEng="''"
+      s oddel(sUstav,sOddCz)=sOddEng_$c(31)_sZkOddCz_$c(31)_sZkOddEng_$c(31)
+    }    
+  }
+  
+  d ..OpenRecODDEL(.handleA1,"EPCA_ODDEL_ALL","1")
+  ; $$eKV,x,10000*STX,EPCA_OECD_1,yz#x,20000*STX,EPCA_OECD_2,yz#x,30000*STX,EPCA_OECD_3,yz#x,40000*STX,EPCA_OECD_4,yz#x,50000*STX,EPCA_OECD_5,yz#x,60000*STX,EPCA_OECD_6,yz#STX,EPCA_OECD_EMPTY,yz$$fSTX,EPCA_OECDALL_2
+  s sUstav=""
+  f i=1:1
+  { s sUstav=$o(oddel(sUstav)) q:(sUstav="")
+    s sOddCz="",bZal1=0,bZal2=0,bZal3=0,bZal4=0
+    ///w !,sUstav_" -----------------------------------------------"
+    d ..OpenRecODDEL(.handle1,"EPCA_ODDEL_"_sUstav,"1")
+   
+    f j=1:1
+    { s sOddCz=$o(oddel(sUstav,sOddCz)) q:(sOddCz="")
+      s sPomHod=$g(oddel(sUstav,sOddCz))
+      s sOddEng=$p(sPomHod,$c(31),1),sZkOddCz=$p(sPomHod,$c(31),2),sZkOddEng=$p(sPomHod,$c(31),3)
+      //w !,"   "_sPomHod_" "_sOddEng_" "_sZkOddCz_" "_sZkOddEng
+      if (sOddCz'="")
+      {
+        d ##class(User.MARC).appendLineX(.handle1,"200    "_$c(31)_"a"_$tr(sOddCz," ","_")_$c(31)_"b"_sOddCz_$c(31)_"c"_sOddEng_$c(31)_"d"_sZkOddCz_$c(31)_"e"_sZkOddEng_$c(31)_"x"_sUstav)
+        d ##class(User.MARC).appendLineX(.handleA1,"200    "_$c(31)_"a"_sOddCz_$c(31)_"b"_sOddCz_$c(31)_"c"_sOddEng_$c(31)_"d"_sZkOddCz_$c(31)_"e"_sZkOddEng_$c(31)_"x"_sUstav)
+        d:$f(sOddCz," ") ##class(User.MARC).appendLineX(.handleA1,"200    "_$c(31)_"a"_$tr(sOddCz," ","_")_$c(31)_"b"_sOddCz_$c(31)_"c"_sOddEng_$c(31)_"d"_sZkOddCz_$c(31)_"e"_sZkOddEng_$c(31)_"x"_sUstav)
+        s bZal1=1       
+      }      
+    }
+    s sKV1=sKV1_"#p,"_sUstav_"*STX,EPCA_ODDEL_"_sUstav_",cj|dk|el"
+
+    ; zapis hodnot do zaznamu ciselniku
+    if (bZal1=1) 
+    { ; zapis ceskeho nazvu
+      d ..OpenRecODDEL(.handle1,"EPCA_ODDEL_"_sUstav,"2")
+    }
+    
+  }    
+  ; 09.04.20 tt; ulozeni zaznamu pro validaci
+  d ..OpenRecODDEL(.handleA1,"EPCA_ODDEL_ALL","2")
+  
+  s sKV1=sKV1_"#STX,EPCA_ODDEL_EMPTY,cj|dk|el"
+  ; pridame pomocny retezec, aby se nam dobre konupravovali tagmapy
+  d ##class(User.MARC).appendLineX(.handle,"002    "_sKV1)
+
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="OpenRecODDEL">
+<Description><![CDATA[
+<pre> Specialni metoda na otevirani a vymaz obsahu konfiguracnich zaznamu
+Parametry: handle - aktualni zpracovavany ciselnik pro oddeleni
+           t001   - jeho kod
+           sOper  - 1 - priprama a otevreni
+                    2 - ulozeni a uzavreni        
+08.04.20 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,t001="",sOper]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ s sRet="" ; pomocna promenna pro chyby
+ if (sOper=1)
+ { ; otevreni zaznamu
+   s bExist=##class(User.MARC).readX(.handle,"CavUnTablesd",t001)
+
+   if 'bExist 
+   { ; pokud zaznam neexistuje, zalozime si jej
+     d ##class(User.MARC).newX(.handle,"CavUnTablesd",t001)
+     d ##class(User.MARC).setTagX(.handle,"002    "_$replace($zd($h,3),"-","")_" tt; aktualizace zaznamu o pro vyplnovani oddeleni")
+   } 
+   else 
+   { 
+     d ##class(User.MARC).delTagX(.handle,"200")
+     d ##class(User.MARC).delTagX(.handle,"002")
+     d ##class(User.MARC).setTagX(.handle,"002    "_$replace($zd($h,3),"-","")_" tt; aktualizace zaznamu o pro vyplnovani oddeleni")
+   }
+ }  
+ if (sOper=2)
+ { ; zapis souboru
+   s st=##class(User.MARC).writeX(.handle)
+   if $$$ISERR(st)
+   { ; vypis chyby
+     s sRet="ERROR: OpenRecODDEL "_##class(User.Util).status2str(st)
+   }  
+ }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

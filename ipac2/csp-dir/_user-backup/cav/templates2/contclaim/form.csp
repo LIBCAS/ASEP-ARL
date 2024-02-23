@@ -1,0 +1,124 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>2</du></ipac:off>
+
+<ipac:form action="#(data("ACTION"))#" id="#(data("PAGEID"))#-f" data-infolimit="#(..tx("INFOLIMIT"))#" data-textlimit="#(..tx("LIMIT"))#" method="post">
+<ipac:dtx param="FORM_UP"/>
+<csp:if condition=(data("STAV_ZADOSTI")=0)>
+<p class="note-required"><ipac:txg param="FORM_NOTE_REQUIRED"/></p>
+
+<div class="container">
+
+<div class="row form-group">
+<label for="xfirstname" class="col-form-label"><ipac:tx param="FIRSTNAME"/></label>
+<div class="half fv-row">
+<input type="text" class="form-control" id="xfirstname" name="xfirstname" size="30" value="#(data("FIRSTNAME"))#"/>
+</div>
+</div>
+
+<div class="row form-group">
+<label for="xsurname" class="col-form-label"><ipac:tx param="SURNAME"/>: <em>*</em></label>
+<div class="half fv-row">
+<input type="text" class="form-control" required="required" id="xsurname" name="xsurname" size="30" value="#(data("SURNAME"))#"
+data-fv-not-empty___message="#(..tx("SURNAME_REQUIRED"))#"/>
+</div>
+</div>
+
+<div class="row form-group">
+<label for="xworkplace" class="col-form-label"><ipac:tx param="WORKPLACE"/>: <em>*</em></label>
+<div class="half fv-row">
+<input type="text" class="form-control" required="required" id="xworkplace" name="xworkplace" size="30" value="#(data("WORKPLACE"))#" aria-describedby="workplace-desc"
+data-fv-not-empty___message="#(..tx("WORKPLACE_REQUIRED"))#"/>
+<p class="form-text" id="workplace-desc">(<ipac:tx param="WORKPLACE_INFO"/>)</p>
+</div>
+</div>
+
+<div class="row form-group">
+<label for="xemail" class="col-form-label"><ipac:tx param="EMAIL"/>: <em>*</em></label>
+<div class="half fv-row">
+<ipac:off>inputmode="email" size="30" value="#(data("REPLYTO"))# - odstranen @ ve formuláři, aby byla videt povinnost vyplnovat"</ipac:off>
+<input type="email" class="form-control" required="required" id="xemail" name="xemail" inputmode="email" size="30" value=""
+data-fv-not-empty___message="#(..tx("EMAIL_REQUIRED"))#" data-fv-email-address="true" data-fv-email-address___message="#(..tx("EMAIL_ERROR"))#"/>
+</div>
+</div>
+
+<div class="row form-group">
+<label for="xvfile" class="col-form-label"><ipac:tx param="VFILE"/></label>
+<div class="half fv-row">
+<div class="form-control-plaintext">#(data("FILE"))#</div>
+</div>
+</div>
+
+<div class="row form-group">
+<label for="xmessage" class="col-form-label"><ipac:tx param="MESSAGE"/>: <em>*</em></label>
+<div class="half fv-row">
+<textarea class="form-control" required="required" data-fv-not-empty___message="#(..tx("MESSAGE_REQUIRED"))#" name="xmessage" id="xmessage" rows="3" cols="30">#(data("MESSAGE"))#</textarea>
+</div>
+</div>
+
+</div>
+
+<csp:if condition=('data("LOGGED"))>
+<ipac:tpl version="captcha" page="parts"/>
+</csp:if>
+
+</csp:if>
+
+<csp:if condition=(data("STAV_ZADOSTI")=1)>
+<div class="container">
+<div class="row form-group">
+<label for="xemail" class="col-form-label"><ipac:tx param="EMAIL_1"/>: <em>*</em></label><br>
+<div class="half fv-row">
+<input type="email" class="form-control" required="required" name="xemail" id="xemail" inputmode="email" value="#(data("EMAIL_V"))#"
+data-fv-email-address="true" data-fv-email-address___message="#(..tx("EMAIL_ERROR"))#"/>
+</div>
+</div>
+
+
+<div class="row form-group">
+<label for="xmessage" class="col-form-label"><ipac:tx param="MESSAGE"/>: </label><br>
+<div class="half fv-row">
+<textarea class="form-control" name="xmessage" id="xmessage" rows="3" cols="30">#(data("MESSAGE"))#</textarea>
+</div>
+</div>
+
+</div>
+    </csp:if>
+<csp:if condition=(data("STAV_ZADOSTI")<8)>
+<fieldset>
+<ipac:off><legend><ipac:tx param="APPROVAL"/> <em>*</em></legend></ipac:off>
+<csp:if condition=((..txn("TERMS_HTML")'="")&&(data("IDX")'=""))>
+<div class="half fv-row offset-sm-4">
+<button type="button" class="btn btn-light form-control" data-toggle="modal" data-target="#terms-modal">
+<span class="icon-uncheck" aria-hidden="true"></span>&nbsp;
+<ipac:tx param="TERMS_TITLE"/></button>
+<input type="hidden" value="" required="required" name="xlicence[]" id="xlicence" 
+data-fv-not-empty___message="#(..tx("LICENCEERROR"))#"/>
+</div>
+<csp:else>
+<div class="half fv-row offset-sm-4 pr-4">
+<div class="form-check">
+<input type="checkbox" class="form-check-input" required="required" id="xlicence" name="xlicence[]" value="1"#(data("LICENCE_CHECKED"))#
+data-fv-not-empty___message="#(..tx("LICENCEERROR"))#"/>
+<label for="xlicence" class="form-check-label"><ipac:tx param="LICENCE_TEXT"/></label>
+</div>
+</div>
+</csp:if>
+</fieldset>
+</csp:if>
+<ipac:dtx param="SEND_UP"/>
+
+<div class="submit">
+    <csp:if condition=(data("STAV_ZADOSTI")<8)>
+<button type="submit" class="btn btn-primary" name="send" value="1"><ipac:tx param="SEND"/></button>
+<input type="hidden" name="send" value="1"/>
+    </csp:if>
+<input type="hidden" name="idx" value="#(data("IDX"))#"/>
+<input type="hidden" name="repo" value="#(data("REPO"))#"/>
+<input type="hidden" name="key" value="#(data("KEY"))#"/>
+<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="xvfile" value="#(data("FILE"))#"/>
+<input type="hidden" name="state" value="#(data("STAV_ZADOSTI"))#"/>
+<input type="hidden" name="bigdata" value="#(data("BIGDATA"))#"/>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+</div>
+<ipac:dtx param="FORM_DOWN"/>
+</ipac:form>

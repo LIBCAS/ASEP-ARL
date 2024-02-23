@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2024-01-15 21:50:50">
+<Routine name="ZBACK" type="MAC" languagemode="0" timestamp="66854,78639.857409445"><![CDATA[
+    ;;;;; CAV
+    ;;;;;
+    ;;;;; 15.01.24 tt; pridan email asep_repozitar@lib.cas.cz do vystupu V7
+    ;;;;; 17.10.23 ln; upraveny cesty zaloh pro asep-primary-node
+    ;;;;; 15.08.23 tt; sitemap: provedena zmena popisu 
+    ;;;;; 14.01.21 tt; oddeleni specialni task pro ziskavani zaznam z WOS - dlouhotrvajici uloha 
+    ;;;;; 29.12.21 tt; pridano spousteni lanovane ulohy pro importovane zaznamy z WOS
+    ;;;;; 10.08.20 tt; nastaveny mazani autority na ctvrtek
+    ;;;;; 10.07.20 jk; zrusen duplicitne uvedeny email klimes
+    ;;;;; 18.06.20 jb; změna příjemců pošty DFLTMAILCC
+    ;;;;; 30.04.20 tt; pridan sloupec TYPSPOL do V7
+    ;;;;; 24.02.19 tt; upraveny roky V10 na roky 2015-2019.
+    ;;;;; 11.02.19 tt; rozsireny export V10 podle potreb CAV
+    ;;;;; 07.01.20 tt; pridany nove pole
+    ;;;;; 23.04.19 tt; zalozena planovana uloha na vymaz nenavazanych autorit
+    ;;;;; 13.02.19 tt; preusporadani ukolu v task1 - po dohode s JK
+    ;;;;; 15.10.18 tt; pridany email backupinfo@cosmotron.cz k planovanym uloham 
+    ;;;;; 07.08.18 tt; procisteni pri zapisovani uloh
+    ;;;;; 05.04.18 tt; pridany soupce do V7
+    ;;;;; 19.10.17 tt; pridana sloupce pro zobrazeni hodnoticich kriterii v vystupu V7
+    ;;;;; 23.06.17 tt; odstranen email rozehnal@lib.cas.cz a nahrazen arl-server@lib.cas.cz
+    ;;;;; 12.06.17 jk; volano pres ReportCommon
+    ;;;;; 30.11.16 tt; upraveny emailove adresy - pridani zakazniku
+    ;;;;; 10.10.16 tt; zalozeno
+    ;;;;; ---
+    ;;;;;
+    #define BACKUPDIR "/srv/lv1_asep_repository/backup" 
+    #define ROUTINEN "ZBACK"
+    #define DFLTMAILCC "arl@lib.cas.cz,arl-server@lib.cas.cz,teplik@cosmotron.cz,klimes@cosmotron.cz,backupinfo@cosmotron.cz"
+    #include Common     
+        
+    ;------------------------------------------------------------   
+    ; ENTRY POINTS --------------------------------------------------
+    ; typy zaloh na kazdy den Pondelok..Nedela
+    
+full
+        d ##class(User.UtilBackup).backupMain("FFFFFFF",$$$BACKUPDIR,"Cav",$$$DFLTMAILCC,"/srv/lv1_asep_repository/backup/packed","asep-frontend-node") q
+        
+inc  
+        d ##class(User.UtilBackup).backupMain("IIIIIII",$$$BACKUPDIR,"Cav",$$$DFLTMAILCC,"/srv/lv1_asep_repository/backup/packed","asep-frontend-node") q
+    
+    
+cleanup
+        d ##class(util.cleanUp).cleanUpDir("UnTablesd*ARL_CLEANUP_DIR")
+        q         
+   
+task1 
+
+    n Day s Day=##class(UtilBackup).DAYOFWK() n DayM s DayM=+$e(##class(Util).date(),7,8)
+    n sZN s sZN=$znspace
+    d ##class(Util).msg("task1 day="_Day_" start at "_$$$ShowDTime) 
+    
+    ; daily - no mail
+    w !,"old journal cleanup" 
+    zn "%SYS" d PPURGE^JRNUTIL zn sZN
+    
+    ; 15.01.24 tt; pridan email asep_repozitar@lib.cas.cz do vystupu V7
+    ; 13.02.19 tt;  preusporadani ukolu v task1 - po dohode s JK
+    ; specialni vystupy pro CAV
+    d ##class(UtilBackup).taskMain("runRepV7Cav^ZBACK()","Cav - vystup V7",$$$DFLTMAILCC_",asep_repozitar@lib.cas.cz",,"Cav")
+    d ##class(UtilBackup).taskMain("runRepV10Cav^ZBACK()","Cav - vystup V10",$$$DFLTMAILCC,,"Cav")
+    d ##class(UtilBackup).taskMain("runRepV11Cav^ZBACK()","Cav - vystup V11",$$$DFLTMAILCC,,"Cav")
+  
+    ; Cav - doplneni C60a s handle linkem do zaznamu
+    d ##class(UtilBackup).taskMain("##class(User.CavS).GenC60Handle()","Cav - doplneni C60a s handle linkem do zaznamu",$$$DFLTMAILCC,,"Cav")
+
+    ; Cav - repozitar - kontrola vyprsenych souhlasu
+    d ##class(UtilBackup).taskMain("##class(i2.cust.cav.approvalAuthor).sendMailBatch()","Cav - repozitar - kontrola vyprsenych souhlasu",$$$DFLTMAILCC,,"Cav")
+    ; Cav - doplneni handle linku na server
+    d ##class(UtilBackup).taskMain("##class(User.CavS).CreateHandleNet()","Cav - doplneni handle linku na server",$$$DFLTMAILCC_",tichy@lib.cas.cz",,"Cav")
+    
+    ; denni export CavUnTablesd
+    d ##class(UtilBackup).taskMain("##class(UtilBackup).batchExportX(""CavUnTablesd"",""ui-1 sort-1 compress-7za+a#7z"")","denni export nastaveni CavUnTablesd",$$$DFLTMAILCC,,"Cav")
+
+    ; cisteni autorit kazdy den
+    d ##class(UtilBackup).taskMain("##class(SPCommon).runAuthCleanUp(""Cav"")","cisteni autorit",$$$DFLTMAILCC,,"Cav")
+    
+    ; 10.08.20 tt; nastaveny mazani autority na ctvrtek
+    ; 23.04.19 tt; zalozena planovana uloha na vymaz nenavazanych autorit
+    d:(Day=4) ##class(UtilBackup).taskMain("##class(User.CavS).VymazNenavAutorit("""")","Vymaz nenavazanych autorit",$$$DFLTMAILCC,,"Cav")
+    
+    ; 29.12.21 tt; pridano spousteni lanovane ulohy pro importovane zaznamy z WOS
+    ;d:(Day=4) ##class(UtilBackup).taskMain("##class(i2.xmlgw).GetRecordsWos(""Cav"")","Impor zaznamu z WOS",$$$DFLTMAILCC,,"Cav")
+
+    
+    ; ???????????
+    if (Day=3) || (Day=7) 
+    {
+      d ##class(UtilBackup).taskMain("##class(Util).Xintegrit()","kontrola integrity databazy",$$$DFLTMAILCC,,"Cav") 
+    }
+    
+    d ##class(Util).msg("task1 day="_Day_" finish at "_$$$ShowDTime)    
+    q
+ 
+task2
+    n Day s Day=##class(UtilBackup).DAYOFWK() n DayM s DayM=+$e(##class(Util).date(),7,8)
+    n sZN s sZN=$znspace
+ 
+    d ##class(Util).msg("task2 day="_Day_" start at "_$$$ShowDTime) 
+ 
+    ; exporty vsech databaz
+    if ((Day = 3) || (Day = 7))
+    { 
+      d ##class(UtilBackup).taskMain("##class(UtilBackup).batchExportX(""*"",""sort-0 ui-0 allowSaveCheck-0 compress-7za+a#7z"")","uplny export vsech databaz",$$$DFLTMAILCC_",dolezelova@knav.cz" ,,"Cav") }
+    else
+    { 
+      d ##class(UtilBackup).taskMain("##class(UtilBackup).batchExportX(""*"",""sort-0 ui-0 allowSaveCheck-0 incr-10 compress-7za+a#7z"")","inkrementalni export vsech databaz",$$$DFLTMAILCC_",dolezelova@knav.cz" ,,"Cav") 
+    }
+      
+    d ##class(Util).msg("task2 day="_Day_" finish at "_$$$ShowDTime)    
+    
+    q
+    
+
+task3 
+   
+    n Day s Day=##class(UtilBackup).DAYOFWK() n DayM s DayM=+$e(##class(Util).date(),7,8)
+    n sZN s sZN=$znspace
+    d ##class(Util).msg("task3 day="_Day_" start at "_$$$ShowDTime) 
+    
+    ; 14.01.21 tt; oddeleni specialni task pro ziskavani zaznam z WOS - dlouhotrvajici uloha
+    ; 29.12.21 tt; pridano spousteni lanovane ulohy pro importovane zaznamy z WOS
+    d ##class(UtilBackup).taskMain("##class(i2.xmlgw).GetRecordsWos(""Cav"")","Impor zaznamu z WOS",$$$DFLTMAILCC,,"Cav")
+
+    
+    d ##class(Util).msg("task3 day="_Day_" finish at "_$$$ShowDTime)    
+    q
+ 
+
+ 
+idx1    
+    n Day s Day=##class(UtilBackup).DAYOFWK() n DayM s DayM=+$e(##class(Util).date(),7,8)
+    n sZN s sZN=$znspace
+    d ##class(Util).msg("idx1 day="_Day_" start at "_$$$ShowDTime)  
+    
+    n s       
+    s s="##class(Util).X(""uiseq CavUnEpca,CavUnOhlCat,CavUnAuth"")"
+      
+    try {
+      d ##class(UtilBackup).taskMain(s,"aktualizace aRL indexu vsech databaz",$$$DFLTMAILCC,,"Cav") 
+    } 
+    catch exceptionvar {
+      d ##class(User.Util).msg("ERROR exception:"_exceptionvar.Name_exceptionvar.Location)
+    }
+    
+    d ##class(User.Util).msg("idx1 day="_Day_" finish at "_$$$ShowDTime)    
+    q
+ 
+
+ct() public {
+    d ##class(User.Util).msg("running ct^ZBACK at "_$$$ShowDTime)
+    s io=$io,bOpen=0
+    ; 08.06.10 jk; volani getLogDir prepsano na getArlDir
+    s fn="ct.log",logdir=##class(util.common).getArlDir("LOG")
+    if logdir="" w !,"ERROR determining log-directory check UnTablesd ARLDIR, 200$$aLOG"  $$$ZTX1("XL1") 
+    s fn=logdir_$$$PathSepp_##class(Util).logFileAddWeekNo(fn)
+    open fn:("WS":/APPEND):0
+    if '$t { u io } else { u fn s bOpen=1 }
+    
+    
+    d ##class(Util).X("ct")
+    d ##class(Util).X("i2e start 5")
+    
+    w !,!,!,"DONE "_$$$ShowDTime
+    
+    if bOpen close fn
+    u io
+    d ##class(User.Util).msg("done ct^ZBACK at "_$$$ShowDTime)
+    q
+}
+ 
+pstat
+    n Day s Day=##class(UtilBackup).DAYOFWK() n DayM s DayM=+$e(##class(Util).date(),7,8)
+    d ##class(User.Util).msg("serverPerformance day="_Day_" start at "_$$$ShowDTime)    
+    d ##class(UtilBackup).taskMain("##class(Util).X(""pstat %c o 200 'default,client* 4,5"")"," server performance statistics",$$$DFLTMAILCC,,"Cav")
+    d ##class(User.Util).msg("serverPerformance day="_Day_" finish at "_$$$ShowDTime)   
+    q
+    
+     ; zapojena kontrola shadowingu
+taskshdw
+    n Day s Day=##class(UtilBackup).DAYOFWK() n DayM s DayM=+$e(##class(Util).date(),7,8)
+    d ##class(Util).msg("taskShadowCnt day="_Day_" start at "_$$$ShowDTime) 
+    d ##class(UtilBackup).taskMain("runShadowCnt^ZBACK()","kontrola stinovani",$$$DFLTMAILCC,,"Cav")    
+    d ##class(Util).msg("taskShadowCnt day="_Day_" finish at "_$$$ShowDTime)    
+    q
+    
+    ; tt; specialni vystup spousteny pro cav
+runRepV7Cav() public {
+    ; 30.04.20 tt; pridan sloupec TYPSPOL do V7
+    ; 12.06.17 jk; volano pres ReportCommon
+    ; 02.07.14 tt; pridano ISSN a NazevSZP do V7
+    ; 30.05.14 tt; rutina si musi nechat, protoze se spousti z RUN_TASK
+    ; 14.05.14 tt; pridane do V2 a V7 RVO
+    ; 22.04.14 tt; zalozeno spousteni V7 - nahradi V2
+    s par="report ReportCommon exporta cav_un_epca CavUnEpca,1 «¤»!ye¤bt¤1993»2055«!exp¤=¤a«'!dk¤=¤W @PRAC,T16r  . 0 . ##class(util.ie.csv).report(.pEnvironment,""970b-DruhDokInterni,@DKREP1-DruhDokUprav,T16r-RokUplatnVysl,T16c-ImpaktFakt,T16f-5LetyImpaktFakt,C26b-ExportDoRIV,101a-JazykDok,@PRAC-Ustav,001-SysNo,%rep-CisloVyskytuPracVZazn,@ODDELV-Odd_do_2009,@ODDELV_STI-Odd_cze,@ODDELV_STJ-Odd_eng,@ODDELV_STK-Odd_zkr_cze,@ODDELV_STL-Odd_zkr_eng,@ODDELPOC-PocOdd_do_2009,@AUTPOC-PocAut,@AUTDOMPOC-PocDomAut,@AUTDOMVYPODD-VypDomAut,@VYZZAM-VyzkumnyZamer,@RVO-RVO,463/011a-ISSN,463/011e-EISSN,@NAZEVSZP-NazevSZP,@HODKRIT_D-Qais,@HODKRIT_E-Qsjr,@HODKRIT_F-Qtc,@HODKRIT_C-IF_PCT,@HODKRIT_B-AIS_AL_PC,@HODKRIT_A-AIS_PCT,@HODKRIT_j-AIS,@HODKRIT_s-SJR,C86a-Qtc_zavorky,C86b-Qtc_N.A.,C86c-Qtc_DT,C86d-Qtc_Obor,@TYPSPOL-TypSpoluprace¤h"") 0 1 . . . ."_$c(10)_"sys-task"_$c(10)_"server"_$c(10)_"CMD_CAV_UN_EPCA"
+    s io=$io,ret=##class(Util).DBCommand(par)
+    if $e(ret,1,8)'="ok: rep_" w !,"Error: "_ret q
+    u io w !,"Report ok: "_##class(util.common).getArlDir("URL_LOG")_"reports/"_$p(ret," ",2)
+} 
+
+   ; tt; specialni vystup spousteny pro cav
+runRepV7CavOLD() public {
+    ; 12.06.17 jk; volano pres ReportCommon
+    ; 02.07.14 tt; pridano ISSN a NazevSZP do V7
+    ; 30.05.14 tt; rutina si musi nechat, protoze se spousti z RUN_TASK
+    ; 14.05.14 tt; pridane do V2 a V7 RVO
+    ; 22.04.14 tt; zalozeno spousteni V7 - nahradi V2
+    s par="report ReportCommon exporta cav_un_epca CavUnEpca,1 «¤»!ye¤bt¤1993»2055«!exp¤=¤a«'!dk¤=¤W @PRAC,T16r  . 0 . ##class(util.ie.csv).report(.pEnvironment,""970b-DruhDokInterni,@DKREP1-DruhDokUprav,T16r-RokUplatnVysl,T16c-ImpaktFakt,T16f-5LetyImpaktFakt,C26b-ExportDoRIV,101a-JazykDok,@PRAC-Ustav,001-SysNo,%rep-CisloVyskytuPracVZazn,@ODDELV-Odd,@ODDELPOC-PocOdd,@AUTPOC-PocAut,@AUTDOMPOC-PocDomAut,@AUTDOMVYPODD-VypDomAut,@VYZZAM-VyzkumnyZamer,@RVO-RVO,463/011a-ISSN,463/011e-EISSN,@NAZEVSZP-NazevSZP,@HODKRIT_D-Qais,@HODKRIT_E-Qsjr,@HODKRIT_F-Qtc,@HODKRIT_C-IF_PCT,@HODKRIT_B-AIS_AL_PC,@HODKRIT_A-AIS_PCT,@HODKRIT_j-AIS,@HODKRIT_s-SJR,C86a-Qtc_zavorky,C86b-Qtc_N.A.,C86c-Qtc_DT,C86d-Qtc_Obor¤h"") 0 1 . . . ."_$c(10)_"sys-task"_$c(10)_"server"_$c(10)_"CMD_CAV_UN_EPCA"
+    s io=$io,ret=##class(Util).DBCommand(par)
+    if $e(ret,1,8)'="ok: rep_" w !,"Error: "_ret q
+    u io w !,"Report ok: "_##class(util.common).getArlDir("URL_LOG")_"reports/"_$p(ret," ",2)
+} 
+
+    ; tt; specialni vystup spousteny pro cav
+runRepV10Cav() public {
+    ; 24.02.19 tt; upraveny roky V10 na roky 2015-2019.
+    ; 11.02.19 tt; rozsireny export V10 podle potreb CAV
+    ; 07.01.20 tt; pridany nove pole
+    ; 12.06.17 jk; volano pres ReportCommon
+    ; 01.11.14 tt; upraveny sloupce ve vystupu V10
+    ; 28.10.14 tt; zalozeno V10 na zaklade V7
+    s par="report ReportCommon exporta cav_un_epca CavUnEpca,1 «¤»!ye¤bt¤2015»2019«!exp¤=¤a«'!dk¤=¤W @PRAC,T16r  . 0 . ##class(util.ie.csv).report(.pEnvironment,""970b-DruhDokInterni,@DKREP1-DruhDokUprav,T16r-RokUplatnVysl,T16c-ImpaktFakt,T16f-5LetyImpaktFakt,C26b-ExportDoRIV,101a-JazykDok,@PRAC-Ustav,001-SysNo,%rep-CisloVyskytuPracVZazn,@AUTPOC-PocAut,@AUTDOMPOC-PocDomAut,@AUTDOMVYPODD-VypDomAut,@VYZZAM-VyzkumnyZamer,@RVO-RVO,463/011a-ISSN,463/011e-EISSN,463/200a-NazevSZP,@HODOBOR-Obor,@HODPODOBOR-Podobor,@TYMV-Tym,@AUTDOMTYM-AutorTym,@NAZEVSZP-NazevSZP,@HODKRIT_D-Qais,@HODKRIT_E-Qsjr,@HODKRIT_F-Qtc,@HODKRIT_C-IF_PCT,@HODKRIT_B-AIS_AL_PC,@HODKRIT_A-AIS_PCT,@HODKRIT_j-AIS,@HODKRIT_s-SJR,C86a-Qtc_zavorky,C86b-Qtc_N.A.,C86c-Qtc_DT,C86d-Qtc_Obor¤h"") 0 1 . . . ."_$c(10)_"sys-task"_$c(10)_"server"_$c(10)_"CMD_CAV_UN_EPCA"
+    s io=$io,ret=##class(Util).DBCommand(par)
+    if $e(ret,1,8)'="ok: rep_" w !,"Error: "_ret q
+    u io w !,"Report ok: "_##class(util.common).getArlDir("URL_LOG")_"reports/"_$p(ret," ",2)
+} 
+    ; tt; specialni vystup spousteny pro cav
+runRepV11Cav() public {
+    ; 12.06.17 jk; volano pres ReportCommon
+    ; 21.03.15 tt; upravena definice V11
+    ; 08.03.15 tt; zalozeno V11 na zaklade V10
+    s par="report ReportCommon exporta cav_un_epca CavUnEpca,1 «¤»!ye¤bt¤2010»2014«!exp¤=¤a«'!dk¤=¤W @TYMT,T16r  . 0 . ##class(util.ie.csv).report(.pEnvironment,""970b-DruhDokInterni,@DKREP1-DruhDokUprav,T16r-RokUplatnVysl,@USTAV_T_ENG-Ustav_eng,@USTAV_T_CZ-Ustav_cze,@USTAV_T_ZK-Ustav_zkr,C26e-Ustav_Vlas_Zaz,001-SysNo,@UTWOS-UT_WOS,463/011a-ISSN,463/011e-EISSN,463/200a-NazevSZP,@TYM_T_OBOR-Obor,@TYM_T_PODOBOR-Podobor,@TYM_T_CZ-Tym_cze,@TYM_T_ENG-Tym_eng,@TYM_T_PEERREV-Tym_rev¤h"") 0 1 . . . ."_$c(10)_"sys-task"_$c(10)_"server"_$c(10)_"CMD_CAV_UN_EPCA"    
+    s io=$io,ret=##class(Util).DBCommand(par)
+    if $e(ret,1,8)'="ok: rep_" w !,"Error: "_ret q
+    u io w !,"Report ok: "_##class(util.common).getArlDir("URL_LOG")_"reports/"_$p(ret," ",2)
+} 
+
+ 
+sitemap() public {
+     ;15.08.23 tt; provedena zmena popisu 
+     ;14.07.09 lu; pridana rutina sitemap
+     d ##class(UtilBackup).taskMain("##class(i2.sitemap2).createSitemap()","CAV - generovani sitemap",$$$DFLTMAILCC)
+}
+
+ 
+]]></Routine>
+</Export>

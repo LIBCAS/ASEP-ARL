@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-02-20 15:59:00">
+<Class name="content.approval">
+<Description><![CDATA[
+<pre> Stranka pro potvrzeni licence uzivatelem
+
+14.06.17 kp; premenovani submit na send
+11.12.14 ln; prechod na CSG2
+01.11.12 ln; upraveno pro ipac31
+</pre>]]></Description>
+<Super>i2.ui.page</Super>
+<TimeChanged>66525,57246.4351733</TimeChanged>
+<TimeCreated>62726,48625.581483</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>contapp</Default>
+</Parameter>
+
+<Parameter name="Pretty">
+<Description>
+pretty URL</Description>
+<Default>contapp#contapp#contapp</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+
+11.12.14 ln; prechod na CSG2
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  q:ret'="" ret
+  
+  if $$$GETREQVAR("send")'="" {
+    s repo=$$$GETREQVAR("repo")
+    s key=$$$GETREQVAR("key")
+    if ((repo'="")&&(key'="")) {
+	    d ##class(content.api).setApproval(repo,key)
+	    
+	    ; 11.12.14 ln; prechod na CSG2
+	    s url=##class(content.csg2).getLink(repo,key)
+	    s %response.Redirect=$zcvt(url,"I","HTML")
+    } else {
+	    s data("ERRORS")=..tx("ERROR_PARAMS")
+	}
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  
+  ; url parametry pro obnoveni stavu stranky
+   s data("RESTORE")=##class(i2.base.request).restore("repo,key,idx")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("REPO")=$$$GETREQVAR("repo")
+  s data("KEY")=$$$GETREQVAR("key")
+  s repo=$$$GETREQVAR("repo")
+  s key=$$$GETREQVAR("key")
+  
+  s data("IDX")=$$$GETREQVAR("idx")
+  s data("ORIG_QUERY")=$$$GETSESSVAR("q")
+  
+  if ((repo="")||(key="")) {
+	  s data("ERRORS")=..tx("ERROR_PARAMS")
+  }
+  
+  d ..userData(.data)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

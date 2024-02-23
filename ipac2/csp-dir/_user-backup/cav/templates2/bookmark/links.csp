@@ -1,0 +1,179 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+    <ipac:off>
+        NAME_TITLE - Název záznamu
+        NAME_URL - Název záznamu upravený jako hodnota URL
+        PERMALINK_URL - Trvalý odkaz na záznam upravený jako hodnota URL
+        LANG - Dvoupísmena zkratka jazyka sk, cs, en
+        COUNTRY - Dvoupísmená zkratka země - cz, sk, uk
+    </ipac:off>
+
+<div class="body row mb-2">
+<ul class="external list-group col-sm-6 col-12">
+
+<li class="list-group-item google external">
+    <a rel="external nofollow" href="https://www.google.com/search?q=#(data("NAME_URL"))#" title="#(..tx("GOOGLE_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("GOOGLE_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-google" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="GOOGLE"></a>
+</li>
+
+<li class="list-group-item nkp external">
+    <csp:if condition=(data("ISBN")'="")>
+        <a rel="external nofollow" href="https://aleph.nkp.cz/F/?func=find-b&amp;local_base=nkc&find_code=ISN&request=#(data("ISBN"))#" title="#(..tx("NKP_TITLE"))#">
+        <span class="icon-nk" aria-hidden="true"></span>
+        &nbsp;<ipac:tx param="NKP"></a>
+    <csp:else>
+        <a rel="external nofollow" href="https://aleph.nkp.cz/F/?func=find-c&amp;local_base=nkc&amp;ccl_term=#(data("NAME_URL"))#" title="#(..tx("NKP_TITLE"))#">
+        <span class="icon-nk" aria-hidden="true"></span>
+        &nbsp;<ipac:tx param="NKP"></a>
+    </csp:if>
+</li>
+
+<li class="list-group-item facebook external">
+<csp:if condition=(data("LANG")="ar")>
+    <a rel="external nofollow" href="https://ar-ar.facebook.com/sharer/sharer.php?u=#(data("PERMALINK_URL"))#&amp;t=#(data("NAME_URL"))#" title="#(..tx("FACEBOOK_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("FACEBOOK_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-facebook" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="FACEBOOK"></a>
+<csp:else>
+    <a rel="external nofollow" href="https://www.facebook.com/sharer/sharer.php?u=#(data("PERMALINK_URL"))#&amp;t=#(data("NAME_URL"))#" title="#(..tx("FACEBOOK_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("FACEBOOK_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-facebook" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="FACEBOOK"></a>
+</csp:if>
+</li>
+
+<li class="list-group-item twitter external">
+    <a rel="external nofollow" href="https://twitter.com/intent/tweet?lang=#(data("LANG"))#&amp;text=#(data("NAME_URL"))#%20#(data("PERMALINK_URL"))#" title="#(..tx("TWITTER_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("TWITTER_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-x" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="TWITTER"></a>
+</li>
+
+<li class="list-group-item wikipedia external">
+    <a rel="external nofollow" href="https://#(data("LANG"))#.wikipedia.org/w/index.php?search=#(data("NAME_URL"))#" title="#(..tx("WIKIPEDIA_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("WIKIPEDIA_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-wikipedia" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="WIKIPEDIA"></a>
+</li>
+
+<csp:if condition=(data("LANG")="cs")>
+<li class="list-group-item skatalog external">
+    <csp:if condition=(data("ISBN")'="")>
+    <a rel="external nofollow" href="https://aleph.nkp.cz/F/?func=find-b&amp;local_base=skc&amp;find_code=ISN&request=#(data("ISBN"))#" title="#(..tx("SKATALOG_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("SKATALOG_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-soubornykatalog" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="SKATALOG"></a>
+    <csp:else>
+    <a rel="external nofollow" href="https://aleph.nkp.cz/F/?func=find-c&amp;local_base=skc&amp;ccl_term=#(data("NAME_URL"))#" title="#(..tx("SKATALOG_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("SKATALOG_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-soubornykatalog" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="SKATALOG"></a>
+    </csp:if>
+</li>
+</csp:if>
+
+<li class="list-group-item googlebooks external">
+    <a rel="external nofollow" href="https://www.google.com/search?hl=#(data("LANG"))#&amp;tbs=bks:1&amp;tbo=p&amp;q=#(data("NAME_URL"))#" title="#(..tx("GOOGLEBOOKS_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("GOOGLEBOOKS_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-googlebooks" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="GOOGLEBOOKS"></a>
+</li>
+
+
+<li class="list-group-item librarything external">
+    <csp:if condition=(data("LANG")="ar")>
+        <a rel="external nofollow" href="https://ara.librarything.com/search.php?searchtype=work&amp;search=#(data("NAME_URL"))#" title="#(..tx("LIBRARYTHING_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("LIBRARYTHING_TITLE"))#: #(data("NAME_TITLE"))#">
+        <span class="icon-librarything" title="#(..tx("LIBRARYTHING_TITLE"))#" aria-hidden="true"></span>
+        &nbsp;<ipac:tx param="LIBRARYTHING"></a>
+    <csp:else>
+        <a rel="external nofollow" href="https://#(data("COUNTRY"))#.librarything.com/search.php?searchtype=work&amp;search=#(data("NAME_URL"))#" title="#(..tx("LIBRARYTHING_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("LIBRARYTHING_TITLE"))#: #(data("NAME_TITLE"))#">
+        <span class="icon-librarything" aria-hidden="true"></span>
+        &nbsp;<ipac:tx param="LIBRARYTHING"></a>
+    </csp:if>
+</li>
+</ul>
+
+
+<ul class="local list-group col-sm-6 col-12">
+
+    <csp:if condition=((data("REQUEST")=1)&&'data("NOQUICK"))>
+<li class="list-group-item request">
+    <ipac:a op="request" data-modal-newwin="1" data-modal-login="1" class="modal-ajax" title="#(..tx("REQUEST_TITLE"))#: #(data("NAME_TITLE"))#" restore>
+    <span class="icon-request" aria-hidden="true"></span>
+    &nbsp;<ipac:txg param="PG_REQUEST_TEXT"/></ipac:a>
+</li>
+    <csp:elseif condition=((data("REQUEST")=2)&&'data("NOQUICK"))>
+<li class="list-group-item request">
+    <ipac:a op="request" data-modal-newwin="1" data-modal-login="1" class="modal-ajax" title="#(..tx("RESERVATION"))#: #(data("NAME_TITLE"))#" restore>
+    <span class="icon-request" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="RESERVATION"/></ipac:a>
+</li>
+    </csp:if>
+
+    <csp:if condition=(..isPage("mydoc"))>
+<li class="list-group-item mydoc">
+    <ipac:a op="mydoc" data-modal-newwin="1" data-modal-login="1" class="modal-ajax" idx="#(data("IDX"))#" param="f_new=1&pg=#(data("PAGE"))#&iset=#(data("ISET"))#" title="#(..tx("MYDOC_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-mydocuments" aria-hidden="true"></span>
+    &nbsp;<ipac:atext/></ipac:a>
+</li>
+    </csp:if>
+
+    <csp:if condition=(..isPage("print"))>
+<li class="list-group-item print">
+    <ipac:a op="print" rel="nofollow" target="_blank" param="ppage=#(data("PAGE"))#" title="#(..tx("PRINT_TITLE"))#: #(data("NAME_TITLE"))#" restore>
+    <span class="icon-print" aria-hidden="true"></span>
+    &nbsp;<ipac:atext/></ipac:a>
+</li>
+    </csp:if>
+
+
+    <csp:if condition=(..isPage("export"))>
+<li class="list-group-item export">
+    <ipac:a op="export" data-modal-newwin="1" class="modal-ajax" data-modal-type="modal" title="#(..tx("EXPORT_TITLE"))#: #(data("NAME_TITLE"))#" restore>
+    <span class="icon-export" aria-hidden="true"></span>
+    &nbsp;<ipac:atext/></ipac:a>
+</li>
+    </csp:if>
+
+    <csp:if condition=(..isPage("basket"))>
+<li class="list-group-item basket">
+<input type="hidden" class="idx" value="#(data("IDX"))#"/>
+    <csp:if condition=(data("INBASKET")=1)>
+    <ipac:a op="basket" param="idx=#(data("IDX"))#" class="fromcart" title="#(..tx("BASKET_FROM_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-basket" aria-hidden="true"></span>
+    &nbsp;<ipac:txg param="BASKET_FROM"/></ipac:a>
+    <csp:else>
+    <ipac:a op="basket" param="idx=#(data("IDX"))#&add=1" class="addcart" title="#(..tx("BASKET_TO_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-basket" aria-hidden="true"></span>
+    &nbsp;<ipac:txg param="BASKET_TO"/></ipac:a>
+    </csp:if>
+</li>
+    </csp:if>
+
+    <csp:if condition=(..isPage("mail"))>
+<li class="list-group-item email">
+    <ipac:a title="#(..tx("EMAIL_TITLE"))#: #(data("NAME_TITLE"))#" op="mail" restore>
+    <span class="icon-email" aria-hidden="true"></span>
+    &nbsp;<ipac:txg param="PG_MAIL_TEXT"/></ipac:a>
+</li>
+    </csp:if>
+
+
+    <csp:if condition=(..isPage("sdtoc")&&(data("SDTOC")))>
+<li class="list-group-item sdtoc">
+    <ipac:a title="#(..tx("SDTOC_TITLE"))#: #(data("NAME_TITLE"))#" op="sdtoc" restore>
+    <span class="icon-sdtoc" aria-hidden="true"></span>
+    &nbsp;<ipac:txg param="PG_SDTOC_TEXT"/></ipac:a>
+</li>
+    </csp:if>
+
+    <csp:if condition=(..isPage("dds")&&($e(data("BASETYPE"))="C"))>
+<li class="list-group-item dds">
+    <ipac:a op="dds" title="#(..tx("DDS_TITLE"))#: #(data("NAME_TITLE"))#" restore>
+    <span class="icon-copy" aria-hidden="true"></span>
+    &nbsp;<ipac:atext/></ipac:a>
+</li>
+    </csp:if>
+
+<li class="list-group-item qr external">
+    <a rel="external nofollow" data-modal-newwin="1" data-modal-size="modal-lg" data-modal-center="1" data-modal-name="#(..tx("QRCODE"))#" data-modal-body="<img src='https://api.qrserver.com/v1/create-qr-code/?data=#(data("PERMALINK_URL"))#&amp;size=500x500' alt='#(..tx("QRCODE"))#'/>" data-modal-foottext="URL: #($ZCONVERT(data("PERMALINK_URL"),"I","URL"))#" data-modal-noclose="1" target="_blank" class="modal-show" href="https://api.qrserver.com/v1/create-qr-code/?data=#(data("PERMALINK_URL"))#&amp;size=500x500" title="#(..tx("QRCODE_TITLE"))#: #(data("NAME_TITLE"))#" aria-label="#(..tx("QRCODE_TITLE"))#: #(data("NAME_TITLE"))#">
+    <span class="icon-qrcode" aria-hidden="true"></span>
+    &nbsp;<ipac:tx param="QRCODE"></a>
+</li>
+
+</ul>
+</div>

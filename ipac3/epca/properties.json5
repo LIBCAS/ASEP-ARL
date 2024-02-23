@@ -1,0 +1,857 @@
+﻿// 27.06.23 on; button
+// 07.06.23 on; formatovani - JSON5
+// 04.11.21 on; field_label_html_2, field_label_html_3, x_help_2, x_help_3
+// 22.09.20 on; tagOrder
+// 25.02.20 on; csDisableValidation
+// 16.12.19 on; rozsireni linkentry
+// 05.03.14 on; required
+// 24.02.14 on; doplnena moznost nastavit uzivatelsky nazev ciselniku pro combobbox
+
+// nova vlastnost musi mat 'id' zacinajuce prefixom field, tag alebo form
+// 'variable' -> nazov premennej v systeme (t.j. node.attributes.formProperties.variable)
+// 'text'		  -> nazov vlastnosti, ktory sa zobrazi pouzivatelovi (povinne)
+// 'editable'	-> priznak, ci moze pouzivatel nastavovat danu vlastnost (povinne)
+// 'values'		-> pri zadefinovani tohto pola sa zobrazi pouzivatelovi comboBox s vyberom hodnot (nepovinne)
+[{
+	"id": "field",
+	"variable": "field",
+	"text": "podpole",
+	"editable": false
+}, {
+	"id": "field_tag",
+	"variable": "tag",
+	"text": "tag",
+	"editable": false
+}, {
+	"id": "field_label",
+	"variable": "fieldLabel",
+	"text": "název podpole",
+	"editable": false
+}, {
+	"id": "field_label_user",
+	"variable": "fieldLabelUser",
+	"text": "uživatelský název podpole",
+	"editable": true
+}, {
+	"id": "field_title",
+	"variable": "title",
+	"text": "název fieldsetu",
+	"editable": false,
+	"bindedXtype": ["epca.codeddata_fieldset"]
+}, {
+	"id": "field_convertMap",
+	"variable": "convertMap",
+	"text": "convertMap",
+	"editable": true
+}, {
+	"id": "field_convertGroup",
+	"variable": "convertGroup",
+	"text": "convertGroup",
+	"editable": true
+}, {
+	"id": "field_repeatable",
+	"variable": "repeatable",
+	"text": "opakovateľné podpole",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "field_xtype",
+	"variable": "xtype",
+	"text": "vizuálny komponent - podpole",
+	"editable": true,
+	"values": [{
+			"id": "epca.marc_textfield",
+			"text": "Textové pole"
+		},
+		{
+			"id": "epca.marc_search_combobox",
+			"text": "Vyhledávací combobox"
+		}, {
+			"id": "epca.codeddata_combobox",
+			"text": "Číselníkový combobox"
+		}, {
+			"id": "epca.codeddata_datefield",
+			"text": "Datumové pole"
+		}, {
+			"id": "epca.codeddata_fieldset",
+			"text": "Kódované údaje"
+		}, {
+			"id": "cs_auth_select_form",
+			"text": "Browse popup"
+		}, {
+			"id": "epca.marc_textarea",
+			"text": "Textarea"
+		}, {
+			"id": "epca.link_entry",
+			"text": "Link entry (4XX)"
+		}, {
+			"id": "cs_content_server_link",
+			"text": "Content server link"
+		}, {
+			"id": "epca.label",
+			"text": "Label"
+		}, {
+			"id": "epca.checkbox",
+			"text": "Checkbox"
+		}, {
+			"id": "epca.kindvalue",
+			"text": "Kind value"
+		}, {
+			"id": "epca.button",
+			"text": "Button"
+		}
+	]
+}, {
+	"id": "field_width",
+	"variable": "width",
+	"text": "veľkosť poľa",
+	"editable": true,
+	"min": 50,
+	"max": 600
+}, {
+	"id": "field_minusbtn",
+	"variable": "minusBtn",
+	"text": "zobrazit tlačítko -",
+	"editable": true,
+	"values": [{ 
+		"id": false, 
+		"text": "false" 
+	}, { 
+		"id": true, 
+		"text": "true"
+	}]
+}, {
+	"id": "field_searchCombo_table",
+	"variable": "search_db",
+	"text": "zdrojová tabuľka",
+	"editable": true,
+	"values": [{
+		"id": epca.Config.User.dbAuth,
+		"text": epca.Config.User.dbAuth
+	}, {
+		"id": epca.Config.User.dbCat,
+		"text": epca.Config.User.dbCat
+	}],
+	"bindedXtype": ["epca.marc_search_combobox"]
+}, {
+	"id": "field_searchCombo_index",
+	"variable": "index",
+	"text": "vyhledávací index (číslo)",
+	"editable": true,
+	"bindedXtype": ["epca.marc_search_combobox", "epca.link_entry", "cs_auth_select_form"]
+}, {
+	"id": "field_searchCombo_fmt",
+	"variable": "fmt",
+	"text": "formát zobrazenia PB/combobox",
+	"editable": true,
+	"values": [{
+		"id": "USA_BASIC",
+		"text": "USA_BASIC"
+	}, {
+		"id": "US_BASIC",
+		"text": "US_BASIC"
+	}, {
+		"id": "UNA_BASIC",
+		"text": "UNA_BASIC"
+	}, {
+		"id": "UN_BASIC",
+		"text": "UN_BASIC"
+	}],
+	"bindedXtype": ["epca.marc_search_combobox", "cs_auth_select_form", "epca.link_entry"]
+}, {
+	"id": "field_disabled",
+	"variable": "disabled",
+	"text": "disabled",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "field_linkentry_taglist",
+	"variable": "taglist",
+	"text": "tag list",
+	"editable": true,
+	"bindedXtype": ["epca.link_entry"]
+}, {
+	"id": "field_linkentry_formname",
+	"variable": "leFormName",
+	"text": "ID formuláře",
+	"editable": true,
+	"bindedXtype": ["epca.link_entry"]
+}, {
+	"id": "field_linkentry_dfname",
+	"variable": "leDFName",
+	"text": "zobrazovací formát pole",
+	"editable": true,
+	"bindedXtype": ["epca.link_entry"]
+}, {
+	"id": "field_4XXsettings",
+	"variable": "le4XXsettings",
+	"text": "seznam tagů mimo 4XX pole",
+	"editable": true,
+	"bindedXtype": ["epca.link_entry"]
+}, {
+	"id": "field_flexpop_marcconv",
+	"variable": "csMarcConvDef",
+	"text": "konverzní tabulka",
+	"editable": true,
+	"values": [{
+		"id": "epca.marcConv.csMarcConvDefUSA",
+		"text": "autority m21"
+	}, {
+		"id": "epca.marcConv.csMarcConvDefUS",
+		"text": "knihy m21"
+	}, {
+		"id": "epca.marcConv.csMarcConvDefUNA",
+		"text": "autority unimarc"
+	}, {
+		"id": "epca.marcConv.csMarcConvDefUN",
+		"text": "knihy unimarc"
+	}],
+	"bindedXtype": ["cs_auth_select_form", "epca.link_entry"]
+}, {
+	"id": "field_flexpop_idxlistStoreId",
+	"variable": "idxlistStoreId",
+	"text": "seznam indexu",
+	"editable": true,
+	"values": [{
+			"id": "EPCA_FLDLIST_AUT",
+			"text": "EPCA_FLDLIST_AUT"
+		}, {
+			"id": "EPCA_FLDLIST_AUT_1",
+			"text": "EPCA_FLDLIST_AUT_1"
+		}, {
+			"id": "EPCA_FLDLIST_AUT_2",
+			"text": "EPCA_FLDLIST_AUT_2"
+		}, {
+			"id": "EPCA_FLDLIST_AUT_3",
+			"text": "EPCA_FLDLIST_AUT_3"
+		}, {
+			"id": "EPCA_FLDLIST_AUT_4",
+			"text": "EPCA_FLDLIST_AUT_4"
+		}, {
+			"id": "EPCA_FLDLIST_AUT_5",
+			"text": "EPCA_FLDLIST_AUT_5"
+		}, {
+			"id": "EPCA_FLDLIST_AUT_6",
+			"text": "EPCA_FLDLIST_AUT_6"
+		}, {
+			"id": "EPCA_FLDLIST_AUT_7",
+			"text": "EPCA_FLDLIST_AUT_7"
+		}, {
+			"id": "EPCA_FLDLIST_AUT_8",
+			"text": "EPCA_FLDLIST_AUT_8"
+		},
+		{
+			"id": "EPCA_FLDLIST_BIB",
+			"text": "EPCA_FLDLIST_BIB"
+		}, {
+			"id": "EPCA_FLDLIST_BIB_1",
+			"text": "EPCA_FLDLIST_BIB_1"
+		},
+		{
+			"id": "EPCA_FLDLIST_BIB_2",
+			"text": "EPCA_FLDLIST_BIB_2"
+		}, {
+			"id": "EPCA_FLDLIST_BIB_3",
+			"text": "EPCA_FLDLIST_BIB_3"
+		}, {
+			"id": "EPCA_FLDLIST_BIB_4",
+			"text": "EPCA_FLDLIST_BIB_4"
+		}, {
+			"id": "EPCA_FLDLIST_BIB_5",
+			"text": "EPCA_FLDLIST_BIB_5"
+		}, {
+			"id": "EPCA_FLDLIST_BIB_6",
+			"text": "EPCA_FLDLIST_BIB_6"
+		}, {
+			"id": "EPCA_FLDLIST_BIB_7",
+			"text": "EPCA_FLDLIST_BIB_7"
+		}, {
+			"id": "EPCA_FLDLIST_BIB_8",
+			"text": "EPCA_FLDLIST_BIB_8"
+		}
+	],
+	"bindedXtype": ["cs_auth_select_form", "epca.link_entry"]
+}, {
+	"id": "field_flexpop_displayFmtList",
+	"variable": "displayFmtList",
+	"text": "seznam zobrazovacich formatu",
+	"editable": true,
+	"values": [{
+		"id": "EPCA_ZFLIST_AUT",
+		"text": "EPCA_ZFLIST_AUT"
+	}, {
+		"id": "EPCA_ZFLIST_BIB",
+		"text": "EPCA_ZFLIST_BIB"
+	}],
+	"bindedXtype": ["cs_auth_select_form", "epca.link_entry"]
+}, {
+	"id": "field_flexpop_editable",
+	"variable": "editable",
+	"text": "editable",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}],
+	"bindedXtype": ["cs_auth_select_form"]
+}, {
+	"id": "field_flexpop_db",
+	"variable": "db",
+	"text": "db (napr. IctxUsAuth)",
+	"editable": true,
+	"bindedXtype": ["cs_auth_select_form", "epca.link_entry"]
+}, {
+	"id": "field_flexpop_tagorder",
+	"variable": "tagOrder",
+	"text": "pořadí tagů (oddělovač #)",
+	"editable": true,
+	"bindedXtype": ["epca.link_entry"]
+}, {
+	"id": "field_hidden",
+	"variable": "hidden",
+	"text": "hidden",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "field_required",
+	"variable": "required",
+	"text": "required",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "field_help",
+	"variable": "fieldHelp",
+	"text": "help sk (default)",
+	"editable": true
+}, {
+	"id": "field_help_2",
+	"variable": "fieldHelp2",
+	"text": "help cz",
+	"editable": true
+}, {
+	"id": "field_help_3",
+	"variable": "fieldHelp3",
+	"text": "help eng",
+	"editable": true
+}, {
+	"id": "field_anchor",
+	"variable": "anchor",
+	"text": "anchor",
+	"editable": false
+}, {
+	"id": "field_contentserver_text",
+	"variable": "contentText",
+	"text": "popis linku content serveru",
+	"editable": true,
+	"bindedXtype": ["cs_content_server_link"]
+}, {
+	"id": "field_contentserver_url",
+	"variable": "contentURL",
+	"text": "url content serveru",
+	"editable": true,
+	"bindedXtype": ["cs_content_server_link"]
+}, {
+	"id": "field_combobox_stname",
+	"variable": "fieldComboboxSTName",
+	"text": "uživatelský název číselníku",
+	"editable": true,
+	"bindedXtype": ["epca.codeddata_combobox"]
+}, {
+	"id": "field_combobox_showcode",
+	"variable": "csDisplayID",
+	"text": "zobrazit kód (1)/v opačném pořadí (2)",
+	"editable": true,
+	"values": [{
+		"id": 0,
+		"text": "ne"
+	}, {
+		"id": 1,
+		"text": "na začátku"
+	}, {
+		"id": 2,
+		"text": "na konci"
+	}],
+	"bindedXtype": ["epca.codeddata_combobox", "epca.kindvalue"]
+}, {
+	"id": "field_combobox_disableValidation",
+	"variable": "csDisableValidation",
+	"text": "zakázat validaci",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}],
+	"bindedXtype": ["epca.codeddata_combobox"]
+}, {
+	"id": "field_date_default",
+	"variable": "setActDate",
+	"text": "nastavit aktualni datum",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}],
+	"bindedXtype": ["epca.codeddata_datefield"]
+}, {
+	"id": "field_textarea_grow",
+	"variable": "grow",
+	"text": "grow",
+	"editable": true,
+	"defaultValue": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}],
+	"bindedXtype": ["epca.marc_textarea"]
+}, {
+	"id": "field_textarea_height",
+	"variable": "height",
+	"text": "height",
+	"editable": true,
+	"min": 50,
+	"max": 600,
+	"bindedXtype": ["epca.marc_textarea"]
+}, {
+	"id": "field_textarea_growMin",
+	"variable": "growMin",
+	"text": "grow min",
+	"editable": true,
+	"min": 10,
+	"max": 600,
+	"bindedXtype": ["epca.marc_textarea"]
+}, {
+	"id": "field_textarea_growMax",
+	"variable": "growMax",
+	"text": "grow max",
+	"editable": true,
+	"min": 50,
+	"max": 600,
+	"bindedXtype": ["epca.marc_textarea"]
+}, {
+	"id": "field_label_html",
+	"variable": "html",
+	"text": "html code sk",
+	"editable": true,
+	"bindedXtype": ["epca.label"]
+}, {
+	"id": "field_label_html_2",
+	"variable": "html2",
+	"text": "html code cz",
+	"editable": true,
+	"bindedXtype": ["epca.label"]
+}, {
+	"id": "field_label_html_3",
+	"variable": "html3",
+	"text": "html code eng",
+	"editable": true,
+	"bindedXtype": ["epca.label"]
+}, {
+	"id": "field_label_hideLabel",
+	"variable": "hideLabel",
+	"text": "hide label",
+	"editable": true,
+	"defaultValue": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}],
+	"bindedXtype": ["epca.label"]
+}, {
+	"id": "field_checkbox_hideLabel",
+	"variable": "hideLabel",
+	"text": "hide label",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}],
+	"bindedXtype": ["epca.checkbox", "epca.button"]
+}, {
+	"id": "field_checkbox_boxLabel",
+	"variable": "boxLabel",
+	"text": "box label",
+	"editable": true,
+	"bindedXtype": ["epca.checkbox"]
+}, {
+	"id": "field_checkbox_inputValue",
+	"variable": "inputValue",
+	"text": "input value",
+	"editable": true,
+	"bindedXtype": ["epca.checkbox"]
+}, {
+	"id": "field_checkbox_onCheckEvent",
+	"variable": "csOnCheckEvent",
+	"text": "onCheckEvent",
+	"editable": true,
+	"bindedXtype": ["epca.checkbox"]
+}, {
+	"id": "field_date_dataFormat",
+	"variable": "dataFormat",
+	"text": "interní formát datumu (napr. d.m.Y)",
+	"editable": true,
+	"bindedXtype": ["epca.codeddata_datefield"]
+}, {
+	"id": "field_date_validateDate",
+	"variable": "validateDate",
+	"text": "validovat datum",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}],
+	"bindedXtype": ["epca.codeddata_datefield"]
+}, {
+	"id": "field_date_editableField",
+	"variable": "editableField",
+	"text": "editableField",
+	"editable": true,
+	"defaultValue": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}],
+	"bindedXtype": ["epca.codeddata_datefield"]
+}, {
+	"id": "field_doNotDisable",
+	"variable": "fldDoNotDisable",
+	"text": "doNotDisable",
+	"editable": true,
+	"defaultValue": false,
+	"values": [{
+		"id": false,
+		"text": "false"
+	}, {
+		"id": true,
+		"text": "true"
+	}]
+}, {
+	"id": "field_doNotErase",
+	"variable": "fldDoNotErase",
+	"text": "doNotErase",
+	"editable": true,
+	"defaultValue": false,
+	"values": [{
+		"id": false,
+		"text": "false"
+	}, {
+		"id": true,
+		"text": "true"
+	}]
+}, {
+	"id": "field_noNewRepetition",
+	"variable": "noNewRepetition",
+	"text": "nepřidávat nové opakování fieldsetu",
+	"editable": true,
+	"bindedXtype": ["cs_auth_select_form"],
+	"defaultValue": false,
+	"values": [{
+		"id": false,
+		"text": "false"
+	}, {
+		"id": true,
+		"text": "true"
+	}]
+}, {
+	"id": "field_flexpop_dboptions",
+	"variable": "dbOptions",
+	"text": "db options",
+	"editable": true,
+	"bindedXtype": ["cs_auth_select_form"]
+}, {
+	"id": "field_flexpop_limits",
+	"variable": "searchLimits",
+	"text": "search limits",
+	"editable": true,
+	"bindedXtype": ["cs_auth_select_form"]
+}, {
+	"id": "field_kvparams",
+	"variable": "kvparams",
+	"text": "parametry",
+	"editable": false,
+	"bindedXtype": ["epca.kindvalue"]
+}, {
+	"id": "field_button_text",
+	"variable": "text",
+	"text": "popisek tlačítka",
+	"editable": true,
+	"bindedXtype": ["epca.button"]
+}, {
+	"id": "field_button_onClickEvent",
+	"variable": "csOnClickEvent",
+	"text": "onClickEvent",
+	"editable": true,
+	"bindedXtype": ["epca.button"]
+}, {
+	"id": "tag",
+	"variable": "tag",
+	"text": "číslo tagu",
+	"editable": false
+}, {
+	"id": "tag_help",
+	"variable": "fieldHelp",
+	"text": "help sk (default)",
+	"editable": true
+}, {
+	"id": "tag_help_2",
+	"variable": "fieldHelp2",
+	"text": "help cz",
+	"editable": true
+}, {
+	"id": "tag_help_3",
+	"variable": "fieldHelp3",
+	"text": "help eng",
+	"editable": true
+}, {
+	"id": "tag_label",
+	"variable": "tagLabel",
+	"text": "názov tagu",
+	"editable": false
+}, {
+	"id": "tag_label_user",
+	"variable": "tagLabelUser",
+	"text": "uživatelský názov tagu",
+	"editable": true
+}, {
+	"id": "tag_disabled",
+	"variable": "disabled",
+	"text": "disabled",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "tag_hidden",
+	"variable": "hidden",
+	"text": "hidden",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "tag_repeatable",
+	"variable": "repeatable",
+	"text": "opakovateľný tag",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "tag_xtype",
+	"variable": "xtype",
+	"text": "vizuálny komponent - tag",
+	"editable": true,
+	"values": [{
+		"id": "epca.marc_fieldset",
+		"text": "MARC - panel"
+	}]
+}, {
+	"id": "tag_width",
+	"variable": "width",
+	"text": "velikost fieldsetu",
+	"editable": true,
+	"min": 50,
+	"max": 800
+}, {
+	"id": "tag_minusbtn",
+	"variable": "minusBtn",
+	"text": "zobrazit tlačítko -",
+	"editable": true,
+	"values": [{
+		"id": false,
+		"text": "false"
+	}, {
+		"id": true,
+		"text": "true"
+	}]
+}, {
+	"id": "tag_count",
+	"variable": "minCount",
+	"text": "min. počet opakování",
+	"editable": true
+}, {
+	"id": "form_name",
+	"variable": "formName",
+	"text": "názov formulára",
+	"editable": true
+}, {
+	"id": "form_id",
+	"variable": "formId",
+	"text": "id formulára",
+	"editable": false
+}, {
+	"id": "form_date",
+	"variable": "formDate",
+	"text": "dátum vytvorenia",
+	"editable": false
+}, {
+	"id": "form_author",
+	"variable": "formAuthor",
+	"text": "vytvoril",
+	"editable": false
+}, {
+	"id": "form_DBTable",
+	"variable": "formDBTable",
+	"text": "cieľová databázová tabuľka",
+	"editable": true,
+	"values": [{
+		"id": epca.Config.User.dbCat,
+		"text": epca.Config.User.dbCat
+	}, {
+		"id": epca.Config.User.dbAuth,
+		"text": epca.Config.User.dbAuth
+	}, {
+		"id": epca.Config.User.dbEpca,
+		"text": epca.Config.User.dbEpca
+	}]
+}, {
+	"id": "form_tablesdCache",
+	"variable": "formTablesdCache",
+	"text": "tablesd cache (oddelovac ,)",
+	"editable": true
+}, {
+	"id": "form_displayFmtST",
+	"variable": "formDFST",
+	"text": "číselník ZF",
+	"editable": true
+}, {
+	"id": "container_label_user",
+	"variable": "containerLabelUser",
+	"text": "uživatelský názov uzlu",
+	"editable": true
+}, {
+	"id": "container_repeatable",
+	"variable": "repeatable",
+	"text": "opakovateľný kontejner",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "container_help",
+	"variable": "fieldHelp",
+	"text": "help sk (default)",
+	"editable": true
+}, {
+	"id": "container_help_2",
+	"variable": "fieldHelp2",
+	"text": "help cz",
+	"editable": true
+}, {
+	"id": "container_help_3",
+	"variable": "fieldHelp3",
+	"text": "help eng",
+	"editable": true
+}, {
+	"id": "container_width",
+	"variable": "width",
+	"text": "velikost kontejneru",
+	"editable": true,
+	"min": 50,
+	"max": 800
+}, {
+	"id": "container_hidden",
+	"variable": "hidden",
+	"text": "hidden",
+	"editable": true,
+	"values": [{
+		"id": true,
+		"text": "true"
+	}, {
+		"id": false,
+		"text": "false"
+	}]
+}, {
+	"id": "container_convertMap",
+	"variable": "convertMap",
+	"text": "convertMap",
+	"editable": true
+}, {
+	"id": "container_doNotDisable",
+	"variable": "doNotDisable",
+	"text": "doNotDisable",
+	"editable": true,
+	"defaultValue": false,
+	"values": [{
+		"id": false,
+		"text": "false"
+	}, {
+		"id": true,
+		"text": "true"
+	}]
+}, {
+	"id": "container_minusbtn",
+	"variable": "minusBtn",
+	"text": "zobrazit tlačítko -",
+	"editable": true,
+	"values": [{
+		"id": false,
+		"text": "false"
+	}, {
+		"id": true,
+		"text": "true"
+	}]
+}]

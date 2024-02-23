@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 865U)" ts="2021-07-09 13:02:47">
+<Class name="i2.cust.cav.list">
+<Description><![CDATA[
+<pre>
+09.07.21 kp; uprava metody getSubSite
+05.12.17 tt; odstraneny datove zaznamy pro schvalovani
+14.02.13 jk; vymazan template(), writeBody()
+13.11.12 tt; drobne zmeny pri prechodu na novou verzi ipac3
+24.07.12 ln; uzivatelsky kod presunut do podedenych metod
+24.05.12 zalozena trida 
+</pre>]]></Description>
+<Super>content.list</Super>
+<TimeChanged>65934,46945.309797</TimeChanged>
+<TimeCreated>62600,49457.920423</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+ictx instituce</Description>
+<Default>cav</Default>
+</Parameter>
+
+<Method name="data">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; baseUrl, ktera neni pretty
+  s basePure = ##class(i2.common).getServerBaseURL()
+  
+  s data("TAB")=$$$GETREQVAR("tab")
+  s:data("TAB")="" data("TAB")=1
+  s data("STATUS")=""
+  d ..getSubSite(.data)  
+  
+  ; TODO dispatch
+  if data("STATUS")="" {
+    s data("ERRORS")="no status for tab"
+    q
+  }
+  
+  ; TODO
+  s userT001=##class(i2.access).getLoginId()   ; @@ln@@
+    
+  d ##class(content.api).selectUserStatus(.output,userT001,data("STATUS"))
+  
+  
+  /*w !,"<pre>"
+  zw output
+  w !,"</pre>"
+  */
+  
+  s item="", seq=0
+  f { s item=$o(output(item)) q:item=""
+    s key=$g(output(item,"key"))
+    s repo=$g(output(item,"repository"))
+    
+    ; resi mimo jine pravo  uzivatele na repozitar
+    continue:'##class(content.api).engineRead(repo,key,.array)
+    
+    ; pravo editovat pro zobrazeni linku na editaci
+    s data("EDIT")=##class(content.api).engineEdit(repo,key,.array)
+    
+    /*
+    w !,"<pre>"
+    zw array
+    w !,"</pre>"
+    */
+    
+    ; TODO
+    s idx=##class(User.Util).objectName2lname(array("class"))_"*"_array("t001")
+    if '$d(records(idx)) {
+      continue:'##class(User.MARC).readX(.handle,array("class"),array("t001"))
+      ; 05.12.17 tt; odstraneny datove zaznamy pro schvalovani
+      continue:($$$getTagX(.handle,"970b")="DATA")
+      s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contser","idx="_idx_"&amp;status="_data("STATUS"))
+      s title=##class(i2.data.layer).title(.handle)
+      s hrefRec=$$$BASEURL_##class(i2.html.tpl).getRecordURL(idx,title)
+      s records(idx)=$lb(href,title,hrefRec)
+    }       
+    
+    //s status=$g(array("status"),"empty")
+    
+    
+    ; MOZNA SE VYUZIE PRO ROZDELENI NA REPOZITARE
+    /*
+    if '$d(index(status,idx)) {
+      s seq=$g(count(status))+1
+      s count(status)=seq
+      s index(status,idx)=""  
+    } else {
+      s seq=$g(count(status))
+    }       
+    s count(status,idx)=$g(count(status,idx))+1
+    s tree(status,seq)=idx
+    */
+    
+    if '$d(index(idx)) {
+      s seq=seq+1
+      s index(idx)=""
+      s tree(seq)=idx
+    }       
+    s c=$g(count(idx))+1
+    s count(idx)=c
+    
+    ; ti co zamitli    
+    s node="", refAuthors=""
+    f { s node=$o(array("refuse",node)) q:node=""
+      s:node'="" node="<a class=""email"" href=""mailto:"_node_""">"_node_"</a>"
+      s:refAuthors'="" refAuthors=refAuthors_","
+      s refAuthors=refAuthors_node
+    }
+    
+    if refAuthors=""
+    { ; ti co nepotvrdili, pokud není zamítnuto
+      ; array("mails",248177)="teplik@cosmotron.cz"
+      s node="", refAuthors=""
+      f 
+      { 
+         s node=$o(array("mails",node)) q:node=""
+         s sPomEHod=""
+         s:node'="" sPomEHod=$g(array("mails",node),"")
+         s:sPomEHod'="" sPomEHod="<a class=""email"" href=""mailto:"_sPomEHod_""">"_sPomEHod_"</a>"
+         s:refAuthors'="" refAuthors=refAuthors_","
+         s refAuthors=refAuthors_sPomEHod
+      }
+    }
+    
+    ; priponu souboru
+    s sPomNaS=array("origname")
+    s sPomNaSP=$p(array("origname"),".",2)
+    s extension=$zcvt($p(array("origname"),".",$l(array("origname"),".")),"L")
+    if (extension="jpg") || (extension="gif") || (extension="png") || (extension="bmb") || (extension="jpeg") {
+      s isImage=1
+    } else {
+      s isImage=0
+    }    
+    
+    s keys(idx,c)=$lb($$$BASEURL_"content.csg.cls?repo="_repo_"&amp;key="_key,array("origname"),refAuthors,sPomNaSP)
+    
+    s keys(idx,c,"repo")=repo
+    s keys(idx,c,"key")=key
+    s keys(idx,c,"origname")=array("origname")
+    s keys(idx,c,"isimage")=isImage
+    s keys(idx,c,"csg")=basePure_"content.csg.cls?repo="_repo_"&amp;key="_key
+    s keys(idx,c,"extension")=extension
+    
+    
+    ; TODO pripadne vyjmenovat jednotlive soubory       
+  } 
+  
+  /*
+  s status=""
+  f { s status=$o(tree(status)) q:status=""
+    s node="", seq=1
+    f { s node=$o(tree(status,node),1,idx) q:node=""
+      s count=count(status,idx)
+      s hrefCSG=$$$BASEURL_"content.csg.cls?repo="_repo_"&amp;key="_key      
+      s data("CONTENT",status,seq)=records(idx)_$lb(count,hrefCSG)
+    }
+  }
+  */
+  s node="", seq=1
+  f { s node=$o(tree(node),1,idx) q:node=""
+    s data("CONTENT",seq)=$lb(idx,$li(records(idx),2),count(idx)) 
+    m data("CONTENT",seq)=keys(idx)
+    s seq=seq+1
+  }
+  
+  d ..userData(.data)  
+  
+  /*
+  w !,"<pre>"
+  zw tree
+  zw count
+  zw keys
+  zw data
+  w !,"</pre>"
+  */
+]]></Implementation>
+</Method>
+
+<Method name="getSubSite">
+<Description><![CDATA[
+<pre>
+Záložky
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data:%Binary]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("TAB")=$$$GETREQVAR("tab")
+  s:data("TAB")="" data("TAB")="1"  ; default 
+    
+    d ##class(content.human).stable(.array,"UT_ASEP_STATUS_SER_TAB")
+    s node=""
+    f { s node=$o(array("UT_ASEP_STATUS_SER_TAB",node),1,val) q:node=""
+      s status=$li(val,2)
+      s:node=data("TAB") data("STATUS")=status
+      s data("SUBMENU",node,"pageid")=..#PageID
+      s data("SUBMENU",node,"param")="tab="_node
+      s data("SUBMENU",node,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID, data("SUBMENU",node,"param"))
+      s data("SUBMENU",node,"title")=""
+      s data("SUBMENU",node,"text")=$li(val,3)
+      s data("SUBMENU",node,"active")=$s(data("TAB")=node:"1",1:"")
+      s data("SUBMENU",node,"tpl")=""
+      s data("SUBMENU",node,"tab")=node
+      s data("SUBMENU")=node
+    }
+]]></Implementation>
+</Method>
+
+<Method name="userData">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[  d ##class(content.human).xlate(.data,"UT_ASEP_STATUS_SER_INFO")
+]]></Implementation>
+</Method>
+</Class>
+</Export>

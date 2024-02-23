@@ -1,0 +1,53 @@
+# @id IctxUnTablesd I3_TX
+200    $$aCAT_DESCRIPTION$$bWebová katalogizace umožňuje vyhledávat a spravovat bibliografické záznamy, přijímat holdingy a zapisovat autority (verze pro MARC21).
+200    $$aCAT_TITLE$$bWebová katalogizácia#Webová katalogizace#Web cataloguing#Web cataloguing#Web cataloguing#فهرسة الويب
+200    $$aCATU_DESCRIPTION$$bWebová katalogizácia umožňuje vyhľadávať a spravovať bibliografické záznamy, prijímať holdingy a zapisovať autority (verzia pre UNIMARC).#Webová katalogizace umožňuje vyhledávat a spravovat bibliografické záznamy, přijímat holdingy a zapisovat autority (verze pro UNIMARC).
+200    $$aCATU_TITLE$$bWebová katalogizácia#Webová katalogizace#Web cataloguing#Web cataloguing#Web cataloguing#فهرسة الويب
+200    $$aCES_DESCRIPTION$$bCentrálna evidencia zbierok (CES) je verejne prístupný informačný systém evidencie múzejných zbierok zriadený Ministerstvom kultúry ČR (MKČR). Obsahuje základný popis štátom uznaných zbierok a eviduje predmety do týchto zbierok zaradených, a to vrátane ich evidenčných čísiel. Ďalšími funkciami informačného systému CES sú evidencie vývozov, zápožičiek, krádeží, príspevkov a sankcií. Zmyslom projektu CES je, vedľa naplnenia požiadaviek zákona, tiež bádateľská činnosť a prezentácia projektu verejnosti.#Centrální evidence sbírek (CES) je veřejně přístupný informační systém evidence muzejních sbírek zřízený Ministerstvem kultury ČR (MKČR). Obsahuje základní popis státem uznaných sbírek a eviduje předměty do těchto sbírek zařazených, a to včetně jejich evidenčních čísel. Dalšími funkcemi informačního systému CES jsou evidence vývozů, zápůjček, krádeží, příspěvků a sankcí. Smyslem projektu CES je, vedle naplnění požadavků zákona, také badatelská činnost a prezentace projektu veřejnosti.
+200    $$aCES_TITLE$$bCentrálna evidencia zbierok múzejnej povahy#Centrální evidence sbírek muzejní povahy
+200    $$aCLE_DESCRIPTION$$bWebové rozhranie na úpravu číselníkov a nastavení#Webové rozhraní pro úpravu číselníků a nastavení###
+200    $$aCLE_TITLE$$bEditor číselníkov#Editor číselníků#Code List Editor#Code List Editor#Code List Editor#Code List Editor
+200    $$aDEVELOP$$bINTERNÁ vývojová verzia#INTERNÍ vývojová verze#INTERNAL developer only version#INTERNAL developer only version#INTERNAL developer only version#INTERNAL developer only version
+200    $$aDK_DESCRIPTION$$bDigitálna kronika slúži ako informačný portál s možnosťou tvorby, vyhľadávania, zobrazenia a uchovávania všetkých súvisiacich entít, ktoré v súhrne vytvárajú komplexný náhľad na udalosti (verzia pre MARC21).#Digitální kronika slouží jako informační portál s možností tvorby, vyhledávání, zobrazení a uchovávání všech souvisejících entit, které v souhrnu vytvářejí komplexní náhled na události (verze pro MARC21).
+200    $$aDK_TITLE$$bDigitálna kronika#Digitální kronika#Digital Chronicle#Digital Chronicle#Digital Chronicle#Digital Chronicle
+200    $$aDKM_DESCRIPTION$$bDigitálna kronika slúži ako informačný portál s možnosťou tvorby, vyhľadávania, zobrazenia a uchovávania všetkých súvisiacich entít, ktoré v súhrne vytvárajú komplexný náhľad na udalosti (verzia pre UNIMARC).#Digitální kronika slouží jako informační portál s možností tvorby, vyhledávání, zobrazení a uchovávání všech souvisejících entit, které v souhrnu vytvářejí komplexní náhled na události (verze pro UNIMARC).
+200    $$aDKM_TITLE$$bDigitálna kronika#Digitální kronika#Digital Chronicle#Digital Chronicle#Digital Chronicle#Digital Chronicle
+200    $$aDM_DESCRIPTION$$bWebové rozhranie na vyhľadávanie dát a hromadné zmeny v dátach#Webové rozhraní na vyhledávaní dat a hromadné změny v datech###
+200    $$aDM_TITLE$$bDátový správca#Datový správce#Data Manager#Data Manager#Data Manager#Data Manager
+200    $$aEPCA_DESCRIPTION$$bWebové rozhranie na vytváranie a úpravu bibliografických záznamov, prípadne záznamov autorít v jednoduchých formulároch####
+200    $$aEPCA_EPCADESIGNER_DESCRIPTION$$b
+200    $$aEPCA_EPCADESIGNER_TITLE$$bEPCA form designer
+200    $$aEPCA_TITLE$$bEPCA Evidence
+200    $$aEPCAREPORTS_DESCRIPTION$$bWebové rozhranie na spúšťanie výstupov z evidencie publikačnej činnosti#Webové rozhraní pro spouštění výstupů z evidence publikační činnosti####
+200    $$aEPCAREPORTS_TITLE$$bEPCA Reports
+200    $$aINTERPI_DESCRIPTION$$bWebové rozhranie pre spracovanie informácií o entitách#Webové rozhraní pro zpracování informací o entitách
+200    $$aINTERPI_TITLE$$bINTERPI
+200    $$aIS_DESCRIPTION$$bWebová aplikácia pre evidenciu výpožičiek predstavuje jednoduchúú verziu zápisu nového čitateľa alebo aktualizáciu existujúceho záznamu a uskutočnenie transakcií Výpožičky, Návratu, Rezervácie, Žiadanky, Prolongácie a Platby.#Webová aplikace pro evidenci výpůjček představuje jednoduchou verzi zápisu nového čtenáře nebo aktualizace existujícího záznamu a uskutečnění transakcí Výpůjčky, Návratu, Rezervace, Žádanky, Prolongace a Platby.
+200    $$aIS_TITLE$$bVýpožičky#Výpůjčky#Circulation#Circulation#Circulation#Circulation
+200    $$aKD_DESCRIPTION$$b
+200    $$aKD_TITLE$$bPamiatky
+200    $$aLOGOUT$$bOdhlásenie#Odhlášení#Logout#Logout#Logout#خروج
+200    $$aMANUAL$$bManuál#Manuál#Manual#Manual#Utasítás#دليل
+200    $$aMETA_AUTHOR$$bCosmotron SLOVAKIA s.r.o. - www.cosmotron.sk#Cosmotron Bohemia s.r.o. - www.cosmotron.cz#Cosmotron SLOVAKIA s.r.o. - www.cosmotron.sk#Cosmotron SLOVAKIA s.r.o. - www.cosmotron.sk#Cosmotron SLOVAKIA s.r.o. - www.cosmotron.sk#Cosmotron SLOVAKIA s.r.o. - www.cosmotron.sk
+200    $$aMUZ_DESCRIPTION$$bWebové rozhranie na vytváranie a úpravu záznamov Múzejných autorít#Webové rozhraní na vytváření a úpravu záznamů Muzejních autorit###
+200    $$aMUZ_TITLE$$bMúzejné autority
+200    $$aNOSCRIPT$$bWeb admin je založený na JavaScriptovej knižnici Ext JS. Pre spustenie aplikácie musíte vo Vašom prehliadači povoliť JavaScript!#Web admin je založen na JavaScriptové knihovně Ext JS. Pro spuštění aplikace musíte ve Vašem prohlížeči povolit JavaScript!#Web admin is based on Ext JS JavaScript library. To run the application, you must enable your browser's JavaScript!#Web admin is based on Ext JS JavaScript library. To run the application, you must enable your browser's JavaScript!#Web admin is based on Ext JS JavaScript library. To run the application, you must enable your browser's JavaScript!#Web admin is based on Ext JS JavaScript library. To run the application, you must enable your browser's JavaScript!
+200    $$aNRA_DESCRIPTION$$bWebové rozhranie na vytváranie a úpravu záznamov v Národnom registri autorít#Webové rozhraní pro vytváření a úpravu záznamů v Národním registru autorit###
+200    $$aNRA_TITLE$$bNárodný register autorít
+200    $$aREPORTS_DESCRIPTION$$bWebové rozhranie na spustenie výstupov z ARL#Webová aplikace pro spouštění výstupů z ARL###
+200    $$aREPORTS_TITLE$$bVýstupy#Výstupy#Reports#Reports#Reports#Reports
+200    $$aSCD_DESCRIPTION$$b
+200    $$aSCD_TITLE$$bSúťaž NCD
+200    $$aSCDAUTH_DESCRIPTION$$bWebové rozhranie pre správu autorít#Webové rozhraní pro správu autorit
+200    $$aSCDAUTH_TITLE$$bIS DIZAJN
+200    $$aSCDF_DESCRIPTION$$bOn-line prihláška Fórum dizajnu 2012 - Návrat k drevu
+200    $$aSCDF_TITLE$$bFórum dizajnu 2012
+200    $$aWEBADMIN_DESCRIPTION$$bWebové rozhranie na úpravu nastavení ARL a prípadne úpravu dát v databázach, primárne určená pre správcov a systémových knihovníkov.#Webové rozhraní pro úpravu nastavení ARL a případně úpravu dát v databázích, přimárně určená pro správce a systémové knihovníky.#Web interface for ARL settings management and data editing, designed for system librariens.###
+200    $$aWEBADMIN_TITLE$$bWeb admin#Web admin#Web admin#Web admin#Web admin#Web admin
+
+# @id IctxUnTablesd I3_CONF
+200    $$aWEBADMIN_URL$$b
+200    $$aWEBADMIN_MSA_TILECOLOR$$b\#4B87C6
+200    $$aWEBADMIN_MSA_TILEIMAGE$$b../etc/appIcon-144.png
+200    $$aWEBADMIN_HTML_HEADER$$b
+200    $$aWEBADMIN_FAVICON$$b

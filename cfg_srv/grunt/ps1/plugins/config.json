@@ -1,0 +1,163 @@
+[{
+	"items": [{
+		"name": "grunt",
+		"install": "grunt --save-dev",
+		"uninstall": "grunt --save-dev --force",
+		"url": ""
+	}, {
+		"name": "jit-grunt",
+		"install": "jit-grunt --save-dev",
+		"uninstall": "jit-grunt --save-dev --force",
+		"url": "https://github.com/shootaroo/jit-grunt"
+	}, {
+		"name": "load-grunt-configs",
+		"install": "-D load-grunt-configs --save-dev --force",
+		"uninstall": "load-grunt-configs --save-dev --force",
+		"url": "https://github.com/firstandthird/load-grunt-config"
+	}, {
+		"name": "load-grunt-tasks",
+		"install": "load-grunt-tasks --save-dev",
+		"uninstall": "load-grunt-tasks --save-dev --force",
+		"url": "https://github.com/sindresorhus/load-grunt-tasks"
+	}, {
+		"name": "coffeescript",
+		"install": "coffeescript --save-dev --force",
+		"uninstall": "coffeescript --save-dev --force",
+		"url": "https://coffeescript.org/"
+	}, {
+		"name": "grunt-jsonlint",
+		"install": "grunt-jsonlint --save-dev --force",
+		"uninstall": "grunt-jsonlint --save-dev --force",
+		"url": "https://github.com/brandonramirez/grunt-jsonlint"
+	}, {
+		"name": "grunt-json-format",
+		"install": "grunt-json-format --save-dev --force",
+		"uninstall": "grunt-json-format --save-dev --force",
+		"url": "https://github.com/jahed/grunt-json-format"
+	}, {
+		"name": "sass",
+		"install": "sass -g",
+		"uninstall": "sass --force",
+		"url": ""
+	}, {
+		"name": "grunt-dart-sass",
+		"install": "-D sass grunt-dart-sass --force",
+		"uninstall": "grunt-dart-sass --force",
+		"url": "https://github.com/laurenhamel/grunt-dart-sass"
+	}, {
+		"name": "grunt-prettier",
+		"install": "grunt-prettier --save-dev --force",
+		"uninstall": "grunt-prettier --save-dev --force",
+		"url": "https://github.com/poalrom/grunt-prettier"
+	}, {
+		"name": "grunt-sassdoc",
+		"install": "grunt-sassdoc --save-dev",
+		"uninstall": "grunt-sassdoc --save-dev --force",
+		"url": "https://github.com/SassDoc/grunt-sassdoc"
+	}, {
+		"name": "grunt-contrib-jshint",
+		"install": "grunt-contrib-jshint --save-dev",
+		"uninstall": "grunt-contrib-jshint --save-dev --force",
+		"url": "https://github.com/gruntjs/grunt-contrib-jshint"
+	}, {
+		"name": "grunt-jsbeautifier",
+		"install": "grunt-jsbeautifier --save-dev",
+		"uninstall": "grunt-jsbeautifier --save-dev --force",
+		"url": "https://github.com/vkadam/grunt-jsbeautifier"
+	}, {
+		"name": "grunt-jsdoc",
+		"install": "grunt-jsdoc --save-dev --force",
+		"uninstall": "grunt-jsdoc --save-dev --force",
+		"url": "https://github.com/krampstudio/grunt-jsdoc"
+	}, {
+		"name": "jshint-html-reporter",
+		"install": "jshint-html-reporter --save-dev",
+		"uninstall": "jshint-html-reporter --save-dev --force",
+		"url": "https://github.com/adrianpietka/jshint-html-reporter"
+	}, {
+		"name": "ink-docstrap",
+		"install": "ink-docstrap --save-dev --force",
+		"uninstall": "ink-docstrap --save-dev --force",
+		"url": "https://github.com/docstrap/docstrap"
+	}, {
+		"name": "grunt-stylelint",
+		"install": "stylelint grunt-stylelint --save-dev --force",
+		"uninstall": "stylelint grunt-stylelint --save-dev --force",
+		"url": "https://github.com/wikimedia/grunt-stylelint"
+	}, {
+		"name": "stylelint-scss",
+		"install": "stylelint stylelint-scss --save-dev --force",
+		"uninstall": "stylelint stylelint-scss --save-dev --force",
+		"url": "https://github.com/stylelint-scss/stylelint-scss"
+	}, {
+		"name": "stylelint-config-standard-scss",
+		"install": "stylelint stylelint-config-standard-scss --save-dev --force",
+		"uninstall": "stylelint stylelint-config-standard-scss --save-dev --force",
+		"url": "https://github.com/stylelint-scss/stylelint-config-standard-scss"
+	}, {
+		"name": "stylelint-config-standard",
+		"install": "stylelint stylelint-config-standard --save-dev --force",
+		"uninstall": "stylelint stylelint-config-standard --save-dev --force",
+		"url": "https://github.com/stylelint/stylelint-config-standard"
+	}, {
+		"name": "grunt-byte-order-mark",
+		"install": "grunt-byte-order-mark --save-dev --force",
+		"uninstall": "grunt-byte-order-mark --save-dev --force",
+		"url": "https://github.com/bergquist/grunt-byte-order-mark"
+	}, {
+		"name": "grunt-contrib-clean",
+		"install": "grunt-contrib-clean --save-dev",
+		"uninstall": "grunt-contrib-clean --save-dev --force",
+		"url": "https://github.com/gruntjs/grunt-contrib-clean"
+	}, {
+		"name": "grunt-contrib-compress",
+		"install": "grunt-contrib-compress --save-dev",
+		"uninstall": "grunt-contrib-compress --save-dev --force",
+		"url": "https://github.com/gruntjs/grunt-contrib-compress"
+	}, {
+		"name": "grunt-contrib-concat",
+		"install": "grunt-contrib-concat --save-dev",
+		"uninstall": "grunt-contrib-concat --save-dev --force",
+		"url": "https://github.com/gruntjs/grunt-contrib-concat"
+	}, {
+		"name": "grunt-contrib-connect",
+		"install": "grunt-contrib-connect --save-dev",
+		"uninstall": "grunt-contrib-connect --save-dev --force",
+		"url": "https://github.com/gruntjs/grunt-contrib-connect"
+	}, {
+		"name": "grunt-contrib-copy",
+		"install": "grunt-contrib-copy --save-dev",
+		"uninstall": "grunt-contrib-copy --save-dev --force",
+		"url": "https://github.com/gruntjs/grunt-contrib-copy"
+	}, {
+		"name": "grunt-contrib-uglify",
+		"install": "grunt-contrib-uglify --save-dev --force",
+		"uninstall": "grunt-contrib-uglify --save-dev --force",
+		"url": "https://github.com/gruntjs/grunt-contrib-uglify"
+	}, {
+		"name": "grunt-eol",
+		"install": "grunt-eol --save-dev --force",
+		"uninstall": "grunt-eol --save-dev --force",
+		"url": "https://github.com/psyrendust/grunt-eol"
+	}, {
+		"name": "grunt-prompt",
+		"install": "grunt-prompt --save-dev",
+		"uninstall": "grunt-prompt --save-dev --force",
+		"url": "https://github.com/dylang/grunt-prompt"
+	}, {
+		"name": "grunt-zip",
+		"install": "grunt-zip --save-dev --force",
+		"uninstall": "grunt-zip --save-dev --force",
+		"url": "https://github.com/twolfson/grunt-zip"
+	}, {
+		"name": "grunt-contrib-watch",
+		"install": "grunt-contrib-watch --save-dev --force",
+		"uninstall": "grunt-contrib-watch --save-dev --force",
+		"url": "https://github.com/gruntjs/grunt-contrib-watch"
+	}, {
+		"name": "grunt-ftp",
+		"install": "grunt-ftp --save-dev --force",
+		"uninstall": "grunt-ftp --save-dev --force",
+		"url": "https://github.com/zonak/grunt-ftp-deploy"
+	}]
+}]
