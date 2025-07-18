@@ -1,6 +1,7 @@
 /**
  * Zakladna kniznica funkcii - nezavisla na Ext.
  *
+ * 15.04.25 on; nova verze csDeleteInterpunction
  * 24.03.22 on; zruseno omezeni ve 4 funkcich
  * 17.01.22 on; podminka pro parametr objektu, pokud jde o indikator, tak neporovnavat
  * 16.12.21 on; nastavi scope udalosti listeners.select/change, pokud je nadefinovana
@@ -246,9 +247,9 @@ Ext.apply(String.prototype, {
         // 09.04.20 on; 100->200
         // 19.02.18 on; 60->110, 50->100
         /*var a = this.split(del, 210);
-        if (a.length > 200) {
-            i3.abort('String.prototype.piece: do not use this for long strings');
-        }*/
+         if (a.length > 200) {
+         i3.abort('String.prototype.piece: do not use this for long strings');
+         }*/
         var a = this.split(del);
         a = a[n - 1];
         if (typeof a !== 'string') {
@@ -300,9 +301,9 @@ Ext.apply(String.prototype, {
         }
         // 24.03.22 on; zruseno omezeni
         /*var a = this.split(del, 60);
-        if (a.length > 50) {
-            i3.abort('String.prototype.setfield: do not use this for long strings');
-        }*/
+         if (a.length > 50) {
+         i3.abort('String.prototype.setfield: do not use this for long strings');
+         }*/
         var a = this.split(del);
         a[n - 1] = val;
         var s = a.join(del);
@@ -325,9 +326,9 @@ Ext.apply(String.prototype, {
         }
         // 24.03.22 on; zruseno omezeni
         /*var a = this.split(del, 60);
-        if (a.length > 50) {
-            i3.abort('String.prototype.prefixLocate: do not use this for long strings');
-        }*/
+         if (a.length > 50) {
+         i3.abort('String.prototype.prefixLocate: do not use this for long strings');
+         }*/
         var a = this.split(del);
         var i;
         for (i = 0; i < a.length; i++) {
@@ -354,9 +355,9 @@ Ext.apply(String.prototype, {
         }
         // 24.03.22 on; zruseno omezeni
         /*var a = this.split(del, 60);
-        if (a.length > 50) {
-            i3.abort('String.prototype.fieldLocate: do not use this for long strings');
-        }*/
+         if (a.length > 50) {
+         i3.abort('String.prototype.fieldLocate: do not use this for long strings');
+         }*/
         var a = this.split(del);
         var i;
         for (i = 0; i < a.length; i++) {
@@ -424,16 +425,22 @@ Ext.applyIf(String.prototype, {
      * 26.01.12 on;
      */
     csDeleteInterpunction: (function() {
-        var cInter = ':.,;/=';
+        //var cInter = ':.,;/=';
+        var punctuation = /[:.,;/=]/g;;
         return function() {
             var s;
             // 14.10.21 on; pridene + ''  - prevod na string (z pole)
             s = this + '';
+            // 15.04.24 on; predelane 
+            /*if (s !== '') {
+             if (cInter.find(s.substring(s.length - 1)) > 0) {
+             s = s.substring(0, s.length - 1);
+             s = s.trimb();
+             }
+             }
+             return s;*/
             if (s !== '') {
-                if (cInter.find(s.substring(s.length - 1)) > 0) {
-                    s = s.substring(0, s.length - 1);
-                    s = s.trimb();
-                }
+                s = s.replace(punctuation, "");
             }
             return s;
         };
@@ -455,10 +462,10 @@ if ((Ext !== undefined) && Ext.apply) {
 } else {
     /**
      * Kopia Ext.apply() - v podstate len z dovodu, aby sme tento JS subor mohli
-     * pouzit bez include Ext-u.<br/><br/>
+     * pouzit bez include Ext-u.<br><br>
      *
-     * 13.06.08 rs; pridane "(c.hasOwnProperty(p))" podla jslint   <br/>
-     * Copies all the properties of config to obj.<br/>
+     * 13.06.08 rs; pridane "(c.hasOwnProperty(p))" podla jslint   <br>
+     * Copies all the properties of config to obj.<br>
      *
      *  @param {Object} obj The receiver of the properties
      *  @param {Object} config The source of the properties
@@ -599,8 +606,7 @@ i3.apply(i3, {
      * 06.06.12 jk; doplneni moznosti zaescapovani znaku, ktery je pouzity jako oddelovac
      */
     languageSel: function(pStr, pLanguage, pDelim, bDefLang) {
-        var num,
-            sCommonLang;
+        var num, sCommonLang;
         if (pLanguage === undefined) {
             pLanguage = i3.language;
         } // defaultny globalny kontext
@@ -674,9 +680,7 @@ i3.apply(i3, {
      * @param {String} pClassN  Trieda
      */
     className2LName: function(pClassN) {
-        var c,
-            c2,
-            res = '',
+        var c, c2, res = '',
             nUCase = 0;
         // poradove cislo U-case znaku, kt. aktualne spracovavame
         // pokial zadana hodnota uz je lname, nekonvertovat
@@ -717,8 +721,7 @@ i3.apply(i3, {
      * @param {String} pLName lname
      */
     lName2className: function(pLName) {
-        var c,
-            bUCaseNext = true,
+        var c, bUCaseNext = true,
             res = '';
         // lname by mohlo prist aj uppercased
         pLName = pLName.toLowerCase();
@@ -815,9 +818,7 @@ i3.apply(i3, {
      */
     fillInParams: function(pMsg, paParams) {
         var sRet = '',
-            nQ,
-            sPercCode,
-            nParamNo = -1;
+            nQ, sPercCode, nParamNo = -1;
         // 10.07.19 on; komplet predelane, minifikace kodu nefungovala spravne
         nQ = pMsg.indexOf('%');
         while (nQ >= 0) {
@@ -929,10 +930,7 @@ i3.apply(i3, {
         if (typeof arr === 'string') {
             return arr === '';
         }
-        var i,
-            o,
-            prop,
-            v;
+        var i, o, prop, v;
         for (i = 0; i < arr.length; i++) {
             o = arr[i];
             for (prop in o) {
@@ -964,8 +962,7 @@ i3.apply(i3, {
         if (typeof o !== 'object') { // ak to neni objekt, vratime false (neprazdne; nemalo by nastat)
             return false;
         }
-        var i,
-            v;
+        var i, v;
         for (i in o) {
             if (o.hasOwnProperty(i)) {
                 v = o[i];
@@ -1328,9 +1325,7 @@ i3.apply(i3, {
         // pole 001 nastavi podle obsahu C99f
         var tC99 = poFormRec.getTag('C99'),
             tC99f = poFormRec.getSubTagStr(tC99, 'f'),
-            tC99d,
-            sData,
-            sFormName;
+            tC99d, sData, sFormName;
         // odfiltruje CMCONFIG z nazvu formulare
         sFormName = poFormRec.t001;
         if (sFormName.substring(0, 9) === 'CMCONFIG_') {
@@ -1473,11 +1468,9 @@ i3.apply(i3, {
      **/
     csSetUrlParam: function(url, param, value) {
         var paramNew = '',
-            par,
-            val;
+            par, val;
         var server = url.split('?')[0],
-            sOp,
-            i;
+            sOp, i;
         var params = url.split('?')[1];
         if (params) {
             params = params.split('&');
@@ -1621,8 +1614,7 @@ i3.c = {
             return undefined;
         }
         pbMethods = pbMethods || false;
-        var i,
-            newObj = (pobject instanceof Array) ? [] : {};
+        var i, newObj = (pobject instanceof Array) ? [] : {};
         for (i in pobject) {
             // 05.02.14 on; rozsirena podminka
             if (pobject.hasOwnProperty(i) || pbMethods) {
@@ -1662,10 +1654,7 @@ i3.c = {
             if (!Ext.isArray(obj)) {
                 obj = [obj];
             }
-            var i,
-                o,
-                prop,
-                v;
+            var i, o, prop, v;
             for (i = 0; i < obj.length; i++) {
                 o = obj[i];
                 for (prop in o) {
@@ -1741,65 +1730,14 @@ i3.c = {
             this.highOrder = r;
             this.lowOrder = e;
         }
-        var w,
-            n,
-            d,
-            h,
-            O,
-            o,
-            i,
-            l,
-            g,
-            t,
-            v,
-            u,
-            a,
-            c,
-            f,
-            s,
-            A,
-            p,
-            C,
-            b,
-            m,
-            y,
-            H,
-            I,
-            R,
-            S,
-            U,
-            j,
-            k,
-            q,
-            x,
-            z,
-            B,
-            D,
-            E,
-            F,
-            G,
-            J,
-            K,
-            L,
-            M,
-            N,
-            P,
-            Q,
-            T,
-            V,
-            W,
-            X = [new e(1779033703, 4089235720), new e(3144134277, 2227873595), new e(1013904242, 4271175723), new e(2773480762, 1595750129), new e(1359893119, 2917565137), new e(2600822924, 725511199), new e(528734635, 4215389547), new e(1541459225, 327033209)],
+        var w, n, d, h, O, o, i, l, g, t, v, u, a, c, f, s, A, p, C, b, m, y, H, I, R, S, U, j, k, q, x, z, B, D, E, F, G, J, K, L, M, N, P, Q, T, V, W, X = [new e(1779033703, 4089235720), new e(3144134277, 2227873595), new e(1013904242, 4271175723), new e(2773480762, 1595750129), new e(1359893119, 2917565137), new e(2600822924, 725511199), new e(528734635, 4215389547), new e(1541459225, 327033209)],
             Y = [new e(1116352408, 3609767458), new e(1899447441, 602891725), new e(3049323471, 3964484399), new e(3921009573, 2173295548), new e(961987163, 4081628472), new e(1508970993, 3053834265), new e(2453635748, 2937671579), new e(2870763221, 3664609560), new e(3624381080, 2734883394), new e(310598401, 1164996542), new e(607225278, 1323610764), new e(1426881987, 3590304994), new e(1925078388, 4068182383), new e(2162078206, 991336113), new e(2614888103, 633803317), new e(3248222580, 3479774868), new e(3835390401, 2666613458), new e(4022224774, 944711139), new e(264347078, 2341262773), new e(604807628, 2007800933), new e(770255983, 1495990901), new e(1249150122, 1856431235), new e(1555081692, 3175218132), new e(1996064986, 2198950837), new e(2554220882, 3999719339), new e(2821834349, 766784016), new e(2952996808, 2566594879), new e(3210313671, 3203337956), new e(3336571891, 1034457026), new e(3584528711, 2466948901), new e(113926993, 3758326383), new e(338241895, 168717936), new e(666307205, 1188179964), new e(773529912, 1546045734), new e(1294757372, 1522805485), new e(1396182291, 2643833823), new e(1695183700, 2343527390), new e(1986661051, 1014477480), new e(2177026350, 1206759142), new e(2456956037, 344077627), new e(2730485921, 1290863460), new e(2820302411, 3158454273), new e(3259730800, 3505952657), new e(3345764771, 106217008), new e(3516065817, 3606008344), new e(3600352804, 1432725776), new e(4094571909, 1467031594), new e(275423344, 851169720), new e(430227734, 3100823752), new e(506948616, 1363258195), new e(659060556, 3750685593), new e(883997877, 3785050280), new e(958139571, 3318307427), new e(1322822218, 3812723403), new e(1537002063, 2003034995), new e(1747873779, 3602036899), new e(1955562222, 1575990012), new e(2024104815, 1125592928), new e(2227730452, 2716904306), new e(2361852424, 442776044), new e(2428436474, 593698344), new e(2756734187, 3733110249), new e(3204031479, 2999351573), new e(3329325298, 3815920427), new e(3391569614, 3928383900), new e(3515267271, 566280711), new e(3940187606, 3454069534), new e(4118630271, 4000239992), new e(116418474, 1914138554), new e(174292421, 2731055270), new e(289380356, 3203993006), new e(460393269, 320620315), new e(685471733, 587496836), new e(852142971, 1086792851), new e(1017036298, 365543100), new e(1126000580, 2618297676), new e(1288033470, 3409855158), new e(1501505948, 4234509866), new e(1607167915, 987167468), new e(1816402316, 1246189591)],
             Z = new Array(64),
             $ = 8;
 
         function _(r, w) {
-            var n,
-                d,
-                h;
-            return n = (65535 & r.lowOrder) + (65535 & w.lowOrder),
-                h = (65535 & (d = (r.lowOrder >>> 16) + (w.lowOrder >>> 16) + (n >>> 16))) << 16 | 65535 & n,
-                n = (65535 & r.highOrder) + (65535 & w.highOrder) + (d >>> 16), new e((65535 & (d = (r.highOrder >>> 16) + (w.highOrder >>> 16) + (n >>> 16))) << 16 | 65535 & n, h)
+            var n, d, h;
+            return n = (65535 & r.lowOrder) + (65535 & w.lowOrder), h = (65535 & (d = (r.lowOrder >>> 16) + (w.lowOrder >>> 16) + (n >>> 16))) << 16 | 65535 & n, n = (65535 & r.highOrder) + (65535 & w.highOrder) + (d >>> 16), new e((65535 & (d = (r.highOrder >>> 16) + (w.highOrder >>> 16) + (n >>> 16))) << 16 | 65535 & n, h)
         }
 
         function rr(r, w) {
@@ -1809,60 +1747,22 @@ i3.c = {
         function er(r, w) {
             return w <= 32 ? new e(r.highOrder >>> w, r.lowOrder >>> w | r.highOrder << 32 - w) : new e(0, r.highOrder << 32 - w)
         }
-        r = unescape(encodeURIComponent(r)),
-            strlen = r.length * $, (r = function(r) {
-                for (var e = [], w = (1 << $) - 1, n = r.length * $, d = 0; d < n; d += $) e[d >> 5] |= (r.charCodeAt(d / $) & w) << 32 - $ - d % 32;
-                return e
-            }(r))[strlen >> 5] |= 128 << 24 - strlen % 32, r[31 + (strlen + 128 >> 10 << 5)] = strlen;
+        r = unescape(encodeURIComponent(r)), strlen = r.length * $, (r = function(r) {
+            for (var e = [], w = (1 << $) - 1, n = r.length * $, d = 0; d < n; d += $) e[d >> 5] |= (r.charCodeAt(d / $) & w) << 32 - $ - d % 32;
+            return e
+        }(r))[strlen >> 5] |= 128 << 24 - strlen % 32, r[31 + (strlen + 128 >> 10 << 5)] = strlen;
         for (var wr = 0; wr < r.length; wr += 32) {
-            w = X[0],
-                n = X[1],
-                d = X[2],
-                h = X[3],
-                O = X[4],
-                o = X[5],
-                i = X[6],
-                l = X[7];
-            for (var nr = 0; nr < 80; nr++) Z[nr] = nr < 16 ? new e(r[2 * nr + wr], r[2 * nr + wr + 1]) : (Q = Z[nr - 2], void 0, void 0, void 0, T = rr(Q, 19), V = rr(Q, 61), W = er(Q, 6), B = new e(T.highOrder ^ V.highOrder ^ W.highOrder, T.lowOrder ^ V.lowOrder ^ W.lowOrder), D = Z[nr - 7], L = Z[nr - 15], void 0, void 0, void 0, M = rr(L, 1), N = rr(L, 8), P = er(L, 7), E = new e(M.highOrder ^ N.highOrder ^ P.highOrder, M.lowOrder ^ N.lowOrder ^ P.lowOrder), F = Z[nr - 16], G = void 0, J = void 0, K = void 0, G = (65535 & B.lowOrder) + (65535 & D.lowOrder) + (65535 & E.lowOrder) + (65535 & F.lowOrder), K = (65535 & (J = (B.lowOrder >>> 16) + (D.lowOrder >>> 16) + (E.lowOrder >>> 16) + (F.lowOrder >>> 16) + (G >>> 16))) << 16 | 65535 & G, G = (65535 & B.highOrder) + (65535 & D.highOrder) + (65535 & E.highOrder) + (65535 & F.highOrder) + (J >>> 16), new e((65535 & (J = (B.highOrder >>> 16) + (D.highOrder >>> 16) + (E.highOrder >>> 16) + (F.highOrder >>> 16) + (G >>> 16))) << 16 | 65535 & G, K)),
-                p = l,
+            w = X[0], n = X[1], d = X[2], h = X[3], O = X[4], o = X[5], i = X[6], l = X[7];
+            for (var nr = 0; nr < 80; nr++) Z[nr] = nr < 16 ? new e(r[2 * nr + wr], r[2 * nr + wr + 1]) : (Q = Z[nr - 2], void 0, void 0, void 0, T = rr(Q, 19), V = rr(Q, 61), W = er(Q, 6), B = new e(T.highOrder ^ V.highOrder ^ W.highOrder, T.lowOrder ^ V.lowOrder ^ W.lowOrder), D = Z[nr - 7], L = Z[nr - 15], void 0, void 0, void 0, M = rr(L, 1), N = rr(L, 8), P = er(L, 7), E = new e(M.highOrder ^ N.highOrder ^ P.highOrder, M.lowOrder ^ N.lowOrder ^ P.lowOrder), F = Z[nr - 16], G = void 0, J = void 0, K = void 0, G = (65535 & B.lowOrder) + (65535 & D.lowOrder) + (65535 & E.lowOrder) + (65535 & F.lowOrder), K = (65535 & (J = (B.lowOrder >>> 16) + (D.lowOrder >>> 16) + (E.lowOrder >>> 16) + (F.lowOrder >>> 16) + (G >>> 16))) << 16 | 65535 & G, G = (65535 & B.highOrder) + (65535 & D.highOrder) + (65535 & E.highOrder) + (65535 & F.highOrder) + (J >>> 16), new e((65535 & (J = (B.highOrder >>> 16) + (D.highOrder >>> 16) + (E.highOrder >>> 16) + (F.highOrder >>> 16) + (G >>> 16))) << 16 | 65535 & G, K)), p = l,
                 void 0,
                 void 0,
-                void 0,
-                q = rr(k = O, 14),
-                x = rr(k, 18),
-                z = rr(k, 41),
-                C = new e(q.highOrder ^ x.highOrder ^ z.highOrder, q.lowOrder ^ x.lowOrder ^ z.lowOrder),
-                U = o,
-                j = i,
-                b = new e((S = O).highOrder & U.highOrder ^ ~S.highOrder & j.highOrder, S.lowOrder & U.lowOrder ^ ~S.lowOrder & j.lowOrder),
-                m = Y[nr],
-                y = Z[nr],
-                H = void 0,
-                I = void 0,
-                R = void 0,
-                H = (65535 & p.lowOrder) + (65535 & C.lowOrder) + (65535 & b.lowOrder) + (65535 & m.lowOrder) + (65535 & y.lowOrder),
-                R = (65535 & (I = (p.lowOrder >>> 16) + (C.lowOrder >>> 16) + (b.lowOrder >>> 16) + (m.lowOrder >>> 16) + (y.lowOrder >>> 16) + (H >>> 16))) << 16 | 65535 & H,
-                H = (65535 & p.highOrder) + (65535 & C.highOrder) + (65535 & b.highOrder) + (65535 & m.highOrder) + (65535 & y.highOrder) + (I >>> 16),
-                g = new e((65535 & (I = (p.highOrder >>> 16) + (C.highOrder >>> 16) + (b.highOrder >>> 16) + (m.highOrder >>> 16) + (y.highOrder >>> 16) + (H >>> 16))) << 16 | 65535 & H, R),
-                t = _((void 0, void 0, void 0, f = rr(c = w, 28), s = rr(c, 34), A = rr(c, 39), new e(f.highOrder ^ s.highOrder ^ A.highOrder, f.lowOrder ^ s.lowOrder ^ A.lowOrder)), (u = n, a = d, new e((v = w).highOrder & u.highOrder ^ v.highOrder & a.highOrder ^ u.highOrder & a.highOrder, v.lowOrder & u.lowOrder ^ v.lowOrder & a.lowOrder ^ u.lowOrder & a.lowOrder))),
-                l = i,
-                i = o,
-                o = O,
-                O = _(h, g),
-                h = d,
-                d = n,
-                n = w,
-                w = _(g, t);
+                void 0, q = rr(k = O, 14), x = rr(k, 18), z = rr(k, 41), C = new e(q.highOrder ^ x.highOrder ^ z.highOrder, q.lowOrder ^ x.lowOrder ^ z.lowOrder), U = o, j = i, b = new e((S = O).highOrder & U.highOrder ^ ~S.highOrder & j.highOrder, S.lowOrder & U.lowOrder ^ ~S.lowOrder & j.lowOrder), m = Y[nr], y = Z[nr], H = void 0, I = void 0, R = void 0, H = (65535 & p.lowOrder) + (65535 & C.lowOrder) + (65535 & b.lowOrder) + (65535 & m.lowOrder) + (65535 & y.lowOrder), R = (65535 & (I = (p.lowOrder >>> 16) + (C.lowOrder >>> 16) + (b.lowOrder >>> 16) + (m.lowOrder >>> 16) + (y.lowOrder >>> 16) + (H >>> 16))) << 16 | 65535 & H, H = (65535 & p.highOrder) + (65535 & C.highOrder) + (65535 & b.highOrder) + (65535 & m.highOrder) + (65535 & y.highOrder) + (I >>> 16), g = new e((65535 & (I = (p.highOrder >>> 16) + (C.highOrder >>> 16) + (b.highOrder >>> 16) + (m.highOrder >>> 16) + (y.highOrder >>> 16) + (H >>> 16))) << 16 | 65535 & H, R), t = _((void 0, void 0, void 0, f = rr(c = w, 28), s = rr(c, 34), A = rr(c, 39), new e(f.highOrder ^ s.highOrder ^ A.highOrder, f.lowOrder ^ s.lowOrder ^ A.lowOrder)), (u = n, a = d, new e((v = w).highOrder & u.highOrder ^ v.highOrder & a.highOrder ^ u.highOrder & a.highOrder, v.lowOrder & u.lowOrder ^ v.lowOrder & a.lowOrder ^ u.lowOrder & a.lowOrder))), l = i, i = o, o = O, O = _(h, g), h = d, d = n, n = w, w = _(g, t);
             X[0] = _(w, X[0]), X[1] = _(n, X[1]), X[2] = _(d, X[2]), X[3] = _(h, X[3]), X[4] = _(O, X[4]), X[5] = _(o, X[5]), X[6] = _(i, X[6]), X[7] = _(l, X[7])
         }
         var dr = [];
         for (wr = 0; wr < X.length; wr++) dr.push(X[wr].highOrder), dr.push(X[wr].lowOrder);
         return function(r) {
-            for (var e,
-                    w = "0123456789abcdef",
-                    n = "",
-                    d = 4 * r.length,
-                    h = 0; h < d; h += 1) e = r[h >> 2] >> 8 * (3 - h % 4), n += w.charAt(e >> 4 & 15) + w.charAt(15 & e);
+            for (var e, w = "0123456789abcdef", n = "", d = 4 * r.length, h = 0; h < d; h += 1) e = r[h >> 2] >> 8 * (3 - h % 4), n += w.charAt(e >> 4 & 15) + w.charAt(15 & e);
             return n;
         }(dr)
     },

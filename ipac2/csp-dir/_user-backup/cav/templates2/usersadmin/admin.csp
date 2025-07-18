@@ -1,0 +1,29 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<script language="cache" runat="server">
+s i=##class(i2.admin.techinfo).%New(.data, data("KEY"))
+s data("TEXTS",1,"t001")=i.t001Tx
+s data("TEXTS",1,"text")=..tx("TEXTAPAGE")
+s data("ISIDX")=1
+s data("ISFORM")=0
+s data("ADMINTABS")="settings,texts,techinfo"
+</script>
+
+<admin:tabs tabs="#(data("ADMINTABS"))#" pageid="#(data("KEY"))#"/>
+
+<div class="tab-content">
+  <ipac:off> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx </ipac:off>
+  <ipac:tpl page="admin" version="tab.techinfo"/>
+  <ipac:off> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx </ipac:off>
+  <ipac:tpl page="admin" version="tab.texts"/>
+  <ipac:off> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx </ipac:off>
+  <csp:if condition=($$$GETREQVAR("tab")="settings")>
+    <div id="settings">
+      <ipac:tpl page="admin" version="form.head"/>
+      <ul class="list-group">
+        <ipac:tpl page="admin" version="form.li2"/>
+      </ul>
+    </div>
+  </csp:if>
+  <ipac:off> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx </ipac:off>
+</div>

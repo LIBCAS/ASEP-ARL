@@ -1,6 +1,19 @@
-/**
+﻿/**
  * @author Michal Namesny
  *
+ * 23.06.25 on; ikona obrazek
+ * 03.03.25 on; moznost nemazat Txx tagy
+ * 20.02.25 on; ulozi zaznam pred prilozenim prilohy
+ * 18.02.25 on; cteni boosteru pri zmene skinu 
+ * 31.01.25 on; prida do ouska id zaznamu
+ * 21.01.25 on; pridan parametr, zda nezakazat tlacitko Do IPAC
+ * 20.01.25 on; doplneno pro sav
+ * 06.12.24 on; moznost nastavit v UnDatabases_ictx.json formtype
+ * 01.07.24 on; slouceno a pridano "I"
+ * 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
+ * 10.06.24 on; moznost nastavit popisek zobrazovaciho formatu
+ * 28.05.24 on; pro zaznam ctenare zobrazi v pripade U95a=1 jinou hlasku
+ * 29.04.24 on; nastaveni css bude pouze v csp souboru
  * 11.10.23 on; snaha zamezit pokusu o opakovane vlozeni noveho zaznamu (dvojklikem)
  * 20.07.23 on; nekontrolovat pri kopirovani zaznamu
  * 14.07.23 on; nekontrolovat pri odeslani do/z ipac
@@ -67,7 +80,7 @@
  * 30.08.11 on; doplnena moznost zadat kod zaznamu pro otevreni v editoru
  * 20.07.11 on; moznost predat nazev formulare v URL
  */
-/*global Ext,i3,epca,document,window,Blob,replacejscssfile,setTimeout,alert */
+/*global Ext,i3,epca,document,window,Blob,replacejscssfile,setTimeout,alert,getActCss */
 
 Ext.ns('epca.evidence');
 
@@ -81,7 +94,8 @@ epca.evidence.c = {
 	sProcessor : 'I3UG_ZP', // 28.03.17 on;
 	sSuper : 'I3UG_SU', // 28.03.17 on;
 
-	sActualCssStyle : 'css/' + i3.ictx.toLowerCase() + '.css', // globalni promenna - defaultni styl - musi byt shodny se stylem v indexEvidence.csp
+	// 29.04.24 on; nastaveni bude pouze v csp souboru
+	//sActualCssStyle : 'css/' + i3.ictx.toLowerCase() + '.css', // globalni promenna - defaultni styl - musi byt shodny se stylem v indexEvidence.csp
 
 	sFormMsgId : 'openformmsg', // id dialogu pro zobrazeni info o probihajici akci
 	sFormMsgId2 : 'saveformmsg', // id dialogu pro zobrazeni info o probihajici akci - pro ulozeni zaznamu
@@ -93,7 +107,8 @@ epca.evidence.c = {
 };
 
 epca.evidence.tx = {
-	txCheckOK : 'Záznam je v poriadku.#Záznam je v pořádku.#Record is alright.'.ls()
+	txCheckOK : 'Záznam je v poriadku.#Záznam je v pořádku.#Record is alright.'.ls(),
+	txNew : 'new#new#new'.ls()
 };
 
 epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
@@ -212,7 +227,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 			items : [{
 				region : 'east',
-				title : epca.L10n.txDisplayFormat,
+				// 10.06.24 on; moznost nastavit popisek zobrazovaciho formatu
+				title : epca.Config.User.DisplayFormatText || epca.L10n.txDisplayFormat,
 				hidden : ((this.getTabPanelForms().items.items.length > 0) || this.csHideDFPanel) ? this.csIsDfHidden() : false,
 				split : true,
 				width : this.csGetZfWidth(),
@@ -612,12 +628,15 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			delete object[key];
 		}
 
+		// 03.03.25 on; moznost nemazat Txx tagy
 		// 04.09.15 on; tag 000 potrebujeme
 		// Tagy ktore nie je potrebne nacitavat
 		//if (key === '000' || key[0] === 'T') {
-		if (key[0] === 'T') {
-			delete object[key];
-		}
+		if (!epca.Config.User.csDoNotDeleteTxx) {
+		  if (key[0] === 'T') {
+	        delete object[key];
+		  }
+	    }
 	},
 	isUnloadedData : function(object) {
 		return !epca.isEmpty(object);
@@ -820,10 +839,9 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			csStatTableN : 'EPCA_CSS_LIST',
 			// 05.03.20 on; zruseno
 			//csAutoSelectFirst : i3.isEmptyString(Ext.util.Cookies.get('i3style')) ? true : false,
-			// 05.03.20 on; doplneno
-			//value : Ext.util.Cookies.get('i3style') || '',
-			value : Ext.util.Cookies.get('i3style') || epca.evidence.c.sActualCssStyle,
-
+			// 29.04.24 on; upraveno
+			//value : Ext.util.Cookies.get('i3style') || epca.evidence.c.sActualCssStyle,
+			value : Ext.util.Cookies.get('i3style') || getActCss(),
 			//tooltip : epca.Config.User.ShowURLBtnFnHint || '',
 			forceSelection : true,
 			width : 120,
@@ -1151,7 +1169,9 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			text : this.csGetBtnText(epca.Config.User.SaveBtnFnText, epca.L10n.titleSave), // 10.12.15 on
 			tooltip : epca.Config.User.SaveBtnFnHint || '', // 10.12.15 on
 			id : 'maintb_save',
-			iconCls : 'icon-save',
+			// 23.06.25 on; ikona obrazek
+			//iconCls : 'icon-save',
+			iconCls : 'icon-save-img',
 			handler : function() {
 				this.save();
 			},
@@ -1254,7 +1274,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 		 for ( i = 0; i < marcData.length; i++) {
 		 marc += marcData[i].replace(i3.c.SF, '@');
-		 marc += '<br />';
+		 marc += '<br>';
 		 }
 
 		 panel.update(marc);
@@ -1468,9 +1488,10 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				hidden : false
 			});
 		}
-
+        
+        // 20.01.25 on; doplneno SAV
 		// 16.09.15 on; vyjimka pro CAV - jina poradi policek v menu
-		if (i3.ictx.toLowerCase() === 'cav') {
+		if ((i3.ictx.toLowerCase() === 'cav')||(i3.ictx.toLowerCase() === 'sav')) {
 			// 14.07.23 on; zrusena vyjimka pro individualniho uzivatele
 			// zmena popisu tlacitka ulozit
 			//if (this.csIsAnonymousUser() || this.csIsIndividualUser()) {
@@ -1663,15 +1684,17 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	/**
 	 * Ulozenie zaznam
 	 * @param {Object} is_new
+	 * 
+	 * 20.02.25 on; parametr poCallback
 	 */
-	save : function(pbClose, poMarc, pbForceCheck, psMsgAfterSave) {
+	save : function(pbClose, poMarc, pbForceCheck, psMsgAfterSave, poCallback) {
 		var activTab, record, is_new, c, nScrollTop, prop, newMarc, cmpBtnSave;
-
+		
 		// 10.10.23 on; snaha zamezit pokusu o opakovane vlozeni noveho zaznamu (dvojklikem)
 		cmpBtnSave = Ext.getCmp('maintb_save');
 		cmpBtnSave.setDisabled(true);
 		try {
-			activTab = this.getTabPanelForms().getActiveTab()
+			activTab = this.getTabPanelForms().getActiveTab();
 			
 			// 26.07.16 on; neexistuje zadny formular
 			if (!activTab) {
@@ -1689,9 +1712,10 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				return;
 			}
 
-			// 15.11.16 on; zmena id
-			//i3.msgOn(epca.L10n.txSavingRecord, undefined, undefined, epca.evidence.c.sFormMsgId);
-			i3.msgOn(epca.L10n.txSavingRecord, undefined, undefined, epca.evidence.c.sFormMsgId2);
+            // 20.02.25 on; podminka
+            if (!poCallback) {
+			  i3.msgOn(epca.L10n.txSavingRecord, undefined, undefined, epca.evidence.c.sFormMsgId2);
+			}
 			try {
 				// 12.11.15 on; predelane
 				if ((activTab.recordId === undefined) || (activTab.recordId === 'new')) {
@@ -1733,9 +1757,10 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 			} catch(err) {
 				// chyba
-				// 15.11.16 on; zmena id
-				//i3.msgOff(epca.evidence.c.sFormMsgId);
-				i3.msgOff(epca.evidence.c.sFormMsgId2);
+                // 20.02.25 on; podminka
+                if (!poCallback) {
+		          i3.msgOff(epca.evidence.c.sFormMsgId2);
+		        }
 			}
 
 			// 21.12.20 on; zapamatuje si pozici scrollbaru
@@ -1748,11 +1773,13 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 			i3.WS.update({
 				operation : is_new ? 'insert' : 'update',
+				// 20.01.25 on; sav
 				// 28.06.23 on; nebude se kontrolovat zadny zaznam na CAV
 				// 21.06.23 on; nekontrolovat Datovy zaznam na CAV pri ulozeni
 				//check : ((activTab.form.unFormat === 'E') && (i3.ictx.toLowerCase() === 'cav') && !pbForceCheck) ? '0' : '1',
-				check : ((i3.ictx.toLowerCase() === 'cav') && !pbForceCheck) ? '0' : '1',
+				check : (((i3.ictx.toLowerCase() === 'cav')||(i3.ictx.toLowerCase() === 'sav')) && !pbForceCheck) ? '0' : '1',
 				success : function(oMARC_rec, poResult) {
+					var m;
 					try {
 						// pokud se ma zaznam po uozeni zavrit, nebudu ho nacitat
 						if (pbClose) {
@@ -1794,23 +1821,39 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 								}
 							}
 						}
-						
 
 						// 13.09.17 on; vysledky kontrol
 						this.csCheckRecordResult(poResult, true);
 
-						epca.notify(epca.L10n.evidenceSaveRecordSuccess, epca.L10n.messageOK, "icon-accept");						
+			            // 20.02.25 on; podminka
+                        if (!poCallback) {
+  							// 28.05.24 on; pro zaznam ctenare zobrazi v pripade U95a=1 jinou hlasku
+    						if ((activTab.form.unFormat === 'U')&&(oMARC_rec.getTag('U95a') === '1')) {
+								m = new i3.WS.Msg('INFEPCAUSER001');
+        	   	                 i3.alert(m.userText); 
+							} else {
+							  epca.notify(epca.L10n.evidenceSaveRecordSuccess, epca.L10n.messageOK, "icon-accept");
+							}
+						}
+						
+						/// 20.02.25 on; moznost predat callback
+						if (poCallback) {
+                          poCallback.call(this);
+                        }
+                
 					} catch(err) {
 						// chyba
-						// 15.11.16 on; zmena id
-						//i3.msgOff(epca.evidence.c.sFormMsgId);
-						i3.msgOff(epca.evidence.c.sFormMsgId2);
+      		            // 20.02.25 on; podminka
+                        if (!poCallback) {
+    						i3.msgOff(epca.evidence.c.sFormMsgId2);
+    					}
          				// 10.10.23 on; 
 		    			cmpBtnSave.setDisabled(false);
 					}
-					// 15.11.16 on; zmena id
-					//i3.msgOff(epca.evidence.c.sFormMsgId);
-					i3.msgOff(epca.evidence.c.sFormMsgId2);
+                    // 20.02.25 on; podminka
+                    if (!poCallback) {
+				  	  i3.msgOff(epca.evidence.c.sFormMsgId2);
+				  	} 
        				// 10.10.23 on; 
 	    			cmpBtnSave.setDisabled(false);
 				},
@@ -2085,6 +2128,10 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		var bForceLoadRecord = this.csForceLoadRecord;
 		this.csForceLoadRecord = undefined;
 
+		// 31.01.25 on; prida do ouska id zaznamu
+		var sId = actTab.recordId || epca.evidence.tx.txNew;
+		actTab.setTitle(actTab.form.title.ls()+'*'+sId);
+
 		// Ako prechadza marc stromom, odmazavaju sa z neho nacitane hodnoty
 		epca.semafor = {};
 		if ((!bNewRec) || bForceLoadRecord) {
@@ -2250,7 +2297,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		// zastavi provadeni
 		e.stopEvent();
 
-		if (target.tagName === 'IMG') {// pokud jde o obrazek (mozna lupu?), zkusi nacist jinak
+		// 01.07.24 on; slouceno a pridano "I"
+		/*if (target.tagName === 'IMG') {// pokud jde o obrazek (mozna lupu?), zkusi nacist jinak
 			href = '';
 			// musim smazat href
 			targetEl = Ext.fly(target);
@@ -2268,7 +2316,16 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			if (anchor) {
 				href = anchor.dom.href;
 			}
-		}
+		}*/
+		if ((target.tagName === 'IMG')||(target.tagName === 'SPAN')||(target.tagName === 'I')) {
+			href = '';
+			// musim smazat href
+			targetEl = Ext.fly(target);
+			anchor = targetEl.up("a");
+			if (anchor) {
+				href = anchor.dom.href;
+			}
+		} 
 
 		if (href) {
 			// 11.12.15 on; moznost otevrit zaznam v nove zalozce
@@ -2352,7 +2409,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		// pouze k testovani
 		/*var sTx = '';
 		for (var i = 0; i < 150; i++) {
-		sTx += '' + i + '. some text<br/>';
+		sTx += '' + i + '. some text<br>';
 		}
 		sTx += '';
 		this.csPrintText(sTx);*/
@@ -2451,6 +2508,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 		var comboDbBox = Ext.getCmp('topDbSelect');
 		var dbname = comboDbBox.getValue();
+		var sFormType = '';
 
 		// nastavi parametry vyhledavani
 		var n = comboDbBox.store.findExact('id', comboDbBox.getValue());
@@ -2461,6 +2519,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			sFldlist = record.data['fldlist'];
 			sDFlist = record.data['dflist'];
 			sShortDF = record.data['shortdf'];
+		    // 06.12.24 on; moznost nastavit v UnDatabases_ictx.json formtype
+		    sFormType = record.data['formtype'];
 		}
 
 		// 12.12.14 on; pokud se ma pouzivat ascii, zapne ho defaultne
@@ -2477,11 +2537,16 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			initTerm : term,
 			searchMode : pbSearch, //                   search mode 0: scan,1: search, 2: browse,3: ascii
 			wannaMarcRes : true, //                     request result in MARC
-			callback : this.csLoadMarcRec,
+			
+			// 06.12.24 on; pridam typ formulare
+			//callback : this.csLoadMarcRec,
+			callback : this.csLoadMarcRec.createDelegate(this, [null, sFormType], true),
 			idxlistStoreId : sFldlist, // indexy
 			displayFmtPnl : sDFlist, // zobrazovaky
 			displayFmt : sShortDF, // zkraceny ZF
 			csDisabledOKBtn : epca.Config.User.csPBMainSearchOnlyView,
+			// 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
+            csDisplayFormatText : epca.Config.User.DisplayFormatText,
 			scope : this
 		});
 
@@ -3398,7 +3463,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 							m = new i3.WS.Msg(o.text);
 							sQtip = oItem.tools.csCheckError.dom.qtip;
 							if (!i3.isEmptyString(sQtip)) {
-								sQtip = sQtip + '<br/>' + m.userText;
+								sQtip = sQtip + '<br>' + m.userText;
 							} else {
 								sQtip = m.userText;
 							}
@@ -3409,7 +3474,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 							m = new i3.WS.Msg(o.text);
 							sQtip = oItem.tools.csCheckWarning.dom.qtip;
 							if (!i3.isEmptyString(sQtip)) {
-								sQtip = sQtip + '<br/>' + m.userText;
+								sQtip = sQtip + '<br>' + m.userText;
 							} else {
 								sQtip = m.userText;
 							}
@@ -3420,7 +3485,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 							m = new i3.WS.Msg(o.text);
 							sQtip = oItem.tools.csCheckInfo.dom.qtip;
 							if (!i3.isEmptyString(sQtip)) {
-								sQtip = sQtip + '<br/>' + m.userText;
+								sQtip = sQtip + '<br>' + m.userText;
 							} else {
 								sQtip = m.userText;
 							}
@@ -3493,7 +3558,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 						}
 						if (cmpEl && oQTip) {
 							// zrusi puvodni
-							sQTipText = oQTip.text + '<br/>' + m.userText;
+							sQTipText = oQTip.text + '<br>' + m.userText;
 							Ext.QuickTips.unregister(oItem);
 						} else {
 							sQTipText = m.userText;
@@ -3575,7 +3640,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 								 m = new i3.WS.Msg(o.text);
 								 sQtip = oItem.tools.csCheckError.dom.qtip;
 								 if (!i3.isEmptyString(sQtip)) {
-								 sQtip = sQtip + '<br/>' + m.userText;
+								 sQtip = sQtip + '<br>' + m.userText;
 								 } else {
 								 sQtip = m.userText;
 								 }
@@ -3586,7 +3651,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 								 m = new i3.WS.Msg(o.text);
 								 sQtip = oItem.tools.csCheckWarning.dom.qtip;
 								 if (!i3.isEmptyString(sQtip)) {
-								 sQtip = sQtip + '<br/>' + m.userText;
+								 sQtip = sQtip + '<br>' + m.userText;
 								 } else {
 								 sQtip = m.userText;
 								 }
@@ -3597,7 +3662,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 								 m = new i3.WS.Msg(o.text);
 								 sQtip = oItem.tools.csCheckInfo.dom.qtip;
 								 if (!i3.isEmptyString(sQtip)) {
-								 sQtip = sQtip + '<br/>' + m.userText;
+								 sQtip = sQtip + '<br>' + m.userText;
 								 } else {
 								 sQtip = m.userText;
 								 }
@@ -3762,7 +3827,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 									}
 									if (cmpEl && oQTip) {
 										// zrusi puvodni
-										sQTipText = oQTip.text + '<br/>' + m.userText;
+										sQTipText = oQTip.text + '<br>' + m.userText;
 										Ext.QuickTips.unregister(oItem);
 									} else {
 										sQTipText = m.userText;
@@ -4158,7 +4223,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	 * upload souboru do content serveru
 	 */
 	csUploadContentServer : function() {
-		var activTab, sId, sDb, sIctx, sLanguage, sURL;
+		var activTab, sId;
 
 		activTab = this.getTabPanelForms().getActiveTab();
 
@@ -4171,10 +4236,27 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		sId = activTab.recordId;
 		// nejrive je nutne zaznam ulozit
 		if (this.csIsNewRecord(sId)) {
-			epca.notify(epca.L10n.evidenceFirstSaveCommon, epca.L10n.messageError, 'icon-error');
+			// 20.02.25 on; zkusi zaznam ulozit
+			//epca.notify(epca.L10n.evidenceFirstSaveCommon, epca.L10n.messageError, 'icon-error');
+			this.csUploadContentServer1SaveNewRec(activTab);
+			return;
+		}
+		this.csUploadContentServer0();
+	},
+	csUploadContentServer0 : function() {
+		var activTab, sId, sDb, sIctx, sLanguage, sURL;
+
+		activTab = this.getTabPanelForms().getActiveTab();
+
+		// neni otevrena zadna zalozka
+		if (!activTab) {
 			return;
 		}
 
+		// id zaznamu
+		sId = activTab.recordId;
+
+		
 		// class
 		sDb = i3.className2LName(activTab.form.targetDb);
 
@@ -4199,6 +4281,25 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 		// zobrazi v novem okne
 		window.open(sURL, '_blank');
+	},
+	// 20.02.25 on; ulozi zaznam pred prilozenim prilohy
+	csUploadContentServer1SaveNewRec : function(activTab) {
+		var c;
+		
+		if (!Ext.isDefined(activTab) || activTab === null) {
+			return;
+		}
+
+		// tlacitko Ulozit
+		c = Ext.getCmp('maintb_save');
+		if (c) {
+			// 21.01.16 on; potrebuju to co  nejjednoduzsi
+			if (!this.csCheckBeforeSave(c, activTab, true)) {
+				return;
+			}
+			// ulozi zaznam
+			this.save(undefined, undefined, undefined, undefined, this.csUploadContentServer0);
+		}
 	},
 	/**
 	 * vrati true, pokud jde o novy zaznam
@@ -4324,9 +4425,13 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	/*
 	 * kontroly pred clear969f
 	 */
-	csCheckBeforeClear969f : function(cmpBtn, activTab, pbShowMsg) {
+	csCheckBeforeClear969f : function(cmpBtn, activTab, pbShowMsg, poOutParams) {
 		var index, i, s969f, bFound;
 		//cmpBtn.setTooltip('');
+		
+		// 21.01.25 on; zobrazit tlacitko zakazane? 
+		poOutParams = poOutParams || {};
+		poOutParams.disabled = false;
 
 		if (!Ext.isDefined(activTab) || activTab === null) {
 			return false;
@@ -4418,8 +4523,14 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			return false;
 		}
 
+		// 21.01.25 on; pokud dojdu az sem, tak zobrazim tlacitko "Do IPAC", ale nepovolim ho
+		// 20.01.25 on; zrusena vyjimka pro CAV
 		// 27.06.23 on; pro Datovy zaznam na CAV je nutne pro zobrazeni tlacitko k odeslani do IPAC vyplnene pole U95c=1
-		if ((i3.ictx.toLowerCase() === 'cav') && (activTab.form.unFormat === 'E')) {
+		//if ((i3.ictx.toLowerCase() === 'cav') && (activTab.form.unFormat === 'E')) {
+		if (activTab.form.unFormat === 'E') {
+			// 21.01.25 on; 
+			poOutParams.disabled = true;
+
 			if (!newMarc['U95']) {
 				return false;
 			}
@@ -4633,7 +4744,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	 * @param {Object} form
 	 */
 	csUpdateInterface : function(form) {
-		var c, bVisible;
+		var c, bVisible, oDisabled = {};
 
 		var activTab = this.getTabPanelForms().getActiveTab();
 
@@ -4672,8 +4783,18 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		// clear969f
 		c = Ext.getCmp('maintb_clear969f');
 		if (c) {
-			bVisible = this.csCheckBeforeClear969f(c, activTab, false);
+			// 21.01.25 on; pridan parametr, zda nezakazat tlacitko Do IPAC
+			bVisible = this.csCheckBeforeClear969f(c, activTab, false, oDisabled);
 			c.setVisible(bVisible);
+			// 21.01.25 on; pokud se ma tlacitko zakazat, zobrazi ho
+			if (!bVisible && oDisabled.disabled) {
+			 	bVisible = true;	
+				c.setVisible(true);
+				c.setDisabled(true);
+			} else {
+				c.setDisabled(false);
+			}
+
 			c = Ext.getCmp('maintb_clear969f_separator');
 			if (c) {
 				c.setVisible(bVisible);
@@ -4936,7 +5057,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		 }
 		 }*/
 
-		var sValue;
+		var sValue, oParams = {}, sActCss;
 		// novy styl
 		if (!i3.isEmptyString(psSkin)) {
 			sValue = psSkin;
@@ -4944,11 +5065,17 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			sValue = cmp.getValue();
 		}
 
+		// 29.04.24 on; upraveno
 		// pouze pokud se lisi od aktualniho
-		if (epca.evidence.c.sActualCssStyle !== sValue) {
+		//if (epca.evidence.c.sActualCssStyle !== sValue) {
+         sActCss = getActCss(oParams);
+		if (sActCss  !== sValue) {
+			// 18.02.25 on; booster
+			// 29.04.24 on; upraveno
 			//Replace all occurences "oldstyle.css" with "newstyle.css"
-			replacejscssfile(epca.evidence.c.sActualCssStyle, sValue);
-			epca.evidence.c.sActualCssStyle = sValue;
+			//replacejscssfile(epca.evidence.c.sActualCssStyle, sValue);
+			//epca.evidence.c.sActualCssStyle = sValue;
+			replacejscssfile(sActCss, sValue, oParams.sBooster);
 
 			var d = new Date();
 			d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
@@ -5047,7 +5174,9 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			displayFmtPnl : aDFList, // zobrazovaky
 			displayFmt : aSDFList, // zkraceny ZF
 			scope : this,
-			dbOptions : aDBOptions
+			dbOptions : aDBOptions,
+			// 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
+            csDisplayFormatText : epca.Config.User.DisplayFormatText
 		});
 
 		// Otvorit flexpop so search/browse
@@ -5720,7 +5849,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		}
 	},
 	/**
-	 * Makro pre skladanie limit casti PQF query<br/>
+	 * Makro pre skladanie limit casti PQF query<br>
 	 *
 	 * @param {Object} pLim
 	 * @param {Object} pPQF

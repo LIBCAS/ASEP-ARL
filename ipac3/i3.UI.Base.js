@@ -1498,14 +1498,14 @@ Ext.apply(Ext.form.VTypes, {
     /**
      * Rozsirenie validacie o datovy typ 'password'
      *
-     * Pouzitie:<br/>
-     * 1, vzdy je potreba, aby vo formulari boli 2 policka<br/>
+     * Pouzitie:<br>
+     * 1, vzdy je potreba, aby vo formulari boli 2 policka<br>
      * a, prve policko bude mat len vtype='password'
-     *    bude validovane na dlzku a zlozitost hesla (viz. nizsie v kode)<br/>
+     *    bude validovane na dlzku a zlozitost hesla (viz. nizsie v kode)<br>
      * b, druhe policko bude mat nastavenu config option initialPasswordField
      *    na id prveho pwd policka + bude validovane na totoznost obsahu
-     *    s prvym polom<br/>
-     *<br/><br/>
+     *    s prvym polom<br>
+     *<br><br>
      * Inspirovane clankom: http://blog.adampresley.com/2008/05/08/advanced-data-validation-using-extjs/
      *
      * @param {Object} value

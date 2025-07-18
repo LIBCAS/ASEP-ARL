@@ -1,0 +1,490 @@
+openapi: 3.0.1
+info:
+  title: ARL REST API Cir
+  description: ""
+  version: "1.0"
+paths:
+  /v1/{ictx}/cir/patron/{term}:
+    get:
+      tags:
+      - Cir
+      summary: Čtenář
+      description: |-
+       ## Čtenář
+       Informace ze záznamu čtenáře, včetně sekce o blokujících limitech.
+
+       Pro ```term``` typu čárový kód je potřeba úvest i ```index```, standardní je index ```bc```.
+      operationId: getPatronInfo
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - name: term
+        in: path
+        description: T001 nebo čárový kód čtenáře
+        required: true
+        schema:
+          type: string
+      - name: index
+        in: query
+        description: Index čárového kódu
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Patron
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1_cir.yaml#/components/schemas/HttpRespPatron'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/cir/patron/{term}/is-valid:
+    get:
+      tags:
+      - Cir
+      summary: Čtenář
+      description: |-
+       ## Čtenář
+       Prověří existenci a platnost registrovaneho čtenáře.
+
+       Pro ```term``` typu čárový kód je potřeba úvest i ```index```, standardní je index ```bc```.
+      operationId: patronIsValid
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - name: term
+        in: path
+        description: T001 nebo čárový kód čtenáře
+        required: true
+        schema:
+          type: string
+      - name: index
+        in: query
+        description: Index čárového kódu
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: PatronValidation
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1_cir.yaml#/components/schemas/HttpRespPatronValidation'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/cir/checkout:
+    post:
+      tags:
+      - Cir
+      summary: Výpůjčka
+      description: |-
+       ## Výpůjčka
+       Parametry výpůjčky se předávají v body.
+      operationId: checkOut
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Parametry výpůjčky
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckOutReqJsonBody'
+        required: true
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespCreated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/cir/checkin:
+    post:
+      tags:
+      - Cir
+      summary: Návrat
+      description: |-
+       ## Návrat
+       Parametry návratu se předávají v body.
+      operationId: checkIn
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Parametry návratu
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckInReqJsonBody'
+        required: false
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespCreated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/cir/createpayment:
+    post:
+      tags:
+      - Cir
+      summary: Platba
+      description: |-
+       ## Platba
+       Platba, vytvoření dluhu, vklad na finanční konto, zablokovaní a odblokování kreditu.
+      operationId: createPayment
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Parametry platby
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentReqJsonBody'
+        required: false
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespCreated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/cir/ebook/checkout:
+    post:
+      tags:
+      - Cir
+      summary: Výpůjčka e-knihy
+      description: |-
+       ## Výpůjčka e-knihy
+       Parametry e-výpůjčky se předávají v body.
+      operationId: eBookCheckOut
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Parametry výpůjčky e-knihy
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EbookCheckOutReqJsonBody'
+        required: true
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespCreated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    HttpRespPatron:
+      type: object
+      properties:
+        t001:
+          type: string
+          example: 't001'
+        userId:
+          type: string
+          example: 'ictx_is_user*t001'
+        barcode:
+          type: array
+          items:
+            type: string
+            example: 'čár.kód'
+        name:
+          type: string
+          example: Jméno Příjmení
+        email:
+          type: string
+          example: 'xxx@domena.cz'
+        phone:
+          type: string
+          example: '+420 123 456 789'
+        address:
+          type: string
+          example: 'Adresa'
+        category:
+          type: string
+          example: 'kategorie čtenáře'
+        homeBranch:
+          type: string
+          example: 'domovská pobočka'
+        validUntil:
+          type: string
+          example: 'platnost průkazu'
+        credit:
+          type: string
+          example: 'kredit fin. konta'
+        debit:
+          type: string
+          example: 'celkový dluh'
+        limits:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: 'ERRXxxx'
+              msg:
+                type: string
+                example: 'Překlad chybové zprávy'
+              type:
+                type: string
+                example: 'typ blokace'
+    HttpRespPatronValidation:
+      type: object
+      properties:
+        t001:
+          type: string
+          example: 't001'
+        userId:
+          type: string
+          example: 'ictx_is_user*t001'
+        barcode:
+          type: array
+          items:
+            type: string
+            example: 'čár.kód'
+        name:
+          type: string
+          example: Jméno Příjmení
+        validUntil:
+          type: string
+          example: 'platnost průkazu'
+    CheckOutReqJsonBody:
+      type: object
+      properties:
+        userBC:
+          type: string
+          example: 'a018205'
+        itemBC:
+          type: string
+          example: '2662662662'
+        returnDate:
+          type: string
+          example: YYYY-MM-DD
+        typeBor:
+          type: string
+        section:
+          type: string
+        note:
+          type: string
+        ofNoteUser:
+          type: string
+        ofNoteItem:
+          type: string
+        ofDateOp:
+          type: string
+        bSkipHist:
+          type: string
+        userCat:
+          type: string
+        bReturn:
+          type: string
+        bSkipHolNote:
+          type: string
+        deposit:
+          type: string
+        payMethod:
+          type: string
+        bHoldInfo:
+          type: string
+    CheckInReqJsonBody:
+      type: object
+      properties:
+        userBC:
+          type: string
+          example: 'a018205'
+        itemBC:
+          type: string
+          example: '2662662662'
+        bSkipHolNote:
+          type: boolean
+          example: true
+        bSkipSection:
+          type: boolean
+          example: true
+        section:
+          type: string
+        note:
+          type: string
+        ofNoteUser:
+          type: string
+        ofNoteItem:
+          type: string
+        ofDateOp:
+          type: string
+        deposit:
+          type: string
+        payMethod:
+          type: string
+    CreatePaymentReqJsonBody:
+      type: object
+      properties:
+        userBC:
+          type: string
+          example: 'a018205'
+        amount:
+          type: string
+          example: '10,00'
+        typePay:
+          type: string
+        kindPay:
+          type: string
+        TRX001:
+          type: string
+        note:
+          type: string
+        section:
+          type: string
+        bankAccount:
+          type: string
+        bankSymbol:
+          type: string
+        bankDate:
+          type: string
+    EbookCheckOutReqJsonBody:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: ictx_is_user*123456
+        bookId:
+          type: string
+          example: '2167'
+        provider:
+          type: string
+          example: KUBO
+        returnDate:
+          type: string
+          example: YYYY-MM-DD
+        note:
+          type: string
+          example: text poznamky
+          

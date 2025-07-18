@@ -1,0 +1,42 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<ipac:layout1 noquit="1">
+
+    <ipac:tpl page="ssearch" version="guide"/>
+
+<div #($s($f(..getOption("NOASIDE"),data("PAGEID"))=0:"",1:"class='container'"))#>
+<ipac:tpl page="ssearch" version="jstemplate"/>
+<ipac:tpl version="form"/>
+<csp:if condition=($g(data("SIGNPOST"))="")>
+<ipac:tpl version="sources"/>
+</csp:if>
+
+<ipac:tpl page="ssearch" version="btns"/>
+</div>
+
+    <csp:if condition=(..txn("MIDDLE")'="")>
+<section class="usertext"><ipac:txn param="MIDDLE"/></section>
+    </csp:if>
+
+    <ipac:tpl version="newsreel"/>
+
+    <csp:if condition=($$$I2isOp("ADMISSIONDAYS"))
+            note="zobrazeni informaci o volných dnech knihovny podle konfigurace ADMISSION_DAYS">
+<section>
+    <ipac:tpl version="admissiondays"/>
+</section>
+    </csp:if>
+
+<ipac:tpl page="ssearch" version="signpost"/>
+
+    <csp:if condition=($d(data("TAGCLOUD")))>
+        <ipac:tpl version="tagcloud"/>
+    </csp:if>
+
+   <csp:if condition=(data("FILE"))>
+<section class="usertext">
+      #(##class(i2.help).userDefinedHelp("entrypage"))#
+</section>
+   </csp:if>
+
+</ipac:layout1>

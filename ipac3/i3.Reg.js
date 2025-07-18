@@ -54,7 +54,7 @@ i3.Reg.c = {
 /**
  * @class i3.Reg.Panel
  *
- * Panel na registraciu.<br/>
+ * Panel na registraciu.<br>
  * Verzia 1.2009 od J.Tešlára.
  *
  * @param {Object} config

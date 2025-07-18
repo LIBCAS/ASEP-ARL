@@ -4,6 +4,7 @@ d ##class(i2.info.i3app).preHTTP()
 d ##class(i2.info.i3app).autoLogout()
 q 1</script><script language="Cache" runat="SERVER">
 /*
+30.04.24 on; vraceno user.css
 05.03.20 on; zmena default skinu
 03.03.20 on; logout
 30.08.19 on; vraceno KindValue
@@ -35,6 +36,7 @@ if ($g(%request.Data("skin",1))="1"){
 }
 // CSS soubory
 s data("CSS")=$LISTBUILD(
+  "../etc/user.css",
   "css/"_data("ICTX")_sSkin_"1.css"
 )
 

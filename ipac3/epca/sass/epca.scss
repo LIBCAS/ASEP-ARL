@@ -78,6 +78,10 @@
     background-image: url("#{$images-dir}disk_add.png") !important;
 }
 
+.icon-save-img {
+    background-image: url("#{$images-dir}disk.png") !important;
+}
+
 .icon-open {
     background-image: url("#{$images-dir}folder_wrench.png") !important;
 }
@@ -165,4 +169,16 @@
 
 .x-item-disabled * {
     color: black !important;
+}
+
+// ikonka search v toolbaru - graficka - nutne osetreni -- LS, 2025-02-10
+.x-toolbar-ct {
+    .icon-search{
+        padding-top:3px;
+        background-image:url("../images/search.png") !important
+    }
+    .icon-search::before{
+        font-family: inherit;
+        content: "" !important;
+    }
 }

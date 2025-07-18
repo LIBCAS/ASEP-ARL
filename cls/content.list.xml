@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 865U)" ts="2021-07-09 13:00:56">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.6 (Build 809U)" ts="2025-06-25 10:28:40">
 <Class name="content.list">
 <Description><![CDATA[
 <pre>
 
+25.06.25 ln; odkaz na contreader
 26.04.19 ln; pridano RESTORE
 11.12.14 ln; prechod na CSG2
 13.11.12 ln; sablone predana pripona souboru
@@ -11,7 +12,7 @@
 04.01.12 kp; parametr robots a CurrentScripts
 </pre>]]></Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>65934,46829.318297</TimeChanged>
+<TimeChanged>67381,37648.8099163</TimeChanged>
 <TimeCreated>62315,35102.370952</TimeCreated>
 
 <Parameter name="PageID">
@@ -50,6 +51,7 @@ a vysledek vratit napr pres data("REPORTS")
 <pre>Data pro HTML sablonu stranky
 spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
 
+25.06.25 ln; odkaz na contreader
 11.12.14 ln; prechod na CSG2
 13.11.12 ln; sablone predana pripona souboru
 </pre>]]></Description>
@@ -69,6 +71,7 @@ spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
   
   ; TODO
   s userT001=##class(i2.access).getLoginId()
+  s bReader = ##class(i2.base.tpl).isPage("contreader")
     
   d ##class(content.api).selectUserStatus(.output,userT001,data("STATUS"))
   
@@ -142,7 +145,12 @@ spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
     s keys(idx,c,"origname")=array("origname")
     s keys(idx,c,"isimage")=isImage    
     ; 11.12.14 ln; prechod na CSG2
-    s keys(idx,c,"csg")=$zcvt(##class(content.csg2).getLink(repo,key),"I","HTML")    
+    if ($g(array("type"))="secure") || (($g(array("accession"))="S") && bReader) 
+    { ; 25.06.25 ln; odkaz na contreader
+       s keys(idx,c,"csg")=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contreader","idx="_idx_"&repo="_repo_"&key="_key)
+    } else {
+      s keys(idx,c,"csg")=$zcvt(##class(content.csg2).getLink(repo,key),"I","HTML")    
+    }
     ; 13.11.12 ln; sablone predana pripona souboru
     s keys(idx,c,"extension")=extension
     

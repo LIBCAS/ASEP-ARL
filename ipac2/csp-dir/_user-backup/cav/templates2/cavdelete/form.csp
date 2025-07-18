@@ -8,13 +8,13 @@
 
 <div class="submit">
 <button type="submit" class="btn btn-light" value="1" name="confirm" id="btn-send"><ipac:tx param="YES"/></button>
-<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
-<input type="hidden" name="confirm" value="1"/>
-<input type="hidden" name="idx" value="#(data("IDX"))#"/>
-<input type="hidden" name="iset" value="#(data("ISET"))#"/>
-<input type="hidden" name="pg" value="#(..req("pg"))#"/>
-<input type="hidden" name="fnonce" value="#(data("FNONCE_VALUE"))#"/>
-<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+<input type="hidden" name="op" value="#(data("PAGEID"))#">
+<input type="hidden" name="confirm" value="1">
+<input type="hidden" name="idx" value="#(data("IDX"))#">
+<input type="hidden" name="iset" value="#(data("ISET"))#">
+<input type="hidden" name="pg" value="#(..req("pg"))#">
+<input type="hidden" name="fnonce" value="#(data("FNONCE_VALUE"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
 
 </ipac:form>

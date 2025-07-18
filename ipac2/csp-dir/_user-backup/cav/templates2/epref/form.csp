@@ -9,12 +9,12 @@
 <legend><ipac:tx param="WOS_TITLE"/></legend>
 
 <div class="form-check">
-<input type="radio" class="form-check-input" id="wosano" name="wos" value="#($li(data("WOSOPTION_YES"),2))#"#($li(data("WOSOPTION_YES"),1))#/>
+<input type="radio" class="form-check-input" id="wosano" name="wos" value="#($li(data("WOSOPTION_YES"),2))#"#($li(data("WOSOPTION_YES"),1))#>
 <label for="wosano" class="form-check-label"><ipac:tx param="WOS_YES"/></label>
 </div>
 
 <div class="form-check">
-<input type="radio" class="form-check-input" id="wosne" name="wos" value="#($li(data("WOSOPTION_NO"),2))#"#($li(data("WOSOPTION_NO"),1))#/>
+<input type="radio" class="form-check-input" id="wosne" name="wos" value="#($li(data("WOSOPTION_NO"),2))#"#($li(data("WOSOPTION_NO"),1))#>
 <label for="wosne" class="form-check-label"><ipac:tx param="WOS_NO"/></label>
 </div>
 
@@ -30,7 +30,7 @@
 <legend><ipac:tx param="SKIN"/></legend>
     <ipac:loop param="SKINOPTION">
 <div class="form-check" id="s-skin#(..li(2))#">
-<input type="radio" class="form-check-input" id="skin#(..li(2))#" name="skin" value="#(..li(2))#" #(..li(1))#/>
+<input type="radio" class="form-check-input" id="skin#(..li(2))#" name="skin" value="#(..li(2))#" #(..li(1))#>
 <label for="skin#(..li(2))#" class="col-form-label">#(..li(3))#</label>
 </div>
     </ipac:loop>
@@ -46,18 +46,18 @@
 <legend><ipac:tx param="DEFAULTSEARCH"/></legend>
 
 <div class="form-check">
-<input type="radio" class="form-check-input" id="search_base" name="search" value="#($li(data("SEARCHOPTION_BASE"),2))#"#($li(data("SEARCHOPTION_BASE"),1))#/>
+<input type="radio" class="form-check-input" id="search_base" name="search" value="#($li(data("SEARCHOPTION_BASE"),2))#"#($li(data("SEARCHOPTION_BASE"),1))#>
 <label for="search_base" class="form-check-label"><ipac:tx param="SEARCH_BASE"/></label>
 </div>
 
 <div class="form-check">
-<input type="radio" class="form-check-input" id="search_adv" name="search" value="#($li(data("SEARCHOPTION_ADV"),2))#"#($li(data("SEARCHOPTION_ADV"),1))#/>
+<input type="radio" class="form-check-input" id="search_adv" name="search" value="#($li(data("SEARCHOPTION_ADV"),2))#"#($li(data("SEARCHOPTION_ADV"),1))#>
 <label for="search_adv" class="form-check-label"><ipac:tx param="SEARCH_ADV"/></label>
 </div>
 
 <ipac:off>
 <div class="form-check">
-<input type="radio" class="form-check-input" id="search_exp" name="search" value="#($li(data("SEARCHOPTION_EXP"),2))#"#($li(data("SEARCHOPTION_EXP"),1))#/>
+<input type="radio" class="form-check-input" id="search_exp" name="search" value="#($li(data("SEARCHOPTION_EXP"),2))#"#($li(data("SEARCHOPTION_EXP"),1))#>
 <label for="search_exp" class="form-check-label"><ipac:tx param="SEARCH_EXP"/></label>
 </div>
 </ipac:off>
@@ -72,7 +72,7 @@
 <legend><ipac:tx param="LANGUAGE"/></legend>
     <ipac:loop param="LANGUAGEOPTION">
 <div class="form-check" id="s-lang#(..li(2))#">
-<input type="radio" class="form-check-input" id="language#(..li(2))#" name="language" value="#(..li(2))#" #(..li(1))#/>
+<input type="radio" class="form-check-input" id="language#(..li(2))#" name="language" value="#(..li(2))#" #(..li(1))#>
 <label for="language#(..li(2))#" class="form-check-label">#(..li(3))#</label>
 </div>
     </ipac:loop>
@@ -90,12 +90,12 @@
 <legend><ipac:tx param="DEFAULTRATING"/></legend>
 
 <div class="form-check" id="s-rating_base">
-<input type="radio" class="form-check-input" id="rating_base" name="rating" value="#($li(data("RATINGOPTION_BASE"),2))#"#($li(data("RATINGOPTION_BASE"),1))#/>
+<input type="radio" class="form-check-input" id="rating_base" name="rating" value="#($li(data("RATINGOPTION_BASE"),2))#"#($li(data("RATINGOPTION_BASE"),1))#>
 <label for="rating_base" class="form-check-label"><ipac:tx param="RATING_BASE"/></label>
 </div>
 
 <div class="form-check" id="s-rating_nocomments">
-<input type="radio" class="form-check-input" id="rating_nocomments" name="rating" value="#($li(data("RATINGOPTION_NOCOMMENTS"),2))#"#($li(data("RATINGOPTION_NOCOMMENTS"),1))#/>
+<input type="radio" class="form-check-input" id="rating_nocomments" name="rating" value="#($li(data("RATINGOPTION_NOCOMMENTS"),2))#"#($li(data("RATINGOPTION_NOCOMMENTS"),1))#>
 <label for="rating_nocomments" class="form-check-label"><ipac:tx param="RATING_NOCOMMENTS"/></label>
 </div>
 
@@ -113,9 +113,9 @@
 
 <div class="checkbox switch switch-sm mt-1">
   <csp:if condition=(data("EXTERNAL"))>
-<input type="checkbox" class="form-check-input" id="elink" name="elink" value="1" checked="checked"/>
+<input type="checkbox" class="form-check-input" id="elink" name="elink" value="1" checked="checked">
   <csp:else>
-<input type="checkbox" class="form-check-input" id="elink" name="elink" value="1"/>
+<input type="checkbox" class="form-check-input" id="elink" name="elink" value="1">
   </csp:if>
 <label for="elink" id="elinktext" class="form-check-label"><ipac:tx param="ELINK_TEXT"/></label>
 </div>
@@ -131,9 +131,9 @@
 
 <div class="submit">
 <button type="submit" class="btn btn-primary" name="save" value="1"><ipac:tx param="SAVE_VALUE"/></button>
-<input type="hidden" name="save" value="1"/>
-<input type="hidden" name="fnonce" value="#(data("FNONCE_VALUE"))#"/>
-<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+<input type="hidden" name="save" value="1">
+<input type="hidden" name="fnonce" value="#(data("FNONCE_VALUE"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
 &nbsp;<ipac:dtx param="FORM_DOWN"/>
 </ipac:form>

@@ -1,4 +1,6 @@
 # @id UN_TABLES BASE_INDEXES_TXT
+002    13.02.25 jk; do BASE_INDEXES_T pridan etp
+002    26.11.24 tj; pridany index dtr1 2571 do INDEXES_C a INDEXES_C2
 002    12.01.24 tt; pridana indexace qais - 2570
 002    28.11.22 jk; pridana index price do BASE_INDEXES_H
 002    29.09.22 tt; pridan index cskpc
@@ -241,6 +243,7 @@
 200    aqjcib2568cJCI kvartil#JCI kvartilnJCI kvartilnze zdojového dokumentu indexace 978N (hodnota stejná jako T16N)o978N ze zdrojového dokumenusCODE
 200    acskpcb2569cKategória publikácie od 2022 pro tridenio976anspecialni poradi pro trideni podle vyznamnosti V1, V2, V3, P1, P2, O1, O2, O3, U1, U2, U3, D1, I1, I2, I3sCODE
 200    aqaisb2570cAIS kvartil#AIS kvartilnAIS kvartilnze zdojového dokumentu indexace 978D (hodnota stejná jako T16D)o978D ze zdrojového dokumenusCODE
+200    adtr1b2571cDátum prijatia prvého exemplára YYYYMMDD#Datum přijetí prvního exempláře YYYYMMDD#Date of accessing first item YYYYMMDDndatum prijmu prveho exemplara YYYYMMDDsN
 ###
 # @id UN_TABLES BASE_INDEXES_C2
 002    29.09.22 tt; pridan index cskpc
@@ -324,7 +327,7 @@
 200    adt1b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#Date of record creatingndatum vytvorenia zaznamu ( prvy datum v 999-d),  vklada aj dezideratao999dsN,SORT
 200    adtcladkb2302cDátum vydania (pre digitálnu kroniku)#Datum vydání (pro digitální kroniku)#Date (for digital chronicle)mdigkro260c ak 980X = D a je to článok
 200    adtexb2555cDátum pre export cez OAI-PMH#Datum pro export přes OAI-PMH#Date for export by OAI-PMHnrizene predavani zaznamu napr. do souborneho katalogu pres OAI-PMH (neni vhodny datum posledni modifikace)o969-gsN
-200    adtrb2478cDátum prijatia prvého exemplára#Datum přijetí prvního exempláře#Date of accessing first itemndatum prijmu prveho exemplarasN
+200    adtrb2478cDátum prijatia prvého exemplára#Datum přijetí prvního exempláře#Date of accessing first itemounh_400-a (prve 4, 6 a 8 znakov)ndatum prijmu prveho exemplarasN
 200    aeancEANo024a (ak i1=3)nEAN zatim bez atributu, vyuzito jako identifikator zaznamu
 200    aedb5cEdícia#Edice#Title series  dxnediciao440 - a,n,p,v,xo490 - a,v,xo800 - a,q,b,c,d,e,to810 - a,b,to811 - a,q,d,c,e,to830 - a,tsASCII,COMP,EXACT,LEFT,PHR
 200    aerrb2427cChyby v zázname#Chyby v záznamu#Errors in recordnobsahuje opakovatelny zoznam chyb najdenych pri indexacii zaznamu. Popis chyby je orezeny na 80 zn. A je mozne, ze neobsahuje vsetky chyby (ak je ich pocet pre aktualny zaznam privelky)
@@ -472,6 +475,7 @@
 200    aqjcib2568cJCI kvartil#JCI kvartilnJCI kvartilnze zdojového dokumentu indexace 978N (hodnota stejná jako T16N)o978N ze zdrojového dokumenusCODE
 200    acskpcb2569cKategória publikácie od 2022 pro tridenio976anspecialni poradi pro trideni podle vyznamnosti V1, V2, V3, P1, P2, O1, O2, O3, U1, U2, U3, D1, I1, I2, I3sCODE
 200    aqaisb2570cAIS kvartil#AIS kvartilnAIS kvartilnze zdojového dokumentu indexace 978D (hodnota stejná jako T16D)o978D ze zdrojového dokumenusCODE
+200    adtr1b2571cDátum prijatia prvého exemplára YYYYMMDD#Datum přijetí prvního exempláře YYYYMMDD#Date of accessing first item YYYYMMDDndatum prijmu prveho exemplara YYYYMMDDsN
 ###
 # @id UN_TABLES BASE_INDEXES_A
 002    13.04.18 js; pridany index t001cr2
@@ -1011,6 +1015,7 @@
 200    aukpkcTransakcie s nevrátenou kauciou#Transakce s nevrácenou kaucí#Transactions with unreturned depositnkod zaznamu citatela - pre ciste platby a vypozicky s nevratenou kauciouo100-a (ak T03h>0)
 200    aupogcKód záznamu transakcie pre tlač upomienky#Kód záznamu transakce pro tisk upomínky#ID of transaction for claim printnlink na trx platby za tisk upominky (grupovani trx z jedne tistene upominky)o200-4
 200    auserpcLogin knihovníka, ktorý predlžoval transakciu#Login knihovníka, který prodloužil transakci#Login of user who prolonged transactionmuserpidxnindex obsahuje loginy knihovnikov ktory vykonali prolongaciu, index sa vytvara ak je zapnuty modifikator userpidxo200-c (ak 200a = P)
+200    aetpcTyp e-výpožičky podľa platby čitateľa (zadarmo, čiastočná, plná)#Typ e-výpůjčky podle platby čtenáře (zdarma, částečná, plná)#Type of e-loan according to reader payment (free, partial, full)o"f" pro 200a=G pokud neexistuje 200a=L, "u" pro 200a=G a 200a=L, "p" jako "u" a cena 200i u operace G je vetsi jak platba (spoluucast)
 ###
 # @id UN_TABLES BASE_INDEXES_S
 002    02.02.15 jk; doplnen index auk1

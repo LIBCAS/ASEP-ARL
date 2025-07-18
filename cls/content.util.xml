@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-03 13:38:34">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2024-03-19 09:15:21">
 <Class name="content.util">
 <Description><![CDATA[
 <pre> X() prikazy pro spravu content a image serveru
 
+19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 03.04.23 ln; udrzeni terminalovej session pri simulaci
 15.07.15 ln; pridana moznost vypsat runtime metadata
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>66567,49016.7180958</TimeChanged>
+<TimeChanged>66918,33063.0611331</TimeChanged>
 <TimeCreated>63426,33322.32534</TimeCreated>
 
 <Method name="help">
@@ -132,6 +133,7 @@
 <Description><![CDATA[
 <pre> Simulace operace contentServeru
 
+19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 03.04.23 ln; udrzeni terminalovej session pri simulaci
 15.07.15 ln; pridana moznost vypsat runtime metadata
 </pre>]]></Description>
@@ -186,8 +188,11 @@
     
     s t001=##class(User.MARC).getT001(id)    
     w !,class_" "_t001
+    ; 19.03.24 ln; call vraci ktere pravidlo se aplikovalo
+    s runtime("SIMUL")=1
+    
     k output
-    d ##class(content.api).selectRecAll(.output,class,t001)
+    d ##class(content.api).selectRecAll(.output,class,t001)    
     
     s item="", seq1=seq1+1, seq2=0
     f { s item=$o(output(item)) q:item=""
@@ -197,10 +202,10 @@
       w !,"  "_item_": "_repo_", "_key
       
       if operation="r" {
-        w ": ",##class(content.api).engineRead(repo,key,.array)
+        w ": ",##class(content.api).engineRead(repo,key,.array,.runtime)
       }
       elseif operation="e" {
-        w ": ",##class(content.api).engineEdit(repo,key,.array)
+        w ": ",##class(content.api).engineEdit(repo,key,.array,.runtime)
       }
       elseif operation="u" {
         d ##class(content.engine).get(.arrtmp,repo,key)
@@ -212,19 +217,20 @@
         s runtime("size")=arrtmp("size")
         s runtime("ctype")=arrtmp("ctype")
         s runtime("type")=arrtmp("type")
+        s runtime("SIMUL")=1
                 
         w ": ",##class(content.api).engineUpload(repo,.array,.runtime)
       }
       elseif operation="d" {
-        w ": ",##class(content.api).engineDelete(repo,key,.array)
+        w ": ",##class(content.api).engineDelete(repo,key,.array,.runtime)
       }
       elseif operation="s" {
-        s ret=##class(content.api).engineState(repo,key,.array)
+        s ret=##class(content.api).engineState(repo,key,.array,.runtime)
         s:ret=99 ret="display"
         w ": "_array("status")_" -> "_ret
       }
       elseif operation="c" {
-        w ": ",##class(content.api).engineChange(repo,key,.array)
+        w ": ",##class(content.api).engineChange(repo,key,.array,.runtime)
       }
       elseif operation="runtime" {
         ; 15.07.15 ln; pridana moznost vypsat runtime metadata

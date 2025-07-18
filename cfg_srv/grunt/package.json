@@ -1,66 +1,74 @@
 {
-  "name": "IPAC",
-  "version": "0.0.2",
-  "description": "Balicky a nastroje pro ARL",
-  "devDependencies": {
-    "coffeescript": "^2.7.0",
-    "eslint": "^8.14.0",
-    "grunt": "^1.6.1",
-    "grunt-byte-order-mark": "^0.1.0",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-compress": "^1.6.0",
-    "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-connect": "^2.1.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jshint": "^3.2.0",
-    "grunt-contrib-uglify": "^4.0.1",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-dart-sass": "^2.0.1",
-    "grunt-eol": "^1.1.3",
-    "grunt-ftp": "^2.1.0",
-    "grunt-jsbeautifier": "^0.2.13",
-    "grunt-jsdoc": "^2.4.1",
-    "grunt-json-format": "^2.0.1",
-    "grunt-jsonlint": "^1.1.0",
-    "grunt-prettier": "^2.2.0",
-    "grunt-prompt": "^0.2.0",
-    "grunt-sass-format": "^0.0.8",
-    "grunt-sass-lint": "^0.2.4",
-    "grunt-sassdoc": "^1.2.1",
-    "grunt-stylelint": "^0.18.0",
-    "grunt-zip": "^0.14.0",
-    "ink-docstrap": "^0.5.4",
-    "jit-grunt": "^0.10.0",
-    "jshint-html-reporter": "^0.2.5",
-    "load-grunt-configs": "^1.0.0",
-    "load-grunt-tasks": "^5.1.0",
-    "sass": "^1.69.5",
-    "stylelint": "^14.16.1",
-    "stylelint-config-standard": "^25.0.0",
-    "stylelint-config-standard-scss": "^4.0.0",
-    "stylelint-scss": "^4.7.0"
-  },
-  "author": {
-    "name": "Cosmotron Bohemia",
-    "email": "webamster@cosmotron.cz",
-    "url": "https://www.cosmotron.cz"
-  },
-  "maintainers": [
-    {
-      "name": "Pavelka",
-      "email": "pavelka@cosmotron.cz"
+    "name": "arl",
+    "description": "Balicky a nastroje pro ARL",
+    "homepage": "https://cosmo2.cs.cosmotron.cz/test-cbvk/",
+    "keywords": [
+        "IPAC",
+        "ARL",
+        "Cosmotron"
+    ],
+    "version": "0.0.2",
+    "private": true,
+    "author": "Cosmotron Bohemia <webamster@cosmotron.cz> (https://www.cosmotron.cz)",
+    "maintainers": [
+        {
+            "name": "Karel Pavelka",
+            "email": "pavelka@cosmotron.cz"
+        }
+    ],
+    "license": "GPL-3.0",
+    "browserslist": [
+        "last 2 versions",
+        "not ie 11",
+        "Chrome > 70",
+        "Firefox > 63",
+        "Edge > 79",
+        "Safari > 16"
+    ],
+    "repository": {
+        "type": "svn",
+        "url": "https://cosmo2:444/svn/arl/trunk"
+    },
+    "main": "Gruntfile.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "coffeescript": "^2.7.0",
+        "eslint": "^8.14.0",
+        "grunt": "^1.6.1",
+        "grunt-byte-order-mark": "^0.1.0",
+        "grunt-contrib-clean": "^2.0.0",
+        "grunt-contrib-compress": "^1.6.0",
+        "grunt-contrib-concat": "^1.0.1",
+        "grunt-contrib-connect": "^2.1.0",
+        "grunt-contrib-copy": "^1.0.0",
+        "grunt-contrib-jshint": "^3.2.0",
+        "grunt-contrib-uglify": "^4.0.1",
+        "grunt-contrib-watch": "^1.1.0",
+        "grunt-dart-sass": "^2.0.1",
+        "grunt-eol": "^1.1.3",
+        "grunt-ftp": "^2.1.0",
+        "grunt-jsbeautifier": "^0.2.13",
+        "grunt-jsdoc": "^2.4.1",
+        "grunt-json-format": "^2.0.1",
+        "grunt-jsonlint": "^1.1.0",
+        "grunt-prettier": "^2.2.0",
+        "grunt-prompt": "^0.2.0",
+        "grunt-sass-format": "^0.0.8",
+        "grunt-sass-lint": "^0.2.4",
+        "grunt-sassdoc": "^1.2.1",
+        "grunt-stylelint": "^0.18.0",
+        "grunt-zip": "^0.14.0",
+        "ink-docstrap": "^0.5.4",
+        "jit-grunt": "^0.10.0",
+        "jshint-html-reporter": "^0.2.5",
+        "load-grunt-configs": "^1.0.0",
+        "load-grunt-tasks": "^5.1.0",
+        "sass": "^1.80.6",
+        "stylelint": "^14.16.1",
+        "stylelint-config-standard": "^25.0.0",
+        "stylelint-config-standard-scss": "^4.0.0",
+        "stylelint-scss": "^4.7.0"
     }
-  ],
-  "license": "GPL-3.0",
-  "main": "Gruntfile.js",
-  "ictx": "li",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "ipac",
-    "ARL",
-    "I3",
-    "I2"
-  ]
 }

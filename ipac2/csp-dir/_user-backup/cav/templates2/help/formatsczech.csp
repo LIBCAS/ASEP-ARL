@@ -49,10 +49,10 @@ tak se v základním formátu zobrazují informace o zpřístupnění <strong>p
  Formáty jsou shodné se Základní formátem, nezobrazuje se záhlaví a návaznosti. (projekty, RVO).
 </p>
 
-<h3><ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> </h3>
+<h3><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr> </h3>
 <p>
 Specializovaný formát, který zobrazuje záznam ve výměnném formátu 
-<ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> - 
+<abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr> - 
 každý řádek zobrazuje jedno pole 
-<ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> záznamu.
+<abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr> záznamu.
 </p>

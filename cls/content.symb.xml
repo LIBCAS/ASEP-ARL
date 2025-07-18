@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-20 14:00:24">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.3 (Build 517U)" ts="2025-03-18 14:12:03">
 <Class name="content.symb">
 <Description><![CDATA[
 <pre> Globalni upravy nad contentServerem
 
+17.03.25 ln; podpora aktualizace aratio
+12.03.24 ln; metoda select
 20.04.23 ln; podpora vice repozitaru
 28.03.23 ln; metoda setAratio2All
 13.02.23 ln; metoda setAratio
@@ -19,7 +21,7 @@
 04.03.14 ln; hromadny import z imageServeru do contentServeru
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>66584,47305.8410529</TimeChanged>
+<TimeChanged>67282,51032.4966665</TimeChanged>
 <TimeCreated>63111,35718.137273</TimeCreated>
 
 <Method name="byObjs">
@@ -414,6 +416,49 @@ recordSymb se spusti jednou pro kazdy zaznam
   }
   
   q ret
+]]></Implementation>
+</Method>
+
+<Method name="select">
+<Description><![CDATA[
+<pre> select zaznamu s alespon jednim souborem vyhovujicimu sql dotazu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class,where:%String=""</FormalSpec>
+<Implementation><![CDATA[
+  q:class=""
+  k ^$$$ListsG($$$ListsActiveSel,$j)
+  
+  s:where'="" where=where_" AND "
+  s where=where_"Class = '"_class_"' AND Version IS NULL"
+  s sql="SELECT T001 FROM content.metadata WHERE "_where
+  w !,"SQL=",sql
+  
+  s tStatement=##class(%SQL.Statement).%New()
+  s sc=tStatement.%Prepare(sql)
+  if $$$ISERR(sc) {
+    w !,"chyba pripravy sql: "_$System.Status.GetErrorText(sc)
+    q
+  }
+  s rset=tStatement.%Execute()
+  if rset.%SQLCODE'=0 {
+    w !,"chyba vykonani sql: "_$System.Status.GetErrorText(sc)
+    q
+  }
+  
+  s seq=0
+  while rset.%Next(.sc) {
+    if $$$ISERR(sc) {
+	  w !,"chyba sql: "_$System.Status.GetErrorText(sc)
+      q
+    }
+    s seq=seq+1
+    
+    s id=##class(User.MARC).existsT001(class,rset.T001)
+    s:id ^$$$ListsG($$$ListsActiveSel,$j,id)=""
+  }
+    
+  w !,"nalezeno "_##class(User.Util).XlistCount($$$ListsActiveSel,$j)_" zaznamu ("_seq_" souboru)"
 ]]></Implementation>
 </Method>
 
@@ -989,6 +1034,10 @@ bSys = 1 zaplne vlozeni statistiky i pro na pozadi importovane zaznamy
 <Method name="setAratio">
 <Description><![CDATA[
 <pre> Hromadne dogenerovani aratio
+
+17.03.25 ln; podpora aktualizace aratio
+
+d ##class(content.symb).setAratio("pnp")
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>ictx:%String,test=1,repo=""</FormalSpec>
@@ -1022,16 +1071,23 @@ bSys = 1 zaplne vlozeni statistiky i pro na pozadi importovane zaznamy
     continue:'$isobject(obj)
     s count=count+1
     
-    continue:obj.Array.GetAt("aratio")'=""
+    ;continue:obj.Array.GetAt("aratio")'=""
     s ext=obj.Array.GetAt("extension")
     if (ext'="jpg") && (ext'="jpeg") && (ext'="gif") && (ext'="png") && (ext'="tif") continue
-    s created=created+1
-    w:'(created#100) " "_created
+    s:obj.Array.GetAt("aratio")="" created=created+1
+    w:created&&'(created#100) " "_created
+    w:'(count#100) "."
     
     s key=obj.CKey    
     s path=basePath_$e(key,1,2)_sPathSep_$e(key,3,99)_"."_ext
     d obj.getArray(.array)    
     d ##class(content.engine).aratio(.array,path)
+    ; 17.03.25 ln; podpora aktualizace aratio
+    if '$d(array("aratio")) {
+      s errors=errors+1
+      continue
+    }
+    continue:obj.Array.GetAt("aratio")=array("aratio")
     d obj.setArray(.array)
     
     if 'test && (obj.%Save()) {

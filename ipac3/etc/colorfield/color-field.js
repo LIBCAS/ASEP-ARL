@@ -4,7 +4,7 @@
  * Provides a color input field with a {@link Ext.ColorPalette} dropdown.
 * @constructor
 * Create a new ColorField
- * <br />Example:
+ * <br>Example:
  * <pre><code>
 var color_field = new Ext.ux.ColorField({
 	fieldLabel: 'Color',
@@ -101,7 +101,7 @@ Ext.ux.ColorField = Ext.extend(Ext.form.TriggerField,  {
 
     /**
      * Sets the value of the color field.  You can pass a string that can be parsed into a valid HTML color
-     * <br />Usage:
+     * <br>Usage:
      * <pre><code>
 		colorField.setValue('#FFFFFF');
        </code></pre>

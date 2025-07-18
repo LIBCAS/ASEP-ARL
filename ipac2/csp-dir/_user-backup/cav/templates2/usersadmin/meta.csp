@@ -1,0 +1,3 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<script data-main="#(..script())#conf.usersadmin.js#(data("CACHEBUSTER"))#" src="#(..script())#require.js#(data("CACHEBUSTER"))#"></script>

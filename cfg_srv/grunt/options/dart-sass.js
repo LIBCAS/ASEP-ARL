@@ -95,14 +95,17 @@ module.exports = {
 			"../csp-dir/css/blackhole.css": ["../sass/blackhole.scss"],
 			"../csp-dir/css/bskin1.css": ["../sass/bskin1.scss"],
 			"../csp-dir/css/client.css": ["../sass/client.scss"],
+			"../csp-dir/css/error.css": ["../sass/error.scss"],
+			"../csp-dir/css/ical.css": ["../sass/ical.scss"],
 			"../csp-dir/css/login.css": ["../sass/login.scss"],
 			"../csp-dir/css/newreports.css": ["../sass/newreports.scss"],
 			"../csp-dir/css/opensearch.css": ["../sass/opensearch.scss"],
-			"../csp-dir/css/print-reports.css": ["../sass/print-reports.scss"],
 			"../csp-dir/css/print.css": ["../sass/print.scss"],
-			"../csp-dir/css/pwa.css": ["../sass/pwa.scss"],
+			"../csp-dir/css/print-reports.css": ["../sass/print-reports.scss"],
+			"../csp-dir/css/reports.css": ["../sass/reports.scss"],
+			"../csp-dir/css/rss.css": ["../sass/rss.scss"],
 			"../csp-dir/css/sitemap.css": ["../sass/sitemap.scss"],
-			"../csp-dir/css/reports.css": ["../sass/reports.scss"]
+			"../csp-dir/css/xmlinfo.css": ["../sass/xmlinfo.scss"]
 		}
 	},
 	pwa: {

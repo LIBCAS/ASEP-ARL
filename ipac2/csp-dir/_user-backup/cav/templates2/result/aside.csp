@@ -4,6 +4,7 @@
 <div class="collapse navbar-collapse" id="nav-aside">
 <aside aria-label="#(..txg("RELATED_PAGES"))#">
 
+<ipac:off>
 <csp:if condition=($g(data("DATASET"))=1)>
 <ipac:asidepart title=#(..txg("OPERATION"))# id="cavoperation">
 <csp:if condition=($g(data("ZNewRecCav"))=1)><li class="nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="epca" param="recid=cav_un_epca*new&client_info=aRL i3 web client 1.0&language=#($$$GETLANGUAGE)#"><ipac:tx param="NEW_REC"/></ipac:sso></li></csp:if>
@@ -11,6 +12,7 @@
 <csp:if condition=($g(data("ZReportCavExp"))=1)><li class="nav-item"><ipac:sso class="nav-link external" rel="external" target="_blank" app="reports" param="rectables=cav_un_tablesd*REPORTS_TABLES_FORM_ZPRAC&language=#($$$GETLANGUAGE)#"><ipac:tx param="RIV_REP"/></ipac:sso></li></csp:if>
 </ipac:asidepart>
 </csp:if>
+</ipac:off>
 
 <ipac:tpl version="submenu"/>
 

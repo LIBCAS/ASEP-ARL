@@ -5,7 +5,7 @@ You can export all records in the basket, or one record individually using the f
 </p>
 
 <p class="fragment">
-<img src="#(..img(1))#help/basket-bar-en.png" class="img-fluid" alt="Košík - submenu"/>
+<img src="#(..img(1))#help/basket-bar-en.png" class="img-fluid" alt="Košík - submenu">
 </p>
 
 <p>
@@ -14,11 +14,11 @@ It is possible to choose a character set (Windows CP1250 or UTF8) and format of
 
 <div class="row">
 <p class="col-md-6 fragment">
-<img src="#(..img(1))#help/export-format-en.png" class="img-fluid" alt="Export - formát"/>
+<img src="#(..img(1))#help/export-format-en.png" class="img-fluid" alt="Export - formát">
 </p>
 
 <p class="col-md-6 fragment">
-<img src="#(..img(1))#help/export-charset-en.png" class="img-fluid" alt="Export - znaková sada"/>
+<img src="#(..img(1))#help/export-charset-en.png" class="img-fluid" alt="Export - znaková sada">
 </p>
 </div>
 
@@ -35,11 +35,11 @@ If the UTF8 character set is used, the file must be saved to a local disk with a
 </p>
 
 <p class="fragment">
-<img src="#(..img(1))#help/export-csv-charset-en.png" class="img-fluid" alt="Import CSV - znaková sada"/>
+<img src="#(..img(1))#help/export-csv-charset-en.png" class="img-fluid" alt="Import CSV - znaková sada">
 </p>
 
 <p class="fragment">
-<img src="#(..img(1))#help/export-csv-cs.png" class="img-fluid" alt="Import CSV - nastavení"/>
+<img src="#(..img(1))#help/export-csv-cs.png" class="img-fluid" alt="Import CSV - nastavení">
 </p>
 
 
@@ -50,7 +50,7 @@ If a record includes authors from more than one institute of the CAS, the record
 </p>
 
 <p class="fragment">
-<img src="#(..img(1))#help/export-csv-table-cs.png" class="img-fluid" alt="CSV - tabulka"/>
+<img src="#(..img(1))#help/export-csv-table-cs.png" class="img-fluid" alt="CSV - tabulka">
 </p>
 
 <h2> XML</h2>
@@ -58,13 +58,13 @@ If a record includes authors from more than one institute of the CAS, the record
 It is presentation of a MARC format in XML structure. Every record element (fields and subfields) is transformed into an XML element. 
 </p>
 
-<h2> Formát <ipac:abbr lang="en-GB" title="Research Information Systems">RIS</ipac:abbr></h2>
+<h2> Formát <abbr lang="en-GB" title="Research Information Systems">RIS</abbr></h2>
 <p>
 Standardized tagged format allows data exchange to citations programs and managers, import and export of the search results from the various databases. This format can be used e.g. for the data import from ASEP to Researcher ID.
 </p>
 <ul>
 <li> <strong>RIS</strong> – contains fields: title, author, source document, UT ISI, pagination, year of publication, author affiliation, URL, abstract, keywords, <strong>with diacritics</strong>.</li>
-<li> <strong>RIS – <ipac:abbr lang="en-GB" title=" American Standard Code for Information Interchange">ASCII</ipac:abbr></strong> – contains fields: title, author, source document, UT ISI, pagination, year of publication, author affiliation, URL, abstract, keywords, <strong>no diacritics.</strong>.</li>
+<li> <strong>RIS – <abbr lang="en-GB" title=" American Standard Code for Information Interchange">ASCII</abbr></strong> – contains fields: title, author, source document, UT ISI, pagination, year of publication, author affiliation, URL, abstract, keywords, <strong>no diacritics.</strong>.</li>
 </ul>
 <h2>Line MARC</h2>
 <p>

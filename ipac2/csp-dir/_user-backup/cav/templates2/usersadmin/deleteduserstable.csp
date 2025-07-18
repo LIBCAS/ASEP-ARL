@@ -1,0 +1,58 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<div>
+
+<div id="toolbar2"></div>
+
+<table
+id="#(data("PAGEID"))#-table2"
+class="table table-sm jstable2 deleted-users-table"
+data-advanced-search="true"
+data-cache="false"
+data-cookie="true"
+data-cookie-id-table="#(data("PAGEID"))#-table"
+data-export-types="['json', 'xml', 'csv', 'txt', 'doc', 'excel']"
+data-check-on-init="true"
+data-id-table="#(data("PAGEID"))#-t"
+data-minimum-count-columns="2"
+data-mobile-responsive="true"
+data-page-list="[all]"
+data-pagination="true"
+data-search="true"
+data-search-text="#($$$GETREQVAR("q"))#"
+data-show-columns="true"
+data-show-columns-toggle-all="true"
+data-show-export="true"
+data-show-fullscreen="true"
+data-show-pagination-switch="true"
+data-show-print="true"
+data-toolbar="#toolbar2"
+>
+<thead>
+<tr>
+<th scope="col" data-field="surname" data-sortable="true"><ipac:tx param="SURNAME"/></th>
+<th scope="col" data-field="name" data-sortable="true"><ipac:tx param="NAME"/></th>
+<th scope="col" data-field="email" data-sortable="true"><ipac:tx param="EMAIL"/></th>
+<th scope="col" data-field="category" data-sortable="true"><ipac:tx param="CATEGORY"/></th>
+<th scope="col" data-field="admin" data-sortable="false"><ipac:tx param="ADMIN"/></th>
+</tr>
+</thead>
+<tbody>
+<ipac:loop param="DELETEDUSERS">
+<tr>
+<td class="surname">#(..v("surname"))#</td>
+<td class="name">#(..v("name"))#</td>
+<td class="email">
+<a href="mailto:#(..v("email"))#">#(..v("email"))#</a>
+</td>
+<td class="category">#($s(..v("category")=1:..tx("REGISTERED"),1:..tx("UNREGISTERED")))#</td>
+<td class="actions">
+    <ipac:a op="#(data("PAGEID"))#" param="undelete=#(..v("id"))#" class="btn btn-light modal-show restore-modal-show" id="btn-restore-modal-show" data-modal-body="#(..tx("UNDELETE_REALLY"))# #(..v("surname"))# #(..v("name"))#?" data-modal-linkform="#(..tx("UNDELETE_YES"))#" data-modal-linkicon="icon-refresh" data-modal-name="#(..tx("UNDELETE_TITLE"))#" modal-centered="1" data-modal-size="modal-sm" title="#(..tx("UNDELETE_TITLE"))# #(..v("surname"))# #(..v("name"))#">
+    <i class="icon-refresh" aria-hidden="true"></i>&nbsp;
+    <ipac:tx param="UNDELETE"/></ipac:a>
+</td>
+</tr>
+</ipac:loop>
+</tbody>
+</table>
+</div>

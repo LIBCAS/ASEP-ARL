@@ -13,6 +13,7 @@
 002             inak sa nenacita spravne v IPAC1
 002             na server nutne importovat s pouzitim parametra "class-CavUnTablesd"
 002    -
+002    27.02.24 tt; UN_TC34G: upravy ciselniku
 002    04.12.15 tt; UN_POSKYT_EU: zalozeno
 002    03.07.14 tt; UN_T70XZ: doplnena hodnota A
 002    01.07.14 tt; UN_T70XU: doplneny ciselnik
@@ -1161,6 +1162,8 @@
 200    aAbPro využití výsledku jiným subjektem je vždy nutné nabytí licence
 200    aNbVyužití výsledku jiným subjektem je možné bez nabytí licence
 200    aPbVyužití výsledku jiným subjektem je v nìkterých pøípadech možné bez nabytí licence
+200    aVbVyužití výsledku vlastníkem
+200    aObDosud nevyužívaný výsledek
 ###
 # @id CAV_UN_TABLESD UN_TC34H
 002    POZOR zaznam je primarne umiesteny v c:\delphi\bin\cav\un_tablesd_$ictx.txt

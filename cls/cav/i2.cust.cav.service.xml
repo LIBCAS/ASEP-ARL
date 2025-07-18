@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 865U)" ts="2019-03-01 19:10:50">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-07 12:32:41">
 <Class name="i2.cust.cav.service">
 <Description><![CDATA[
 <pre>
 
+07.03.25 ln; minichronologie pri zmene C52
+19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
 27.02.19 tt; verze zaznamu smlouva musi byt vzdy A - archiv
 14.12.18 ln; aktualizace konverze dayfrom
 09.03.17 tt; pridany metody deleteAllFiles a approveAllFiles a podpora pro ne
@@ -19,7 +21,7 @@
 20.02.12 tt; oprava schvaleni, nahrazen pageRedirect
 </pre>]]></Description>
 <Super>content.service</Super>
-<TimeChanged>65071,46186.843534</TimeChanged>
+<TimeChanged>67271,45062.880528543</TimeChanged>
 <TimeCreated>62425,41516.182913</TimeCreated>
 
 <Parameter name="Ictx">
@@ -101,7 +103,7 @@ slouzi hlavne pro nacteni vsech ciselniku formulare
   s data("MAINTAIN")=##class(i2.html.tpl).getLink(maintain,"idx="_idx)
   s contlist=##class(content.list).getPageID()
   s data("CONTLIST")=##class(i2.html.tpl).getLink(contlist,"idx="_idx)
-  s data("ODREC")=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_data("T001z"),..tx("RECORD"))
+  s data("ODREC")=##class(i2.html.tpl).getPermalink2($$$GETICTX_"_un_epca*"_data("T001z"),..tx("RECORD"))
   ; 08.11.16 tt; pridana 970b kvuli velkym datum
   s data("REC_970b")=$$$getTagX(.handle,"970b")
   
@@ -169,12 +171,12 @@ ClassMethod delC52(pClass, pT001) As %String
       d $$$setTagX(.handle,sTC52)                 ; ulozime si zmenene tag C52
       s st=##class(User.MARC).writeX(.handle)     ; ulozim handle
       ; zkontroluji spravnost
-      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record CavUnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
+      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
     }             
   }
   else
   { ; vypis chyby
-    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
+    s sRet=sRet_"Error: read handle: "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
   }   
   q sRet
 }
@@ -194,6 +196,7 @@ Parametry: pClass        - trida
 Navratova hodnota: "" - vse ok
                    chyba
 
+07.03.25 ln; minichronologie pri zmene C52
 10.01.13 tt; pridana funkce pro editaci C52 - zmenena logika delC52, aby bylo jednotne
 06.10.12 tt; kompletne prepsana logika, aby se C52 znovu vyskladala 
              podle aktualnich dat
@@ -213,14 +216,21 @@ Navratova hodnota: "" - vse ok
     ; mame vyskladanou aktualni C52 a muzeme ji ulozit
     if (sTC52Puv'=sTC52)
     { ; pokud mame nejakou hodnotu v C52 a neni stejna jako ta co uz v zaznamu byla, ulozime
-      s st=##class(User.MARC).writeX(.handle)     ; ulozim handle
+      if ##class(i2.access).isLoggedIn() {
+        s sUserT001=##class(i2.access).getLoginId()
+      } else {
+        s sUserT001=..#PageID
+      }
+      s sChronology="3"_$c(10)_"ipac2_"_sUserT001_$c(10)_##class(i2.common).getIP()
+      ; 07.03.25 ln; minichronologie pri zmene C52
+      s st=##class(User.MARC).writeX(.handle,1,,,sChronology)     ; ulozim handle
       ; zkontroluji spravnost
-      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record CavUnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
+      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
     }             
   }
   else
   { ; vypis chyby
-    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
+    s sRet=sRet_"Error: read handle: "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.service).delC52"
   }   
   q sRet
 ]]></Implementation>

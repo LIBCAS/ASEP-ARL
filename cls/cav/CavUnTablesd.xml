@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1.4 (Build 505_1U)" ts="2021-11-09 20:11:55">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-12 15:08:53">
 <Class name="User.CavUnTablesd">
 <Description><![CDATA[
 dynamic user  tables
 
+12.07.24 ln; operace ipref
+24.05.24 tt; zalozeno postSaveEx
+             dokumentace: https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2023/Konfigurace#Podp.C5.AFrn.C3.A9_indexy
 09.11.21 jk; zmena na ProcedureBlock
 07.04.20 tt; genEpcaOddel: zalozena metoda pro doplnovani oddeleni automaticky
 18.06.03 rs; vyhodene ixIndexValues a pridany typ tabulky B<br>
@@ -12,7 +15,7 @@ dynamic user  tables
 ---from top]]></Description>
 <ClassType>persistent</ClassType>
 <Super>User.DataTable</Super>
-<TimeChanged>66057,72702.587216</TimeChanged>
+<TimeChanged>67033,54527.163415563</TimeChanged>
 <TimeCreated>59575,83515.846714</TimeCreated>
 
 <Parameter name="INDEXPARAMS">
@@ -84,7 +87,7 @@ do buducna bude prerobena kvoli prechodu na BLOB...</Description>
 </Method>
 
 <Storage name="Default">
-<Type>%Library.CacheStorage</Type>
+<Type>%Storage.Persistent</Type>
 </Storage>
 
 <Method name="allowSaveEx">
@@ -103,8 +106,84 @@ Navrat:
   { ; při uložení záznamu EPCA_ODDEL, přegenerujeme záznamy, které s ním souvisí
     d ..genEpcaOddel(.handle)
   }
+  
+ 
 
   q ret
+]]></Implementation>
+</Method>
+
+<Method name="postSaveEx">
+<Description>
+post save handler - toto je metoda volana po uspesnom zapise zaznamu
+(vcetne pripadneho updateindexov)
+Navrat:
+ "" nebo nejaka informace (text, return code), nerozlisuje se jestli jde o chybu nebo info,
+
+24.05.24 tt; zalozeno</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<Implementation><![CDATA[
+   s ret=""
+   $$$HandleOK(handle) ; preverit platnost handle
+   s id=$$$HandleId(handle)
+   s sT001=$$$HandleT001(handle)       ; ziskani t001
+   s sClass=$$$HandleClass(handle)     ; ziskani tridy
+    
+   if ($p(sT001,"_",1,2)="ANALYTIKA_ODDEL")
+   { ; Pri ulozeni vzdy znovu vygenerujeme EPCA_ODDEL_GENERATED_INDEX_ZAODD
+     s ret = ..genEpcaAnalOddel(.handle)
+   } 
+   
+   q ret
+]]></Implementation>
+</Method>
+
+<Method name="genEpcaAnalOddel">
+<Description><![CDATA[
+<pre> Metoda, ktera vygeneruji pomocny ciselnik pro indexaci cisla oddeleni EPCA_ODDEL_GENERATED_INDEX_ZAODD
+dokumentace: https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2023/Konfigurace#Podp.C5.AFrn.C3.A9_indexy
+
+24.05.24 tt; zalozeno
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s sRet=""
+  d ##class(User.Util).XselIndex(ipref_"UnTablesd T001 ] ANALYTIKA_ODDEL_")
+  if '##class(User.MARC).readX(.handleANAL,ipref_"UnTablesd","EPCA_ODDEL_GENERATED_INDEX_ZAODD") q 0
+  d ##class(User.MARC).delTagX(.handleANAL,"200")
+  
+  s idx="",id="", brk=0
+ 
+  f  
+  { ; cyklus pro prochazeni vyselektovanych zaznamu
+    s idx=$o(^$$$ListsG($$$ListsActiveSel,$j,idx)),id=idx,nC=0 
+    q:((id="") || brk)  
+     
+   ;Zpracovavani jednoho zaznamu
+   if '##class(User.MARC).getDATAX(.handleO,id,"T") s brk=1 s sRet="err: genEpcaAnalOddel - record id:"_id_" not found!" continue
+   s sT001=$$$HandleT001(handleO)
+   
+    s c=0
+    d {
+      s sT200=$$$getTagXC(.handleO,"200",.c) ; vsetky citacie
+      continue:((sT200="")&&(c'=0))
+      if (sT200'="")
+      { ; pokud mame vyplnene data, muzeme provadet akce 
+        s sCisloOddel=$$$getSubTagStr(sT200,"a")
+        s sTextOddel=$zcvt($p(sT001,"_",$l(sT001,"_"))_$tr($$$getSubTagStr(sT200,"b")," ",""),"L")     ; text Oddeleni
+        d ##class(User.MARC).appendLineX(.handleANAL,"200    "_$c(31)_"a"_sTextOddel_$c(31)_"b"_sCisloOddel)
+      }
+    } while (c'=0)
+  }
+ 
+  s sc=##class(User.MARC).writeX(.handleANAL,1,,,3_$c(10)_"genEpcaAnalOddel"_$c(10)_"127.0.0.1")
+  ; pokud se nepodari zapis, v vypis chyby
+  s:('$$$ISOK(sc)) sRet="ERRW001#"_ipref_"UnTablesd/EPCA_ODDEL_GENERATED_INDEX_ZAODD#"_##class(User.Util).status2str(sc)
+  q sRet
 ]]></Implementation>
 </Method>
 
@@ -201,14 +280,15 @@ Parametry: handle - aktualni zpracovavany ciselnik pro oddeleni
 <FormalSpec><![CDATA[&handle:%Binary,t001="",sOper]]></FormalSpec>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s sRet="" ; pomocna promenna pro chyby
  if (sOper=1)
  { ; otevreni zaznamu
-   s bExist=##class(User.MARC).readX(.handle,"CavUnTablesd",t001)
+   s bExist=##class(User.MARC).readX(.handle,ipref_"UnTablesd",t001)
 
    if 'bExist 
    { ; pokud zaznam neexistuje, zalozime si jej
-     d ##class(User.MARC).newX(.handle,"CavUnTablesd",t001)
+     d ##class(User.MARC).newX(.handle,ipref_"UnTablesd",t001)
      d ##class(User.MARC).setTagX(.handle,"002    "_$replace($zd($h,3),"-","")_" tt; aktualizace zaznamu o pro vyplnovani oddeleni")
    } 
    else 

@@ -8,8 +8,8 @@
 <br>
 Vážená paní/ vážený pane,<br>
 <br>
-do Institucionálního repozitáře <ipac:abbr lang="cs-CZ" title="Evidence publikační činnosti Akademie věd České republiky">ASEP AV ČR</ipac:abbr>,
-který je spravován Knihovnou <ipac:abbr lang="cs-CZ" title="Akademie věd České republiky">AV ČR</ipac:abbr>, v. v. i.
+do Institucionálního repozitáře <abbr lang="cs-CZ" title="Evidence publikační činnosti Akademie věd České republiky">ASEP AV ČR</abbr>,
+který je spravován Knihovnou <abbr lang="cs-CZ" title="Akademie věd České republiky">AV ČR</abbr>, v. v. i.
 byl uložen plný text práce, jejímž jste (spolu)autorem/autorkou.
 <br>
 #(data("sZf"))#
@@ -32,7 +32,7 @@ URL: <a href="https:/asep.lib.cas.cz/i2/arl-cav/cs/">https:/asep.lib.cas.cz/i2/a
 Dear Sir or Madam,<br>
 <br>
 the fulltext of the bellow mentioned work of which you are the (co-)author has been archived 
-in the Institutional Repository of <ipac:abbr lang="en-GB" title="Czech Academy of Sciences">AS CR</ipac:abbr><br>
+in the Institutional Repository of <abbr lang="en-GB" title="Czech Academy of Sciences">AS CR</abbr><br>
 <br>
 #(data("sZf"))#
 <br>

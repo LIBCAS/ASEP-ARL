@@ -1,6 +1,10 @@
 /**
  * Main okno pre epca
  *
+ * 09.07.25 on; nazev i3 aplikace do titulku login dialogu
+ * 03.03.25 on; moznost nemazat Txx tagy
+ * 10.06.24 on; moznost nastavit popisek zobrazovaciho formatu
+ * 02.05.24 on; podpora pro editaci ctenaru
  * 18.12.23 on; podpora EPCA_CFG zaznamu
  * 07.06.23 on; json5
  * 18.11.22 on; moznost omezit tlacitko copy na vybrane typy formulářů (oddělovač #).
@@ -189,6 +193,8 @@ Ext.apply(i3, function() {
                                 epca.Config.User.dbEpca = getPropValue(store, 'dbEpca');
                                 // 23.01.12 on;
                                 epca.Config.User.dbTab = getPropValue(store, 'dbTab');
+                                // 02.05.24 on; nazev db ctenaru - natvrdo
+                                epca.Config.User.dbUser = epca.Config.User.ictx + 'IsUser';
                                 // 22.09.16 on; seznam dalsich pouzitych db vcetne jejich formatu (UN, US ...)
                                 epca.Config.User.otherDbList = getPropValue(store, 'otherDbList');
                                 epca.Config.User.LinkDbCat = getPropValue(store, 'LinkDbCat');
@@ -201,6 +207,8 @@ Ext.apply(i3, function() {
                                 epca.Config.User.dbAuthFmt = getPropValue(store, 'dbAuthFmt');
                                 epca.Config.User.displayFmt = getPropValue(store, 'displayFmt');
                                 epca.Config.User.displayFmtAuth = getPropValue(store, 'displayFmtAuth');
+                                // 02.05.24 on; zkraceny zf ctenar - natvrdo
+                                epca.Config.User.displayFmtUser = 'USER_BASIC';
                                 epca.Config.User.defaultCatForm = getPropValue(store, 'defaultCatForm');
                                 epca.Config.User.defaultAuthForm = getPropValue(store, 'defaultAuthForm');
                                 epca.Config.User.webformURL = getPropValue(store, 'webformURL');
@@ -220,6 +228,8 @@ Ext.apply(i3, function() {
                                 }
                                 // 02.12.14 on; moznost nastavit popis v login obrazovce u Username
                                 epca.Config.User.LoginText = getPropValue(store, 'LoginText');
+                                // 10.06.24 on; moznost nastavit popisek zobrazovaciho formatu
+                                epca.Config.User.DisplayFormatText = getPropValue(store, 'DisplayFormatText');
                                 // 03.12.14 on; login pouze pres email
                                 epca.Config.User.csOnlyEmailAuth = (getPropValue(store, 'OnlyEmailAuth') !== '');
                                 // 03.12.14 on; sktyje vyhledavani existujicich zaznamu
@@ -349,6 +359,10 @@ Ext.apply(i3, function() {
                                 epca.Config.User.csShowDeleteBtn = getPropValue(store, 'ShowDeleteBtn');
                                 epca.Config.User.csShowDeleteBtnText = getPropValue(store, 'ShowDeleteBtn', 'param');
                                 epca.Config.User.csShowDeleteBtnHint = getPropValue(store, 'ShowDeleteBtn', 'param2');
+                                // 10.06.24 on; prepinani mezi slovenskou a anglickou jazykovou verzi (pro UMB)
+                                epca.Config.User.ShowLoginLanguageSwitcher = (getPropValue(store, 'ShowLoginLanguageSwitcher') === 'true');
+                                // 03.03.25 on; moznost nemazat Txx tagy
+                                epca.Config.User.csDoNotDeleteTxx = (getPropValue(store, 'DoNotDeleteTxx') === 'true');
                                 Ext.QuickTips.init();
                                 // 11.09.12 on; kontrola povolenych cookies
                                 if (!i3.checkCookies(true)) {
@@ -392,11 +406,16 @@ Ext.apply(i3, function() {
                                     // 18.12.23 on; moznost konfigurace v EPCA_CFG
                                     csLoginText: i3.WS.sXlate('EPCA_CFG', 'LoginText') || epca.Config.User.LoginText, // 02.12.14 on; moznost nastavit popis v login obrazovce u Username
                                     csOnlyEmailAuth: epca.Config.User.csOnlyEmailAuth, // 03.12.14 on; prihlaseni pouze pres mail
-                                    // 18.12.23 on; moznost konfigurace textu v EPCA_CFG 
+                                    // 18.12.23 on; moznost konfigurace textu v EPCA_CFG
                                     csShowOnlyText: (epca.Config.User.HideLoginDialog === 'true') ? (i3.WS.sXlate('EPCA_CFG', 'HideLoginDialogText') || epca.Config.User.HideLoginDialogText) : '', // 26.11.15 on; misto login dialogu zobrazit pouze text
-                                    csPlainPw: epca.Config.User.UsePlainPw // 25.08.20 on; prihlaseni pres plain pw
+                                    csPlainPw: epca.Config.User.UsePlainPw, // 25.08.20 on; prihlaseni pres plain pw,
+                                    // 10.06.24 on; prepinani mezi slovenskou a anglickou jazykovou verzi (pro UMB)
+                                    csLanguageSwitcher: epca.Config.User.ShowLoginLanguageSwitcher
                                 };
-                                i3.Login.doLogin(loginConfig, 1);
+                                i3.Login.doLogin(loginConfig, 1, {
+                                    // 09.07.25 on; nazev i3 aplikace do titulku login dialogu
+                                    csAppName: epca.Config.User.appHeader
+                                });
                             }
                         },
                         loadexception: {

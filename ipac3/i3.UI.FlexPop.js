@@ -1,6 +1,10 @@
 /*
  * Obrazovka flexpop.
  *
+ * 13.06.24 on; moznost zmenit text ZF
+ * 30.04.24 on; zakaze tooltip - je stejne prazdny
+ * 26.04.24 on; muze jit o pole (id db a nazev db)
+ * 23.02.24 on; moznost omezit vklad do kosiku pro vybrane db
  * 21.09.23 on; pri zmene tridy si musim predat download metodu
  * 25.08.22 on; moznost nastavit limity globalne pro vsechna vyhledavani v aplikaci
  * 18.01.22 on; limity vazane na db
@@ -97,7 +101,7 @@ Ext.ns('i3.ui.FlexPop');
  * Obrazovka flexpop.
  * @class i3.ui.FlexPop
  *
- * Zaklad hierarchie Flexpop.<br/><br/>
+ * Zaklad hierarchie Flexpop.<br><br>
  *
  * Priklad vyvolania flexpop:
  * <!-- dvojbodka musi byt zapisana ako &#58;, inak to robi problem Aptane -->
@@ -160,7 +164,7 @@ i3.ui.FlexPop = {
         txNoIndexNoScan: 'Nie je vybrané pole pre vyhľadávanie - listovanie nie je možné.#Není vybrané pole pro vyhledávání – listování není možné.#No index selected - scan not possible.###لم يتم اختيار كشاف - المسح غير ممكن.'.ls(),
         txDownloadLocExist: 'Záznam zodpovedajúci %s z externej db už v lokálnej báze existuje - vykonajte stiahnutie, nie harmonizáciu.#Záznam odpovídající %s z externí db už v lokální bázi existuje – proveďte stáhnutí, ne harmonizaci.#External database record matching to %s already exists - use download, not harmonization.###يوجد حاليا تسجيلة من قاعدة بيانات خارجية مطابقة لـ %s - استخدم تنزيل، وليس توافق.'.ls(),
         txRecDownload2: 'Stiahnutie záznamu#Stáhnutí záznamu.####تنزيل التسجيلة.'.ls(),
-        txRecDownloadLokExistUpdt: 'Záznam už v lokálnej databáze existuje. Chcete lokálny záznam aktualizovať?<br/><br/>Pozn. sťahuje sa vždy do ostrej databázy.#Záznam už v lokální databázi existuje. Chcete lokální záznam aktualizovat?<br/><br/>Pozn. stahuje se vždy do ostré databáze.#Record already exists in local database. Do you want to update the record?<br/><br/>Note: record is downloaded to live database.###التسجيلة موجودة حاليا في قاعدة البيانات المحلية. هل تريد تحديث التسجيلة؟<br/><br/>ملاحظة: تم تنزيل التسجيلة إلى قاعدة بيانات حية ومباشرة.'.ls(),
+        txRecDownloadLokExistUpdt: 'Záznam už v lokálnej databáze existuje. Chcete lokálny záznam aktualizovať?<br><br>Pozn. sťahuje sa vždy do ostrej databázy.#Záznam už v lokální databázi existuje. Chcete lokální záznam aktualizovat?<br><br>Pozn. stahuje se vždy do ostré databáze.#Record already exists in local database. Do you want to update the record?<br><br>Note: record is downloaded to live database.###التسجيلة موجودة حاليا في قاعدة البيانات المحلية. هل تريد تحديث التسجيلة؟<br><br>ملاحظة: تم تنزيل التسجيلة إلى قاعدة بيانات حية ومباشرة.'.ls(),
         txRecDownloadLokNExistNew: 'Vybraný záznam v lokálnej databáze neexistuje. Chcete záznam stiahnuť a vytvoriť z neho nový záznam v lokálnej databáze?#Vybraný záznam v lokální databázi neexistuje.Chcete záznam stáhnout a vytvořit z něho nový záznam v lokální databázi?#Selected records doesn\'t exist in local database. Do you want do download record and create new record in local database?###التسجيلات المختارة غير موجودة في قاعدة البيانات المحلية. هل تريد تنزيل التسجيلة وتنشئ تسجيلة جديدة في قاعدة البيانات المحلية؟'.ls(),
         txSavedToLocAs: 'Záznam bol uložený do lokálnej bázy pod číslom: #Záznam byl uložen do lokální báze pod číslem: #Record has been saved to local database with ID: ###تم حفظ التسجيلة في قاعدة البيانات المحلية برقم تعرفة: '.ls(),
         txRecDownloadFailed: 'Stiahnutie záznamu nebolo úspešné. Popis: %s/%s#Stáhnutí záznamu nebylo úspěšné. Popis: %s/%s#Downloading of record was unsuccessful. Description: %s/%s###فشل تنزيل التسجيلة. الوصف: %s/%s'.ls(),
@@ -738,8 +742,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         var nWinWidth = config.width || 800;
         var nDFPanelWidth = 470;
         var nTabpanelWidth = 'auto';
-        var nIndexWidth,
-            nTermWidth;
+        var nIndexWidth, nTermWidth;
         if (nWinWidth > Ext.getBody().getViewSize().width) {
             // pokud je velikost okna vetsi nez moznosti zobrazeni, prepocita to
             nWinWidth = Ext.getBody().getViewSize().width - 5;
@@ -813,7 +816,9 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
                     editable: false,
                     typeAhead: true,
                     store: storeFMT,
-                    title: i3.ui.FlexPop.tx.txDisplayFmt, // 'Display format'
+                    // 13.06.24 on; toto je tu asi k nicemu - zruseno
+                    // 13.06.24 on; moznost zmenit text ZF
+                    //title: config.csDisplayFormatText || i3.ui.FlexPop.tx.txDisplayFmt, // 'Display format'
                     displayField: 'text',
                     valueField: 'id',
                     mode: 'local',
@@ -1028,7 +1033,9 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
                 text: i3.ui.FlexPop.tx.txToBasket, // Do kosika
                 //id : idpref('pbRecDownload'),
                 iconCls: 'icon-basket',
-                hidden: !i3.csBasket,
+                // 23.02.24 on; podle db povoli tlacitko
+                //hidden: !i3.csBasket,
+                hidden: !this.csBasketEnabled(config.classn),
                 listeners: {
                     click: {
                         fn: function() {
@@ -1169,8 +1176,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
             return;
         }
         // 18.01.12 on; scan
-        var grid,
-            selRec;
+        var grid, selRec;
         if (this.openParams.csOnlyScan) {
             grid = this.csPanelScan;
             selRec = grid.getSelectionModel().getSelected();
@@ -1518,43 +1524,43 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
      *    via config option "callback"
      *
      * @param {Object} pParams
-     *   trojica poli, kt. sa moze opakovat pre viacere databazy:<br/>
-     *     classn:           trieda na ktorej spustit search. Neskor by mohlo byt pole so zoznamom tried<br/>
-     *     displayFmt:       nazov display formatu pre WS search (I2_EXPORT)<br/>
-     *     idxlistStoreId:   store id najlepsie existujuceho store so zoznamom hodnot pre combo s vyberom poli<br/><br/>
+     *   trojica poli, kt. sa moze opakovat pre viacere databazy:<br>
+     *     classn:           trieda na ktorej spustit search. Neskor by mohlo byt pole so zoznamom tried<br>
+     *     displayFmt:       nazov display formatu pre WS search (I2_EXPORT)<br>
+     *     idxlistStoreId:   store id najlepsie existujuceho store so zoznamom hodnot pre combo s vyberom poli<br><br>
      *
      *
-     *   displayFmtPnl     store id so stat.dabulkou udavajucou zoznam ZF pre pravy panel<br/>
-     *                     ak nebude uvedene panel nebude dostupny<br/>
-     *   initUseAttr:      cislo atributu, na ktory otvorit zoznam poli<br/>
-     *                     neskor mozeme dorobit moznost toto neuviest a zoberie sa prve zo store<br/>
-     *   initUseAttrInt:   stejne jako initUseAttr, ale ma vyssi prioritu (pouzito v digitalni kronice)<br/>
-     *   initTerm:         init term - moze byt prazdny<br/>
-     *   searchMode:       search mode (0 - scan,1 - search, 2 - browse)<br/>
-     *   callback:         callback function to call on selection<br/>
-     *   scope:            callback scope<br/>
-     *   wannaMarcRes      true/false ci chceme ako vysledok zaznam v MARC<br/>
-     *                     default false: vratit zaznam v ZF<br/>
-     *                     true: vratit zaznam v MARC<br/>
-     *   autoReturn        true/false, ci v pripade najdenia prave jedneho zaznamu ho hned mame vratit<br/>
-     *                     zatial default false<br/>
+     *   displayFmtPnl     store id so stat.dabulkou udavajucou zoznam ZF pre pravy panel<br>
+     *                     ak nebude uvedene panel nebude dostupny<br>
+     *   initUseAttr:      cislo atributu, na ktory otvorit zoznam poli<br>
+     *                     neskor mozeme dorobit moznost toto neuviest a zoberie sa prve zo store<br>
+     *   initUseAttrInt:   stejne jako initUseAttr, ale ma vyssi prioritu (pouzito v digitalni kronice)<br>
+     *   initTerm:         init term - moze byt prazdny<br>
+     *   searchMode:       search mode (0 - scan,1 - search, 2 - browse)<br>
+     *   callback:         callback function to call on selection<br>
+     *   scope:            callback scope<br>
+     *   wannaMarcRes      true/false ci chceme ako vysledok zaznam v MARC<br>
+     *                     default false: vratit zaznam v ZF<br>
+     *                     true: vratit zaznam v MARC<br>
+     *   autoReturn        true/false, ci v pripade najdenia prave jedneho zaznamu ho hned mame vratit<br>
+     *                     zatial default false<br>
      *
-     *   CSNewRecPanel:    trieda panelu, ktora bude pouzita na vytvorenie noveho zaznamu<br/>
+     *   CSNewRecPanel:    trieda panelu, ktora bude pouzita na vytvorenie noveho zaznamu<br>
      *   CSNewRecPanelInt: stejne jako CSNewRecPanel, ale s vyssi prioritou - ve specialnich pripadech lze nastavit jiny (zadny) formular pro zapis noveho zaznamu (napr. 2 ruzna flexpopup okna v 1 fieldsetu)
-     *   csNewRecTitle:    titulok okienka pre novy zaznam<br/>
+     *   csNewRecTitle:    titulok okienka pre novy zaznam<br>
      *                     POZOR: aktualne je napevno, ze trieda do kt. sa budu zaznamy vkladat, je prva trieda
-     *                     zo zoznamu pre search. Ak bude v zozname viac databaz, insert pojde do prvej z nich.<br/>
+     *                     zo zoznamu pre search. Ak bude v zozname viac databaz, insert pojde do prvej z nich.<br>
      *
-     *   csNewRecWinWidth  moznost nastavit sirku okna, default je 800px<br/>
-     *   csNewRecWinY      moznost nastavit pozici okna, vzdalenost od vrchu<br/>
+     *   csNewRecWinWidth  moznost nastavit sirku okna, default je 800px<br>
+     *   csNewRecWinY      moznost nastavit pozici okna, vzdalenost od vrchu<br>
      *
-     *   ColLimits:        constructor panelu pre editor limit<br/>
-     *   colLimitsData     vstupne data pre collector limit<br/>
-     *   colLimitsApplyCB  callback, ktory ma aplikovat limity na search store<br/>
+     *   ColLimits:        constructor panelu pre editor limit<br>
+     *   colLimitsData     vstupne data pre collector limit<br>
+     *   colLimitsApplyCB  callback, ktory ma aplikovat limity na search store<br>
      *                     + tiez do colLimitsData vygenerovat pomocne pole symDisplay, ktore obsahuje textovu sumarizaciu
-     *                     limit pre ucely zobrazenia uzivatelovi<br/>
+     *                     limit pre ucely zobrazenia uzivatelovi<br>
      *   csOnlyScan        true/false, povoli pouze scan v DB (obdoba popup scan obrazovky ze zclienta)
-     *                     default false<br/>
+     *                     default false<br>
      */
     usrDoSearch: function(pParams) {
         if (i3.getOption('flexpop_debug')) {
@@ -1649,6 +1655,11 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         } else {
         this.csTabPanel.hideTabStripItem(this.csPanelSearch);
         }*/
+        // 13.06.24 on; moznost zmenit text ZF
+        var cmp = this.getCmp('pnlDisplay');
+        if (cmp) {
+            cmp.setTitle(pParams.csDisplayFormatText || i3.ui.FlexPop.tx.txDisplayPanelTitle);
+        }
         // schovat alebo povolit combo "Limits" & pripadne mu nastavit collector object
         var compLimits = this.getCmp('colLimits');
         // 18.01.22 on; limity podle tridy
@@ -1830,10 +1841,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         var c;
         var nAttrNo = this.getCmp('index').getValue(),
             sSrchTerm = this.getCmp('term').getValue();
-        var bTrunc,
-            bPhrase,
-            bBrowse,
-            cmpTerm = this.getCmp('term');
+        var bTrunc, bPhrase, bBrowse, cmpTerm = this.getCmp('term');
         // 18.11.16 on; pridana kontrola, jestli je checkbox viditelny
         //bTrunc = this.getCmp('cbSearchTrunc').getValue();
         c = this.getCmp('cbSearchTrunc');
@@ -1953,7 +1961,8 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         //if (p.colLimitsApplyCB && (sDB.indexOf('I2e') === -1)) {
         //if (this.colLimitsApplyCB && (sDB.indexOf('I2e') === -1)) {
         if ((this.colLimitsApplyCB || i3.colLimitsApplyCB) && (sDB.indexOf('I2e') === -1)) {
-            this.csSaveLimitsData(); //                              uschovat pracovne data limit
+            this.csSaveLimitsData();
+            //                              uschovat pracovne data limit
             // apply limits to the search store
             //console.log('p.colLimitsApplyCB');
             if (bFlxDebug) {
@@ -1966,8 +1975,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
             //this.colLimitsApplyCB(panelSearch.store, this.colLimitsData, nAttrNo);
             if (this.colLimitsApplyCB) {
                 this.colLimitsApplyCB(panelSearch.store, this.colLimitsData, nAttrNo);
-            } else
-            if (i3.colLimitsApplyCB) {
+            } else if (i3.colLimitsApplyCB) {
                 i3.colLimitsApplyCB(panelSearch.store, this.colLimitsData, nAttrNo);
             }
             // troska divocinka. callback updatne internu premennu symDisplay a tu ju nechame zobrazit
@@ -1994,6 +2002,11 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
                     bLimitUsed = compLimits.values.bLimitUsed;
                     cmpTerm.allowBlank = bLimitUsed;
                     cmpTerm.validate();
+                } else {
+                    // 30.04.24 on; zakaze tooltip - je stejne prazdny
+                    if (px) {
+                        px.setDisabled(true);
+                    }
                 }
             }
         } else {
@@ -2034,8 +2047,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         var nAttrNo = this.getCmp('index').getValue(),
             term = this.getCmp('term').getValue(),
             bCompl = this.getCmp('cbScanCompl').getValue(),
-            o,
-            p_bBackward;
+            o, p_bBackward;
         // 09.09.13 on; kvuli tomu, ze nekdy potrebuju mit v seznamu indexu stejnou hodnotu, musim si ji v ciselniku rozsirit o "-n"
         //              a tady musi druhou cast odseknout
         nAttrNo = this.csGetIndexNo(nAttrNo);
@@ -2136,9 +2148,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
      * @param {i3.Marc} pRecord Zaznam, ktory chceme vratit.
      */
     csReturnRecord: function(pRecord) {
-        var s,
-            sZF,
-            oRec;
+        var s, sZF, oRec;
         this.csSaveLimitsData();
         //                              uschovat pracovne data limit
         // ma nastavenu callback funkciu?
@@ -2386,7 +2396,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         Ext.Msg.show({
             // 'Stiahnutie záznamu'
             title: i3.ui.FlexPop.tx.txRecDownload2,
-            // 'Záznam už lokálnej databáze existuje. Chcete lokálny záznam aktualizovať?<br/><br/>Pozn. sťahuje sa vždy do ostrej databázy.'
+            // 'Záznam už lokálnej databáze existuje. Chcete lokálny záznam aktualizovať?<br><br>Pozn. sťahuje sa vždy do ostrej databázy.'
             msg: i3.ui.FlexPop.tx.txRecDownloadLokExistUpdt,
             // 13.08.12 on; lokalizace
             //buttons : Ext.Msg.YESNO,
@@ -2465,9 +2475,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
      * @private
      */
     csRecordDownloadDN2: function(pRecDownloadCfg, pRecord, pUpdateOptions) {
-        var sParams,
-            aDbOptions,
-            psPQF = '.',
+        var sParams, aDbOptions, psPQF = '.',
             t001;
         // 02.11.17 on; moznost seskladat t001 z jinych poli - napr. 910a a 910x
         aDbOptions = this.currentDbOptions;
@@ -2613,8 +2621,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         // zastavi provadeni
         var target = e.getTarget();
         var href = target.href;
-        var targetEl,
-            anchor;
+        var targetEl, anchor;
         // 22.02.12 on; predelane kvuli chovani v IE
         // zjisti odkaz
         /*if((!href) && (target.tagName === 'IMG')) {// pokud jde o obrazek (lupu), zkusi nacist jinak
@@ -2734,12 +2741,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         })();
     },
     csReturnSetRecords2: function() {
-        var i,
-            sZF,
-            s,
-            oRec,
-            rec,
-            aRecArr = [];
+        var i, sZF, s, oRec, rec, aRecArr = [];
         if (this.csPanelSearch.store.totalLength >= this.csPanelSearch.store.csHits) {
             var op = this.openParams;
             // zavolame callback s uvedenim vybraneho zaznamu v prislusnom scope
@@ -2767,5 +2769,37 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
             op.callback.call(scope, aRecArr);
             i3.msgOff(i3.ui.FlexPop.c.sMsgId);
         }
+    },
+    // 23.02.24 on; povolit vlozeni do kosiku?
+    csBasketEnabled: function(pClass) {
+        var sClass;
+        // 26.04.24 on;
+        if (!pClass) {
+            return false;
+        }
+        if (typeof pClass === 'string') {
+            pClass = [pClass];
+        }
+        // staci prvni db
+        sClass = pClass[0];
+        if (!sClass) {
+            return false;
+        }
+        // 26.04.24 on; muze jit o pole (id db a nazev db)
+        if (Ext.isArray(sClass)) {
+            sClass = sClass[0];
+        }
+        if (!sClass) {
+            return false;
+        }
+        // jde o db holdingu a kosik je povolen pro holdingy
+        if (sClass.toLowerCase().indexOf('uscath') >= 0) {
+            return i3.csBasketHolding;
+        }
+        // jde o db titulu a kosik je povolen pro tituly
+        if (sClass.toLowerCase().indexOf('uscat') >= 0) {
+            return i3.csBasketTitle;
+        }
+        return false;
     }
 });

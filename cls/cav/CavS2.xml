@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-12-05 19:07:43">
+<Class name="User.CavS2">
+<Description><![CDATA[
+<pre>
+Pomocne Cav metody
+
+04.12.24 jk; zalozeno
+</pre>]]></Description>
+<ClassType/>
+<IncludeCode>Common,I2</IncludeCode>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%Library.RegisteredObject</Super>
+<TimeChanged>67179,68820.915715593</TimeChanged>
+<TimeCreated>67178,50843.639380136</TimeCreated>
+
+<Method name="zfCreateDataChronology">
+<Description><![CDATA[
+<pre>
+Zapojeno v TF_SF_SHORT_C04
+blok do ZF - vytvořeno pro získání tagu CH1 - pro vypsání tabulky chronologie
+ params - 1. parametr - jak se bude zpracovávat
+                    1 - vložení tagy CH1 - pro data z chronologie
+                    2 - úklid, odmazázní tagu  
+
+https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2023_ostatn%C3%AD#Nov.C3.A1_z.C3.A1lo.C5.BEka_chronologie_v_datov.C3.A9m_form.C3.A1tu_-_cs123487
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,params:%String]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ // zobrazit jen pro data
+ s sTC99d=$$$getTagX(.handle,"C99d")  
+ q:(sTC99d'="DFLT_DATA") ""
+   
+ s pPar1=$p(params,"##",1)               ; prefix
+      
+ if (pPar1="1") {
+   
+   ; zobrazovat vsem bez prihlaseni
+   //; test only - zobrazovani jen pro cosmo ucet
+   //s loginId=##class(i2.access).getLoginId()
+   //q:loginId="" "" ; neprihlaseny
+   //q:("0000099"'=loginId) "" ; jen pro test406295
+    
+   d ..zfCreateDataChronologyRec(.handle)
+
+   ; pridano osetreni, aby byl handle nacteny v pristupne stromove strukture - dalsivolane funkce ji vyzaduji
+   ; a kdyz neni, padne update zaznamu
+   d ##class(util.index).enhance(.handle)  // https://cosmo2/Wiki/index.php?title=Ergonomic_data_in_zf
+ }
+ elseif (pPar1="2") {
+   d ##class(User.MARC).delTagX(.handle,"CH1")
+ }   
+ q ""
+]]></Implementation>
+</Method>
+
+<Method name="zfCreateDataChronologyRec">
+<Description><![CDATA[
+<pre>
+Pomocna metoda pro vypis zmen z chronologie, inspirovano podle CmChronology.repChronologyRec()
+bez prohledavani vyrazenych, dohledani smazanych zaznamu spojenych do naseho, bez exemplaru
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<Implementation><![CDATA[
+ 
+ m h1=handle
+ s sIdChr=""  ; id zaznamu z chronologie
+ s sHIS=""    ; tag HIS z aktualniho zaznamu
+ ; volba indexu  
+ s sIdx="srca" ; podrobnejsi s UB blloky
+
+ s class=$$$HandleClass(h1)
+ s t001=$$$HandleT001(h1)
+ s ipref=##class(User.Util).getClassPrefixParam(class)
+ s sLnameT001=##class(User.Util).objectName2lname(class)_"*"_t001
+ 
+ ; 15.11.24 jk; zmeny pred zverejnenim zaznamu nezobrazovat
+ s dateFrom=##class(User.CavS).zfDatumZverejneni(.handle) ; zobrazovat chronologii jen od datumu zverejneni
+ ; d.m.yyyy -> yyyymmdd 
+ s dD=$p(dateFrom,".",1)  s:$l(dD)=1 dD="0"_dD
+ s dM=$p(dateFrom,".",2)  s:$l(dM)=1 dM="0"_dM
+ s dY=$p(dateFrom,".",3)
+ s dateFrom=dY_dM_dD
+  
+ s sCH1All="" ; zmeny se ukladaji primo do zaznamu do pole CH1 (jedna zmena je jedno opakovani pole)
+ for {
+   s sIdChr=$o(^$$$MarcIndexG($$$CmChronologyClass,sIdx," "_$zcvt(sLnameT001,"l"),sIdChr),-1)
+   q:sIdChr=""
+   
+   ; pokud se nepodari nacist, ponecha se v h1 aktualni a do h2 se nacte dalsi
+   if '##class(User.MARC).getDATAX(.h2,sIdChr) { continue } ; nacist dalsi do h2, h1 ponechat
+   
+   ; mame nactene h1 i h2, porovname jejich operace
+   s sH1C97=##class(User.MARC).getTagX(.h1,"C97")
+   s sH1Oper=##class(User.MARC).getSubTagStr(sH1C97,"c")
+   s sH2C97=##class(User.MARC).getTagX(.h2,"C97")
+   s sH2Oper=##class(User.MARC).getSubTagStr(sH2C97,"c")
+   
+   ; stav "d" nemusi byt posledni, muze po nem nasledovat "nd" a pak pripadne dalsi "u","ub","d"
+   if (sH1Oper="d")||(sH1Oper="nd") { k h1 m h1=h2 k h2 continue }
+
+   ; neporovnavat stejne zaznamy:
+   ; -  aktualni "zivy" zaznam je stejny s prechozim "ub" zaznamem chronologie ("ub" je jen jeho backup)
+   ; - "u" i "d" zaznam chronologie je stejny s predchozim "ub"
+   if ((sH1Oper="u")||(sH1Oper=""))&&(sH2Oper="ub") { k h1 m h1=h2 k h2 continue }  ; do h1 se nacte h2, do h2 se v dalsim kole nacte dalsi predchozi
+   
+   ; 15.11.24 jk; zmeny pred zverejnenim zaznamu nezobrazovat
+   s dateChrn=$e(##class(User.MARC).getSubTagStr(sH2C97,"a"),1,8)  ; datum zmeny C97a ve formatu YYYYMMDD
+   if dateChrn<=dateFrom { q }  ; opravdu quit, starsi zaznamy nas uz nezajimaji
+   
+   ; porovnat a vratit tagy CH1 z porovnani
+   s sCH1=..zfCreateDataChronologyChange(.h1,.h2)
+   if sCH1'="" {
+     s:sCH1All'="" sCH1All=sCH1All_$c(10)
+     s sCH1All=sCH1All_sCH1
+   }
+          
+   k h1 m h1=h2 k h2  ; druhy zaznam se stane prvnim pro dalsi porovnani s nasledujicim
+ }
+ 
+ ; priklad naplneni tagu ktery se vlozi do tabulky
+ //d ##class(MARC).setTagX(.handle,"CH1    "_$c(31)_"a01.01.2023"_$c(31)_"bTom T"_$c(31)_"cAutor"_$c(31)_"dFranta Test"_$c(31)_"eKarel Test")
+ //d ##class(MARC).setTagX(.handle,"CH1    "_$c(31)_"a01.01.2024"_$c(31)_"bTom T1"_$c(31)_"cAutor"_$c(31)_"eKarel Test")
+ d:sCH1All'="" ##class(MARC).setTagX(.handle,sCH1All)
+]]></Implementation>
+</Method>
+
+<Method name="zfCreateDataChronologyChange">
+<Description><![CDATA[
+<pre>
+Pomocna metoda pro zfCreateDataChronologyRec
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&h1,&h2]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s lang=+$$$GETLANGUAGE
+ 
+  ; pozadovane zmeny ktere vyspat
+  s tags="101,200,327,541,608,610,700,701,856,C12,C15,C26,C57,C76,C81,U01,U03,U88"
+  s s101aTxt=$p("Jazyk#Jazyk#Language","#",lang) 
+  s s200aTxt=$p("Název datového souboru#Název datového souboru#Data file name","#",lang)
+  s s327aTxt=$p("Technické informace#Technické informace#Technical information","#",lang)
+  s s541aTxt=$p("Překlad názvu do angličtiny#Překlad názvu do angličtiny#Translation of title into English","#",lang)
+  s s608aTxt=$p("Typ datových souborů#Typ datových souborů#Type of data files","#",lang)
+  s s610aTxt=$p("Klíčová slova#Klíčová slova#Keywords","#",lang)
+  s s700701Txt=$p("Autor#Autor#Author","#",lang)
+  s s856uTxt=$p("Odkaz#Odkaz#Link","#",lang)
+  s sC81aTxt=$p("Přístup k souboru#Přístup k souboru#File access","#",lang)
+  s sC81bTxt=$p("Licence CC#Licence CC#License CC","#",lang)
+  s sC81cTxt=$p("Jiná licence#Jiná licence#Additional License","#",lang)
+  s sC81dTxt=$p("Datum ukončení embarga#Datum ukončení embarga#Embargo end date","#",lang)
+  s sC81eTxt=$p("Vlastní licence/soubor#Vlastní licence/soubor#Custom license/file","#",lang)   ; NOVE
+  s sC12aTxt=$p("Návaznost na projekty#Návaznost na projekty#Continuity with projects","#",lang)
+  s sC15aTxt=$p("Popis datasetu#Popis datasetu#Description of the dataset","#",lang)
+  s sC15bTxt=$p("Překlad popisu datasetu do angličtiny#Překlad popisu datasetu do angličtiny#Translation of datasetudo English description","#",lang)
+  s sC26xTxt=$p("Vědní oblast#Vědní oblast#Science area","#",lang)
+  s sC57aTxt=$p("RVO#RVO#RVO","#",lang)
+  s sC76uTxt=$p("Odkaz na datový soubor v jiném repozitáři#Odkaz na datový soubor v jiném repozitáři#Reference to a data file in another repository","#",lang)
+  s sC76zTxt=$p("Název repozitáře#Název repozitáře#Repository name","#",lang)  
+  s sU01Txt=$p("Odkaz na publikace v jiných repozitářích#Odkaz na publikace v jiných repozitářích#Link to publications in other repositories","#",lang)
+  s sU03dTxt=$p("Číslo verze softwaru#Číslo verze softwaru#Software version number","#",lang)
+  s sU883Txt=$p("Odkaz na publikaci v ASEP#Odkaz na publikaci v ASEP#Link to publication in ASEP","#",lang)
+
+  
+  ; nakonec se nepozaduje
+  /*s tags=tags_",300,617,U22"
+  s s200eTxt=$p("Alternativní název souboru#Alternativní název souboru#Alternative file name","#",lang)
+  s s300aTxt=$p("Všeobecná poznámka#Všeobecná poznámka#General note","#",lang)
+  s s617aTxt=$p("Lokalizace - země#Lokalizace - země#Location - country","#",lang)
+  s s617dTxt=$p("Lokalizace - místo#Lokalizace - místo#Localization - place","#",lang)
+  s sU22abTxt=$p("Časové období#Časové období#Time period","#",lang)   ;(od-do)
+  */
+
+   
+  s sCH1=""
+  s lang=$$$GETLANGUAGE
+  
+  ; odkud vypsat datum, cas a autora zmen
+  s sH1C97c = ##class(User.MARC).getTagX(.h1,"C97c") ; typ operace pro h1
+  s sH2C97c = ##class(User.MARC).getTagX(.h2,"C97c") ; typ operace pro h2
+  if '((sH1C97c="u") && (sH2C97c="u")) { 
+    s sC97=##class(User.MARC).getTagX(.h1,"C97") }
+  else { 
+    s sC97=##class(User.MARC).getTagX(.h2,"C97") 
+  } 
+  
+  s date=""
+  s user="" ; v TF_SF_SHORT_C04 se nakonec Vkladatel nezobrazuje, tady zatim nechame
+  
+  if sC97'="" {
+    ; jsme jiz na zaznamu chronologie
+    s date=##class(User.MARC).getSubTagStr(sC97,"a")
+    s user=##class(User.MARC).getSubTagStr(sC97,"u")
+  }
+  else {
+    ; jsme na zivem zaznamu (tj. pripad kdy posledni zaznam v chronologii je typu "u" a porovnava se s zivym)
+    ; zivy zaznam nema tag C97, udaje vytahneme z tagu 005 a posledni z minichronologie 999
+    s date=$e(##class(User.MARC).getTagX(.h1,"005"),8,999)
+    s user=##class(User.MARC).getTagX(.h1,"999d")
+    s user=$p($p(user,"#",$l(user,"#")),"-")
+  }
+  
+  s userCheck=$zcvt($e(user,1,3),"l")
+  if (userCheck="arl")||(userCheck="sys") { q sCH1 }  ; systemove zmeny nevypisovat
+  
+  if date'="" { s date=##class(i2.ui.tools).convDate($e(date,1,8),"DMYYYY",".") }
+  
+  ; porovname zaznamy
+  d ##class(util.compare).MARCcompare(.h1,.h2,.changes,3)
+  k changes("trans")
+  if '$d(changes) { q sCH1 } ; zadna zmena
+
+  //m ^mtempJK($zh,"changes")=changes
+
+  s node=""
+  for {
+    s node=$o(changes(node),1,val)
+    q:node=""
+    
+    s tag=$p(node,",",1)         ; nazev tagu
+    continue:'$f(","_tags_",",","_tag_",")
+    
+    s tagOpBef=$p(node,",",2)    ; opakovani tagu v puvodnim zaznamu nebo "X" pro insert celeho tagu
+    s:tagOpBef>0 tagOpBef=+tagOpBef
+    s tagOpAft=$p(node,",",3)    ; opakovani tagu v novem zaznamu nebo "X" pro vymaz celeho tagu
+    s:tagOpAft>0 tagOpAft=+tagOpAft
+    s sbTg=$p(node,",",4)        ; nazev subtagu nebo "." pro indikator 1 nebo ":" pro indikator 2
+
+    if sbTg="" {
+      ; insert nebo delete tagu, ve val mame cely tag
+      ;  changes("978,X,0001")="978    "_$c(31)_"a2013"_$c(31)_"c0.563"_$c(31)_"q30"_$c(31)_"x0.7"   insert prvniho opakovani tagu 978
+      ;  changes("040,0001,X")="040    "_$c(31)_"aNI001"_$c(31)_"bslo"                               delete prvniho opakovani tagu 040
+      
+      s sch1=""
+      
+      if tag="101" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s101aTxt_$c(31)_"e"_subval }      ; insert tagu
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s101aTxt_$c(31)_"d"_subval }  ; delete tagu
+        }
+      }
+      elseif tag="200" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s200aTxt_$c(31)_"e"_subval }  
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s200aTxt_$c(31)_"d"_subval }
+        }
+        /*s subval=##class(User.MARC).getSubTagStr(val,"e")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s200eTxt_$c(31)_"e"_subval }  
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s200eTxt_$c(31)_"d"_subval }
+        }*/
+      }
+      /*elseif tag="300" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s300aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s300aTxt_$c(31)_"d"_subval }
+        }
+      }*/
+      elseif tag="327" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s327aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s327aTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="541" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s541aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s541aTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="608" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s608aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s608aTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="610" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s610aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s610aTxt_$c(31)_"d"_subval }
+        }
+      }
+      /*elseif tag="617" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s617aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s617aTxt_$c(31)_"d"_subval }
+        }
+        s subval=##class(User.MARC).getSubTagStr(val,"d")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s617dTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s617dTxt_$c(31)_"d"_subval }
+        }
+      }
+      */
+      elseif (tag="700") || (tag="701") { 
+        s sa=##class(User.MARC).getSubTagStr(val,"a")  ; jmeno
+        s sb=##class(User.MARC).getSubTagStr(val,"b")  ; prijmeni
+        s subval=sa
+        if (sa'="")&&(sb'="") { s subval=subval_", " }
+        s subval=subval_sb
+        if tagOpBef="X" { 
+          s subval=$p("Přidán autor#Přidán autor#Added author","#",lang)_" "_subval
+          s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s700701Txt_$c(31)_"e"_subval 
+        }
+        elseif tagOpAft="X" {
+          s subval=$p("Smazán autor#Smazán autor#Deleted author","#",lang)_" "_subval
+          s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s700701Txt_$c(31)_"d"_subval 
+        }
+      }
+      elseif tag="C12" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { 
+            s subval=$p("Přidán projekt#Přidán projekt#Added project","#",lang)_" "_subval
+            s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC12aTxt_$c(31)_"e"_subval 
+          }
+          elseif tagOpAft="X" { 
+            s subval=$p("Smazán projekt#Smazán projekt#Deleted project","#",lang)_" "_subval
+            s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC12aTxt_$c(31)_"d"_subval 
+          }
+        }
+      }
+      elseif tag="856" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"u")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s856uTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s856uTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="C15" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC15aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC15aTxt_$c(31)_"d"_subval }
+        }
+        s subval=##class(User.MARC).getSubTagStr(val,"b")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC15bTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC15bTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="C26" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"x")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC26xTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC26xTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="C57" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC57aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC57aTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="C76" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"u")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC76uTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC76uTxt_$c(31)_"d"_subval }
+        }
+        s subval=##class(User.MARC).getSubTagStr(val,"z")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC76zTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC76zTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="C81" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"a")
+        if subval'="" {
+          if (subval="X") || (subval="R") { s subval=$p("Veřejně nepřístupný#Veřejně nepřístupný#Require","#",lang) }
+          elseif subval="E" { s subval=$p("Veřejně nepřístupný s embargem#Veřejně nepřístupný s embargem#Require/embargo","#",lang) }
+          elseif subval="O" { s subval=$p("Veřejně přístupný#Veřejně přístupný#Open Access","#",lang) }
+          
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81aTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81aTxt_$c(31)_"d"_subval }
+        }
+        s subval=##class(User.MARC).getSubTagStr(val,"b")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81bTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81bTxt_$c(31)_"d"_subval }
+        }
+        s subval=##class(User.MARC).getSubTagStr(val,"c")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81cTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81cTxt_$c(31)_"d"_subval }
+        }
+        s subval=##class(User.MARC).getSubTagStr(val,"e")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81eTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81eTxt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="U01" { 
+        s subval=$replace(val,$c(31),"$$") ; zatim jen jednoduse vypisujeme cely tag
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU01Txt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU01Txt_$c(31)_"d"_subval }
+        }
+      }
+      elseif tag="U03" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"d")
+        if subval'="" {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU03dTxt_$c(31)_"e"_subval }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU03dTxt_$c(31)_"d"_subval }
+        }
+      }
+      /*elseif tag="U22" { 
+        s subvalOd=##class(User.MARC).getSubTagStr(val,"a")
+        s subvalDo=##class(User.MARC).getSubTagStr(val,"b")
+        if (subvalOd'="")||(subvalDo'="") {
+          if tagOpBef="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU22abTxt_$c(31)_"e"_subvalOd_"-"_subvalDo }
+          elseif tagOpAft="X" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU22abTxt_$c(31)_"d"_subvalOd_"-"_subvalDo }
+        }
+      }*/
+      elseif tag="U88" { 
+        s subval=##class(User.MARC).getSubTagStr(val,"3")
+        s handlenet=##class(User.MARC).getSubTagStr(val,"h")  ; vlozit URL na handlenet
+        s:handlenet'="" subval=handlenet
+        if subval'="" {
+          if tagOpBef="X" { 
+            s subval=$p("Přidán odkaz#Přidán odkaz#Added link","#",lang)_" "_subval
+            s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU883Txt_$c(31)_"e"_subval 
+          }
+          elseif tagOpAft="X" { 
+            s subval=$p("Smazán odkaz#Smazán odkaz#Deleted link","#",lang)_" "_subval
+            s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU883Txt_$c(31)_"d"_subval 
+          }
+        }
+      }
+      
+      if sch1'="" {
+        s:sCH1'="" sCH1=sCH1_$c(10)
+        s sCH1=sCH1_sch1
+      }
+    }
+    else {
+      ; zmena subtagu nebo indikatoru
+      ;  changes("200,0026,0026,c,1")="cMIP"_$c(10)_"cMIPS"_$c(10)_"3"_$c(10)_"3"                    update $cMIP na $cMIPS  opakovani c.26 tagu 200
+      ;  changes("041,0001,0001,.,1")=".1"_$c(10)_".2"_$c(10)_"2"_$c(10)_"2"                         update indikatoru 1 z "1" na "2"
+      ;  changes("041,0001,0001,:,1")=":3"_$c(10,10)_"3"_$c(10)                                      delete indiktaru 2 s hodnotou "3"
+      ;  changes("970,0001,0001,c,1")=$c(10)_"cAAA"_$c(10,10)_"2"                                    insert subtagu c s hodnotou "AAA" 
+      
+      s valBef=$e($p(val,$c(10)),2,$l(val))    ; hodnota pred zmenou, nebo prazdne pro insert
+      s valAft=$e($p(val,$c(10),2),2,$l(val))  ; hodnota po zmene nebo prazdne pro delete
+      
+      ; neresime indikatory, jen subtagy
+      if (sbTg=".") || (sbTg=":") { continue }
+      
+      s sch1=""
+      if tag="101" { 
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s101aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="200" { 
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s200aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+        //if sbTg="e" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s200eTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      /*elseif tag="300" { 
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s300aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }*/
+      elseif tag="327" {
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s327aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="541" { 
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s541aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="608" {
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s608aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="610" {
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s610aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      /*elseif tag="617" { 
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s617aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+        if sbTg="d" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s617dTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      ; u autora se ma zobrazit jen pridani/smazani, zmeny v podpolich ne
+      elseif (tag="700") || (tag="701") { 
+        ; zatim nerozlisujeme subtag
+        s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s700701Txt_$c(31)_"d"_valBef_$c(31)_"e"_valAft
+      }*/
+      elseif tag="856" { 
+        if sbTg="u" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_s856uTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="C12" { 
+        if sbTg="a" { 
+          s valAft=$p("Přidán projekt#Přidán projekt#Added project","#",lang)_" "_valAft
+          s valBef=$p("Smazán projekt#Smazán projekt#Deleted project","#",lang)_" "_valBef
+          s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC12aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft 
+        }
+      }
+      elseif tag="C15" { 
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC15aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+        if sbTg="b" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC15bTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="C26" {
+        if sbTg="x" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC26xTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="C57" { 
+        if sbTg="a" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC57aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="C76" { 
+        if sbTg="u" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC76uTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+        if sbTg="z" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC76zTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="C81" { 
+        if sbTg="a" { 
+          if (valBef="X") || (valBef="R") { s valBef=$p("Veřejně nepřístupný#Veřejně nepřístupný#Require","#",lang) }
+          elseif valBef="E" { s valBef=$p("Veřejně nepřístupný s embargem#Veřejně nepřístupný s embargem#Require/embargo","#",lang) }
+          elseif valBef="O" { s valBef=$p("Veřejně přístupný#Veřejně přístupný#Open Access","#",lang) }
+          if (valAft="X") || (valAft="R") { s valAft=$p("Veřejně nepřístupný#Veřejně nepřístupný#Require","#",lang) }
+          elseif valAft="E" { s valAft=$p("Veřejně nepřístupný s embargem#Veřejně nepřístupný s embargem#Require/embargo","#",lang) }
+          elseif valAft="O" { s valAft=$p("Veřejně přístupný#Veřejně přístupný#Open Access","#",lang) }
+          
+          s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81aTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft 
+        }
+        if sbTg="b" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81bTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+        if sbTg="c" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81cTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+        if sbTg="d" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sC81cTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      elseif tag="U01" { 
+        ; zatim nerozlisujeme subtag
+        s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU01Txt_$c(31)_"d"_valBef_$c(31)_"e"_valAft
+      }
+      elseif tag="U03" { 
+        if sbTg="d" { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU03dTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }
+      /*elseif tag="U22" { 
+        if (sbTg="a") {
+          ; Od
+          s:valBef'="" valBef=valBef_"-"
+          s:valAft'="" valAft=valAft_"-"
+        }
+        elseif (sbTg="b") {
+          ; Od
+          s:valBef'="" valBef="-"_valBef
+          s:valAft'="" valAft="-"_valAft        
+        }
+        if (sbTg="a")||(sbTg="b") { s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU22abTxt_$c(31)_"d"_valBef_$c(31)_"e"_valAft }
+      }*/
+      elseif tag="U88" { 
+        ; muzeme resit jen $$h, ne $$3 soucasne
+        if sbTg="h" { 
+          s valAft=$p("Přidán odkaz#Přidán odkaz#Added link","#",lang)_" "_valAft
+          s valBef=$p("Smazán odkaz#Smazán odkaz#Deleted link","#",lang)_" "_valBef
+          s sch1="CH1    "_$c(31)_"a"_date_$c(31)_"b"_user_$c(31)_"c"_sU883Txt_$c(31)_"d"_valBef_$c(31)_"e"_valAft 
+        }        
+      }
+      
+      if sch1'="" {
+        s:sCH1'="" sCH1=sCH1_$c(10)
+        s sCH1=sCH1_sch1
+      }
+    }
+    
+  }
+  
+  q sCH1
+]]></Implementation>
+</Method>
+</Class>
+</Export>

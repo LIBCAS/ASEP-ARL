@@ -1,0 +1,7 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<div class="btns">
+<ipac:a op="result" param="field=G" class="btn btn-primary" title="#(..txg("CAV_BTNALL_RECORDS_TITLE"))#">#(..txg("CAV_BTNALL_RECORDS"))#</ipac:a>
+&nbsp;
+<ipac:a op="result" param="field=ZMDS&term=mdv" class="btn btn-primary" title="#(..txg("CAV_BTNALL_DATA_TITLE"))#">#(..txg("CAV_BTNALL_DATA"))#</ipac:a>
+</div>

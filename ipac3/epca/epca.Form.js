@@ -1,5 +1,7 @@
 /**
  *
+ * 23.01.25 on; ohraniceni formulare
+ * 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
  * 27.02.23 on; minus na poli
  * 04.11.21 on; html kod v labelu
  * 06.01.21 on; sirka musi byt jako cislo
@@ -46,6 +48,8 @@ epca.Form.prototype = {
     customCode: '',
     t005: undefined,
     t999: undefined,
+    // 23.01.25 on;
+    formHideBorder: false,
     /**
      * Formular skonvertovany do triedy i3.Marc
      */
@@ -240,7 +244,9 @@ epca.Form.prototype = {
             formDBTable: this.targetDb,
             formTablesdCache: this.formTablesdCache,
             // 16.05.15 on;
-            formDFST: this.formDFST
+            formDFST: this.formDFST,
+            // 23.01.25 on; ohraniceni formulare 
+            formHideBorder: this.formHideBorder
         };
     },
     /**
@@ -280,7 +286,9 @@ epca.Form.prototype = {
             //autoWidth : true,
             labelWidth: 200,
             // 07.03.14 on; jazykove mutace
-            title: retVal.formName.ls(),
+            // 23.01.25 on; moznost skryt ohraniceni
+            title: retVal.formHideBorder ? '' : retVal.formName.ls(),
+            border: retVal.formHideBorder ? false : true,
             items: []
         });
         dontShowHiddenTags = dontShowHiddenTags || false;
@@ -517,7 +525,7 @@ epca.Form.prototype = {
         afterLabelTextTpl : 'Test 2'
 
         });*/
-        //designedField.afterLabelTextTpl = '<img src="images/information.png" class="info_image" data-qtip="your help text or even html comes here...."></img>';
+        //designedField.afterLabelTextTpl = '<img src="images/information.png" class="info_image" data-qtip="your help text or even html comes here....">';
         // 26.11.19 on; potrebuju docilit toho, aby se subtagy v objektu neprehazovaly - doplnim do nazvu subtagu prefix
         if (designedField.field !== '.') {
             designedField.field = epca.form.Helper.c.sSubtagPrefix + designedField.field;
@@ -625,6 +633,8 @@ epca.Form.prototype = {
                 if (i3.ictx.toLowerCase() === 'cav') {
                     designedField.csFlexPopParams.autoSearch = true;
                 }
+                // 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
+                designedField.csFlexPopParams.csDisplayFormatText = epca.Config.User.DisplayFormatText;
             } else
                 // 04.11.21 on; html kod v labelu
                 if (designedField.xtype === 'epca.label') {

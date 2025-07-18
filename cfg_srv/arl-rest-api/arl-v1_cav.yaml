@@ -1,0 +1,424 @@
+openapi: 3.0.1
+info:
+  title: ARL REST API Cav
+  description: ""
+  version: "1.0"
+paths:
+  /v1/cust/cav/config/{confrec}:
+    get:
+      tags:
+      - Cav
+      summary: Načtení konfiguračního záznamu
+      description: |-
+        ## Vrací MARC konfigurační záznam bez potřeby práva na čtení celé CavUnTablesd
+        záznam se vrací v proprietárním JSON-MARC formátu.
+      operationId: configGET
+      parameters:
+      - name: confrec
+        in: path
+        description: indetifikátor konfigurace (T001 bez předpony ANALYTIKA_)
+        required: true
+        schema:
+          type: string
+      - $ref: 'arl-v1_rec.yaml#/components/parameters/fmt'
+      responses:
+        "200":
+          description: Record
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1_rec.yaml#/components/schemas/MarcRecordJson'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/cust/cav/page/{page}:
+    get:
+      tags:
+      - Cav
+      summary: Stránkované vyhledávání pro Analytika
+      description: |-
+        ## Vrací stránku MARC záznamů podle selekčních kritérií
+        položka conf parametru params určuje konfiguraci (KONFIG_STRANA_UT*), tomu odpovídá v CavUnTablesd záznam s předponou ANALYTIKA_, kde je konfigurace konkrétní stránky se záznamy Analytik včetně selekčních kritérií
+      operationId: pageGET
+      parameters:
+      - $ref: '#/components/parameters/page'
+      - name: pageSize
+        in: query
+        description: velikost stránky, default 50, max 100
+        example: 2
+      - name: params
+        in: query
+        description: |-
+          json popisující dotaz, volitelné položky:
+            - zf            - zobrazovací formát, např.: CAV_BIBCIT_INI
+            - trideni       - např.: DKI_AUP_TITLE
+            - pageSize      - velikost stránky, default 50, max 100
+            - autor         - lname autora, např.: cav_un_auth*0311597        
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/paramsPage'
+      responses:
+        "200":
+          description: Result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pageGETbody'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/cust/cav/graph:
+    get:
+      tags:
+      - Cav
+      summary: Získání tabulky pro graf Analytik
+      description: |-
+        ## Vrací tabulku pro graf podle selekčních kritérií
+        položka conf parametru params určuje konfiguraci (KONFIG_STRANA_US*), tomu odpovídá v CavUnTablesd záznam s předponou ANALYTIKA_, kde je konfigurace konkrétní stránky grafu Analytik včetně selekčních kritérií
+      operationId: graphGET
+      parameters:
+      - name: params
+        in: query
+        description: |-
+          json popisující dotaz
+          
+          volitelné položky - závisí na konfiguraci
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/paramsGraph'
+      responses:
+        "200":
+          description: Result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/graphGETbody'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/cust/cav/authors/{ustav}:
+    get:
+      tags:
+      - Cav
+      summary: Přehled a vyhledávání autorů ústavu
+      description: |-
+        konfigurační záznam v CavUnTablesd: ANALYTIKA_KONFIG_STRANA_UT04
+        
+        index: zaall
+      operationId: authorsGET
+      parameters:
+      - name: ustav
+        in: path
+        description: indetifikátor ústavu
+        required: true
+        schema:
+          type: string
+          example: arub-q
+      - name: active
+        in: query
+        description: "jen aktivní, index: zaact"
+        schema:
+          oneOf:
+          - type: boolean
+          - type: integer
+            enum: [1]
+      - name: search
+        in: query
+        description: vyhledávání, nezávisí na diakritice a velikosti písmen
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authorsGETbody'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+components:
+  parameters:
+    page:
+      name: page
+      in: path
+      description: Požadovaná stránka výsledků nebo fazety (f)
+      required: true
+      schema:
+        oneOf:
+          - type: integer
+            minimum: 1
+            example: 1
+          - type: string
+            enum: [f]
+  schemas:
+    paramsPage:
+      type: object
+      properties:
+        conf:
+          type: string
+          example: KONFIG_STRANA_UT02
+        mutace:
+          type: string
+          enum: [cs, en]        
+        ustav:
+          type: string
+          example: arub-q
+        rokVydani:
+          type: array
+          items:
+            type: string
+          example: ["2023","2022","2021"]
+        druhDokumentu:
+          type: array
+          items:
+            type: string
+          example: ["J","JI","B","M","C","K","O"]
+        navaznosti:
+          type: string
+          example: "'infh"
+    paramsGraph:
+      type: object
+      properties:
+        conf:
+          type: string
+          example: KONFIG_STRANA_US02
+        mutace:
+          type: string
+          enum: [cs, en]        
+        ustav:
+          type: string
+          example: bfu-r
+        rokVydani:
+          type: array
+          items:
+            type: string
+          example: ["2023","2022","2021","2020"]
+        druhDokumentu:
+          type: array
+          items:
+            type: string
+          example: ["J","JI","B","M","C","K"]
+        navaznosti:
+          type: string
+          example: "'infh"
+    pageGETbody:
+      type: object
+      properties:
+        hits:
+          type: integer
+          example: 956843
+        page:
+          type: integer
+          example: 2
+        pageSize:
+          type: integer
+          example: 5
+        pageLast:
+          type: integer
+          example: 114
+        first:
+          type: integer
+          example: 6
+        conf:
+          type: string
+          example: KONFIG_STRANA_UT02
+        ustav:
+          type: string
+          example: bfu-r
+        class:
+          type: string
+          example: CavUnEpca
+        zf: 
+          type: string
+          example: TF_SF_ANAL_SHORT
+        trideni:
+          type: string
+          example: DKI_AUP_TITLE
+        pqf:
+          type: string
+          example: "@and @not @and @and @attr 1=2462 'bfu-r' @attr 1=31 @or @or @or '2023' '2022' '2021' '2020' @attr 1=2024 @or @or @or @or @or @or 'J' 'JI' 'B' 'M' 'C' 'K' 'O' @attr 1=2071 'infh' @attr 1=2000 'A'"
+        sort:
+          type: string
+          example: "dki_cz asc, au1_cz asc, ti3_cz asc"
+        records:
+          type: array
+          items:
+            type: string
+            example:  "0539762 - BFÚ 2021 RIV US eng J - Článek v odborném periodiku<br><strong>Arevalo-Ruiz, M. - Amrane, M. - Rosu, F. - Belmonte-Reche, E. - Penalver, P. - ..."
+        auxiliary:
+          type: array
+          items:
+            type: object
+            properties:
+              ipac:
+                type: string
+                example: "https://asep.lib.cas.cz/test-cav/cs/detail-cav_un_epca.1-0539762-/"
+              handle.net:
+                type: string
+              SCOPUS:
+                type: string
+              WOS:
+                type: string
+              PUBMED:
+                type: string
+              DOI:
+                type: string
+              RIV:
+                type: string
+    graphGETbody:
+      type: object
+      properties:
+        rows:
+          type: integer
+          example: 2
+        conf:
+          type: string
+          example: KONFIG_STRANA_US02
+        ustav:
+          type: string
+          example: bfu-r
+        class:
+          type: string
+          example: CavUnEpca
+        osaX:
+          type: string
+          example: rokVydani
+        osaY:
+          type: string
+          example: druhDokumentu
+        cisY:
+          type: string
+          example: IPAC2_FLDDATA_SZ
+        columns:
+          type: array
+          items:
+            type: string
+          example: [ "druhDokumentu", "2023", "2022", "2021", "2020" ]
+        table:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: integer
+              link:
+                type: string
+            example: [ { "value": "J : Journal Article" } , { "value": 17, "link": "https://asep.lib.cas.cz/test-cav/en/vysledky/?qt=analytika&field=USTAV&term=bfu-r&kvant=exact&limv_SZ=ji&limv_DATE=2022" } ]
+    authorsGETbody:
+      type: object
+      properties:
+        hists: 
+          type: integer
+          example: 186,
+        index: 
+          type: string
+          example: zaall
+        search: 
+          type: string
+        authors:
+          type: object
+          properties:
+            orcid:
+              type: string
+            scopus:
+              type: string
+            wos:
+              type: string
+

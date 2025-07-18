@@ -33,11 +33,11 @@
 
 <div class="submit">
 <button type="submit" class="btn btn-primary" name="send" value="1"><ipac:tx param="SAVE"/></button>
-<input type="hidden" name="send" value="1"/>
-<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
-<input type="hidden" name="repo" value="#(data("REPO"))#"/>
-<input type="hidden" name="key" value="#(data("KEY"))#"/>
-<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+<input type="hidden" name="send" value="1">
+<input type="hidden" name="op" value="#(data("PAGEID"))#">
+<input type="hidden" name="repo" value="#(data("REPO"))#">
+<input type="hidden" name="key" value="#(data("KEY"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
 
 </ipac:form>

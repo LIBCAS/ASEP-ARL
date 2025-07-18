@@ -44,7 +44,7 @@
  * 23.01.09 rs; drobna uprava kodu appendTag
  * 18.08.08 rs; prehodenie Marc triedy do samostatneho suboru
  * 22.06.09 rs; pridany parameter fmt, ktory nesie format - MARC zaznam totiz nemusi obsahovat
- *              len MARC ale aj ine formaty<br/>
+ *              len MARC ale aj ine formaty<br>
  * --
  */
 //
@@ -52,7 +52,7 @@
 /**
  * @class i3.Marc
  * MARC objekt - praca s MARC zaznamom.
- * Neobsahuje pracu s databazou - tato je v i3.WS.*<br/><br/>
+ * Neobsahuje pracu s databazou - tato je v i3.WS.*<br><br>
  *
  */
 i3.Marc = function(config) {
@@ -105,9 +105,9 @@ i3.Marc.prototype = {
      * Vymaz tagov zadanej specifikacie.
      * (+ vymaz prazdnych riadkov, ak by sa vyskytli)
      *
-     * @param {String/Array} psTag Specifikacia pre vymaz. Moze byt:<br/>
-     *  1, retazec ('999', '90*' pripadne '9**')<br/>
-     *  2, pole so zoznamom tagov<br/>
+     * @param {String/Array} psTag Specifikacia pre vymaz. Moze byt:<br>
+     *  1, retazec ('999', '90*' pripadne '9**')<br>
+     *  2, pole so zoznamom tagov<br>
      *
      *  Dalej je povolene ako specifikaciu vymazu uviest cely obsah riadka.
      *  T.j. ak je prvok specifikacie dlhsi ako 3 znaky, prvok na vymaz vyhovie len pri zhode celeho riadka 1:1.
@@ -162,7 +162,7 @@ i3.Marc.prototype = {
     /** Nastavenie zadaneho zoznamu riadkov
 
      @param {String/Array} psLine pridavany MARC riadok alebo pole s riadkami.
-     <br/>
+     <br>
      23.01.09 rs; oprava kontrolnej slucky (preverovat ma psLine a nie existujuce data)
      */
     appendTag: function(psLine) {
@@ -232,7 +232,7 @@ i3.Marc.prototype = {
         this.data = this.data.concat(psLine);
     },
     /**
-     * Najst tagy zodpovedajuce zadanej specifikacii.<br/><br/>
+     * Najst tagy zodpovedajuce zadanej specifikacii.<br><br>
      *
      * Metoda je staticka - t.j. moze sa pouzit aj mimo instanciu zaznamu.
      * Teda ak mame napr. object 'a' triedy 'i3.Marc', mozeme pouzit a.getSubTagStr alebo aj
@@ -248,7 +248,7 @@ i3.Marc.prototype = {
      *        prveho opakovania tagu. Ak je pouzite podpole - vzdy berie len prve
      *        opakovanie tagu. Ak chceme vsetky opakovania podpola, je nutne pouzit
      *        specifikaciu bez podpola + c==-1 a nasledne getSubTagStr().
-     *        Hodnota 0 je default.<br/><br/>
+     *        Hodnota 0 je default.<br><br>
      *
      *   -1 - Najst vsetky opakovania tagu pripadne tagu+podpola.
      *        Navratova hodnota je vzdy pole (aj ak sa najde len jeden, alebo ziadny udaj).
@@ -326,12 +326,12 @@ i3.Marc.prototype = {
      * @param {String} psLine Jeden riadok (ako string).
      *          zoznam riadkov (ako pole)
      * @param {String} psST Jednoznakovy retazec obsahujuci podpole.
-     *          Podporuje navyse tieto specialne hodnoty:<br/>
-     *          '.' : vrati datovu cast tagu (plati aj pre tagy, kt. nie su 0xx)<br/>
+     *          Podporuje navyse tieto specialne hodnoty:<br>
+     *          '.' : vrati datovu cast tagu (plati aj pre tagy, kt. nie su 0xx)<br>
      *          'i1','i2': vrati prislusny indikator
      * @param {Integer} pC Ktore vyskyty vratit
      *
-     * @return {String/Array} Pokial je pC===0 - vysledkom je string, prvy vyskyt najdeneho podpola, alebo '' (prazdny retazec).<br/>
+     * @return {String/Array} Pokial je pC===0 - vysledkom je string, prvy vyskyt najdeneho podpola, alebo '' (prazdny retazec).<br>
      *          Pokial je pC===-1 - hladame vsetky vyskyty daneho podpola. Vysledkom je pole.
      *          Ak sa nenajdu ziadne vyskyty, vysledkom bude pole s poctom prvkov 0.
      */
@@ -418,27 +418,27 @@ i3.Marc.prototype = {
      * Nastavenie zadaneho podpola v MARC riadku na danu hodnotu (resp. hodnoty)
      * Ak sa povodne podpole v riadku nenachadzalo, vlozi sa na koniec riadka.
      * Ak sa povodne nachadzalo, vlozi sa na miesto kde sa naslo prve opakovanie zadaneho
-     * podpola v riadku.<br/><br/>
+     * podpola v riadku.<br><br>
      *
      * Metoda je staticka - t.j. moze sa pouzit aj mimo instanciu zaznamu.
      * Teda ak mame napr. object 'a' triedy 'i3.Marc', mozeme pouzit a.setSubTagStr alebo aj
      * i3.marc.setSubTagStr.
      *
-     * 15.04.09 rs; oprava prace s indikatormi<br/>
-     * 25.03.09 rs; oprava prace s tagmi '00x' (osetrenie defaultov)<br/>
-     * 25.03.09 rs; oprava prace s indikatormi (preklep, nastavenie hodnoty, defaulty)<br/>
+     * 15.04.09 rs; oprava prace s indikatormi<br>
+     * 25.03.09 rs; oprava prace s tagmi '00x' (osetrenie defaultov)<br>
+     * 25.03.09 rs; oprava prace s indikatormi (preklep, nastavenie hodnoty, defaulty)<br>
      *
      * @param {String} psLine     Marc riadok.
-     * @param {String} pST        Jednoznakovy identifikator podpola.<br/>
-     *                            alebo nasledovne specialne podpolia:<br/>
-     *                            '.': nahradenie celej datovej casti (moze sa pouzit aj na ine ako 00x tagy)<br/>
+     * @param {String} pST        Jednoznakovy identifikator podpola.<br>
+     *                            alebo nasledovne specialne podpolia:<br>
+     *                            '.': nahradenie celej datovej casti (moze sa pouzit aj na ine ako 00x tagy)<br>
      *                            'i1','i2': nahradenie zadaneho indikatora
      * @param {String/Array} pValue     pValue moze byt single hodnota (string) alebo pole stringov (opakovania podpola).
      *							Ak je pValue prazdny retazec, alebo prazdne pole, alebo pole obsahujuce
-     *							jeden prazdny prvok - podpole sa z riadku vymaze.<br/><br/>
+     *							jeden prazdny prvok - podpole sa z riadku vymaze.<br><br>
      *
      *							Ak je pValue prazdne a zaroven zadane podpole je poslednym podpolom v riadku,
-     *							vrati sa prazdny retazec (inak by vznikol neplatny riadok bez podpoli).<br/><br/>
+     *							vrati sa prazdny retazec (inak by vznikol neplatny riadok bez podpoli).<br><br>
      *
      *							Ak je pValue pole a obsahuje viac ako jeden prvok, nemal by byt ziaden z prvkov
      *							prazdny.
@@ -577,7 +577,7 @@ i3.Marc.prototype = {
     /**
      * Vstup zaznamu ako string, vrati pole, tak ako ho potrebujeme
      * pre property 'data' (t.j. pole)
-     * +vymena $$ za $c(31).<br/><br/>
+     * +vymena $$ za $c(31).<br><br>
      *
      * Vysledkom je naplnena property data (povodny obsah data sa nahradi).
      *
@@ -628,10 +628,10 @@ i3.Marc.prototype = {
     },
     /**
      * Zoberie 'data' z aktualneho objektu
-     * a prevedie ich do tvaru, v akom budeme zaznam odosielat pri WS update requeste.<br/><br/>
+     * a prevedie ich do tvaru, v akom budeme zaznam odosielat pri WS update requeste.<br><br>
      *
      * Vracia objekt s properties "record" a "record_len"
-     * Podla dlzky zaznamu bude "record" bud string alebo pole stringov.<br/><br/>
+     * Podla dlzky zaznamu bude "record" bud string alebo pole stringov.<br><br>
      *
      * Volajuca metoda by potom properties vrateneho objektu mala 1:1 prekopirovat
      * do URL parametrov pre WS update request.
@@ -751,56 +751,56 @@ Ext.apply(i3.Marc, {
  * @class i3.DataFmt
  * @singleton
  *
- * Implementacia konverzie MARC do linearnej datovej struktury vhodnej pre pracu vo formularoch a naspat.<br/><br/>
+ * Implementacia konverzie MARC do linearnej datovej struktury vhodnej pre pracu vo formularoch a naspat.<br><br>
  *
- * Dokumentacia konfiguracneho pola pre konverziu.<br/>
+ * Dokumentacia konfiguracneho pola pre konverziu.<br>
  *
- * Jedna sa o pole hodnot. Kazdy prvok moze byt bud string alebo objekt.<br/>
- * 1, string: toto sa pouziva pre jednoduche pripady neopakovatelnych tagov (podpole moze byt opakovatelne)<br/>
- * 2, objekt: opakovatelny tag alebo skupina tagov.<br/><br/>
+ * Jedna sa o pole hodnot. Kazdy prvok moze byt bud string alebo objekt.<br>
+ * 1, string: toto sa pouziva pre jednoduche pripady neopakovatelnych tagov (podpole moze byt opakovatelne)<br>
+ * 2, objekt: opakovatelny tag alebo skupina tagov.<br><br>
  *
- *    Definovane option hodnoty:<br/>
+ *    Definovane option hodnoty:<br>
  *
  *      <b>tag</b>: povinne - tag, ktoreho opakovania ideme citat. v pripade skupiny (napr. udalosti u muzei)
- *           sa jedna o riadiaci tag.<br/>
- *           Priklad: '400'<br/><br/>
+ *           sa jedna o riadiaci tag.<br>
+ *           Priklad: '400'<br><br>
  *
  *      <b>subfields</b>: povinne - zoznam podpoli, ktore sa budu citat. Podpolia, ktore budu mat prazdnu hodnotu
  *           sa do liner verzie zapisu ako prazdne.
- *           Podpolia, ktore budu v datach navyse sa aktualne ignoruju.<br/>
- *           Priklad: ['i2', 'a', 'i', '8']<br/><br/>
+ *           Podpolia, ktore budu v datach navyse sa aktualne ignoruju.<br>
+ *           Priklad: ['i2', 'a', 'i', '8']<br><br>
  *
  *      <b>suffixFld</b>: volitelne - v pripade, ze chceme opakovania daneho tagu rozdelit na viac skupin
  *           sem uvedieme podpole, podkla ktoreho sa bude grupovanie robit. Hodnota uvedeneho podpola
  *           sa potom pouzije ako suffix nazvu property objektu linear verzie, ktore bude nniest data skupiny.
- *           Indikatory sa uvedu ako i1/i2.<br/>
- *           Priklad: 'i1'<br/><br/>
+ *           Indikatory sa uvedu ako i1/i2.<br>
+ *           Priklad: 'i1'<br><br>
  *
  *      <b>suffixValues</b>: volitelne, resp. povinne ak sa pouzije suffixFld. Jedna sa o pole povolenych/definovanych
  *           suffixov. Na precitane hodnoty sa aplikuje trim, takze napr. u indikatora hodnotu "medzera" zapiseme
- *           ako ''.<br/>
- *           Priklad: ['0', '1', '2', '']<br/>
- *           Potom pre tag 'C03' nazvy poli budu 'tC030','tC031','tC032','tC03'.<br/>
+ *           ako ''.<br>
+ *           Priklad: ['0', '1', '2', '']<br>
+ *           Potom pre tag 'C03' nazvy poli budu 'tC030','tC031','tC032','tC03'.<br>
  *           V pripade, ze vstupujuce opakovanie tagu ma hodnotu v podpoli suffixFld inu, nez su povolene hodnoty
  *           v poli suffixValues, pouzije sa suffix ''.
  *           Teda nazov prvku pre i1='-' by bol 'tC03' (a to aj v pripade, ze by sa hodnota '' v suffixValues neuviedla.
  *           Ako posledny prvok sa moze uviest hodnota '*' - tato vyhovie vsetkym vstupnym hodnotam (a moze sa dalej
- *           prelozit na iny string v suffixValuesInt).<br/><br/>
+ *           prelozit na iny string v suffixValuesInt).<br><br>
  *
  *      <b>suffixValuesInt</b>: prekladove pole k suffixValues. Pouzije sa pre pripady, kedy hodnoty suffixu precitane priamo
- *           z dat nie su vhodne aku suffixy nazvov premennych.<br/>
- *           Priklad: ['A', 'B', 'C', 'D']<br/>
- *           Potom pre tag 'C03' nazvy poli budu 'tC03A','tC03B','tC03C','tC0D'<br/><br/>
+ *           z dat nie su vhodne aku suffixy nazvov premennych.<br>
+ *           Priklad: ['A', 'B', 'C', 'D']<br>
+ *           Potom pre tag 'C03' nazvy poli budu 'tC03A','tC03B','tC03C','tC0D'<br><br>
  *
  *      <b>suffixFormName</b>: dalsi mozna podminka k suffixValues. Pouziva se pokud neni hodnota suffixValues jedinecna v cele aplikaci,
  *           ale pouze v ramci formulare. Pokud je zadana, musi krome hodnoty v suffixValues odpovidat i nazev defaultniho formulare (C99d) viz. INTERPI.
- *           Priklad: suffixFormName : ['DFLT_INTERPI_O' , 'DFLT_INTERPI_O' , 'DFLT_INTERPI_K' , 'DFLT_INTERPI_K' ]<br/>
+ *           Priklad: suffixFormName : ['DFLT_INTERPI_O' , 'DFLT_INTERPI_O' , 'DFLT_INTERPI_K' , 'DFLT_INTERPI_K' ]<br>
  *
- *      <b>fldNameFn</b>: function(pLine)<br/>
- *           Funkcia, ktora dostane aktualny Marc riadok a ma vratit string nazov pola.<br/><br/>
+ *      <b>fldNameFn</b>: function(pLine)<br>
+ *           Funkcia, ktora dostane aktualny Marc riadok a ma vratit string nazov pola.<br><br>
  *
- *      <b>oconvFn</b>:   function(pLinRec)<br/>
- *           Funkcia, ktora dostane cely linear record a ma vratit zoznam Marc riadkov.<br/>
+ *      <b>oconvFn</b>:   function(pLinRec)<br>
+ *           Funkcia, ktora dostane cely linear record a ma vratit zoznam Marc riadkov.<br>
  *
  *
  */
@@ -1859,7 +1859,7 @@ i3.DataFmt = {
         pMarc.data = res;
     },
     /**
-     * Konverzia vnutornej datovej struktury na MARC.<br/><br/>
+     * Konverzia vnutornej datovej struktury na MARC.<br><br>
      *
      * 08.09.09 rs; pridana filtracia kratkych riadkov
      *
@@ -1950,7 +1950,7 @@ i3.DataFmt = {
     /**
      * Najst dany tag v mape tagv a vratit jeho definicny zaznam.
      * Moze byt vhodne, ak chceme definiciu tagu pouzit napr. v nejakej uzivatelskej metode, mimo
-     * kodu i3.DataFmt.<br/>
+     * kodu i3.DataFmt.<br>
      * Aktualne funguje len pre definicie tagov s property 'tag'.
      *
      * @param {Object} pCfg   Konverzna tabulka.

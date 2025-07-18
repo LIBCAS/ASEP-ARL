@@ -73,6 +73,7 @@
    "param" : ".",
    "param2" : "Vytvoriť kópiu záznamu#Vytvořit kopii záznamu#Create a copy of the record".ls(),
    "param3" : "N",
+   "param4" : "FILTER_COPYREC_EPCA",
    "param5" : "A#B#C#D"
 },{ "id": "ShowContentServerBtnFn",
    "value": "true",

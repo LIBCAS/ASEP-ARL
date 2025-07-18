@@ -2,8 +2,13 @@
 	"items": [{
 		"name": "powershell",
 		"program": "PowerShell",
-		"download": "https://github.com/PowerShell/PowerShell/releases/tag/v7.3.4",
+		"download": "https://github.com/PowerShell/PowerShell",
 		"version": "$PSVersionTable.PSVersion"
+	}, {
+		"name": "svn",
+		"program": "SVN",
+		"download": "https://subversion.apache.org/download.cgi#recommended-release",
+		"version": "svn --version"
 	}, {
 		"name": "node",
 		"program": "Node.js",
@@ -12,22 +17,22 @@
 	}, {
 		"name": "npm",
 		"program": "Npm",
-		"download": "",
+		"download": "https://github.com/npm/cli",
 		"version": "npm -v"
 	}, {
 		"name": "grunt",
 		"program": "Grunt.js",
-		"download": "",
+		"download": "https://github.com/gruntjs/grunt",
 		"version": "grunt --version"
 	}, {
 		"name": "gulp",
 		"program": "Gulp.js",
-		"download": "",
+		"download": "https://github.com/gulpjs/gulp",
 		"version": "gulp --version"
 	}, {
 		"name": "sass",
 		"program": "Sass",
-		"download": "",
+		"download": "https://github.com/sass/dart-sass",
 		"version": "sass --version"
 	}, {
 		"name": "choco",

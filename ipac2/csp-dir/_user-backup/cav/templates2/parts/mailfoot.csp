@@ -30,7 +30,7 @@
 
 <p align="#($CASE($$$GETLANGUAGE,6:"left",:"right"))#" dir="ltr" style="text-align:#($CASE($$$GETLANGUAGE,6:"left",:"right"))#;color:gray;margin:0;">
 <small style="color:gray;font-size:80%;">
-#(..txgn("SYSTEMARL"))# <ipac:abbr lang="en-GB" title="Internet Public Access Catalog">IPAC</ipac:abbr>
+#(..txgn("SYSTEMARL"))# <abbr lang="en-GB" title="Internet Public Access Catalog">IPAC</abbr>
 - <span dir="ltr" itemscope="itemscope" itemtype="http://schema.org/Organization">
 #(..txgn("BY"))# <a style="color:gray;" itemprop="name url" target="_blank" href="#(..txg("COSMOTRON_URL"))#">#(..txg("COSMOTRON_NAME"))#</a></span>
 </small>

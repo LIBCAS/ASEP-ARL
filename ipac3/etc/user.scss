@@ -24,7 +24,8 @@ a {
     color: #15428b;
 }
 
-a:link, a:visited {
+a:link,
+a:visited {
     text-decoration: none;
 }
 
@@ -184,6 +185,20 @@ button.icon-save {
     background: transparent url("#{$images}readonly.png");
 }
 
+/* vlajka sk */
+.icon-flag-sk {
+	background: transparent url("#{$images}flags/sk.gif");
+}
+
+/* vlajka cz */
+.icon-flag-cz {
+	background: transparent url("#{$images}flags/cz.gif");
+}
+/* vlajka eng */
+.icon-flag-gb {
+	background: transparent url("#{$images}flags/gb.gif");
+}
+
 .x-panel-header-readonly {
     padding: 5px 3px 4px 0;
     line-height: 15px;
@@ -239,5 +254,12 @@ table.zfTF2 td {
     width: 175px !important;
 }
 .x-form-field:focus-visible {
-  outline: none;
+    outline: none;
 }
+
+#i3-display-format {
+    // SCSS - uziti import - s novou verzi bude nutne resit s @use + refaktoring
+    $fonts-dir: "../icons/";
+    @import "../icons/icons";
+}
+

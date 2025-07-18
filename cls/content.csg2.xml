@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="24" zv="Cache for Windows (x86-64) 2010.2.8 (Build 1104U)" ts="2016-08-10 09:01:30">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-28 14:13:23">
 <Class name="content.csg2">
 <Description><![CDATA[
 <pre> obaka pro csg tvorici regulerni stranku
 
+28.03.25 ln; podpora S3
 09.08.16 ln; podpora arlsso
 </pre>]]></Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>64139,52118.61487</TimeChanged>
+<TimeChanged>67292,51194.230457357</TimeChanged>
 <TimeCreated>63431,37131.493324</TimeCreated>
 
 <Parameter name="PageID">
@@ -38,6 +39,8 @@ pretty URL</Description>
 <Description><![CDATA[
 <pre> Vola se pri OnPreHTTP metode CSP
 vraci retezec pri chybe
+
+28.03.25 ln; podpora S3
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%String</ReturnType>
@@ -46,11 +49,18 @@ vraci retezec pri chybe
   if ret'="" {
     s %response.Status="404 Not Found"
     d %response.SetHeader("Status","404 Not Found")
-    
     q ret
   }
   
-  q:##class(content.csg).OnPreHTTP()'="login" ""
+  s res=##class(content.csg).OnPreHTTP()
+  ; 28.03.25 ln; podpora S3
+  if $e(res,1,8)="https://" {
+    s %response.Redirect=res
+    q ""
+  }
+  elseif res'="login" {
+    q ""
+  }
   
   d ##class(i2.audit.storage).increment("p-"_..#PageID,"login")
   s rest=$$$GETREQVAR("st")="rest"
@@ -60,7 +70,7 @@ vraci retezec pri chybe
   s baseurl=##class(i2.html.tpl).getBaseURL(1)
   ; opalt pro transparentni prihlaseni
   s url=$zcvt(baseurl_##class(i2.html.tpl).getLinkURL("login","opalt="_..#PageID),"I","HTML")
-  s %response.Redirect=url      
+  s %response.Redirect=url
     
   q ""
 ]]></Implementation>

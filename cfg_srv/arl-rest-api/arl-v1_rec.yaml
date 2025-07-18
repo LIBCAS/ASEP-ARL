@@ -1,0 +1,630 @@
+openapi: 3.0.1
+info:
+  title: ARL REST API Rec
+  description: ""
+  version: "1.0"
+paths:
+  /v1/{ictx}/record:
+    get:
+      tags:
+      - Rec
+      summary: Vrací MARC záznam
+      description: |-
+        ## Vrací MARC záznam podle třídy a indexu
+        Pokud není index uveden, použije se ID záznam (T001),
+        záznam se vrací v proprietárním JSON-MARC formátu
+      operationId: getRec
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - name: class
+        in: query
+        description: Třída
+        required: true
+        schema:
+          type: string
+      - name: term
+        in: query
+        description: Termín
+        required: true
+        schema:
+          type: string
+      - name: index
+        in: query
+        description: |-
+         Index
+         - pokud není index uveden, použije se ID záznam (T001)
+        schema:
+          type: string
+      - $ref: '#/components/parameters/fmt'
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarcRecordJson'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - Rec
+      summary: Aktualizace existujícího MARC záznamu
+      description: |-
+        ##  Aktualizuje existující MARC záznam
+        Záznam se předává v body.
+
+        Formát záznamu v body se očekává proprietární JSON MARC formát, není podporována jeho lexikální verze.
+      operationId: upRec
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Aktualizovaný záznam
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarcRecordJson'
+        required: true
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  class:
+                    type: string
+                    example: CbvkUsCat
+                  t001:
+                    type: string
+                    example: m0350184
+                  state:
+                    type: string
+                    example: updated
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Rec
+      summary: Uložení nového MARC záznam
+      description: |-
+        ## Uloží nový MARC záznam
+        Není určeno pro aktualizaci existujícího záznamu.
+        
+        Pro přiřazení nového ID (T001) se použije ```<new\>```, pro exempláře ```<*_new\>``` kde ```\*``` je ID (T001) titulu.
+        
+        Formát záznamu v body se očekává proprietární JSON MARC formát, není podporována jeho lexikální verze.
+      operationId: newRec
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Nový záznam
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarcRecordJson'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  class:
+                    type: string
+                    example: CbvkUsCat
+                  t001:
+                    type: string
+                    example: m0350184
+                  state:
+                    type: string
+                    example: inserted
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Rec
+      summary: Výmaz MARC záznam
+      description: |-
+        ## Vymaže existující MARC záznam podle třídy a indexu
+        Pokud není index uveden, použije se ID záznam (T001).
+      operationId: delRec
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - name: class
+        in: query
+        description: Třída
+        required: true
+        schema:
+          type: string
+      - name: term
+        in: query
+        description: Termín
+        required: true
+        schema:
+          type: string
+      - name: index
+        in: query
+        description: |-
+         Index
+         - pokud není index uveden, použije se ID záznam (T001)
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  class:
+                    type: string
+                    example: CbvkUsCat
+                  t001:
+                    type: string
+                    example: m0350184
+                  state:
+                    type: string
+                    example: deleted
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/record/{class}/{term}:
+    get:
+      tags:
+      - Rec
+      summary: Vrací MARC záznam
+      description: |-
+        ## Vrací MARC záznam podle třídy a indexu
+        Pokud není index uveden, použije se ID záznam (T001)
+        záznam se vrací v proprietárním JSON-MARC formátu.
+      operationId: getRec1
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: 'arl-v1.yaml#/components/parameters/class'
+      - name: term
+        in: path
+        description: Termín
+        required: true
+        schema:
+          type: string
+      - name: index
+        in: query
+        description: |-
+         Index
+         - pokud není index uveden, použije se ID záznam (T001)
+        schema:
+          type: string
+      - $ref: '#/components/parameters/fmt'
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarcRecordJson'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Rec
+      summary: Smazání MARC záznamu
+      description: |-
+        ## Vymaže existující záznam
+      operationId: delRec1
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: 'arl-v1.yaml#/components/parameters/class'
+      - name: term
+        in: path
+        description: Termín
+        required: true
+        schema:
+          type: string
+      - name: index
+        in: query
+        description: |-
+         Index
+         - pokud není index uveden, použije se ID záznam (T001)
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  class:
+                    type: string
+                    example: CbvkUsCat
+                  t001:
+                    type: string
+                    example: m0350184
+                  state:
+                    type: string
+                    example: deleted
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/list/{class}/{term}:
+    get:
+      tags:
+      - Rec
+      summary: Vrací seznam (list) MARC záznamů
+      description: |-
+        ## Scan MARC záznmů
+        Provede scan nad indexem a hodnotou, pouze v rozsahu ```term*```.
+        
+        Vrací seznam MARC záznamů (T001, vyhledaný termín).
+      operationId: list
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: 'arl-v1.yaml#/components/parameters/class'
+      - name: term
+        in: path
+        description: Termín
+        required: true
+        schema:
+          type: string
+      - name: index
+        in: query
+        description: |-
+         Index
+         - pokud není index uveden, použije se ID záznam (T001)
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: |-
+         Maximální počet vrácených záznamů
+         - pokud není uvedeno, vrací se max. 10 záznamů
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Seznam MARC záznamů
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          T001:
+                            type: string
+                            example: 0323533
+                          value:
+                            type: string
+                            example: mlynkova irena
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/list/{class}/{page}/{field}:
+    get:
+      tags:
+      - Rec
+      summary: Vyhledávání MARC záznamů
+      description: |-
+        ## Vrací stránku MARC záznamů podle třídy a indexu
+        hledání po slovech má smysl pouze pro slovní indexy
+      operationId: search
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: 'arl-v1.yaml#/components/parameters/class'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/field'
+      - name: term
+        in: query
+        description: |-
+          Termín
+            - term          - jedno slovo
+            - term*         - pravostranne rozsireni
+            - *term         - levostranne rozsireni (jen pro CODE indexy)
+            - term1 term2   - musi obsahovat vsechna slova
+            - term1 term2*  - pravostranne rozsireni vice slov (kazde zvlast)
+            - "term1 term2" - fraze
+            - ^term         - prvni v poli
+            - ^term1 term2^ - kompletni termin
+            - pqf dotaz v případě že index je pqf (/pqf&term=@attr 4=1 @attr 1=1016 'havel jan')
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: počet záznamů ve stránce (default 10)
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 500
+      - $ref: '#/components/parameters/fmt'
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarcRecordList'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+components:
+  parameters:
+    page:
+      name: page
+      in: path
+      description: Stránka
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+    field:
+      name: field
+      in: path
+      description: "Vyhledávací pole (IPAC2_FLD, např.: any, au, title) nebo 'pqf'"
+      required: true
+      schema:
+        type: string
+        example: any
+    fmt:
+      name: fmt
+      in: query
+      description: |-
+        JSON-MARC formát záznamu
+        - nevyplněno vrací proprietární JSON-MARC formát
+        - ```lex``` vrací lexikální proprietární JSON-MARC formát
+        - ```marc``` vrací řádkový proprietární JSON-MARC formát
+      schema:
+        type: string
+        enum: [ lex, marc ]
+  schemas:
+    MarcRecordJson:
+      type: object
+      properties:
+        class:
+          type: string
+          example: CbvkUsCat
+        t001:
+          type: string
+          example: m0350184
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                example: "245"
+              ind1:
+                type: string
+                example: "1"
+              ind2:
+                type: string
+                example: "0"
+              subfields:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    subfield:
+                      type: string
+                      example: a
+                    value:
+                      type: string
+                      example: Žena v mramoru /
+    MarcRecordList:
+      type: object
+      properties:
+        hits:
+          type: integer
+          example: 943
+        class:
+          type: string
+          example: CbvkUsCat
+        field:
+          type: string
+          example: any
+        term:
+          type: string
+          example: havel
+        page:
+          type: integer
+          example: 1
+        pageSize:
+          type: integer
+          example: 10
+        pageLast:
+          type: integer
+          example: 472
+        first:
+          type: integer
+          example: 1
+        fmt:
+          type: string
+          example: marc
+        pqf:
+          type: string
+          example: "@attr 1=1016 'havel'"
+        sorted:
+          type: string
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarcRecordJson'

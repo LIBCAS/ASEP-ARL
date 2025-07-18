@@ -1,6 +1,7 @@
 /**
  * Main okno pre epca
  *
+ * 02.05.24 on; podpora pro editaci ctenaru
  * 07.06.23 on; json5
  * 17.05.19 on; zmena security opravneni
  * 20.04.17 on; zmena security objektu
@@ -150,6 +151,8 @@ Ext.apply(i3, function() {
                             epca.Config.User.dbEpca = getPropValue(store, 'dbEpca');
                             // 23.01.12 on;
                             epca.Config.User.dbTab = getPropValue(store, 'dbTab');
+                            // 02.05.24 on; nazev db ctenaru - natvrdo
+                            epca.Config.User.dbUser = epca.Config.User.ictx + 'IsUser';
                             epca.Config.User.LinkDbCat = getPropValue(store, 'LinkDbCat');
                             epca.Config.User.LinkDbAuth = getPropValue(store, 'LinkDbAuth');
                             epca.Config.User.DbNameCat = getPropValue(store, 'DbNameCat');
@@ -160,6 +163,8 @@ Ext.apply(i3, function() {
                             epca.Config.User.dbAuthFmt = getPropValue(store, 'dbAuthFmt');
                             epca.Config.User.displayFmt = getPropValue(store, 'displayFmt');
                             epca.Config.User.displayFmtAuth = getPropValue(store, 'displayFmtAuth');
+                            // 02.05.24 on; zkraceny zf ctenar - natvrdo
+                            epca.Config.User.displayFmtUser = 'USER_BASIC';
                             epca.Config.User.defaultCatForm = getPropValue(store, 'defaultCatForm');
                             epca.Config.User.defaultAuthForm = getPropValue(store, 'defaultAuthForm');
                             epca.Config.User.webformURL = getPropValue(store, 'webformURL');

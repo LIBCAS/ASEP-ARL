@@ -43,7 +43,7 @@
 <h3>Jak poznám, že je plný text uložen u záznamu?</h3>
 <p>Připojený plný text je zveřejněn v on-line katalogu Institucionálního repozitáře AV ČR.</p>
 <p>U každého plného textu jsou zobrazeny informace o jeho dostupnosti, velikosti souboru, počtu stažení a verzi.</p>
-<p><img class="img-responsive" src="https://www.lib.cas.cz/asep/web/obr/I_PT.bmp" alt="PT v IPAC" width="698" height="366"/></p>
+<p><img class="img-responsive" src="https://www.lib.cas.cz/asep/web/obr/I_PT.bmp" alt="PT v IPAC" width="698" height="366"></p>
 </li>
 
 <li id="p6" class="nr">
@@ -57,7 +57,7 @@
 
 <li id="p7" class="nr">
 <h3>Jaká jsou pravidla pro nakládání se staženými plnými texty?</h3>
-<p>Díla uložená v Institucionálním repozitáři <ipac:abbr lang="cs-CZ" title="Akademie věd České republiky">AV ČR</ipac:abbr> jsou chráněna zákonem č. 121/2000 Sb., o právu autorském, o právech souvisejících s právem autorským a o změně některých zákonů (autorský zákon), ve znění pozdějších předpisů (dále jen „autorský zákon“).</p>
+<p>Díla uložená v Institucionálním repozitáři <abbr lang="cs-CZ" title="Akademie věd České republiky">AV ČR</abbr> jsou chráněna zákonem č. 121/2000 Sb., o právu autorském, o právech souvisejících s právem autorským a o změně některých zákonů (autorský zákon), ve znění pozdějších předpisů (dále jen „autorský zákon“).</p>
 <p>Uživatel je oprávněn užít toto dílo <strong>pouze pro svou osobní</strong> potřebu za podmínky, že účelem užití není dosažení přímého nebo nepřímého hospodářského nebo obchodního prospěchu.</p>
 <p>Uživatel je dále oprávněn užít dílo v mezích bezúplatné zákonné <strong>citační licence</strong> podle § 31 autorského zákona za podmínky, že bude uvedeno jméno autora, název díla a pramen.<br>§ 31 autorského zákona umožňuje:</p>
 <ol>

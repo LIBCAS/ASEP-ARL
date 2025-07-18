@@ -1,4 +1,5 @@
 /**
+ * 02.05.24 on; moznost skryt vybrane formaty db
  * 07.06.23 on; json5
  * 13.12.16 on; volani pres nase WS
  * 09.10.15 on; filtrovani nabidky db
@@ -74,11 +75,22 @@ epca.window.FormatForm = Ext.extend(Ext.Window, {
           //url: 'UnFormat_' + i3.ictx.toLowerCase() + '.json',
           url: 'UnFormat_' + i3.ictx.toLowerCase() + '.json5',
           // 09.10.15 on; doplneno
-          fields: ['id', 'text', 'formList', 'userGroupList'],
+          fields: ['id', 'text', 'formList', 'userGroupList', 'hidden'],
           listeners: {
             load: function(pStore) {
               var i, j, record, aGrpList, bFound, grp, recIx = -1;
 
+              // 02.05.24 on; moznost skryt vybrane formaty db
+              if (!epca.designer) {
+                for ( i = pStore.data.items.length - 1; i >= 0; i--) {
+                  record = pStore.data.items[i];
+
+                  if (record.data.hidden) {
+                    pStore.remove(record);
+                  }
+                }
+              }
+              
               // 09.10.15 on; filtrovani nabidky db pro CAV, pres filterby jaksi nefungovalo
               //              jen pro evidenci
               if ((i3.ictx.toLowerCase() === 'cav') && !epca.designer) {
@@ -108,7 +120,7 @@ epca.window.FormatForm = Ext.extend(Ext.Window, {
                   }
                 }
               }
-
+              
               // 20.01.12 on; po nahrani automaticky vybere prvni polozku
               var thisCombo = Ext.getCmp('windowFormatFormComboBoxUnFormat');
               // 14.12.15 on; moznost nastavit jakoukoliv polozku

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865U)" ts="2018-12-07 09:59:23">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2024-03-19 09:14:24">
 <Class name="content.generator">
 <Description><![CDATA[
 <pre> Prekladac pravidel contentServeru
 
+19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 06.12.18 ln; podpora %% pro seznamy
 25.07.12 ln; oprava operatoru zacina/nezacina
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>64988,41303.638365</TimeChanged>
+<TimeChanged>66918,33109.4880051</TimeChanged>
 <TimeCreated>62186,32444.028896</TimeCreated>
 
 <Method name="generate">
@@ -97,6 +98,7 @@ w ##class(content.generator).generate()</Description>
 <Description><![CDATA[
 <pre> tvorba tela genorovanych metod
 
+19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 06.12.18 ln; podpora %% pro seznamy
 </pre> ]]></Description>
 <ClassMethod>1</ClassMethod>
@@ -128,7 +130,8 @@ w ##class(content.generator).generate()</Description>
     s tag=$e(line,1,3)
     continue:tag'="300"    
     
-    d code.WriteLine($j("",indent*2)_"; "_$tr(line,$c(31),"$"))
+    ; 19.03.24 ln; call vraci ktere pravidlo se aplikovalo
+    d code.WriteLine($j("",indent*2)_"; "_$tr(line,$c(31),"$")_" ("_i_")")
     s subA=##class(User.MARC).getSubTagStr(.line,"a")
     s subB=##class(User.MARC).getSubTagStr(.line,"b")
     s subC=##class(User.MARC).getSubTagStr(.line,"c")
@@ -163,7 +166,8 @@ w ##class(content.generator).generate()</Description>
     }
     
     if (subA="0") || +subA {      
-      d code.WriteLine($j("",indent*2)_"q:"_cond_subA)
+      ; 19.03.24 ln; call vraci ktere pravidlo se aplikovalo
+      d code.WriteLine($j("",indent*2)_"q:"_cond_""""_subA_"("_i_")""")
 	} elseif subA="if" {
 	  s:subC="" cond="$d(array("""_subB_""")) "
 	  d code.WriteLine($j("",indent*2)_"if "_cond_"{")	  

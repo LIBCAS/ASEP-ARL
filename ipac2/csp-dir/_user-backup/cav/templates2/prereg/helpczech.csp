@@ -7,12 +7,12 @@ sami ukládat datasety a přidávat plné texty ke svým bibliografickým zázna
 <ipac:off>
 <ul>
 <li>Pokud předregistraci nepotvrdíte osobně 
-v <ipac:abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></ipac:abbr>,
+v <abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></abbr>,
 bude automaticky do 7 kalendářních dnů zrušena.</li>
 <li>Předvyplněné údaje budou ověřeny při registraci v
-<ipac:abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></ipac:abbr> na základě vašich dokladů.</li>
+<abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></abbr> na základě vašich dokladů.</li>
 <li>Adresa, telefonní číslo a e-mailová adresa jsou využívány k odesílání informací
-z <ipac:abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></ipac:abbr> (blížící se konec výpůjční lhůty,
+z <abbr title="#(data("---","MAIN_TITLE"))#"><ipac:txg param="MAIN_ABBR"/></abbr> (blížící se konec výpůjční lhůty,
 výzva k vyzvednutí rezervovaných dokumentů apod.).</li>
 </ul>
 </ipac:off>

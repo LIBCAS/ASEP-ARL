@@ -1,4 +1,5 @@
 /**
+ * 04.02.25 on; jina hlaska pro povinne pole
  * 04.01.17 on; rozsireni funkce clearFields
  * 19.07.16 on; formular nemusi byt v tabu
  *
@@ -129,16 +130,24 @@ epca.form.TextArea = Ext.extend(Ext.form.TextArea, {
   validate: function() {
     // 05.03.14 on; property Required
     var bValidReq;
-    if (this.required) {
+    if (this.required) { 
       bValidReq = (this.getValue() !== '');
     } else {
       bValidReq = true;
     }
 
+    // 04.02.25 on; jina hlaska pro povinne pole
+    if (!bValidReq) {
+    	this.invalidText = i3.ui.ext.tx.txBlankText;
+    } else {
+    	this.invalidText = i3.ui.ext.tx.txInvalidText;
+    }
+    
     // 05.03.14 on; zrusene
     /*if(Ext.isEmpty(this.customCode)) {
      return true;
      }*/
+    
 
     var isValid = true;
     eval(this.customCode);

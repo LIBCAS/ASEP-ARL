@@ -1,4 +1,5 @@
-﻿// 27.06.23 on; button
+﻿// 26.02.25 on; field_emptyText
+// 27.06.23 on; button
 // 07.06.23 on; formatovani - JSON5
 // 04.11.21 on; field_label_html_2, field_label_html_3, x_help_2, x_help_3
 // 22.09.20 on; tagOrder
@@ -630,6 +631,12 @@
 	"editable": true,
 	"bindedXtype": ["epca.button"]
 }, {
+	"id": "field_emptyText",
+	"variable": "emptyText",
+	"text": "default text",
+	"editable": true,
+	"bindedXtype": ["epca.marc_textfield", "epca.marc_textarea", "epca.codeddata_combobox", "epca.codeddata_datefield"]
+}, {
 	"id": "tag",
 	"variable": "tag",
 	"text": "číslo tagu",
@@ -773,6 +780,18 @@
 	"variable": "formDFST",
 	"text": "číselník ZF",
 	"editable": true
+}, {
+	"id": "form_hideBorder",
+	"variable": "formHideBorder",
+	"text": "hide border",
+	"editable": true,
+	"values": [{
+		"id": false,
+		"text": "false"
+	}, {
+		"id": true,
+		"text": "true"
+	}]	
 }, {
 	"id": "container_label_user",
 	"variable": "containerLabelUser",

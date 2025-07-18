@@ -4,7 +4,7 @@
 <div class="info">#(data("HEADING"))#</div>
     </csp:if>
 
-<ipac:form id="#(data("PAGEID"))#-f" action="#(data("ACTION"))#" method="post">
+<ipac:form id="#(data("PAGEID"))#-f" action="#(data("ACTION"))#" method="post" data-client-name="">
         <ipac:dtx param="FORM_UP"/>
 
 <p class="form-text">
@@ -19,18 +19,18 @@
     <ipac:iterate/>
     <ipac:textfield subtag="a" options="R">
 <div class="row form-group">
-<label class="col-form-label">#(..ftx("PRIEZVISKO"))#: <em>*</em></label>
+<label class="col-form-label" for="family-name">#(..ftx("PRIEZVISKO"))#: <em>*</em></label>
 <div class="half fv-row">
-<input type="text" autofocus="autofocus" class="form-control" required="required" autocomplete="family-name" value="#($s(data("POSTED"):data("value"),1:data("PRIEZVISKO")))#"
+<input type="text" autofocus="autofocus" id="family-name" class="form-control" required="required" autocomplete="family-name" value="#($s(data("POSTED"):data("value"),1:data("PRIEZVISKO")))#"
 data-fv-not-empty___message="#(..tx("ERR_SURNAME"))#">
 </div></div>
     </ipac:textfield>
 
     <ipac:textfield subtag="a" options="RMJ">
 <div class="row form-group">
-<label class="col-form-label">#(..ftx("MENO"))#: <em>*</em></label>
+<label class="col-form-label" for="given-name">#(..ftx("MENO"))#: <em>*</em></label>
 <div class="half fv-row">
-<input type="text" class="form-control" required="required" autocomplete="given-name" value="#($s(data("POSTED"):data("value"),1:data("MENO")))#"
+<input type="text" id="given-name" class="form-control" required="required" autocomplete="given-name" value="#($s(data("POSTED"):data("value"),1:data("MENO")))#"
  data-fv-not-empty___message="#(..tx("ERR_NAME"))#">
 </div></div>
     </ipac:textfield>
@@ -92,9 +92,9 @@ data-fv-regexp="true" data-fv-regexp___message="#(..tx("TEL_FORMAT"))#">
 
     <ipac:textfield subtag="e" options="R">
 <div class="row form-group">
-<label class="col-form-label">#(..ftx("EMAIL"))#: <em>*</em></label>
+<label class="col-form-label" for="email">#(..ftx("EMAIL"))#: <em>*</em></label>
 <div class="half fv-row">
-<input type="email" class="form-control" required="required" autocomplete="email" inputmode="email" value="#($s(data("POSTED"):data("value"),1:data("EMAIL")))#"
+<input type="email" id="email" class="form-control" required="required" autocomplete="email" inputmode="email" value="#($s(data("POSTED"):data("value"),1:data("EMAIL")))#"
 data-fv-email-address="true" data-fv-email-address___message="#(..tx("ERR_EMAIL_VALID"))#" data-fv-not-empty___message="#(..tx("ERR_EMAIL"))#">
 </div></div>
     </ipac:textfield>

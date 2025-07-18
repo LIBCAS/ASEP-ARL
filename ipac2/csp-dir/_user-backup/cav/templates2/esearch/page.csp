@@ -1,0 +1,44 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<ipac:layout1 noquit="1">
+
+    <csp:if condition=((data("GUIDE")="sdi")&&(..isPage("esdi")))>
+<ipac:sdiguide step="1">
+        <csp:if condition=(..isPage("ssearch"))>
+<ipac:tx param="SDI_GUIDE_OPTION"/>&nbsp; <ipac:a op="ssearch" param="guide=sdi" rel="nofollow"><ipac:atext/>.</ipac:a>
+        </csp:if>
+</ipac:sdiguide>
+    </csp:if>
+
+<ipac:tpl page="ssearch" version="jstemplate"/>
+
+<ipac:form role="search" autocomplete="off" data-autocomplete="#(data("SUGESTOR_VALUE"))#" id="#(data("PAGEID"))#-f" action="#(data("ACTION"))#" method="get">
+    <ipac:dtx param="FORM_UP"/>
+
+<div>
+<ipac:tpl version="form"/>
+<ipac:tpl page="ssearch" version="sources"/>
+</div>
+
+<ipac:tpl page="ssearch" version="btns"/>
+<br>
+
+    <csp:if condition=(..txn("MIDDLE")'="")>
+<section class="usertext"><ipac:txn param="MIDDLE"/></section>
+    </csp:if>
+
+<div id="esearch-info">
+
+<ipac:tpl page="parts" version="tabs"/>
+
+<div class="tab-content">
+    <ipac:tpl version="limits"/>
+    <ipac:tpl version="settings"/>
+</div>
+
+</div>
+
+        <ipac:dtx param="FORM_DOWN"/>
+</ipac:form>
+
+</ipac:layout1>

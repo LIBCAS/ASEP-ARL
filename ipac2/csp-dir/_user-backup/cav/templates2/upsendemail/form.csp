@@ -55,12 +55,12 @@ data-fv-email-address="true" data-fv-email-address___multiple="true" data-fv-ema
 <div class="xsubmit">
 <button type="submit" class="btn btn-primary" id="btn-send" name="send" value="#(data("TXSEND"))#">#(data("TXSEND"))#</button>
 <button type="submit" class="btn btn-light" id="btn-dontsend" name="dontsend" value="#(data("DONTSEND"))#">#(data("DONTSEND"))#</button>
-<input type="hidden" name="op" value="#(data("OP_VALUE"))#"/>
-<input type="hidden" name="idx" value="#(data("IDX"))#"/>
-<input type="hidden" name="key" value="#(data("KEY"))#"/>
-<input type="hidden" name="repo" value="#(data("REPO"))#"/>
-<input type="hidden" name="emailsall" value="#(data("EMAILSALL"))#"/>
-<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+<input type="hidden" name="op" value="#(data("OP_VALUE"))#">
+<input type="hidden" name="idx" value="#(data("IDX"))#">
+<input type="hidden" name="key" value="#(data("KEY"))#">
+<input type="hidden" name="repo" value="#(data("REPO"))#">
+<input type="hidden" name="emailsall" value="#(data("EMAILSALL"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
 
 </ipac:form>

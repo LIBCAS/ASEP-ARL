@@ -308,7 +308,7 @@ volano take z contauthor
   } 
   elseif '##class(i2.base.forms).checkCaptcha() ; kontrola captcha pro neprihlasene
   {
-    s data("ERRORS")=data("ERRORS")_" "_..tx("ERR_CAPTCHA")_"<br/>"
+    s data("ERRORS")=data("ERRORS")_" "_..tx("ERR_CAPTCHA")_"<br>"
   }
  
   ; nastaveni brat z ciselniku cav podle pracoviste
@@ -316,18 +316,18 @@ volano take z contauthor
   s data("EMAILTO")=..getEmail(data("IDX"))
   w data("EMAILTO")
   if data("EMAILTO")="" { ; kontrola adresata
-    s data("ERRORS")=data("ERRORS")_" "_..tx("EMAILTOERR")_"<br/>"
+    s data("ERRORS")=data("ERRORS")_" "_..tx("EMAILTOERR")_"<br>"
   }
   if data("SURNAME")="" { ; kontrola vyplnenosti prijmeni
-    s data("ERRORS")=data("ERRORS")_" "_..tx("SURNAMEERR")_"<br/>"
+    s data("ERRORS")=data("ERRORS")_" "_..tx("SURNAMEERR")_"<br>"
   }
   if data("WORKPLACE")="" { ; kontrola vyplnenosti pracoviste
-    s data("ERRORS")=data("ERRORS")_" "_..tx("WORKPLACEERR")_"<br/>"
+    s data("ERRORS")=data("ERRORS")_" "_..tx("WORKPLACEERR")_"<br>"
   }
   ; ziskame si email komu poslat kopii
   s:data("REPLYTO")="@" data("REPLYTO")=##class(i2.access).getLoginEmail()
   if data("REPLYTO")="" { ; kontrola vyplnenosti emailu
-    s data("ERRORS")=data("ERRORS")_" "_..tx("EMAILERR")_"<br/>"
+    s data("ERRORS")=data("ERRORS")_" "_..tx("EMAILERR")_"<br>"
   }  
   
   if (data("ERRORS")="") {
@@ -349,7 +349,7 @@ volano take z contauthor
 	  } 
 	  else 
 	  { ; email se neodeslal, vypiseme chybovou hlasku
-	    s data("ERRORS")=data("REPORTS")_..tx("SENDEMAILERROR")_"("_ret_")"_"<br/>"
+	    s data("ERRORS")=data("REPORTS")_..tx("SENDEMAILERROR")_"("_ret_")"_"<br>"
 	  }
 	  ; promazeme formular
 	  s data("SURNAME") = ""  

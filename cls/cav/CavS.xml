@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.1 (Build 380U)" ts="2024-02-13 16:49:41">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-13 14:00:16">
 <Class name="User.CavS">
 <Description><![CDATA[
 <pre>
+13.03.25 jk; zalozeno genDoiDataCite
+28.02.25 ln; vyjimky pro analytika
+27.02.25 jk; pristup se cte z CREDENTIALS
+27.02.25 jk; zpracovani handlenet pres DUI
+18.02.25 mk; oprava chyby nenulovane premenne pri metode opravz ISSN a EISSN
+06.11.24 ln; C52n ignorovat jako zmenu
+12.07.24 ln; operace ipref
+24.06.24 tt; provedena zmena pravu datovvych zaznamu pro odesltani zpracovateli
+17.06.24 tt; pridany identifikatory autora scopus_id a orcid_id
+03.06.24 tt; změna baseUrl pro showRecordXMLKAVContent
+12.04.24 tt; odstranime vsechny u tagy
+05.04.24 tt; proveden fix klicovych slov u exportu do oai
 13.02.24 tt; ImpC86QTC: zalozena metoda pro pravidelny import
 05.02.24 tt; doplneno dalsi escapovani
 30.01.24 tt; provedeno zaescapovani impact factoru znaku < do exportu xml
@@ -19,148 +31,14 @@
 15.08.23 tt; exportDCOpenAIRE: provedena oprava dotahování identifikátorů
 17.02.23 tt; znovu obnovena funkčnost kvůli openaire - upraveno hlavicka https na http
 16.02.23 tt; znovu obnovena funkčnost kvůli openaire
-01.12.22 tt; GetAllOperation: pridana funcnost vytvoreni kopie datasetu 
-29.11.22 tt; provedena změna hlavičky pro export do openaire + i2.ws.oai
-19.05.22 tt; GetAllOperation: pridáno mošnost pro super -k
-26.01.22 jk; zalozeno CreateCavhandle
-09.11.21 tt; zfDatumZverejneni: zalozena metoda
-02.04.21 tt; FTgetIsUser: provedena uprava logiky pridelovani roli
-14.10.20 oi; uprava met. Add856NUSLforOAI() - pridano hodnota "origname" soubrou do podpole 856$f
-20.08.20 tt; provedena uprava vymazavani autorit
-14.08.20 tt; VymazNenavCatAutorit: zalozena metoda
-09.07.20 tt; upraveny podminky pro vymaz autorit
-20.03.20 tt; provedeno upraveni bibliografickych citaci pro oai kav
-16.10.12 tt; zfContentHlaska: zalozena metoda - Zalozena metoda pro vypsani hlasky pro CAV - kdy neschvaleny zaznam je zobrazen pro hodnoceni
-17.03.20 tt; osetreni citace od html znaku
-28.02.20 tt; provedena uprava kvuli hodnoceni
-25.02.20 tt; predalano pravo na editaci ohlasu na h - clovek, ktery zaznam vytvoril - 7 - upraveno k editaci KNAV-K -zpracovatel 
-16.06.20 tt; ohlas muze upravovat zpracovatel zaznamu, ktery jej vytvoril
-05.02.19 tt; showRecordXMLKAV: pridana informace o vyuzivani patentu do exportu pro hodnoceni
-28.01.20 tt; generateC52: provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n
-24.01.20 tt; pridana podminka pro fultext, i pokud je verze jina ale druhy dokumentu jsou E,L*,P*,Z
-21.01.20 tt; showRecordXMLKAVContent: pridano generovani do xml pro KNAV prvku plny_text 
-19.12.19 tt; pridana zmena druhu dokumentu - k
-17.12.19 tt; ExpSetPracA1: provedena zmena doplneni oddeleni a vyhodnoceni podminky
-17.10.19 tt; uzivatel kontrola muze videt smlouvy i spolupracujicich ustavu- zmenena tato podminka
-03.10.19 tt; vytvoreno ImpDataEPCAOddel
-24.09.19 tt; provedena uprava, aby se oddeleni upravovalo na i,j,k,l - nova funkcnost oddeleni
-31.07.19 tt; uprava podminky, aby bylo mozne zmenit i zaznamy do RIVu
-28.05.19 tt; pridano pravo na zmenu roku sberu pro zpracovatele a superuzivatele
-04.05.19 tt; GetAllOperation: pokud je záznam neoznačen do RIV, tak zpracovatel jej může vždy smazat (nyní u záznamů jiného 
-            než aktuálního roku sběru není tato možnost)  - ((sAktRokSb'=sRC26Rok)&& - zbytecna podminka    
-26.04.19 tt; pridany rozsirene informace o zaznamech
-17.04.19 tt; VymazNenavAutorit: zalozena metoda
-01.03.19 tt; generateC52m: pridan priznak pro smlouvu - specialni typ
-01.03.19 tt; provedena uprava vyhodnoceni uzivatele kontrola
-27.02.19 tt; zfContent: upraveno zobrazeni sloupce hodnoceni
-26.02.19 tt; symExpKosik: metoda zalozena                           
-01.02.19 tt; pridan uzivatel kontrola - 8 
-11.01.19 tt; RecNeodIpac: upravy kvuli zobrazeni lup a dalsi funkcnosti
-31.01.18 tt; pokud jsem zpracovatel a clovek z meho ustavu vytvoril nejakou autoritu, muzu editovat
-23.01.18 tt; provedena uprava pro druh dokumentu C pro FMT
-11.01.18 tt; upraven zobrazovaci format pro DATA content server
-28.11.17 tt; CitaceXml: pridana metoda pro export citaci v katalogu
-27.11.17 jk; zruseno makro GetParDefaultLang
-01.11.17 tt; zfContent: pridan u dat sloupec pristup
-26.07.17 tt; repPrehledZaz a repPrehledZazVyp: metoda zalozena
-10.05.17 tt; FTgetDataStav: metoda zalozena
-14.03.17 tt; pridana logika pro datasety s U95a
-12.01.17 tt; RecNeodIpac: prepsana metoda pro zobrazeni neodeslanych zaznamu podle nove logiky indexu
-16.12.16 tt; VysSpatneLinky: metoda zalozena
-13.12.16 jk; predelana tvorba linku na detail zaznamu v ipacu
-08.12.16 tt; upraveno porovnani anonymniho uzivatele - jsou vovoleny cisla, ktere se pri porovnani odfiltruji
-30.11.16 jk; cesta na handlenet se cte z konfigurace
-30.11.16 tt; zmena adresy
-30.11.16 tt; zmena adresy pro handle net
-11.11.16 tt; zfContent: pridana volba u zobrazeni velkych dat+
-29.06.16 tt; upraveny podminky pro vytvareni handle.net (omezeno 969fN)
-16.05.16 tt; uprava vypisu informaci u vystupu uprava pracovist
-25.02.16 tt; ImpINCITES: zalozena metoda 
-27.11.15 tt; uprava vyhodnoceni prav kvuli I3web formularu  - OHLASY
-17.11.15 tt; rightsDatabase: zalozeno 
-29.10.15 tt; dublinCoreOpenAIRE: upraven export projektu o 230b
-08.09.15 tt; upraven export OpenAire
-06.09.15 tt; doi, issn a isbn presunuto na 18
-04.09.15 tt; dublinCoreOpenAIRE: zmeny podle zadani
-02.09.15 tt; exportDCOpenAIRE: zalozena metoda pro specialni export dc do OPENAIRE - cs29885 
-02.06.15 tt; fixMetadata - pridana metoda na upravu metadat statistik
-02.04.15 jk; vystup jde do utf-8
-24.03.15 tt; generateC52m: uprava logiky
-15.03.15 tt; showRecordXMLKAV: pridany anglicky link - link_eng
-13.03.15 tt; generateC52m: zalozena metoda pro pregenerovani C52m 
-28.01.15 tt; ImpHod2015Auth: doplnena importni metoda C48
-             gEpca70Xw: zalozena metoda
-             ImpHod2015Kat: doplnena importni metoda C64
-16.12.14 tt; CreateHandleNet: upraven link pro smazane zaznamy
-13.12.14 tt; showRecordXMLKAV: pridano odstraneni zpecialnich znaku
-             showRecordXMLBibCit - zalozeno
-             showRecordXMLKAVContent: pridan export 856    
-30.11.14 tt; zfContent: pridan spolupracujici zpracovatel do rozsireneho zobrazeni udaju content serveru
-30.11.14 tt; symExportOAI2NUSL: pridana uprava,a by se do NUSL odesilali zaznamy, ktere maji 856 bez x nebo s x=N
-22.11.14 tt; zfContent: dopracovana podpora zobrazovani recenzi
-06.11.14 tt; showRecordXMLKAV: pridany prvek s nazevm eng
-04.11.14 tt; showRecordXMLKAVContent: zalozena metoda
-03.11.14 tt; generateC52: pridano vytvoreni recenzi a hodnoceni
-08.10.14 tt; showRecordXMLKAV: upraveno escapovani citaci
-17.08.14 tt; zfContent: pridan preklad textu u tabulky content serveru
-28.06.14 tt; showRecordXMLKAVAutori: pridan element researcher_id -  zaznam autority 035$$a, kde $$2WOS + pridan priznak z 70*u=1 - zaznam k hodnoceni
-10.06.14 tt; showRecordXMLKAV: drobne upravy ve scheme na pripominky pana Galika
-03.06.14 tt; showRecordXMLKAVHodKr a showRecordXMLKAVCitRec a showRecordXMLKAVAutori: 
-             zalozeny metody pro export pro KAV
-06.02.14 jk; zruseny globalni promenne ictx a lang
-20.01.13 tt; showRecordXMLKAV: uprava, aby se plnilo pracoviste u autoru
-02.01.14 tt; GenC60Handle: upravena navratova hodnota
-09.10.13 tt; Add856NUSLforOAI: upraveny podminky pro poslani linku na zaznam 
-03.10.13 tt; Add856NUSLforOAI: uprava linku pro NUSL - pridan parametr ictx
-13.08.13 tt; showRecordXMLKAV: zalozena metoda
-23.05.13 tt; RecFullText: uprava linku na prikladani souboru z klienta 
-20.02.13 tt; zfContent: uprava kvuli validnosti - kp
-06.02.13 tt; zfContent: upravena metoda pro generovani externich linku
-06.02.13 tt; GenC60Handle a ModifyCavhandle: zalozena metoda 
-20.01.13 tt; generateC52: osetren vypis kvuli zobrazovani v IPACu3
-10.01.13 tt; generateC52: pridano odmazani C52, pokud se nevytvorila jina/nove
-12.12.12 tt; CreateHandleNet: zalozena planovana metoda na zapis do handle net serveru 
-12.12.12 tt; genHandleNetR: smazana pro nepotrebnost
-09.11.12 tt; genHandleNetR: zalozena metoda
-16.10.12 tt; zfContent: zalozena metoda pro zobrazovani rozdilnych tabulek fulltextu
-                        podle kontextu uzivatele
-07.10.12 tt; generateC52: zalozen symbolik pro pregenerovani C52
-07.10.12 tt; SelSymbCont: zalozen symbolik pro vyber zaznamu z content serveru
-01.10.12 tt; FTgetIsUser: pridana funkcnost na zjisteni ustavu podle IP adres
-             i neprihlaseny uzivatel ziska prava prihlaseneho v ramci ustavu
-09.08.12 tt; getNuslRec: zalozena metoda pro selekt dat s fulltextem NUSLU
-01.07.12 tt; Add856NUSLforOAI: zalozen symbolik pro dogenerovani fulltextu pro ucely OAI
-01.07.12 tt; symExportOAI2NUSL: zapojen symbolik pro generovani 856 na zaklade content serveru
-18.05.12 tt; FTgetIsUser: uprav logiky pro anonymni uzivatele - chova se 
-             vzdy jako navratova hodnota 3
-04.11.11 tt; FTgetEmailHandle a FTgetZpracZaUstav: metoda zalozena
-14.10.11 tt; FTgetIsUser: zmena logiky superuzivatele
-29.09.11 tt; uprava FTgetIsUser, FTgetUstavU a FTgetUstavU proti spatnym vstupum
-23.09.11 ln; oprava FTgetIsUser, FTgetUstavU a FTgetUstavU pri neplatnem zaznamu
-22.09.11 tt; FTgetUstavR a FTgetUstavU a FTgetIsUser a FTgetIsAutor: metoda zalozena
-27.03.11 tt; symExportOAI2NUSL: nahrazeni hodnoty v C34v
-21.03.11 tt; RecFullText: zmena logiky, pridavat souboru se nemaji k BCA a BXXS
-09.03.11 tt; RecFullText: metoda zalozena na vlozeni fulltextu
-08.11.10 tt; testCheck856x: pridana varianta pro novy zaznam
-03.11.10 tt; testCheck856x: formalni oprava chyby, aby se nenacitalo s prazdneho handlu
-25.10.10 tt; testCheck856x: dalsi upravy symboliku
-25.10.10 tt; symExportOAI2NUSL: upraven filtracni symbolik pro OAI o filtraci 856
-19.10.10 lp; filtracni symbolik symExportOAI2NUSL pro export pres OAI-PMH do NUSL
-25.08.10 tt; Filt856x: zalozena metoda na filtrovani 856 podle $x
-14.10.10 tt; FilterSymbI:zalozeno na zaklade usel.sec.mfilter.testSplitSymb
-             filtrovani 856
-22.07.10 tt; RecNeodIpac: metoda zalozena
-17.05.10 tt; ExpSetPracA1: pridana varianta pro odstraneni oddeleni, prepracovani vkladani 
-             oddeleni, aby se vkladaly vsechny opakovani C06 podpole $$h
-10.05.10 tt; metoda zalozena ExpSetPracAuth
-09.12.09 tt; zalozena trida
+...
 </pre>
 Uzivatelske funkce a vystupy pro Cav (CavS)]]></Description>
 <ClassType/>
 <IncludeCode>Common,I2</IncludeCode>
 <ProcedureBlock>1</ProcedureBlock>
 <Super>%Library.RegisteredObject</Super>
-<TimeChanged>66883,59950.105368206</TimeChanged>
+<TimeChanged>67277,48273.10431402</TimeChanged>
 <TimeCreated>59592,28773.586903</TimeCreated>
 
 <Method name="classNameX">
@@ -174,12 +52,79 @@ return current class unlike %ClassName this is a class method</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="dupCAV">
+<Description><![CDATA[
+21.02.25 mk metoda na vypis duplicit <br>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>index,outf:%String=""</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ s OU=$IO
+ 
+ ; otevrit vystupni soubor
+ d SetPDefIO^%NLS("CP1250",3)
+
+ open outf:("NWS":/CREATE):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+
+ ; parametre
+ ; d ##class(CavS).dupCAV("issnsa","dup011a.txt")
+ if index = "" q
+ 
+ s hodnota="",idx="",kody="",odd=$c(13)_$c(10),kody3="",snazov="",snazvy=""
+ f 
+ {
+   s hodnota=$o(^ooDataTableI("CavUnEpca",index,hodnota))  q:hodnota=""
+   s pocet=0,txold="",kody="",taold="",tdold="",kody3="",snazov="",snazvy=""
+   f   
+   {
+     s idx=$o(^ooDataTableI("CavUnEpca",index,hodnota,idx))  q:idx=""
+     s sT001=##class(MARC).getT001(idx)
+     s pocet=pocet+1
+     if '$f(kody,","_sT001)    ; len ak tam uz dany kod nie je
+     {
+       s kody=kody_","_sT001
+       
+       if ##class(User.MARC).readX(.handlec,"CavUnEpca",sT001) 
+       { 
+         s snazov=$$$getTagX(.handlec,"200a")
+         if snazvy'="" s snazvy=snazvy_", "_snazov
+         if snazvy="" s snazvy=snazov
+       }
+       
+       
+       
+     }  
+   } ; koniec cyklu na citanie ID autority z indexu
+   ;ak pocet kodov je > 1 t.j. 2 a viac
+   if $e(kody,1,1)="," s kody=$e(kody,2,9999)
+   s pocetk=$l(kody,",")
+   if (kody'="") && (pocetk>1)  ; riesenie nacitanych duplicitnych bib
+   {
+     ;w !, kody 
+     s hodnota2=$$$trim(hodnota)
+     use outf w kody_";"_hodnota2_";"_snazvy_odd use OU 
+   } 
+   s pocet=0
+ } ; koniec cyklu nacitavania hodnot indexu
+ 
+ 
+ close outf use OU
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+
+    
+ q
+]]></Implementation>
+</Method>
+
 <Method name="ExpPublVysl">
 <Description><![CDATA[
 <pre> Specialni vystup pro cav - CELKOVÉ PUBLIKAČNÍ VÝSLEDKY V AV ČR      pP("TypV")=1
    a  Specialni vystup pro cav - PUBLIKAČNÍ VÝSLEDKY VE VĚDNÍCH OBLASTECH pP("TypV")=2
 
-02.04.15 jk; vystup jde do utf-8
+02.04.15 jk; vystup jde do UTF-8
 09.12.09 tt; zalozena metoda
 </pre> ]]></Description>
 <ClassMethod>1</ClassMethod>
@@ -196,9 +141,8 @@ return current class unlike %ClassName this is a class method</Description>
   d ..ExpPVGetData(.pP, .OFN, .pErr)
   
   ; zacatek vystupu
-  ; 02.04.15 jk; vystup jde do utf-8
-  d OFN.WriteLine("<meta http-equiv=""Content-Type"" content=""text/html; charset=utf-8"">")
-  d OFN.WriteLine("<html><head></head><body><table border=""1"">")
+  ; 02.04.15 jk; vystup jde do UTF-8
+  d OFN.WriteLine("<!DOCTYPE html><html data-class=""CavS"" data-method=""ExpPublVysl""><head><meta charset=""UTF-8""></head><body><table class=""table"" border=""1"">")
   
   if (pErr'="")
   { ; Pokud chyba, vypiseme
@@ -288,6 +232,7 @@ Parametry:
 <FormalSpec><![CDATA[&pP:%Binary,&OFN:%Binary,&pErr:%String]]></FormalSpec>
 <Implementation><![CDATA[
  s idx="",brk=0  ; definice pomocnych promennych
+ s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  
  f  
  { ; cyklus pro prochazeni vyselektovanych zaznamu
@@ -315,7 +260,7 @@ Parametry:
   
    for  
    { ; nacteni informaci z indexu ye
-     set sPomYE1=$o(^$$$MarcIndexG("CavUnEpca",idc,"ye",sPomYE1)) 
+     set sPomYE1=$o(^$$$MarcIndexG(ipref_"UnEpca",idc,"ye",sPomYE1)) 
      q:sPomYE1=""  
      s sPomYE=sPomYE_" "_sPomYE1
    }
@@ -346,7 +291,7 @@ Parametry:
    s sPomPRA1="",sCSekce="0"
    for 
    { ; nacteni vsech zucastnenych pracovist na zaznamu
-     set sPomPRA1=$o(^$$$MarcIndexG("CavUnEpca",idc,"pra",sPomPRA1)) 
+     set sPomPRA1=$o(^$$$MarcIndexG(ipref_"UnEpca",idc,"pra",sPomPRA1)) 
      q:sPomPRA1=""                             ; pokud neni hodnota, ukoncime     
      s sT7XX1p=$tr($zcvt(sPomPRA1,"U")," ","")
      s:($f(pP("sSekce1"),sT7XX1p)) sCSekce=1   ; ulozime sekci, pokud je nalezena
@@ -933,12 +878,14 @@ Volani 200     $a@##class(User.CavS).RecNeodIpac(.result,.handle,"")
   s sT001=$$$HandleT001(handle)         ; ziskani t001
   s sClass=$$$HandleClass(handle)       ; ziskani tridy
   s sLClass=##class(User.Util).objectName2lname(sClass)
-  s sCilDat="cav_un_epca"
+  s ictx=$p(sLClass,"_"), ipref=$zcvt(ictx,"W")
+  
+  s sCilDat=ictx_"_un_epca"
   s term=" "_sLClass_"*"_sT001
   s id="", sPocet=0,link=""
   for  
   {
-    s id=$o(^$$$MarcIndexG("CavUnEpca","znnz",term,id))
+    s id=$o(^$$$MarcIndexG(ipref_"UnEpca","znnz",term,id))
     q:id=""
     s sPocet=sPocet+1    
   }
@@ -962,9 +909,9 @@ Volani 200     $a@##class(User.CavS).RecNeodIpac(.result,.handle,"")
      {
         s user=##class(i2.access).getLoginId()       ; ziskame id uzivatele
         q:(user="")    ; pokud nemame login kontext - ukoncime  
-        s sUserR=##class(User.CavS).FTgetIsUser(user,sT001,"USER") ; metoda pro vygenerovani role uzivatele
+        s sUserR=..FTgetIsUser(user,sT001,"USER") ; metoda pro vygenerovani role uzivatele
         q:('($f(sUserR,"6")||$f(sUserR,"2")))
-        s sCilDat="cav_un_epca-4"
+        s sCilDat=ictx_"_un_epca-4"
      }    
   }     
   s:(pPar4=1) link="\q"_pPar2_"*"_sCilDat_"*1 "_sLClass_sT001_"\q"         
@@ -1107,6 +1054,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:SPU_Filtrovaci_symbolik_856#Zad.
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&handle:%Library.Binary]]></FormalSpec>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s T970 = $$$getTagX(.handle,"970")
  ; vymazy tagu
  ; vsechny TXX tagy
@@ -1114,6 +1062,9 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:SPU_Filtrovaci_symbolik_856#Zad.
  ; vsechny 9XX tagy
  d $$$delTagX(.handle,"9**")  
  ; CXX tagy nechame
+ ; 12.04.24 tt; odstranime vsechny u tagy
+ ; vsechny UXX tagy
+ d $$$delTagX(.handle,"U**")
 
  ;22.10.10 tt; do NUSL se odesilaji jen tagy 856 s $xN
  s s856=$$$getTagXC(.handle,"856",-1)   ; ziskani tagu
@@ -1152,7 +1103,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:SPU_Filtrovaci_symbolik_856#Zad.
      s sC341v=$$$getSubTagStr(sC341,"v")       ; ziskame podpole v
      if sC341v'=""
      {
-       s sC341vN=##class(User.Util).sXlate("UN_TC34V",sC341v,,"Cav","d")
+       s sC341vN=##class(User.Util).sXlate("UN_TC34V",sC341v,,ipref,"d")
        s sC341=$$$setSubTagStr(sC341,$c(31)_"v"_sC341vN)     
      }
            
@@ -1604,7 +1555,8 @@ Volani 200     $a@##class(User.CavS).RecNeodIpac(.result,.handle,"")
   s sRTC26e=$$$getTagX(.handleR,"C26e")                ; ziskam pracoviste, ktere zaznam vykazuje
   s sRT969f=$$$getTagX(.handleR,"969f")
   s sRTU95a=$$$getTagX(.handleR,"U95a")
-
+  s sRTU95c=$$$getTagX(.handleR,"U95c")
+  
   s sUT100btest=$tr(sUT100b,"0123456789","")
   if (($e(sUT100btest,($l(sUT100btest)-1),$l(sUT100btest))="-A") && (sUT600a'="")) { q "0" }     
  
@@ -1734,12 +1686,13 @@ nebo spolupracujiciho ustavu
 <ProcedureBlock>1</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
   s pState=0                ; nastavim defaultne na 0
   s sRet=""                 ; navratova hodnota
   s handleR="", handleU=""  ; inicializace promenych
   if (pIdUser'="")
   { ; pokud mame id usera, nacteme informace
-    if ('##class(MARC).readX(.handleU,"CavIsUser",pIdUser)) 
+    if ('##class(MARC).readX(.handleU,ipref_"IsUser",pIdUser)) 
     { 
       s sRet=sRet_"Error reading Isu record for t001="_pIdUser
     }
@@ -1750,7 +1703,7 @@ nebo spolupracujiciho ustavu
   }
   if (pIdRecord'="")
   { ; pokud mame id usera, nacteme informace
-    if ('##class(MARC).readX(.handleR,"CavUnEpca",pIdRecord)) 
+    if ('##class(MARC).readX(.handleR,ipref_"UnEpca",pIdRecord)) 
     {
       s sRet=sRet_"Error reading Epca record for t001="_pIdRecord
     }
@@ -1779,13 +1732,14 @@ ARUB-Q
 <ProcedureBlock>1</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
   s sRet=""                 ; navratova hodnota
   ; vyber zaznamu pro vypocet vycerpane castky: obednavky spadajici do daneho obdobi
   q:(pUstav = "") ""        ; osetreni proti zadnym datum
   s kod="",brk=0
   f    
   {
-    s kod=$o(^$$$MarcIndexG("CavIsUser","stu"," zp",kod),-1) 
+    s kod=$o(^$$$MarcIndexG(ipref_"IsUser","stu"," zp",kod),-1) 
     q:((kod="")||(brk=1))              ; podminka pro konec
     
     if '##class(User.MARC).getDATAX(.handle,kod,"T") 
@@ -1833,8 +1787,9 @@ ARUB-Q
   s sRet=""                 ; navratova hodnota
   s sT001=$$$HandleT001(handle)       ; ziskani t001
   s sClass=$$$HandleClass(handle)    ; ziskani tridy
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
   
-  if (sClass="CavIsUser")
+  if (sClass=(ipref_"IsUser"))
   { ; pokud mame uzivatele, zkusime nacist informace z nej
     s sT100e=$$$getTagX(.handle,"100e")             ; email uzivatele
     if (sT100e'="")
@@ -1866,7 +1821,7 @@ ARUB-Q
       }
     }
   }
-  if (sClass="CavUnAuth")
+  if (sClass=(ipref_"UnAuth"))
   { ; pokud mame uzivatele, zkusime nacist informace z nej
     s sTC01f=$$$getTagX(.handle,"C01f")  ; email autority
     s:(sTC01f'="") sRet=sTC01f           ; ulozime si email
@@ -1894,7 +1849,7 @@ symExportOAI2NUSL
   s sClass=$$$HandleClass(handle)              ; ziskame tridu zaznamu
   s sIdx=##class(i2.dblink).recordIdX(.handle) ; ziskame id zaznamu 
   ;s baseUrl=##class(i2.html.tpl).getBaseURL() ; mam base url pro sekladani linku do 856
-  s baseUrl="https://asepactivenode.lib.cas.cz/i2/"            ; nesla me nacist baseurl, natvrdo
+  s baseUrl="https://asep.lib.cas.cz/i2/"            ; nesla me nacist baseurl, natvrdo
    
   ; ziskame vsechny data k zaznamu v output
   d ##class(content.api).selectRecAll(.output,sClass,sT001)
@@ -2079,6 +2034,7 @@ Metoda pro pregenerovani tagu C52
  s sy="##class(User.CavS).generateC52(.handle)"
  d ^X("l @"_sy)
 
+06.11.24 ln; C52n ignorovat jako zmenu
 22.11.23 tt; doplnena smlouva
 28.01.20 tt; provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n
 13.03.15 tt; pridano $n s datem aktualizace C52
@@ -2090,7 +2046,10 @@ Metoda pro pregenerovani tagu C52
 <FormalSpec><![CDATA[&handle,pV=0]]></FormalSpec>
 <Implementation><![CDATA[
   s sTC52Puv=$$$getTagX(.handle,"C52")
+  ;q:sTC52Puv'=""
   w:(pV=1) !,"Puvodni C52: "_sTC52Puv
+  s tmp=##class(User.MARC).getSubTagStr(.sTC52Puv,"n")
+    
   s sTC52="C52    " ; inicializujeme C52
   s sT001=$$$HandleT001(handle)                ; ziskame si T001 zaznamu
   s sClass=$$$HandleClass(handle)              ; ziskame tridu zaznamu
@@ -2099,7 +2058,7 @@ Metoda pro pregenerovani tagu C52
   d ##class(content.api).selectRecAll(.output,sClass,sT001)
     
   ; prochazime postupne cyklem vsech polozek k zaznamu
-  s item="",sSTm=""     ; jedna polozka k zaznamu
+  s item="",sSTm="", maxstatus=""  ; jedna polozka k zaznamu
   f { 
     s item=$o(output(item)) q:item=""
     s repo=output(item,"repository")   ; ziskame repository
@@ -2108,10 +2067,14 @@ Metoda pro pregenerovani tagu C52
     
     d ##class(content.api).getBatch(.array,repo,key)         ; ziskame informace z array    
     s sSTa="", sSTb="", sSTc=""
-    s sSTb=$c(31)_"b"_array("accession")                     ; nacteme si postupne data
-    s sSTa=$c(31)_"a"_array("status")
+    s status=array("status")
+    continue:status<=maxstatus  ; status je ten nejvyssi mezi vsemi soubory
     
-    continue:(sSTa'=($c(31)_"a4"))
+    s maxstatus=status
+    s sSTb=$c(31)_"b"_array("accession")                     ; nacteme si postupne data
+    s sSTa=$c(31)_"a"_status
+    
+    ;continue:(sSTa'=($c(31)_"a4"))
     s:($g(array("nusl"),"")="true") sSTc=$c(31)_"c"_"nusl"
     ; 03.11.14 tt; pridano vytvoreni recenzi a hodnoceni
     s:($g(array("recenze"),"")="true") sSTc=$g(sSTc,"")_$c(31)_"c"_"rec"
@@ -2123,15 +2086,19 @@ Metoda pro pregenerovani tagu C52
     s:('$f(sTC52,sSTb)) sTC52=sTC52_sSTb
     s:('$f(sTC52,sSTc)) sTC52=sTC52_sSTc    
   } ; konec cyklu prochazeni souboru k zaznamu
+  q:sTC52="C52    "
+  
   ; 13.03.15 tt; zapojeno generovani C52m
   s sTC52=##class(User.MARC).setSubTagStr(sTC52,$c(31)_"m"_..generateC52m(sT001,sClass))
   
   ; 28.01.20 tt; provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n
-  s:($l(sTC52)>9) sTC52=sTC52_$c(31)_"n"_##class(User.MARC).genT005(0)    
+  ;s:($l(sTC52)>9) sTC52=sTC52_$c(31)_"n"_##class(User.MARC).genT005(0)
   
   ; mame vyskladanou aktualni C52 a muzeme ji ulozit
   if (($l(sTC52)>9)&&(sTC52Puv'=sTC52))
   { ; pokud mame nejakou hodnotu v C52 a neni stejna jako ta co uz v zaznamu byla, ulozime
+    ; 28.01.20 tt; provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n
+    s sTC52=sTC52_$c(31)_"n"_##class(User.MARC).genT005(0)
     d $$$setTagX(.handle,sTC52)                 ; ulozime si zmenene tag C52
     w:(pV=1) !,"Nova   C52: "_sTC52
   }
@@ -2222,7 +2189,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cav-full_text_upload_25#Zobrazov.C3.A
   ; 6 - superuzivatel
   
   ; 22.11.14 tt; dopracovana podpora zobrazovani recenzi
-  s sUserR=##class(User.CavS).FTgetIsUser(user,sT001) ; metoda pro vygenerovani role uzivatele
+  s sUserR=..FTgetIsUser(user,sT001) ; metoda pro vygenerovani role uzivatele
   ; 30.11.14 tt; pridan spolupracujici zpracovatel do rozsireneho zobrazeni udaju content serveru
   
   ; 11.01.18 tt; upraven zobrazovaci format pro DATA content server
@@ -2279,7 +2246,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cav-full_text_upload_25#Zobrazov.C3.A
   ; 2 - zpracovatel k zaznamu
   ; 6 - superuzivatel
   
-  s sUserR=##class(User.CavS).FTgetIsUser(user,sT001) ; metoda pro vygenerovani role uzivatele
+  s sUserR=..FTgetIsUser(user,sT001) ; metoda pro vygenerovani role uzivatele
   
   if ((sUserR=2)||(sUserR=6)||(sUserR=5))
   { ; zpracovatelum zobrazime hlasku
@@ -2299,7 +2266,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cav-full_text_upload_25#Zobrazov.C3.A
     
       if (($g(array("hodnoceni"),"")="true")&&($g(array("status"))'=4)) 
       { ; pokud mame vybrane zaznamy pro hodnoceni, budeme exportovat fulltexty
-        d ##class(rep.zf.ub).fmtUb(.handle,"T=005 M=text-<font\scolor=""red""><strong>!!!!!Dokument&nbsp;označený&nbsp;k&nbsp;hodnocení&nbsp;není&nbsp;schválen!!!!!</strong></font> PR=",.result)
+        d ##class(rep.zf.ub).fmtUb(.handle,"T=005 M=text-<strong\sstyle=""color:red"">!!!!!Dokument&nbsp;označený&nbsp;k&nbsp;hodnocení&nbsp;není&nbsp;schválen!!!!!</strong> PR=",.result)
       }     
     } ; konec cyklu prochazeni souboru k zaznamu   
   }
@@ -2325,7 +2292,9 @@ Dokumentace: https://cosmo2/wiki/index.php/Cav-full_text_upload_25#Zobrazov.C3.A
 
 <Method name="CreateHandleNet">
 <Description><![CDATA[
-<pre>  
+<pre>
+NEPOUZIVA SE, BEZI PRES DUI handleNet.process()
+  
 Generovani handle.net. Volano z planovanych uloh RTM. 
 Priklad provolani Cav.
 Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV/handle_net
@@ -2335,7 +2304,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV/handle_net
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <Implementation><![CDATA[
-  s ipref="Cav"
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
   s hprefix="11104"
   s path=##class(util.common).getArlDir("HANDLENET",ipref)
   s auth="AUTHENTICATE PUBKEY:300:0.NA/11104"_$c(10)_path_$$$PathSepp_"admpriv.bin|111.knav.04"
@@ -2359,6 +2328,7 @@ Volano z planovanych uloh RTM.
 Navrat:
 "1" ok, "0" chyba
 
+27.02.25 jk; zpracovani handlenet pres DUI
 02.01.14 tt; upravena navratova hodnota
 06.02.13 tt; zalozena metoda
 <pre>]]></Description>
@@ -2366,13 +2336,14 @@ Navrat:
 <ProcedureBlock>1</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s sDtZac=$zd($h-15,8)  ; aktualni datum - 15 dnu
  s sDtKon=$zd($h+1,8)   ; aktualni datum + jeden den
  s ret=1
  
  ; udelame selekt podle dt1
- d ##class(User.Util).XselIndex("CavUnEpca dt1 bt "_sDtZac_"~"_sDtKon)  ; vyselektujeme zaznamy vytvorene do 15 dnu
- d ##class(User.Util).Xselect("&&CavUnEpca 'C60")                       ; ty nesmi mit C60 
+ d ##class(User.Util).XselIndex(ipref_"UnEpca dt1 bt "_sDtZac_"~"_sDtKon)  ; vyselektujeme zaznamy vytvorene do 15 dnu
+ d ##class(User.Util).Xselect("&&"_ipref_"UnEpca 'C60")                       ; ty nesmi mit C60 
  s idx="",id="" 
  f  
  { ; cyklus pro prochazeni vyselektovanych zaznamu
@@ -2392,7 +2363,7 @@ Navrat:
      ; 29.06.16 tt; upraveny podminky pro vytvareni handle.net
      if (($zcvt(s969f,"U")'="D")&& ($zcvt(s969f,"U")'="N") && (sC60="")) {
        w !,"Zpracovavan zaznam: CavUnEpca*"_sT001_"."
-       d ##class(util.handleNet).addHandleNet(.handle,"11104",7,"create")
+       d ##class(util.handleNet).process(.handle,7,"create")
        s st=##class(User.MARC).writeX(.handle)  ; zapiseme zmeneny zaznam
        if $$$ISERR(st) 
        { 
@@ -2411,10 +2382,81 @@ Navrat:
 ]]></Implementation>
 </Method>
 
+<Method name="genDoiDataCite">
+<Description><![CDATA[
+<pre>
+Provolani API DataCite pro prideleni DOI u zaznamu ktere splni podminku
+Kontorluji se zaznamy zalozene zpetne za 15 dnu.
+Zapojeno v ZBACK
+
+13.03.25 jk; zalozeno
+<pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s sDtZac=$zd($h-300,8)        ; aktualni datum - 15 dnu
+  s sDtKon=$zd($h+1,8)         ; aktualni datum + jeden den
+  
+  s class=ipref_"UnEpca"
+
+  ; udelame selekt podle dt1
+  d ##class(User.Util).XselIndex(class_" dt1 bt "_sDtZac_"~"_sDtKon)   ; vyselektujeme zaznamy vytvorene do 15 dnu
+  d ##class(User.Util).Xselect("&&"_class_" !zmdt = md")                ; jen datove zaznamy (dataset 979b=DATA) 
+
+  if '##class(User.Util).XcheckActiveList() {
+    w !,"No find any "_class_" dataset records create between '"_sDtZac_"' - '"_sDtKon_"', nothing to do"
+    q
+  }
+
+  s cntAll=##class(User.Util).XlistCount($$$ListsActiveSel,$j)
+  s (cntOK,cntErr)=0
+  s id=""
+  for i=1:1:cntAll {
+    s id=$o(^$$$ListsG($$$ListsActiveSel,$j,id))
+    q:(id="")
+   
+    if '##class(User.MARC).getDATAX(.handle,id,"T") {
+      w !,"ERROR record id:"_id_" not found!" 
+      continue
+     
+      ; podle CavUnEcpa AllowSaveEx
+      s sT001=$$$HandleT001(handle)
+      s sDruhDok=$zcvt($$$getTagX(.handle,"970b"),"U")
+      s s969fUP=$zcvt($$$getTagX(.handle,"969f"),"U")
+      s sC76u=$$$getTagX(.handle,"C76u") ; navazane soubory
+      if (sDruhDok="DATA")&&(s969fUP'="D")&&(s969fUP'="N")&&(sC76u'="") {
+        s doi=##class(util.ie.datacite).getDoiFromHandle(ipref,.handle,.bDataCiteDoi) 
+        continue:doi'=""
+        
+        s errDoi=##class(util.ie.datacite).process(.handle,"create","publish")  ; vlozit do DUI fronty
+        if errDoi'="" {
+          s cntErr=cntErr+1
+          w !,class_"/"_sT001_" "_errDoi
+        }
+        else {
+          s cntOK=cntOK+1
+          w !,class_"/"_sT001_" succesfully added to DUI for create new DataCite DOI"
+        }
+      }
+    }   
+  }
+  
+  s cntProc=cntOK+cntErr
+  s cntUnproc=cntAll-cntProc  ; u techto nebylo treba nic delat
+  
+  w !!,"Statistics:"
+  w !,"  selected records                 :"_$j(cntAll,5)
+  w !,"  processed records                :"_$j(cntProc,5)
+  w !,"  - added to DUI successfully      :"_$j(cntOK,5)
+  w !,"  - errors                         :"_$j(cntErr,5)
+  w !,"  unprocessed records              :"_$j(cntUnproc,5)
+]]></Implementation>
+</Method>
+
 <Method name="ModifyCavhandle">
 <Description><![CDATA[
-Metoda pro rucni aktulaizaci handlenet serveru.
-Metoda vygeneruje textoveho souboru na zaklade selkcnich podminek pro handle davku 
+Metoda pro rucni aktualizaci handlenet serveru.
+Metoda vygeneruje textovy soubor na zaklade selekcnich podminek pro handle davku 
 Nasledne se rucne spusti prikaz:
  windows: ...\aRL\handlenet\bin>hdl-genericbatch.bat pFile log.txt
  linux:   home/cosmo/aRL/handlenet/bin>hdl-genericbatch pFile log.txt
@@ -2431,6 +2473,7 @@ Priklad:
   /home/cosmo/handlenet/bin/hdl-genericbatch /home/cosmo/_tmp/jk/cavhandle.txt /home/cosmo/_tmp/jk/cavhandlelog.txt
  zkontrolovat /home/cosmo/_tmp/jk/cavhandlelog.txt 
 
+27.02.25 jk; pristup se cte z CREDENTIALS
 27.11.17 jk; zruseno makro GetParDefaultLang
 13.12.16 jk; predelana tvorba linku na detail zaznamu v ipacu
 30.11.16 jk; cesta na handlenet se cte z konfigurace
@@ -2445,8 +2488,28 @@ Priklad:
   ; 30.11.16 jk; cesta na handlenet se cte z konfigurace
   s path=##class(util.common).getArlDir("HANDLENET",ipref)
   
+  s cmt001="CREDENTIALS_"_$zcvt(ipref,"u")
+  s key="handlenet"
+  if ##class(User.Util).sXlate(cmt001,key,"SE",ipref,,,"CmSecurity")="@noexist@" {
+    s err="  ERROR no exists config "_cmt001_"/"_key
+    w !,err q
+  }
+  s hprefix=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"b",,"CmSecurity")    ; handle.net prefix instituce
+  s auth1=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"c",,"CmSecurity")      ; prvni cast auth retezce
+  s auth2=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"d",,"CmSecurity")      ; druha cast auth retezce
+  s hurl=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"f",,"CmSecurity")       ; prvni cast url do prikazu CREATE,napr. ("1 URL 86400 1110 UTF8")
+    
+  if (auth1="")||(auth2="")||(hurl="") {
+    s err="  ERROR empty subtags "_cmt001_"/"_key
+    w !,err q
+  }
+  if path="" {
+    s err="  ERROR no exists ARLDIR HANDLENET path"
+    w !,err q
+  }  
+  
   ; simulace prostredi IPACu
-  s ictx=$zcvt(ipref,"l")
+  s ictx=$zcvt(ipref,"L")
   ; 27.11.17 jk; zruseno makro GetParDefaultLang
   s language=##class(User.Util).getServerLanguage(ipref)
   d ##class(i2.init).batchinit(ictx,language)
@@ -2454,13 +2517,13 @@ Priklad:
   
   if (nPoc=1)
   {  ; vypis hlavicky - jen jednou
-     d ##class(User.Util).xlogf(pFile,"AUTHENTICATE PUBKEY:300:0.NA/11104")
-     d ##class(User.Util).xlogf(pFile,path_$$$PathSepp_"admpriv.bin|111.knav.04")
+     d ##class(User.Util).xlogf(pFile,auth1)
+     d ##class(User.Util).xlogf(pFile,path_$$$PathSepp_auth2)
      d ##class(User.Util).xlogf(pFile,"")
   }
   s sT001=$$$HandleT001(handle)                     ; ziskani t001
   s sClass=$$$HandleClass(handle)                   ; ziskani tridy
-  s idx="cav_un_epca*"_sT001
+  s idx=ictx_"_un_epca*"_sT001
   s sC60=##class(User.MARC).getTagX(.handle,"C60a") 
   if (sC60'="")
   {   
@@ -2470,11 +2533,10 @@ Priklad:
       s hlink=$$$strswap(hlink,"/sk/","/cs/")          
       
       ; pokud ma handle jiz C60, budeme modifikovat
-      s sIDH=$p(sC60,"/",$l(sC60,"/"))                        ; ziskame id handlu
-      d ##class(User.Util).xlogf(pFile,"MODIFY 11104/"_sIDH)  ; id zapiseme do souboru spolu se spravnym linkem 
-      d ##class(User.Util).xlogf(pFile,"1 URL 86400 1110 UTF8 "_hlink)
-
-      d ##class(User.Util).xlogf(pFile,"")                    ; mezi zaznamy musi byt mezera      
+      s sIDH=$p(sC60,"/",$l(sC60,"/"))                              ; ziskame id handlu
+      d ##class(User.Util).xlogf(pFile,"MODIFY "_hprefix_"/"_sIDH)  ; id zapiseme do souboru spolu se spravnym linkem 
+      d ##class(User.Util).xlogf(pFile,hurl_" "_hlink)
+      d ##class(User.Util).xlogf(pFile,"")                          ; mezi zaznamy musi byt mezera      
   }
   s nPoc=nPoc+1                                    ; zvysime pocitadlo
   q ret
@@ -2497,6 +2559,7 @@ Priklad:
   /home/cosmo/handlenet/bin/hdl-genericbatch /home/cosmo/_tmp/jk/cavhandle.txt /home/cosmo/_tmp/jk/cavhandlelog.txt
  zkontrolovat /home/cosmo/_tmp/jk/cavhandlelog.txt 
 
+27.02.25 jk; pristup se cte z CREDENTIALS
 26.01.22 jk; zalozeno
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
@@ -2507,21 +2570,43 @@ Priklad:
   s ipref=##class(User.Util).getClassPrefixParam($$$HandleClass(handle))
   s path=##class(util.common).getArlDir("HANDLENET",ipref)
   
+  s cmt001="CREDENTIALS_"_$zcvt(ipref,"u")
+  s key="handlenet"
+  if ##class(User.Util).sXlate(cmt001,key,"SE",ipref,,,"CmSecurity")="@noexist@" {
+    s err="  ERROR no exists config "_cmt001_"/"_key
+    w !,err q
+  }
+  s hprefix=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"b",,"CmSecurity")    ; handle.net prefix instituce
+  s auth1=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"c",,"CmSecurity")      ; prvni cast auth retezce
+  s auth2=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"d",,"CmSecurity")      ; druha cast auth retezce
+  s hadm=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"e",,"CmSecurity")       ; autorizace k zaznamu do prikazu CREATE, napr. ("100 HS_ADMIN 86400 1110 ADMIN ...")
+  s hurl=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"f",,"CmSecurity")       ; prvni cast url do prikazu CREATE,napr. ("1 URL 86400 1110 UTF8")
+    
+  if (auth1="")||(auth2="")||(hadm="")||(hurl="") {
+    s err="  ERROR empty subtags "_cmt001_"/"_key
+    w !,err q
+  }
+  if path="" {
+    s err="  ERROR no exists ARLDIR HANDLENET path"
+    w !,err q
+  }
+  
+  
   ; simulace prostredi IPACu
-  s ictx=$zcvt(ipref,"l")
+  s ictx=$zcvt(ipref,"L")
   s language=##class(User.Util).getServerLanguage(ipref)
   d ##class(i2.init).batchinit(ictx,language)
   s sBaseURL=##class(i2.html.tpl).getBaseURL()   
   
   if (nPoc=1)
   {  ; vypis hlavicky - jen jednou
-     d ##class(User.Util).xlogf(pFile,"AUTHENTICATE PUBKEY:300:0.NA/11104")
-     d ##class(User.Util).xlogf(pFile,path_$$$PathSepp_"admpriv.bin|111.knav.04")
+     d ##class(User.Util).xlogf(pFile,auth1)
+     d ##class(User.Util).xlogf(pFile,path_$$$PathSepp_auth2)
      d ##class(User.Util).xlogf(pFile,"")
   }
   s sT001=$$$HandleT001(handle)                     ; ziskani t001
   s sClass=$$$HandleClass(handle)                   ; ziskani tridy
-  s idx="cav_un_epca*"_sT001
+  s idx=ictx_"_un_epca*"_sT001
   s sC60=##class(User.MARC).getTagX(.handle,"C60a") 
   if (sC60'="")
   {   
@@ -2530,13 +2615,13 @@ Priklad:
       s hlink=$$$strswap(hlink,"/sk/","/cs/")          
       
       ; pokud ma handle jiz C60, budeme vytvaret novy
-      s sIDH=$p(sC60,"/",$l(sC60,"/"))                        ; ziskame id handlu
-      d ##class(User.Util).xlogf(pFile,"CREATE 11104/"_sIDH)  ; id zapiseme do souboru spolu se spravnym linkem 
-      d ##class(User.Util).xlogf(pFile,"100 HS_ADMIN 86400 1110 ADMIN 200:110011111111:0.NA/11104")
-      d ##class(User.Util).xlogf(pFile,"1 URL 86400 1110 UTF8 "_hlink)
-      d ##class(User.Util).xlogf(pFile,"")                    ; mezi zaznamy musi byt mezera      
+      s sIDH=$p(sC60,"/",$l(sC60,"/"))                               ; ziskame id handlu
+      d ##class(User.Util).xlogf(pFile,"CREATE "_hprefix_"/"_sIDH)   ; id zapiseme do souboru spolu se spravnym linkem 
+      d ##class(User.Util).xlogf(pFile,hadm)
+      d ##class(User.Util).xlogf(pFile,hurl_" "_hlink)
+      d ##class(User.Util).xlogf(pFile,"")                           ; mezi zaznamy musi byt mezera      
   }
-  s nPoc=nPoc+1                                    ; zvysime pocitadlo
+  s nPoc=nPoc+1                                                      ; zvysime pocitadlo
   q ret
 ]]></Implementation>
 </Method>
@@ -2599,6 +2684,9 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV_v%C3%BDstupy/Pravideln%C3%BD
 <FormalSpec><![CDATA[&handle,pnOutFmt,sFmtParams=""]]></FormalSpec>
 <Implementation><![CDATA[
  s bEndOfRec=0,brk=0
+ 
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s ictx=$zcvt(ipref,"L")
  
  ; 19.06.09 lp; pridana moznost vlozeni xmlns prefixu pres options (I2_EXPORT/200$e)
  s sPrefix=sFmtParams
@@ -2776,7 +2864,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV_v%C3%BDstupy/Pravideln%C3%BD
   d ##class(i2.export).outputAdd("  <"_sPrefix_"handle>"_sHANDLE_"</"_sPrefix_"handle>"_$c(10),pnOutFmt)
   
   ; 15.03.15 tt; pridany anglicky link - link_eng
-  s sLink=$p($p(##class(i2.html.tpl).getPermalink2("cav_un_epca*"_sSysno,sSysno),"a href=""",2),"""",1)_"&amp;zf=TF_UN_ENG"
+  s sLink=$p($p(##class(i2.html.tpl).getPermalink2(ictx_"_un_epca*"_sSysno,sSysno),"a href=""",2),"""",1)_"&amp;zf=TF_UN_ENG"
   s:('$f(sLink,"language=3")) sLink=sLink_"&amp;language=3"
    //s sLink=##class(User.Util).XMLfixup(sLink)
   d ##class(i2.export).outputAdd("  <"_sPrefix_"link_eng>"_sLink_"</"_sPrefix_"link_eng>"_$c(10),pnOutFmt)
@@ -2808,7 +2896,67 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV_v%C3%BDstupy/Pravideln%C3%BD
   s sC64a=$$$getTagX(.handle,"C64a")
   s:(sC64a="") sC64a=0
   d ##class(i2.export).outputAdd("  <"_sPrefix_"vyrocni_zprava>"_sKodVydavatelePatentu_"</"_sPrefix_"vyrocni_zprava>"_$c(10),pnOutFmt)
+  
+  // 04.04.24 tt; pridany informace k exportu
+  s sC26=$$$getTagX(.handle,"C26")
+  s sC26x=$$$getSubTagStr(sC26,"x")
+  s sC26y=$$$getSubTagStr(sC26,"y")
+  s sC26z=$$$getSubTagStr(sC26,"z")
+  if ((sC26x'="")||(sC26y'="")||(sC26z'=""))
+  { // C26    $$x30000$$y30200$$z30204$$c1$$d%ROK_VYKAZOVANI%$$mU
+    d ##class(i2.export).outputAdd("  <"_sPrefix_"klasifikace>"_$c(10),pnOutFmt)
+    d:(sC26x'="") ##class(i2.export).outputAdd("    <"_sPrefix_"vedni_oblast>"_sC26x_"</"_sPrefix_"vedni_oblast>"_$c(10),pnOutFmt)
+    d:(sC26y'="") ##class(i2.export).outputAdd("    <"_sPrefix_"ford>"_sC26y_"</"_sPrefix_"ford>"_$c(10),pnOutFmt)
+    d:(sC26z'="") ##class(i2.export).outputAdd("    <"_sPrefix_"detailed_ford>"_sC26z_"</"_sPrefix_"detailed_ford>"_$c(10),pnOutFmt)
+    d ##class(i2.export).outputAdd("  </"_sPrefix_"klasifikace>"_$c(10),pnOutFmt)
+  }
+  
+  //C47    $$aBTO-N$$b40000$$c40300$$d40301
+  //C47    $$aENTU-I$$b30000$$c30400$$d30404
+  s c=0
+  d { ; export vsech c47
+     s sTC47=$$$getTagXC(.handle,"C47",.c) ; vsechny spoluprace
+     continue:((sTC47="")&&(c'=0))         ; pokud nemam data pokracuji
+     if (sTC47'="") 
+     { ; pokud mame vyplnene data, muzeme provadet akce 
+       s sTC47a=$$$getSubTagStr(sTC47,"a")
+       s sVedniOblast=$$$getSubTagStr(sTC47,"b")
+       s sFORD=$$$getSubTagStr(sTC47,"c")
+       s sDetailedFORD=$$$getSubTagStr(sTC47,"d")   
+       if ((sC26x'="")||(sC26y'="")||(sC26z'=""))
+       { // C26    $$x30000$$y30200$$z30204$$c1$$d%ROK_VYKAZOVANI%$$mU
+         d ##class(i2.export).outputAdd("  <"_sPrefix_"klasifikace_spoluprace>"_$c(10),pnOutFmt)
+          d:(sTC47a'="") ##class(i2.export).outputAdd("    <"_sPrefix_"ustav>"_sTC47a_"</"_sPrefix_"ustav>"_$c(10),pnOutFmt)
+         d:(sVedniOblast'="") ##class(i2.export).outputAdd("    <"_sPrefix_"vedni_oblast>"_sVedniOblast_"</"_sPrefix_"vedni_oblast>"_$c(10),pnOutFmt)
+         d:(sFORD'="") ##class(i2.export).outputAdd("    <"_sPrefix_"ford>"_sFORD_"</"_sPrefix_"ford>"_$c(10),pnOutFmt)
+         d:(sDetailedFORD'="") ##class(i2.export).outputAdd("    <"_sPrefix_"detailed_ford>"_sDetailedFORD_"</"_sPrefix_"detailed_ford>"_$c(10),pnOutFmt)
+         d ##class(i2.export).outputAdd("  </"_sPrefix_"klasifikace_spoluprace>"_$c(10),pnOutFmt)
+       }    
+     }
+   } while (c'=0)    
    
+   s sKlicSlova=0
+   s c=0
+   d { ; klicova slova 610    $$atoto
+     s sT610=$$$getTagXC(.handle,"610",.c) ; vsechny spoluprace
+     continue:((sT610="")&&(c'=0))         ; pokud nemam data pokracuji
+     if (sT610'="") 
+     { ; pokud mame vyplnene data, muzeme provadet akce 
+       s sT610a=$$$getSubTagStr(sT610,"a")
+       if ((sT610a'=""))
+       { 
+         if (sKlicSlova=0)
+         {
+           d ##class(i2.export).outputAdd("  <"_sPrefix_"klicova_slova>"_$c(10),pnOutFmt)
+           s sKlicSlova=1 
+         } 
+         ; 05.04.24 tt; proveden fix klicovych slov u exportu do oai 
+         d ##class(i2.export).outputAdd("    <"_sPrefix_"slovo>"_##class(User.Util).XMLfixup(sT610a)_"</"_sPrefix_"slovo>"_$c(10),pnOutFmt)
+       }    
+     }
+   } while (c'=0)    
+   d:(sKlicSlova=1) ##class(i2.export).outputAdd("  </"_sPrefix_"klicova_slova>"_$c(10),pnOutFmt)  
+  
  d ##class(i2.export).outputAdd("</"_sPrefix_"record>"_$c(10),pnOutFmt)
 ]]></Implementation>
 </Method>
@@ -2882,7 +3030,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV_v%C3%BDstupy/Pravideln%C3%BD
      s s=$$$strswap(s,"</b>","")
      s s=$$$strswap(s,"<i>","")
      s s=$$$strswap(s,"</i>","")
-     s s=$$$strswap(s,"<br/>"," ")
+     s s=$$$strswap(s,"<br>"," ")
      s s=$$$strswap(s,"<br>"," ")
      s s=$$$strswap(s,"<em>","")   
      s s=$$$strswap(s,"</em>","")     
@@ -2952,7 +3100,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV_v%C3%BDstupy/Pravideln%C3%BD
     if (sKod'="")
     { ; 28.06.14 tt; pridan element researcher_id -  zaznam autority 035$$a, kde $$2WOS
       ; <researcher_id> tam, kde je v záznamu autority 035$$a, kde $$2WOS.
-      s c=0,bResearcher=0 ; pomocne promenne
+      s c=0,bResearcher=0,bOrcidid=0,bScopusId=0 ; pomocne promenne
       d { ; cyklus pres vsechny 035 autority
         s sT035=$$$getTagXC(.handleA,"035",.c) ; vsetky 035 
         continue:((sT035="")&&(c'=0))
@@ -2966,12 +3114,29 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV_v%C3%BDstupy/Pravideln%C3%BD
             d ##class(i2.export).outputAdd("      <"_sPrefix_"researcher_id>"_sT035a_"</"_sPrefix_"researcher_id>"_$c(10),pnOutFmt) 
             s bResearcher=1
           }
+          if ($zcvt($$$getSubTagStr(sT035,"2"),"l")="orcid")     
+          { ; 17.06.24 tt; pridany identifikatory autora scopus_id a orcid_id
+            s sT035a=$$$getSubTagStr(sT035,"a")
+            continue:(sT035a="") ; pokud nemame data, zkoncime 
+            s:(sT035a'="") sT035a=##class(User.Util).XMLfixup(sT035a)    
+            d ##class(i2.export).outputAdd("      <"_sPrefix_"orcid_id>"_sT035a_"</"_sPrefix_"orcid_id>"_$c(10),pnOutFmt) 
+            s bOrcidid=1
+        }
+           if ($zcvt($$$getSubTagStr(sT035,"2"),"l")="scopus")     
+          { ; najdeme jen ty, co jsou scopus
+            s sT035a=$$$getSubTagStr(sT035,"a")
+            continue:(sT035a="") ; pokud nemame data, zkoncime 
+            s:(sT035a'="") sT035a=##class(User.Util).XMLfixup(sT035a)    
+            d ##class(i2.export).outputAdd("      <"_sPrefix_"scopus_id>"_sT035a_"</"_sPrefix_"scopus_id>"_$c(10),pnOutFmt) 
+            s bScopusId=1
+          }
         }
       } while (c'=0)       
-      if (bResearcher=0)
-      { ; vypiseme prazdny element, pokud nemame data
-        d ##class(i2.export).outputAdd("      <"_sPrefix_"researcher_id></"_sPrefix_"researcher_id>"_$c(10),pnOutFmt)
-      } 
+     
+      ; vypiseme prazdny element, pokud nemame data
+      d:(bResearcher=0) ##class(i2.export).outputAdd("      <"_sPrefix_"researcher_id></"_sPrefix_"researcher_id>"_$c(10),pnOutFmt)
+      d:(bOrcidid=0) ##class(i2.export).outputAdd("      <"_sPrefix_"orcid_id></"_sPrefix_"orcid_id>"_$c(10),pnOutFmt)
+      d:(bScopusId=0) ##class(i2.export).outputAdd("      <"_sPrefix_"scopus_id></"_sPrefix_"scopus_id>"_$c(10),pnOutFmt)       
     }
     
     ; pridame jmeno
@@ -3113,6 +3278,7 @@ Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV_v%C3%BDstupy/Pravideln%C3%BD
 podle showRecordXMLKAVCitRec
 https://cosmo2/wiki/index.php/Cust:CAV/KAV_%C3%BAprava_syst%C3%A9mu_ASEP_k_hodnocen%C3%AD_AV_2015#.C3.9Apravy_OAI_setu_pro_KAV
 
+03.06.24 tt; změna baseUrl pro showRecordXMLKAVContent
 13.12.14 tt; pridan export 856 
 04.11.14 tt; zalozena metoda
 </pre>]]></Description>
@@ -3122,7 +3288,7 @@ https://cosmo2/wiki/index.php/Cust:CAV/KAV_%C3%BAprava_syst%C3%A9mu_ASEP_k_hodno
   s sT001=$$$HandleT001(handle)                ; ziskame si T001 zaznamu
   s sClass=$$$HandleClass(handle)              ; ziskame tridu zaznamu
   s sIdx=##class(i2.dblink).recordIdX(.handle) ; ziskame id zaznamu 
-  s baseUrl="https://asepactivenode.lib.cas.cz/i2/"            ; nesla me nacist baseurl, natvrdo
+  s baseUrl="https://asep.lib.cas.cz/i2/"            ; nesla me nacist baseurl, natvrdo
   s sFullText="ne" 
   ; ziskame vsechny data k zaznamu v output
   d ##class(content.api).selectRecAll(.output,sClass,sT001)
@@ -3365,6 +3531,7 @@ sysno;tým C64b;ústav C64c;obor C64d;podobor C64e
 <FormalSpec>pT001="",pTym="",pUstav="",pObor="",pPodobor="",pLog=""</FormalSpec>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s:($l(pT001)<7) pT001=0_pT001
  s:($l(pT001)<7) pT001=0_pT001
  s:($l(pT001)<7) pT001=0_pT001
@@ -3374,10 +3541,10 @@ sysno;tým C64b;ústav C64c;obor C64d;podobor C64e
  s:($l(pT001)<7) pT001=0_pT001
  
  s err=""
- if ##class(User.MARC).readX(.handle,"CavUnEpca",pT001) 
+ if ##class(User.MARC).readX(.handle,ipref_"UnEpca",pT001) 
  { ; pokusime se otevrit handle
    w !,"------------------------------------------------------------------------------"
-   w !,"CavUnEpca*"_pT001
+   w !,ipref_"UnEpca*"_pT001
 
    s sCatT=""
    s sCatT=##class(User.MARC).setSubTagStr(sCatT,$c(31)_"a1","C64   ")
@@ -3431,6 +3598,7 @@ Autor;Sysno autority;Tým C48x;Tým eng C48y;Oborová skupina C48z;Zařazení C4
 <FormalSpec>pT001="",pTym="",pTymEng="",pOborSk="",pZarazeni="",pLog=""</FormalSpec>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s:($l(pT001)<7) pT001=0_pT001
  s:($l(pT001)<7) pT001=0_pT001
  s:($l(pT001)<7) pT001=0_pT001
@@ -3440,10 +3608,10 @@ Autor;Sysno autority;Tým C48x;Tým eng C48y;Oborová skupina C48z;Zařazení C4
  s:($l(pT001)<7) pT001=0_pT001
  
  s err=""
- if ##class(User.MARC).readX(.handle,"CavUnAuth",pT001) 
+ if ##class(User.MARC).readX(.handle,ipref_"UnAuth",pT001) 
  { ; pokusime se otevrit handle
    w !,"------------------------------------------------------------------------------"
-   w !,"CavUnAuth*"_pT001
+   w !,ipref_"UnAuth*"_pT001
    s sAutT=""
    s:(pTym'="") sAutT=##class(User.MARC).setSubTagStr(sAutT,$c(31)_"x"_pTym,"C48   ") 
    s:(pTymEng'="") sAutT=##class(User.MARC).setSubTagStr(sAutT,$c(31)_"y"_pTymEng,"C48    ") 
@@ -3535,8 +3703,9 @@ d ^X("s CavUnEpca @"_sy)
 <Implementation><![CDATA[
   s sT001=$$$HandleT001(handle)                ; ziskame si T001 zaznamu
   s sClass=$$$HandleClass(handle)              ; ziskame tridu zaznamu
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefi
   s sIdx=##class(i2.dblink).recordIdX(.handle) ; ziskame id zaznamu 
-  s %ipac2("ictx")="cav" 
+  s ictx=$zcvt(ipref,"L"), %ipac2("ictx")=ictx
   ; ziskame vsechny data k zaznamu v output
   d ##class(content.api).selectRecAll(.output,sClass,sT001)
     
@@ -3687,6 +3856,7 @@ d ##class(User.CavS).fixMetadata()
 <Implementation><![CDATA[
   q:repo=""
   
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
   s count=0, fixed=0, saved=0
   
   &sql(DECLARE C5 CURSOR FOR
@@ -3705,7 +3875,7 @@ d ##class(User.CavS).fixMetadata()
     ;d $system.OBJ.Dump(obj)
     continue:'$isobject(obj)
     
-    if (RecT001'="") && ##class(User.MARC).readX(.handle,"CavUnEpca",RecT001) {
+    if (RecT001'="") && ##class(User.MARC).readX(.handle,ipref_"UnEpca",RecT001) {
     s s970b=##class(User.MARC).getTagX(.handle,"970b")
    
     if (s970b="J")
@@ -3713,7 +3883,7 @@ d ##class(User.CavS).fixMetadata()
       s idc=##class(User.MARC).recordIdX(.handle) 
       s dok="",dokx=""
       for { ; nalezeni vsech druhu dokumentu
-       set dokx=$o(^$$$MarcIndexG("CavUnEpca",idc,"dk",dokx)) 
+       set dokx=$o(^$$$MarcIndexG(ipref_"UnEpca",idc,"dk",dokx)) 
        q:(dokx="")  
        s dok=dok_" "_dokx
       }
@@ -3836,6 +4006,8 @@ d ##class(User.CavS).fixMetadata()
   s sFormat=##class(User.MARC).recordDataFmtX(.handle)
   s sT001=$$$HandleT001(handle)                ; ziskame si T001 zaznamu
   s sClass=$$$HandleClass(handle)              ; ziskame tridu zaznamu
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
+  
   s bExportAuth=0
   
   //d ##class(i2.export).createExpArrNode(.pole,.handle,"title","200#a")
@@ -3946,9 +4118,9 @@ d ##class(User.CavS).fixMetadata()
    //s sIdx=##class(i2.dblink).recordIdX(.handle) ; ziskame id zaznamu 
    /// 15.08.23 tt; provedena oprava dotahování identifikátorů
   s sIdx=##class(MARC).recordIdX(.handle)
-  s sIssn=$o(^$$$MarcIndexG("CavUnEpca",sIdx,"issn",""))
-  s seIssn=$o(^$$$MarcIndexG("CavUnEpca",sIdx,"zeissn",""))
-  s sIsbn=$o(^$$$MarcIndexG("CavUnEpca",sIdx,"isbn",""))
+  s sIssn=$o(^$$$MarcIndexG(ipref_"UnEpca",sIdx,"issn",""))
+  s seIssn=$o(^$$$MarcIndexG(ipref_"UnEpca",sIdx,"zeissn",""))
+  s sIsbn=$o(^$$$MarcIndexG(ipref_"UnEpca",sIdx,"isbn",""))
   s sDoi=$$$getTagX(.handle,"017a")
   // https://guidelines.openaire.eu/en/latest/literature/field_alternativeidentifier.html
   
@@ -4112,6 +4284,7 @@ Parametry - aktualne zpracovavany handle
 
   s sT001=$$$HandleT001(handle)         ; ziskani t001
   s sClass=$$$HandleClass(handle)       ; ziskani tridy
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
   s sU99b=$$$getTagX(.handle,"U99b")                 ; spcecialni tag pridavany jen z formularu OHLASY v I3 formularich
   ; !!!doplnit ziskani uzivatele !!!
   if ($$$WeAreInCSPContext)
@@ -4139,7 +4312,7 @@ Parametry - aktualne zpracovavany handle
     s sU99b=$g(^$$$MarcTempG("CAVFORMI3_POMU99b",##class(User.Util).date($h),$j,pIdxUser,sT001))
   }  
   
-  if (sClass="CavUnEpca")
+  if (sClass=(ipref_"UnEpca"))
   { ; pro epca zaznamy  - CAV_UN_EPCA-d-BLw_CAV
     s sDB="CAV_UN_EPCA_NO"     ; defaultne vsechno zakazeme
     s:($f(sPrava,"w")) sDB="CAV_UN_EPCA_YES"  ; pokud ma uzivatel pravo zapisovat do databaze pripiseme
@@ -4147,14 +4320,14 @@ Parametry - aktualne zpracovavany handle
     s:($$$HandleT001(handle)="new") sDB="CAV_UN_EPCA_YES" 
     s:($f(sRole,"s")) sDB="CAV_UN_EPCA_SUPER"   ; pro superuzivatele povolujeme vse
   }
-  elseif (sClass="CavUnOhlCat")
+  elseif (sClass=(ipref_"UnOhlCat"))
   { ; pro ohlasy - CAV_UN_OHL_CAT-d-BLw_CAV
     s sDB="CAV_UN_OHL_CAT_NO"  ; defaultne vsechno zakazeme
     s:($f(sPrava,"w")) sDB="CAV_UN_OHL_CAT_YES"  ; pokud ma uzivatel pravo zapisovat do databaze pripiseme
     s:($$$HandleT001(handle)="new") sDB="CAV_UN_OHL_CAT_YES" 
     s:($f(sRole,"s")) sDB="CAV_UN_OHL_CAT_SUPER"   ; pro superuzivatele povolujeme vse
   }
-  elseif (sClass="CavUnAuth")
+  elseif (sClass=(ipref_"UnAuth"))
   { ; pro autority  - CAV_UN_AUTH-a-Blr_Cav_Auth
     s sDB="CAV_UN_AUTH_NO"     ; defaultne vsechno zakazeme
     s:($f(sPrava,"w")) sDB="CAV_UN_AUTH_YES"  ; pokud ma uzivatel pravo zapisovat do databaze pripiseme
@@ -4197,6 +4370,7 @@ Parametry - aktualne zpracovavany handle
 <ProcedureBlock>1</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
   s bRet="",sErr="",sPomUstavR="",sStateR=0
   w:(pDeb) !,"Zpracovani metodou GetAllOperation."
   
@@ -4222,7 +4396,7 @@ Parametry - aktualne zpracovavany handle
     if ('$f(pRole,"a"))
     { ; anonymni uzivatel muze jen zakladat, neupravovat
       
-      if (sClassR="CavUnEpca")
+      if (sClassR=(ipref_"UnEpca"))
       { ; pro epca zaznamy  - CAV_UN_EPCA-d-BLw_CAV
         ; sbornik 970b=BXXS nebo BXX
         ; periodiku 970b=BCA
@@ -4232,17 +4406,21 @@ Parametry - aktualne zpracovavany handle
         s sR969f=$$$getTagX(.handle,"969f")
         s sC99d=$$$getTagX(.handle,"C99d")
         ; 14.03.17 tt; pridana logika pro datasety s U95a
-        s sU95a=""        
-        if ##class(User.MARC).readX(.hOld,"CavUnEpca",$$$HandleT001(handle))
+        s sU95a="" ,sU95c=""       
+        if ##class(User.MARC).readX(.hOld,ipref_"UnEpca",$$$HandleT001(handle))
         { ; handle - kontroluje se podle verze jiz ulozene v databazi, aby se podarilo ulozit zaznam
           s sU95a=$$$getTagX(.hOld,"U95a")                 ; priznak, ze u datasetu byl dan souhlas autorem+
+          s sU95c=$$$getTagX(.hOld,"U95c")                 ; priznak, ze u datasetu byl dan souhlas autorem+
         }
         //s sU99b=$$$getTagX(.handle,"U99b")                 ; spcecialni tag pridavany jen z formularu OHLASY v I3 formularich
         s sAktRokSb=##class(User.CavUnEpca).getAktRokZberu(.handle)
       
         s:(($f(pRole,"k"))&&((sR970b="BCA")||(sR970b="BXX"))) bRet=bRet_"w"
         s:((($f(pRole,"u")&&$f(pRole,"z"))||$f(pRole,"k"))&&(sR970b="BXXS")) bRet=bRet_"w"
-        s:(($f(pRole,"h"))&&(sAktRokSb=sRC26Rok)&&((sR969f="N")||(sR969f="D"))&&(sU95a'=1)) bRet=bRet_"wd"
+        //s:(($f(pRole,"h"))&&(sAktRokSb=sRC26Rok)&&((sR969f="N")||(sR969f="D"))&&(sU95a'=1)) bRet=bRet_"wd"
+        
+        // 24.06.24 tt; provedena zmena pravu datovvych zaznamu pro odesltani zpracovateli        
+        s:(($f(pRole,"h"))&&(sAktRokSb=sRC26Rok)&&((sR969f="N")||(sR969f="D"))&&(sU95c'=1)) bRet=bRet_"wd"
         if ($f(pRole,"c")&&($f(sC99d,"_EPCA_")))
         { ; pokud mame zpracovatele k zaznamu - zpracovatel daneho ustavu, muze
          // if (sRC26RIV=1)
@@ -4296,7 +4474,7 @@ Parametry - aktualne zpracovavany handle
         ; vyhodnoceni pridavani ohlasu jen pro autora ve specialni formulari I3 - ohlasy
         s:($f(pRole,"b")) bRet=bRet_"o"
       }
-      elseif (sClassR="CavUnOhlCat")
+      elseif (sClassR=(ipref_"UnOhlCat"))
       { ; pro ohlasy - CAV_UN_OHL_CAT-d-BLw_CAV
         ; zatim nepovolim editaci zaznamu
         //s:($f($tr(pRole,"szcf","*"),"*")) bRet=bRet_"w"
@@ -4305,7 +4483,7 @@ Parametry - aktualne zpracovavany handle
         ; 25.02.20 tt; predalano pravo na editaci ohlasu na h - clovek, ktery zaznam vytvoril - 7 - upraveno k editaci KNAV-K -zpracovatel 
         s:($f(pRole,"h")) bRet=bRet_"w"   ; 16.06.20 tt; ohlas muze upravovat zpracovatel zaznamu, ktery jej vytvoril
       }
-      elseif (sClassR="CavUnAuth")
+      elseif (sClassR=(ipref_"UnAuth"))
       { ; pro autority  - CAV_UN_AUTH-a-Blr_Cav_Auth
         ; c99d =DFLT_UN_AUTH_200 - osobni jmeno
         ; c99d =DFLT_UN_AUTH_210_A - akce
@@ -4376,6 +4554,7 @@ Parametry - aktualne zpracovavany handle
 <ProcedureBlock>1</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
   s bRet="x",sErr="",sPomAuth="",sPomUstavR="",sStateU=0,sStateR=0,sUstavyIP=""
   
   if ($$$HandleT001(handle)'="")
@@ -4446,7 +4625,7 @@ Parametry - aktualne zpracovavany handle
     ///       u - uzivatel je z ustavu stejneho jako zaznam podle 999b
     s:($zcvt(sRT999b,"L")=$zcvt($tr(sU600b,"-/*+?_",""),"L")) bRet=bRet_"u"    
      
-    if (sClassR="CavUnEpca")
+    if (sClassR=(ipref_"UnEpca"))
     { ; kontroly pro Epca tridu
       s sRTC26e=$$$getTagX(.handleR,"C26e")                ; ziskam pracoviste, ktere zaznam vykazuje
    
@@ -4488,7 +4667,7 @@ Parametry - aktualne zpracovavany handle
       s:((sU600b=sRTC26e)&&(sU600a="")) bRet=bRet_"c"                        ; 2 - pokud mam zpracovatele, pridam priznak
     } ; konec zpracovani (sClassR="CavUnEpca")  
   
-    if (sClassR="CavUnAuth")
+    if (sClassR=(ipref_"UnAuth"))
     { ; kontroly pro auth tridu
       ///                     m - pro CavUnAuth - autorita
       s:($f($c(10)_sPomAuth_$c(10),"*"_$$$HandleT001(handle))) bRet=bRet_"m"
@@ -4554,19 +4733,18 @@ s sy="##class(User.Tmp1).tt(.handle)"   </Description>
 <ClassMethod>1</ClassMethod>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
- 
   s pIdxUser="cav_is_user*0000016"
   //s pIdxRecord="cav_un_epca*0362688_2"
   s pIdxRecord="cav_un_auth*0313796"
   d ##class(MARC).readLX(.handle,pIdxRecord)
    //s pIdxRecord=""
-  //d ##class(User.CavS).GetRoleUser(pIdxUser, pIdxRecord, "", 1, .handle)
+  //d ..GetRoleUser(pIdxUser, pIdxRecord, "", 1, .handle)
     ; zjistime roli uzivatele na zaklade uzivatele a zaznamu
     
-  s sRole=##class(User.CavS).GetRoleUser(pIdxUser, pIdxRecord, "", 1, .handle)
+  s sRole=..GetRoleUser(pIdxUser, pIdxRecord, "", 1, .handle)
   
   ; zjistime prava uzivatele podle role na dany zaznam
-  s sPrava=##class(User.CavS).GetAllOperation("", sRole, "", 1, .handle)
+  s sPrava=..GetAllOperation("", sRole, "", 1, .handle)
 ]]></Implementation>
 </Method>
 
@@ -4580,13 +4758,16 @@ s sy="##class(User.Tmp1).tt(.handle)"   </Description>
 <ClassMethod>1</ClassMethod>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
- //d ##class(User.CavS).ImpINCITES()
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s ictx=$zcvt(ipref,"L")
+   
+ //d ..ImpINCITES()
  s file=##class(%FileCharacterStream).%New() ; otevreni vstupniho souboru
  s file.Filename="1autori-pro-export.txt"
  d file.TranslateTableSet("UTF8")  ; otevreni v UTF8
  ;d file.TranslateTableSet("CP1250")
  s sLine=file.ReadLine()           ; nacten prvni radek
- d ##class(User.Util).xlogf("CavINCITES.csv","Sysno autora;VlastníkZáznamu;RID;Jmeno_autora;Sysno_zaznamu;ZpZveřejnění;RokVydání;DOI;UT WOS;HANDLE")
+ d ##class(User.Util).xlogf(ipref_"INCITES.csv","Sysno autora;VlastníkZáznamu;RID;Jmeno_autora;Sysno_zaznamu;ZpZveřejnění;RokVydání;DOI;UT WOS;HANDLE")
 
  f
  { ; cyklus pres cely soubor
@@ -4598,24 +4779,24 @@ s sy="##class(User.Tmp1).tt(.handle)"   </Description>
      {
        s sT001A=$zstrip($p(sLine,",",i),"<>W")
        continue:(sT001A="")  ; pokud nemame data, nezpracovavame
-       if ##class(User.MARC).readLX(.handleA,"cav_un_auth*"_sT001A)
+       if ##class(User.MARC).readLX(.handleA,ictx_"_un_auth*"_sT001A)
        {
          w !,"Autorita: "_sT001A_"  -----------------------------------------------------"
          s catid=""
          f
          {
-           s catid=##class(User.MARC).getIDByIndex("CavUnEpca","audk","cav_un_auth*"_sT001A,catid)
+           s catid=##class(User.MARC).getIDByIndex(ipref_"UnEpca","audk",ictx_"_un_auth*"_sT001A,catid)
            q:(catid=0)
            s sT001C=##class(User.MARC).getT001(catid)
            w !,"       CavUnEpca*"_sT001C
-           if ##class(User.MARC).readX(.handlec,"CavUnEpca",sT001C,"T")
+           if ##class(User.MARC).readX(.handlec,ipref_"UnEpca",sT001C,"T")
            {
              d ..ImpINCITESLine(.handleA,.handlec)  
            }
            else
            {
-              d ##class(User.Util).xlogf("CavINCITESErr.csv","--------------------------------------------------------------")
-              d ##class(User.Util).xlogf("CavINCITESErr.csv","Nenacteno : "_"CavUnEpca*"_sT001C)
+              d ##class(User.Util).xlogf(ipref_"INCITESErr.csv","--------------------------------------------------------------")
+              d ##class(User.Util).xlogf(ipref_"INCITESErr.csv","Nenacteno : "_ipref_"UnEpca*"_sT001C)
 
            }
          }    
@@ -4623,8 +4804,8 @@ s sy="##class(User.Tmp1).tt(.handle)"   </Description>
        }
        else
        { ; chyba
-         d ##class(User.Util).xlogf("CavINCITESErr.csv","--------------------------------------------------------------")
-         d ##class(User.Util).xlogf("CavINCITESErr.csv","Nenacteno : "_"cav_un_auth*"_sT001A)
+         d ##class(User.Util).xlogf(ipref_"INCITESErr.csv","--------------------------------------------------------------")
+         d ##class(User.Util).xlogf(ipref_"INCITESErr.csv","Nenacteno : "_ictx_"_un_auth*"_sT001A)
        }       
      }
    }   
@@ -4639,6 +4820,7 @@ s sy="##class(User.Tmp1).tt(.handle)"   </Description>
 <FormalSpec><![CDATA[&handleA,&handleC]]></FormalSpec>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
   s lnId=##class(User.MARC).recordIdX(.handleC)
   s sCT970b=$$$getTagX(.handleC,"970b") 
   q:((sCT970b'="J")&&(sCT970b'="JI")&&(sCT970b'="B")&&(sCT970b'="C")&&(sCT970b'="K")&&(sCT970b'="G")&&(sCT970b'="H")&&(sCT970b'="M"))
@@ -4647,7 +4829,7 @@ s sy="##class(User.Tmp1).tt(.handle)"   </Description>
  // s sCYEV=$$$getTagX(.handleC,"210d") 
   //s:(sCYEV="") sCYEV=##class(User.MARC).getTagX(.handleC,"463/210d")
   ;2004-2016    
-  s sCYEV=$zstrip($o(^ooDataTableI("CavUnEpca",lnId,"ye","")),"<>W")
+  s sCYEV=$zstrip($o(^$$$MarcIndexG(ipref_"UnEpca",lnId,"ye","")),"<>W")
   q:((sCYEV<2004)||(sCYEV>2016))
    
   ; 001;C06$d;C35$a;200$a,200$b; (AUTH)
@@ -4712,7 +4894,7 @@ s sy="##class(User.Tmp1).tt(.handle)"   </Description>
   s sCT16c=$$$getTagX(.handleC,"T16c") 
   s:((sCT970b="J")&&(sCT16c'="")) sCT970b="Ji"
    ; vypis do logu
-  d ##class(User.Util).xlogf("CavINCITES.csv",sAT001_";"_sATC06d_";"_sATC35a_";"_sAT200a_", "_sAT200b_";"_sCT001_";"_sCT970b_";"_sCYEV_";"_sDOI_";"_sWOS_";"_sCTC60a)
+  d ##class(User.Util).xlogf(ipref_"INCITES.csv",sAT001_";"_sATC06d_";"_sATC35a_";"_sAT200a_", "_sAT200b_";"_sCT001_";"_sCT970b_";"_sCYEV_";"_sDOI_";"_sWOS_";"_sCTC60a)
 ]]></Implementation>
 </Method>
 
@@ -4734,7 +4916,7 @@ Parametry
   s pP="",OFN="",pErr=""         ; pomocne promenne
   
   ; nacteni parametru, obecna metoda
-  d ##class(User.CavS).repParO(.pP,pPar)                          
+  d ..repParO(.pP,pPar)                          
   ; vystupni soubor bude lehce oteviratelny v excelu
   s pP("Cesta")=##class(User.Util).strswap(pP("Cesta"),".htm","_2.txt")
   ; otevreni soubor  
@@ -4816,7 +4998,7 @@ parametry: pEnvironment  - prostredi
  s sPar("Par","Par")=pPar                      ; obecne parametry 
  
  d ##class(rep.html.base).repPar(.sPar,.pEnvironment)        ;nacteni parametru 
- s bUserIsAdmin=##class(User.CavUnEpca).userIsAdmin()        ; zjisteni, jesti ma uzivatel pravo delat vystup 
+ s bUserIsAdmin=..userIsAdmin()        ; zjisteni, jesti ma uzivatel pravo delat vystup 
  
  if 'bUserIsAdmin
  { ; overeni, zda ma prihlaseny uzivatel pravo spoustet vystupy
@@ -5161,18 +5343,19 @@ Parametry: handle   - aktualni zpracovavany handle
 <Implementation><![CDATA[
  s c = ##class(User.MARC).recordLineCountX(.handle)
  s class=$$$HandleClass(handle)
+  s ipref=$$$Class2Ipref(class)      ; Ipref (instalacni prefix)
  
  f i=1:1:c
  { ; pres vsechny radky zaznamu musime projit
    s lsLine = ##class(User.MARC).getLineX(.handle,i) continue:(lsLine = "") ; ziskame jeden radek
    s lsTag = $e(lsLine,1,3), lsLineO=lsLine          ; ziskame prefix tagu a udelame kopii radku
      
-   if ((lsTag = "C06") || (class = "CavUnAuth"))   
+   if ((lsTag = "C06") || (class = (ipref_"UnAuth")))   
    { ; v autoritach odstranime rodne cislo C06e  
      s lsLine = ##class(User.MARC).setSubTagStr(lsLine,$c(31)_"e")
    } 
    
-   if (($e(lsTag,1) = "7") || (class = "CavUnEpca"))   
+   if (($e(lsTag,1) = "7") || (class = (ipref_"UnEpca")))   
    {
      s sT70X3=$$$getSubTagStr(lsLine,"3") ; zjistime kod autority
      if (sT70X3'="")
@@ -5225,10 +5408,11 @@ d ##class(User.CavS).VymazNenavAutorit("TEST")
 <ProcedureBlock>1</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s ret=1
  
  ; udelame selekt podle indexu znnav
- d ##class(User.Util).XselIndex("CavUnAuth znnav = n")  ; vyselektujeme nenavazane zaznamy
+ d ##class(User.Util).XselIndex(ipref_"UnAuth znnav = n")  ; vyselektujeme nenavazane zaznamy
  
  s idx="",id="" 
  f  
@@ -5262,7 +5446,7 @@ d ##class(User.CavS).VymazNenavAutorit("TEST")
    
    for i=1:1:3
    { ; cyklus pres mozne navaznosti
-     s sProhlTrida=$s(i=1:"CavUnAuth",i=2:"CavUnEpca",i=3:"CavUnOhlCat",1:"")
+     s sProhlTrida=$s(i=1:ipref_"UnAuth",i=2:ipref_"UnEpca",i=3:ipref_"UnOhlCat",1:"")
      f
      { ; jestli ja autorita navazana, mela by byt v auk
        s idNal=##class(User.MARC).getIDByIndex(sProhlTrida,"auk"," "_sLName_"*"_sT001,idNal)
@@ -5304,7 +5488,7 @@ d ##class(User.CavS).VymazNenavAutorit("TEST")
    }
  } 
  
- d ##class(User.CavS).VymazNenavCatAutorit()
+ d ..VymazNenavCatAutorit()
 
  q ret
 ]]></Implementation>
@@ -5333,11 +5517,12 @@ d ##class(User.CavS).VymazNenavCatAutorit("TEST")
 <ProcedureBlock>1</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s ret=1
  
  ; udelame selekt podle indexu znnav
- d ##class(User.Util).XselIndex("CavUnEpca znnav = n")  ; vyselektujeme nenavazane zaznamy
- d ##class(User.Util).Xselect("&&CavUnEpca !dk = bxxs")
+ d ##class(User.Util).XselIndex(ipref_"UnEpca znnav = n")  ; vyselektujeme nenavazane zaznamy
+ d ##class(User.Util).Xselect("&&"_ipref_"UnEpca !dk = bxxs")
  
  s idx="",id="" 
  f  
@@ -5366,7 +5551,7 @@ d ##class(User.CavS).VymazNenavCatAutorit("TEST")
    
    for i=1:1:3
    { ; cyklus pres mozne navaznosti
-     s sProhlTrida=$s(i=1:"CavUnAuth",i=2:"CavUnEpca",i=3:"CavUnOhlCat",1:"")
+     s sProhlTrida=$s(i=1:ipref_"UnAuth",i=2:ipref_"UnEpca",i=3:ipref_"UnOhlCat",1:"")
      s idNal="" ; 02.01.24 tt; drobna uprava podminky pro hledani navaznosti
      f
      { ; jestli ja autorita navazana, mela by byt v auk
@@ -5435,6 +5620,8 @@ pTest        - 1 - testovaci spusteni
 <FormalSpec>pFile="",pOddelovac=";",pTest=1</FormalSpec>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  
  s file=##class(%FileCharacterStream).%New() ; otevreni vstupniho souboru
  s file.Filename=pFile
  s slogName=$p(pFile,".",1)_"Log.log"        ; log file 
@@ -5458,9 +5645,9 @@ pTest        - 1 - testovaci spusteni
      s sOddCz=$p(sLine,pOddelovac,5),sOddEng=$p(sLine,pOddelovac,6)    ; precteme nazvy oddeleni
      s sZOddCz=$p(sLine,pOddelovac,7),sZOddEng=$p(sLine,pOddelovac,8)  ; precneme zkratky oddeleni
      
-     if ##class(User.MARC).existsT001("CavUnAuth",sT001A)
+     if ##class(User.MARC).existsT001(ipref_"UnAuth",sT001A)
      {
-       if ##class(User.MARC).readX(.handle,"CavUnAuth",sT001A)
+       if ##class(User.MARC).readX(.handle,ipref_"UnAuth",sT001A)
        {
          s nC=##class(User.MARC).recordLineCountX(.handle) ; ziskani poctu radku v zaznamu 
          f i=1:1:nC 
@@ -5544,13 +5731,14 @@ Parametry: handle   - aktualni zpracovavany handle
 <Implementation><![CDATA[
  s c = ##class(User.MARC).recordLineCountX(.handle)
  s class=$$$HandleClass(handle)
+  s ipref=$$$Class2Ipref(class)      ; Ipref (instalacni prefix)
  
  f i=1:1:c
  { ; pres vsechny radky zaznamu musime projit
    s lsLine = ##class(User.MARC).getLineX(.handle,i) continue:(lsLine = "") ; ziskame jeden radek
    s lsTag = $e(lsLine,1,3), lsLineO=lsLine          ; ziskame prefix tagu a udelame kopii radku
      
-   if ((lsTag = "C06") || (class = "CavUnAuth"))   
+   if ((lsTag = "C06") || (class = (ipref_"UnAuth")))   
    { ; v autoritach odstranime podle pro oddeleni
      s lsLine = ##class(User.MARC).setSubTagStr(lsLine,$c(31)_"i")
      s lsLine = ##class(User.MARC).setSubTagStr(lsLine,$c(31)_"j")
@@ -5558,7 +5746,7 @@ Parametry: handle   - aktualni zpracovavany handle
      s lsLine = ##class(User.MARC).setSubTagStr(lsLine,$c(31)_"l")
    } 
    
-   if (($e(lsTag,1,2) = "70") || (class = "CavUnEpca"))   
+   if (($e(lsTag,1,2) = "70") || (class = (ipref_"UnEpca")))   
    {
      s lsLine = ##class(User.MARC).setSubTagStr(lsLine,$c(31)_"i")
      s lsLine = ##class(User.MARC).setSubTagStr(lsLine,$c(31)_"j")
@@ -5736,6 +5924,7 @@ sysno;tým C64b;ústav C64c;obor C64d;podobor C64e
 <FormalSpec>pT001="",pOznacHod="",pTym="",pUstav="",pObor="",pPodobor="",pLog="",pLine=""</FormalSpec>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s:($l(pT001)<7) pT001=0_pT001
  s:($l(pT001)<7) pT001=0_pT001
  s:($l(pT001)<7) pT001=0_pT001
@@ -5746,10 +5935,10 @@ sysno;tým C64b;ústav C64c;obor C64d;podobor C64e
  s sLogCsv=$$$strswap(pLog,".log","logCsv.csv")
 
  s err=""
- if ##class(User.MARC).readX(.handle,"CavUnEpca",pT001) 
+ if ##class(User.MARC).readX(.handle,ipref_"UnEpca",pT001) 
  { ; pokusime se otevrit handle
    w !,"------------------------------------------------------------------------------"
-   w !,"CavUnEpca*"_pT001
+   w !,ipref_"UnEpca*"_pT001
 
    s sCatT=""
    s sCatT=##class(User.MARC).setSubTagStr(sCatT,$c(31)_"a1","C64   ")
@@ -5819,6 +6008,7 @@ Autor;Sysno autority;Tým C48x;Tým eng C48y;Oborová skupina C48z;Zařazení C4
 <FormalSpec>pT001="",pTym="",pTymEng="",pOborSk="",pZarazeni="",pLog="",pLine=""</FormalSpec>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s:($l(pT001)<7) pT001=0_pT001
  s:($l(pT001)<7) pT001=0_pT001
  s:($l(pT001)<7) pT001=0_pT001
@@ -5829,10 +6019,10 @@ Autor;Sysno autority;Tým C48x;Tým eng C48y;Oborová skupina C48z;Zařazení C4
  s sLogCsv=$$$strswap(pLog,".log","logCsv.csv")
  
  s err=""
- if ##class(User.MARC).readX(.handle,"CavUnAuth",pT001) 
+ if ##class(User.MARC).readX(.handle,ipref_"UnAuth",pT001) 
  { ; pokusime se otevrit handle
    w !,"------------------------------------------------------------------------------"
-   w !,"CavUnAuth*"_pT001
+   w !,ipref_"UnAuth*"_pT001
    s sAutT=""
    s:(pTym'="") sAutT=##class(User.MARC).setSubTagStr(sAutT,$c(31)_"x"_pTym,"C48   ") 
    s:(pTymEng'="") sAutT=##class(User.MARC).setSubTagStr(sAutT,$c(31)_"y"_pTymEng,"C48    ") 
@@ -5895,13 +6085,16 @@ d ^X("l @"_sy)</Description>
 <FormalSpec><![CDATA[&handle:%Library.String]]></FormalSpec>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
- s FileZal="CavUnEpcaLog.txt"
+ 
  ;s sy="##class(User.Tmp1).DelDataHodnoceni(.handle)"    
  ; d ^X("s CavUnEpca")
  ; d ^X("l @"_sy)
+  s class=$$$HandleClass(handle)
+  s ipref=$$$Class2Ipref(class)      ; Ipref (instalacni pref 
  s t001=$$$HandleT001(handle)
+ s FileZal=ipref_"UnEpcaLog.txt"
  d ##class(User.Util).xlogf(FileZal,"----------------------------------------------------")
- d ##class(User.Util).xlogf(FileZal,"CavUnEpca*"_t001)
+ d ##class(User.Util).xlogf(FileZal,ipref_"UnEpca*"_t001)
 
  s sC64=$$$getTagX(.handle,"C64")
  if (sC64'="")
@@ -5958,7 +6151,8 @@ d ^X("l @"_sy)</Description>
 <Implementation><![CDATA[
   s sT001=$$$HandleT001(handle)                ; ziskame si T001 zaznamu
   s sClass=$$$HandleClass(handle)              ; ziskame tridu zaznamu
-  s FileZal="CavUnEpcaAdd70Xw.txt"
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
+  s FileZal=ipref_"UnEpcaAdd70Xw.txt"
 
   d ##class(User.Util).xlogf(FileZal,"-----------------------------------------------------------------------")
   d ##class(User.Util).xlogf(FileZal,sClass_sT001)
@@ -6012,25 +6206,26 @@ d ^X("s &&CavUnEpca 'T04")
 
  s lsClass=$$$HandleClass(handle),lnId=##class(MARC).recordIdX(.handle), sT001=$$$HandleT001(handle)
  s sLName=##class(User.Util).objectName2lname(lsClass)
+ s ictx=$p(sLName,"_"), ipref=$zcvt(ictx,"W")
   
  s idNal="",bFing=0 
  f
  { ; jestli ja autorita navazana, mela by byt v auk
-   s idNal=##class(User.MARC).getIDByIndex("CavUnAuth","auk"," "_sLName_"*"_sT001,idNal)
+   s idNal=##class(User.MARC).getIDByIndex(ipref_"UnAuth","auk"," "_sLName_"*"_sT001,idNal)
    q:((idNal=0)||(bFing=1))
    s bFing=1
  }
  
  f
  {
-   s idNal=##class(User.MARC).getIDByIndex("CavUnEpca","auk"," "_sLName_"*"_sT001,idNal)
+   s idNal=##class(User.MARC).getIDByIndex(ipref_"UnEpca","auk"," "_sLName_"*"_sT001,idNal)
    q:((idNal=0)||(bFing=1))
    s bFing=1
  }
  
  f
  {
-   s idNal=##class(User.MARC).getIDByIndex("CavUnOhlCat","auk"," "_sLName_"*"_sT001,idNal)
+   s idNal=##class(User.MARC).getIDByIndex(ipref_"UnOhlCat","auk"," "_sLName_"*"_sT001,idNal)
    q:((idNal=0)||(bFing=1))
    s bFing=1
  }
@@ -6058,13 +6253,15 @@ d ##class(User.CavS).OpravaIssnEissn("JCR_2020_Q41.csv")</Description>
 <FormalSpec>pFile:%String,pLog=""</FormalSpec>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
  s file=##class(%FileCharacterStream).%New() ; otevreni vstupniho souboru
  s file.Filename=pFile
  d file.TranslateTableSet("UTF8")  ; otevreni v UTF8
  ;d file.TranslateTableSet("CP1250")
  s sLine=file.ReadLine()           ; nacten prvni radek
  s sT001o="",sT001=""
- 
+
+
  f
  { ; cyklus pres cely soubor
    s sLine=file.ReadLine()         ; cten 1 radek
@@ -6073,18 +6270,24 @@ d ##class(User.CavS).OpravaIssnEissn("JCR_2020_Q41.csv")</Description>
    { ; pokud mame vyplneny radek, zpracovavame
      s sNazev=$p(sLine,";",1),ISSN=$p(sLine,";",2),eISSN=$p(sLine,";",3)
      
-     s:(ISSN'="") sT001=..write978FindR("CavUnEpca", .ISSN,sNazev,"-XSZP--ALLR-")
-     s:(eISSN'="") sT001o=..write978FindR("CavUnEpca", .eISSN,sNazev,"-XSZP--ALLR-")
+     s sT001="",sT001o="" ; mk 18.02.25 oprava chyby nenulovane premenne.
+     
+     s:(ISSN'="") sT001=..write978FindR(ipref_"UnEpca", .ISSN,sNazev,"-XSZP--ALLR-")
+     s:(eISSN'="") sT001o=..write978FindR(ipref_"UnEpca", .eISSN,sNazev,"-XSZP--ALLR-")
 
      s:((sT001'="")&&(sT001o'="")) sT001=sT001_";"_sT001o
      s:((sT001="")&&(sT001o'="")) sT001=sT001o
+     
+     ;w !," najdene zaznamy: "_sT001_" riadok: "_sLine 
+
       
      for x=1:1:$l(sT001,";")
      {
-       s sT001o=$p(sT001,";",x)
-       continue:(sT001o="")
+       s sT001x=$p(sT001,";",x)
+       continue:(sT001x="")
        s bzmena=0
-       if ##class(User.MARC).readX(.handle,"CavUnEpca",sT001o) 
+       kill handle
+       if ##class(User.MARC).readX(.handle,ipref_"UnEpca",sT001x) 
        { ; zpracovavani jednoho zaznamu          
         s s011=$$$getTagXC(.handle,"011",-1)
         if '$f(s011,$c(10))
@@ -6104,7 +6307,7 @@ d ##class(User.CavS).OpravaIssnEissn("JCR_2020_Q41.csv")</Description>
           d:(bzmena=1) $$$setTagX(.handle,s011)
         }
         s s200=$$$getTagX(.handle,"200")
-        if (($$$getSubTagStr(s200,"a")="Nazev")&&(s200'=""))
+        if (($zcvt($$$getSubTagStr(s200,"a"),"L")="nazev")&&(s200'="")) ; 17.02.25 mk prevod na male pismena a kontrola 
         { 
            s s200=$$$setSubTagStr(s200,$c(31)_"a"_sNazev) 
            d $$$setTagX(.handle,s200)
@@ -6113,13 +6316,16 @@ d ##class(User.CavS).OpravaIssnEissn("JCR_2020_Q41.csv")</Description>
         
         if (bzmena=1)
         {
-           w !," ------------------------------------------------------------------------------------"
-           w !," uprava zaznamu "_$$$HandleT001(handle) 
-           w !,s200,!,s011
+         
+           ;w !," ------------------------------------------------------------------------------------"
+           ;w !," spracovane zaznamy: "_sT001x_" riadok: "_sLine 
+           ;w !," uprava zaznamu "_$$$HandleT001(handle) 
+           ;w !,s200,!,s011
+           s st=""
            s st=##class(User.MARC).writeX(.handle,,,,3_$c(10)_"arl_doplneni_issn"_$c(10)_"127.0.0.1")
            if '$$$ISOK(st) 
            { ; ulozime si chybu pro pozdejsi zpracovani
-              s err="Error - write: (CavUnEpca/"_pT001_") - "_##class(User.Util).status2str(st)
+              s err="Error - write: (CavUnEpca/"_sT001_") - "_##class(User.Util).status2str(st)
               ///d ##class(User.Util).xlogf(sLogCsv,pLine_";Error;Nepodařilo se zapsat data do záznamu:"_##class(User.Util).status2str(st))
            }
         }        
@@ -6129,6 +6335,79 @@ d ##class(User.CavS).OpravaIssnEissn("JCR_2020_Q41.csv")</Description>
    q:(file.AtEnd) ; pokud je konec souboru, ukoncime zpracovani
  }
  d file.%Close()                   ; zavreni souboru
+]]></Implementation>
+</Method>
+
+<Method name="OpravaIssnEissnChyba">
+<Description>
+d ##class(User.CavS).OpravaIssnEissnChyba("JCR_2020_Q41.csv")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pFile:%String,pLog=""</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+ s file=##class(%FileCharacterStream).%New() ; otevreni vstupniho souboru
+ s file.Filename=pFile
+ d file.TranslateTableSet("UTF8")  ; otevreni v UTF8
+ s sLine=file.ReadLine()           ; nacten prvni radek
+ s sT001o="",sT001=""
+
+ ; otevrit vystupni soubor
+ open pLog:("NWS":/CREATE):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+
+
+ f
+ { ; cyklus pres cely soubor
+   s sLine=file.ReadLine()         ; cten 1 radek
+   
+   if (sLine'="")
+   { ; pokud mame vyplneny radek, zpracovavame
+     s sNazev=$p(sLine,";",1),ISSN=$p(sLine,";",2),eISSN=$p(sLine,";",3)
+     
+     s ISSN=$$$strswap(ISSN,"N/A","")
+     s ISSN=$$$strswap(ISSN,"n/a","")
+     s eISSN=$$$strswap(eISSN,"N/A","")
+     s eISSN=$$$strswap(eISSN,"n/a","")
+
+     
+     s sT001="",sT001o="" ; mk 18.02.25 oprava chyby nenulovane premenne.
+     
+     s:(ISSN'="") sT001=..write978FindR(ipref_"UnEpca", .ISSN,sNazev,"-XSZP--ALLR-")
+     s:(eISSN'="") sT001o=..write978FindR(ipref_"UnEpca", .eISSN,sNazev,"-XSZP--ALLR-")
+
+     s:((sT001'="")&&(sT001o'="")) sT001=sT001_";"_sT001o
+     s:((sT001="")&&(sT001o'="")) sT001=sT001o
+     
+     ;w !," najdene zaznamy: "_sT001_" riadok: "_sLine 
+
+      
+     for x=1:1:$l(sT001,";")
+     {
+       s sT001x=$p(sT001,";",x)
+       continue:(sT001x="")
+       s bzmena=0
+       kill handle
+       if ##class(User.MARC).readX(.handle,ipref_"UnEpca",sT001x) 
+       { ; zpracovavani jednoho zaznamu          
+        s s011=$$$getTagX(.handle,"011")
+        if s011'=""
+        {
+          s s011a=$$$getSubTagStr(s011,"a")
+          s s011e=$$$getSubTagStr(s011,"e") 
+          if (s011a'="") && (ISSN="")
+          {
+            use pLog w " spracovane zaznamy: "_sT001x_"#"_s011a_"#"_s011e_"#"_sLine 
+          }
+         }
+       }
+     }
+   }   
+   q:(file.AtEnd) ; pokud je konec souboru, ukoncime zpracovani
+ }
+ d file.%Close()                   ; zavreni souboru
+ close pLog
 ]]></Implementation>
 </Method>
 
@@ -6235,10 +6514,11 @@ U229
 
   s:(sPref'="") sPrekPrefix=sPref                           
   s:($tr(sPref," :","")'="") sPrekPrefix=##class(rep.zf.tf).prefix(.handle,sPref)_": "
+  s:$g($$$GETICTX)="" sPrekPrefix="%newline : "_sPrekPrefix ; vyjimka pro analytika
   
   ; 2 - zpracovatel k zaznamu
   ; 6 - superuzivatel
-  //s sUserR=##class(User.CavS).FTgetIsUser(user,sT001) ; metoda pro vygenerovani role uzivatele
+  //s sUserR=..FTgetIsUser(user,sT001) ; metoda pro vygenerovani role uzivatele
   if (sT970b="DATA")  
   { ; zobrazovat vkladatele jen pro data
     //if ((sUserR=2)||(sUserR=6)||(sUserR=5))
@@ -6250,7 +6530,7 @@ U229
         s recID=""
         for
         {
-          s recID=$o(^ooDataTableI("CmChronology","src"," "_idx,recID))
+          s recID=$o(^$$$MarcIndexG("CmChronology","src"," "_idx,recID))
           q:((recID="")||(sT999e'=""))
 
           if ##class(User.MARC).getDATAX(.handlech,recID) 
@@ -6309,6 +6589,7 @@ Dokumentace: https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2021#1.
 
   s:(sPref'="") sPrekPrefix=sPref                           
   s:($tr(sPref," :","")'="") sPrekPrefix=##class(rep.zf.tf).prefix(.handle,sPref)_": "
+  s:$g($$$GETICTX)="" sPrekPrefix="%newline : "_sPrekPrefix ; vyjimka pro analytika
   
   ; pojistka, kdyby nebyla zadna chronologie
   s sDatum1=$$$getTagX(.handle,"100a")
@@ -6322,7 +6603,7 @@ Dokumentace: https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2021#1.
     s recID=""
     for
     { ; prochazime chronologii od nejnovejsich
-      s recID=$o(^ooDataTableI("CmChronology","src"," "_idx,recID),-1)
+      s recID=$o(^$$$MarcIndexG("CmChronology","src"," "_idx,recID),-1)
       q:((recID="")||(sDatum'=""))
 
       if ##class(User.MARC).getDATAX(.handlech,recID) 
@@ -6367,7 +6648,8 @@ prvni sloupec roku je ignorovan
 <ClassMethod>1</ClassMethod>
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
-  ;d ##class(User.CavS).ImpC86QTC()
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  ;d ..ImpC86QTC()
   s file=##class(%FileCharacterStream).%New() ; otevreni vstupniho souboru
   s file.Filename="editacni_import_QTC_zavorky_2023.csv"
   s log="editacni_import_QTC_zavorky_2023.log"
@@ -6390,7 +6672,7 @@ prvni sloupec roku je ignorovan
     s sSTb=$p(sLine,";",3)
     s sSTc=$p(sLine,";",4)
     s sSTd=$p(sLine,";",5)
-    if ##class(User.MARC).readX(.handle,"CavUnEpca",sKod)
+    if ##class(User.MARC).readX(.handle,ipref_"UnEpca",sKod)
     {
       d ##class(User.Util).xlogf(log,"Nacten zaznam: "_sKod)
       s sZmena=0
@@ -6450,6 +6732,72 @@ prvni sloupec roku je ignorovan
     }
   }
   d file.%Close()
+]]></Implementation>
+</Method>
+
+<Method name="EmbargoC52b">
+<Description><![CDATA[
+<pre>
+vyhladat v CavUnEpca vsetky zaznamy s embargom v C52b = E a ak datum v C91b RRRRMMDD vyprsal tak zmenit C52b na A
+Navrat:
+"1" ok, "0" chyba
+
+08.01.25 mk; zalozena metoda pre uvolnenie embarga v C52b
+<pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ s AktDatum=##class(User.Util).date()
+ s AktDatum=$e(AktDatum,1,8)
+ s ret=1
+ 
+ ; udelame selekt podle upsb a datumu v C91b zemd
+ d ##class(User.Util).XselIndex("CavUnEpca upsb = e")  ; vyselektujeme zaznamy s C52b = E index upsb
+ d ##class(User.Util).Xselect("&&"_"CavUnEpca !zemd < "_AktDatum) ; datum do blokovanie C91b index zemd RRRRMMDD
+ s idx="",id="" 
+ f  
+ { ; cyklus pro prochazeni vyselektovanych zaznamu
+   s idx=$o(^$$$ListsG($$$ListsActiveSel,$j,idx)),id=idx 
+   q:(id="")  
+     
+   ;Zpracovavani jednoho zaznamu
+   if '##class(User.MARC).getDATAX(.handle,id) s err="error: EmbargoC52b - record id:"_id_" not found!" w !,err continue   
+   s sT001=$$$HandleT001(handle)                           ; ziskani t001
+   s sDatum=$$$getTagX(.handle,"C91b") ; datum odkedy sa spristupnuje 
+   s sC52=$$$getTagX(.handle,"C52") 
+   s sC52b=$zcvt($$$getTagX(.handle,"C52b"),"U") ; stav pristupu
+   
+   if (sDatum'="") && (sC52b="E") ; musi byt v danej chvili E - embargo a datum platnosti vyplneny
+   { 
+       s sC52=##class(User.MARC).setSubTagStr(sC52,$c(31)_"bA") 
+       d ##class(User.MARC).setTagX(.handle,sC52) 
+       w !,"Zpracovavan zaznam: CavUnEpca*"_sT001_"."_" Datum uvolneni: "_sDatum_" C52b: "_sC52b_". Tag po: "_sC52
+       ;s st=1
+       s st=##class(User.MARC).writeX(.handle)  ; zapiseme zmeneny zaznam
+       if $$$ISERR(st) 
+       { 
+         s err="error: EmbargoC52b - write record T001: "_sT001_"!" 
+         s ret=0
+         w !,err,!
+       }
+       else { w !,"Uspesne zapsan zaznam CavUnEpca*"_sT001_"."_" zmena C52b na A - volne"}
+   }
+ }
+ q ret
+]]></Implementation>
+</Method>
+
+<Method name="userIsAdmin">
+<Description><![CDATA[
+<pre> 
+trampolina pro dedeni (User.CavUnEpca).userIsAdmin(
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>1</ProcedureBlock>
+<PublicList>sUser</PublicList>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[  q $classmethod($$$DbClassIpref_"UnEpca","userIsAdmin")
 ]]></Implementation>
 </Method>
 </Class>

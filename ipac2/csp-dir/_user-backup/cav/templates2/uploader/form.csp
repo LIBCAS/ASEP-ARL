@@ -39,7 +39,7 @@
 </div>
 
 <div class="row form-group" id="fg-nusl#(node)#">
-<label for="nusl#(node)#" class="col-form-label"><ipac:abbr title="#(..tx("NUSLC"))#"><ipac:tx param="NUSL"/></ipac:abbr>: <em>*</em></label>
+<label for="nusl#(node)#" class="col-form-label"><abbr title="#(..tx("NUSLC"))#"><ipac:tx param="NUSL"/></abbr>: <em>*</em></label>
 <div class="half fv-row">
 <select id="nusl#(node)#" name="nusl" class="form-control">
     <ipac:loop1 param="UT_ASEP_NUSL" load selected="#(..v("nusl"))#">

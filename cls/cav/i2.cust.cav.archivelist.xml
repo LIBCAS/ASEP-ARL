@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1 (Build 209U)" ts="2023-01-19 09:59:30">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-04-08 14:03:43">
 <Class name="i2.cust.cav.archivelist">
 <Description><![CDATA[
 <pre>
 
+08.04.25 ln; podpora S3
 19.01.23 ln; hlaska PARTIAL
 15.01.19 ln; ikona pres font, odkaz do noveho tabu
 </pre>]]></Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>66493,35659.251762969</TimeChanged>
+<TimeChanged>67303,50617.433567394</TimeChanged>
 <TimeCreated>64231,36027.593241</TimeCreated>
 
 <Parameter name="PageID">
@@ -40,6 +41,7 @@ pretty URL</Description>
 <pre>Data pro HTML sablonu stranky
 spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
 
+08.04.25 ln; podpora S3
 19.01.23 ln; hlaska PARTIAL
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
@@ -76,12 +78,33 @@ spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
   s bigContent=$$$I2isOp("BIGCONTENT")  
   
   if 'bigContent {
-    s path=pathrepo_$e(key,1,2)_sPathSep_$e(key,3,99)
+    s dir=pathrepo_$e(key,1,2), path=dir_sPathSep_$e(key,3,99)
   } else {
-    s path=path_$e(key,1,3)_sPathSep_$e(key,4,99)
+    s dir=pathrepo_$e(key,1,3), path=dir_sPathSep_$e(key,4,99)
   }
   s ext=array("extension")
-  s path=""""_path_"."_ext_""""
+  s:$e(key,*)="k" ext=ext_"lst"
+  s path=path_"."_ext
+  
+  ; 08.04.25 ln; podpora S3
+  if ($e(key,*)="k") && '##class(%File).Exists(path) {
+    s config=##class(util.rest.v1.s3REST).commonConfig(repo,key)
+    s config.origname=array("origname")
+    s url=##class(util.rest.v1.s3REST).getFile(config...)
+    s data("url")=url
+    s data("dir")=dir
+    
+    if '##class(%File).DirectoryExists(dir) { 
+      d ##class(%File).CreateDirectoryChain(dir)
+    }
+    s to=array("size")
+    s from=to-100000
+    s:from<1 from=1
+    s cmd="curl -k -r "_from_"-"_to_" --output "_path_" """_url_""""
+    s data("cmd")=cmd
+    s data("curl")=$ZF(-1,cmd)
+  }
+  s path=""""_path_""""
   
   ;s pathrepo="/media/vg1-lv1/repository1/contmp/"
   ;s file="node_454721161_apache-solr-3.4.0.zip"  
@@ -89,6 +112,7 @@ spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
   ;s path=""""_pathrepo_file_""""
   
   s cmd=$case(ext,
+    "ziplst":"unzip -l "_path,
     "zip":"unzip -l "_path,
     "rar":"/home/cosmo/bin/unrar l "_path,
     "gz":"tar -tvf "_path,
@@ -134,7 +158,7 @@ spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
   s key=##class(User.MARC).getSubTagStr(.psLine,"k")
   
   ; 15.01.19 ln; ikona pres font, odkaz do noveho tabu
-  q ##class(i2.html.tpl).getLink("archlist","repo="_repo_"&key="_key,,"x"" rel=""external"" data-target=""_blank","icon-info")
+  q ##class(i2.html.tpl).getLink("archlist","repo="_repo_"&key="_key,,"x"" rel=""external"" target=""_blank","icon-info")
 ]]></Implementation>
 </Method>
 </Class>

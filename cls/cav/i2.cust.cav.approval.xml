@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="22" zv="Cache for Windows (x86-64) 2009.1.3 (Build 704U)" ts="2013-02-14 10:15:18">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-19 14:18:23">
 <Class name="i2.cust.cav.approval">
-<Description>
-Souhlas uzivatele s podminkami pro zobrazeni fulltextu</Description>
+<Description><![CDATA[
+<pre> Souhlas uzivatele s podminkami pro zobrazeni fulltextu
+
+19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
+14.02.13 jk; vymazan template()
+23.10.12 tt; zalozena trida
+</pre>]]></Description>
 <Super>content.approval</Super>
-<TimeChanged>62867,36879.483491</TimeChanged>
+<TimeChanged>67040,51488.641213751</TimeChanged>
 <TimeCreated>62753,50826.214161</TimeCreated>
 
 <Parameter name="Ictx">
 <Description>
-14.02.13 jk; vymazan template()
-23.10.12 tt; zalozena trida
 ictx instituce</Description>
 <Default>cav</Default>
 </Parameter>
@@ -31,7 +34,7 @@ slouzi pro odchylky
   s data("KEY")=key  
   s sT001=$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")
 
-  s data("ODREC")=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_sT001,..tx("RECORD"))
+  s data("ODREC")=##class(i2.html.tpl).getPermalink2($$$GETICTX_"_un_epca*"_sT001,..tx("RECORD"))
     
   s maintain=##class(content.approval).getPageID()
   s data("MAINTAIN")=##class(i2.html.tpl).getLink(maintain,"idx="_idx)

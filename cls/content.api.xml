@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865_3U)" ts="2022-04-08 14:37:19">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2024-03-19 09:14:34">
 <Class name="content.api">
 <Description><![CDATA[
 <pre> Api pro praci s contentServerem
 pouzivat tyto funkce a ne primo content.engine
 
+19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 07.04.22 ln; CRank generovat vzdy
 16.02.22 ln; podpora CRank
 23.03.18 ln; duplicita na zaklade kontrolniho souctu
@@ -16,7 +17,7 @@ pouzivat tyto funkce a ne primo content.engine
 26.09.12 ln; aktualizace imageServeru pri zmene typu 
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>66206,48579.161192</TimeChanged>
+<TimeChanged>66918,32846.1435188</TimeChanged>
 <TimeCreated>62300,30441.455262</TimeCreated>
 
 <Method name="isEnabled">
@@ -35,7 +36,7 @@ pouzivat tyto funkce a ne primo content.engine
   k array
   d ##class(content.engine).runtime(.array)
   m array=runtime
-  q ##class(content.engine).call(.array,"Read")
+  q +##class(content.engine).call(.array,"Read")
 ]]></Implementation>
 </Method>
 
@@ -62,8 +63,10 @@ array je vstupne/vystupni parametr</Description>
   q:key="" 0  
   
   q:'##class(content.engine).get(.array,repo,key,$g(runtime("oldversion"))) 0
-  m array=runtime   
-  q ##class(content.engine).call(.array,"Read")
+  m array=runtime 
+  q:$g(array("SIMUL")) ##class(content.engine).call(.array,"Read")
+  
+  q +##class(content.engine).call(.array,"Read")
 ]]></Implementation>
 </Method>
 
@@ -78,8 +81,9 @@ array je vstupne/vystupni parametr</Description>
   m array=runtime
   s array("repository")=repo
   s array("ictx")=$$$GETICTX  
+  q:$g(array("SIMUL")) ##class(content.engine).call(.array,"Upload")
   
-  q ##class(content.engine).call(.array,"Upload")
+  q +##class(content.engine).call(.array,"Upload")
 ]]></Implementation>
 </Method>
 
@@ -92,8 +96,8 @@ array je vstupne/vystupni parametr</Description>
   d ##class(content.engine).runtime(.array)
   m array=runtime
   s array("ictx")=$$$GETICTX
-  ;w !,"up"
-  q ##class(content.engine).call(.array,"Upload")
+  
+  q +##class(content.engine).call(.array,"Upload")
 ]]></Implementation>
 </Method>
 
@@ -106,8 +110,10 @@ array je vstupne/vystupni parametr</Description>
   q:key="" 0
   
   q:'##class(content.engine).get(.array,repo,key) 0  
-  m array=runtime  
-  q ##class(content.engine).call(.array,"Edit")
+  m array=runtime 
+  q:$g(array("SIMUL")) ##class(content.engine).call(.array,"Edit")
+   
+  q +##class(content.engine).call(.array,"Edit")
 ]]></Implementation>
 </Method>
 
@@ -120,8 +126,8 @@ array je vstupne/vystupni parametr</Description>
   d ##class(content.engine).runtime(.array)
   m array=runtime
   s array("ictx")=$$$GETICTX
-  ;w !,"ed"
-  q ##class(content.engine).call(.array,"Edit")
+  
+  q +##class(content.engine).call(.array,"Edit")
 ]]></Implementation>
 </Method>
 
@@ -138,7 +144,9 @@ array je vstupne/vystupni parametr</Description>
   
   q:'##class(content.engine).get(.array,repo,key) 0  
   m array=runtime
-  q ##class(content.engine).call(.array,"Change")
+  q:$g(array("SIMUL")) ##class(content.engine).call(.array,"Change")
+  
+  q +##class(content.engine).call(.array,"Change")
 ]]></Implementation>
 </Method>
 
@@ -152,7 +160,9 @@ array je vstupne/vystupni parametr</Description>
   
   q:'##class(content.engine).get(.array,repo,key) 0  
   m array=runtime
-  q ##class(content.engine).call(.array,"Delete")
+  q:$g(array("SIMUL")) ##class(content.engine).call(.array,"Delete")
+  
+  q +##class(content.engine).call(.array,"Delete")
 ]]></Implementation>
 </Method>
 
@@ -165,8 +175,10 @@ array je vstupne/vystupni parametr</Description>
   q:key="" 0
   
   q:'##class(content.engine).get(.array,repo,key) 0  
-  m array=runtime  
-  q ##class(content.engine).call(.array,"State")
+  m array=runtime
+  q:$g(array("SIMUL")) ##class(content.engine).call(.array,"State")
+  
+  q +##class(content.engine).call(.array,"State")
 ]]></Implementation>
 </Method>
 

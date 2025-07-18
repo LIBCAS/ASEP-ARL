@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1.4 (Build 505_1U)" ts="2021-11-12 08:42:43">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-12 15:10:20">
 <Class name="User.CavUnOhlCat">
 <Description><![CDATA[
 <pre>
+12.07.24 ln; operace ipref
 24.02.20 tt; zalozena metoda - writeCatRec
 09.11.19 tt; optimalizace vymazu prednastavenych hodnot
 18.09.17 tt; allowSaveEx: provedena uprava, aby se spravne ukladali ohlasy i pri prebrani zaznamu
@@ -17,7 +18,7 @@
 <IncludeCode>Common,I2</IncludeCode>
 <ProcedureBlock>1</ProcedureBlock>
 <Super>User.DataTable</Super>
-<TimeChanged>66060,31355.460506</TimeChanged>
+<TimeChanged>67033,54614.770073856</TimeChanged>
 <TimeCreated>59592,28773.903995</TimeCreated>
 
 <Parameter name="INDEXPARAMS">
@@ -81,59 +82,6 @@ Navrat:
 <FormalSpec><![CDATA[&handle]]></FormalSpec>
 <Implementation><![CDATA[
   s ret=""
-  /*
-  s BibCit=##class(User.CavUnEpca).getBibcitCAV(.handle)
-  s sT001=$$$HandleT001(handle)       ; ziskani t001
-  
-  s BibCit=$$$strswap(BibCit,"<em>","")   
-  s BibCit=$$$strswap(BibCit,"</em>","")     
-  s BibCit=$$$strswap(BibCit,"<strong>","")     
-  s BibCit=$$$strswap(BibCit,"</strong>","") 
-  s BibCit=$$$strswap(BibCit,"<u>","")      
-  s BibCit=$$$strswap(BibCit,"</u>","") 
-  s BibCit=$$$strswap(BibCit,".b.","")     
-  s BibCit=$$$strswap(BibCit,"./b.","") 
-  
-  s id=""
-  for  
-  { ; cyklus pres vsechny navazane zaznamy
-    s id=$o(^$$$MarcIndexG("CavUnEpca","auk"," cav_un_ohl_cat*"_sT001,id))
-    q:(id="")   
-    
-    if ##class(User.MARC).getDATAX(.handleCAT,id)
-    { ; otevren zaznam z katalogu, kde je navazany ohlas - projdem vsechny 
-      ; 971 aC71 a zkusime aktualizaovat zaznamy
-      s nC=##class(User.MARC).recordLineCountX(.handleCAT) ; ziskani poctu radku v zaznamu 
-      f i=1:1:nC 
-      { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
-        s lsLine=##class(User.MARC).getLineX(.handleCAT,i) 
-        continue:(lsLine="")
-        s sTag=$e(lsLine,1,3)
-        if ((sTag="971")||(sTag="C71"))
-        { ; pokud narazim na tag, ktery mam kontrolovat, zkontroluji a prepisu bibliografickou citaci, pokud se zmenila
-          s sLx=$$$getSubTagStr(lsLine,"x"),sT001rec="cav_un_ohl_cat*"_sT001
-          if (sLx=sT001rec)
-          { ; pokud mame v x link na tento zaznam z CavUnOhlCat
-            s sLi=$$$getSubTagStr(lsLine,"i")
-            if ($tr(sLi," ","") '=$tr(BibCit," ",""))
-            { ; pokud se nam zmenila bibliograficka citace
-              s lsLine=$$$setSubTagStr(lsLine,$c(31)_"i"_BibCit) ; ulozime si bibliografickou citaci do radku
-              d ##class(User.MARC).setLineX(.handleCAT,i,lsLine) ; zapiseme si radek do hanldu
-              ; handle ulozime
-              s sOk=##class(User.MARC).writeX(.handleCAT)
-              if '$$$ISOK(sOk) 
-              { ; pokud mam chybu, vypisu 
-                w !,"Chyba zapisu handlu"    
-                zt "AC2" ; Nedoslo k ulozeni navazanych zaznamu zaznamu
-              }
-            }
-          }
-        }       
-      }
-    }      
-  }
-  */
-  ; nahrazen kód writeCatRec - a přesunuto do allowSave
   
   q ret
 ]]></Implementation>
@@ -164,6 +112,8 @@ Navrat:
   s sT969f=$$$getTagX(.handle,"969f")
   s sT001=$$$HandleT001(handle)       ; ziskani t001
   s sClass=$$$HandleClass(handle)     ; ziskani tridy
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
+  
   if (sT001'="new")
   { ; odeslání záznamu - 969f - "D" - neodeslán/ "" nebo "A" odeslaný záznam zveřejněný v ipac2 
     if ##class(User.MARC).readX(.handleUS,sClass,sT001)
@@ -232,9 +182,10 @@ Navrat:
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
   s ret=""
-  
   s BibCit=##class(User.CavUnEpca).getBibcitCAV(.handle)
-  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s ictx=$zcvt(ipref,"L"), sT001=$$$HandleT001(handle)       ; ziskani t001
 
   s BibCit=$$$strswap(BibCit,"<em>","")   
   s BibCit=$$$strswap(BibCit,"</em>","")     
@@ -248,7 +199,7 @@ Navrat:
   s id=""
   for  
   { ; cyklus pres vsechny navazane zaznamy
-    s id=$o(^$$$MarcIndexG("CavUnEpca","auk"," cav_un_ohl_cat*"_sT001,id))
+    s id=$o(^$$$MarcIndexG(ipref_"UnEpca","auk"," "_ictx_"_un_ohl_cat*"_sT001,id))
     q:(id="")   
     
     if ##class(User.MARC).getDATAX(.handleCAT,id)
@@ -262,7 +213,7 @@ Navrat:
         s sTag=$e(lsLine,1,3)
         if ((sTag="971")||(sTag="C71"))
         { ; pokud narazim na tag, ktery mam kontrolovat, zkontroluji a prepisu bibliografickou citaci, pokud se zmenila
-          s sLx=$$$getSubTagStr(lsLine,"x"),sT001rec="cav_un_ohl_cat*"_sT001
+          s sLx=$$$getSubTagStr(lsLine,"x"),sT001rec=ictx_"_un_ohl_cat*"_sT001
           if (sLx=sT001rec)
           { ; pokud mame v x link na tento zaznam z CavUnOhlCat
             s sLi=$$$getSubTagStr(lsLine,"i")
@@ -290,7 +241,7 @@ Navrat:
 </Method>
 
 <Storage name="Default">
-<Type>%Library.CacheStorage</Type>
+<Type>%Storage.Persistent</Type>
 </Storage>
 </Class>
 </Export>

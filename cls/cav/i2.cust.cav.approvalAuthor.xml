@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1 (Build 209U)" ts="2023-03-13 09:41:36">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-19 14:27:34">
 <Class name="i2.cust.cav.approvalAuthor">
 <Description>
 Zajistuje schvaleni autoru po rozeslani emailu
 
+19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
+18.03.24 tt; pridana indexace zaznamu 
 13.03.23 tt; přidána definice OBJECT_URL na začátek data
 28.01.20 tt; genC52: provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n + zmena ulozeni
 09.10.19 jk; zmenena trida pro praci s emaily
@@ -37,7 +39,7 @@ Zajistuje schvaleni autoru po rozeslani emailu
 20.02.12 tt; upraveny texty pro vypis autoru
 19.01.11 tt; zmena textu emailuf</Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>66546,34787.90759896</TimeChanged>
+<TimeChanged>67040,52034.172218026</TimeChanged>
 <TimeCreated>62419,34291.587026</TimeCreated>
 
 <Parameter name="PageID">
@@ -124,8 +126,8 @@ a vysledek vratit napr pres data("REPORTS")
   { ; pokud se nam podarilo otevit zaznam, nacteme si informace
     s data("RECTITLE_Z")=$$$getTagX(.handle,"Tbca")
     s data("RECTITLE_Z")=##class(User.Util).HTMLfixup($p(data("RECTITLE_Z"),"\n",1))
-    s data("ODREC")=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_sT001,..tx("RECORD"))
-    s data("IDX")="cav_un_epca*"_sT001
+    s data("ODREC")=##class(i2.html.tpl).getPermalink2($$$GETICTX_"_un_epca*"_sT001,..tx("RECORD"))
+    s data("IDX")=$$$GETICTX_"_un_epca*"_sT001
   }
 
   s author=$g(array("mails",token))
@@ -218,9 +220,9 @@ pri vyjadreni posledniho uzivatele se generuji C52 podle nastaveni. 856 se jiz n
       ; 01.07.12 tt; zakomentovani volani generovaci metody pro 856 NUSL
       ;d:(array("nusl")="true") ..genNusl856(array("t001"),link) 
       d ..sendMail(mails,link,array("t001"))
-      ;s data("REPORTS")="approvals: "_mails_"<br/>"
+      ;s data("REPORTS")="approvals: "_mails_"<br>"
       s:($e(mails,1)=",") $e(mails,1)=""   ; 24.02.12 tt; osetreni na , na zacatku seznamu emailu
-      s data("REPORTS")=mails_"<br/>"
+      s data("REPORTS")=mails_"<br>"
     }
   } else {
     s array("refuse",author)=$zd($h,8)
@@ -239,9 +241,9 @@ pri vyjadreni posledniho uzivatele se generuji C52 podle nastaveni. 856 se jiz n
     }
     s mails=mails_","_author
     d ..sendMail(mails,link,array("t001"),"refuse")
-    ;s data("REPORTS")="refuse"_mails_"<br/>"
+    ;s data("REPORTS")="refuse"_mails_"<br>"
     s:($e(mails,1)=",") $e(mails,1)=""   ; 24.02.12 tt; osetreni na , na zacatku seznamu emailu
-    s data("REPORTS")=mails_"<br/>"
+    s data("REPORTS")=mails_"<br>"
   }  
   
   /*
@@ -270,11 +272,11 @@ soucasne rozeslani informacnich mailu
 20.06.12 tt; pridan export metadat
 </pre> ]]></Description>
 <ClassMethod>1</ClassMethod>
+<FormalSpec>ictx="cav"</FormalSpec>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
   w !,"Planovana uloha spustena i2.cust.cav.approvalAuthor.sendMailBatch()"
   ; aby se spravne rozeslaly emaily, musi se nasimulovat prostredi ipacu
-  s ictx="cav"
   s ipref=$zcvt(ictx,"W")
   s lang=+##class(User.Util).getServerLanguage(ipref)
   d ##class(i2.init).batchinit(ictx,lang)
@@ -290,7 +292,7 @@ soucasne rozeslani informacnich mailu
   s rset = ##class(%ResultSet).%New()              ; sekladani
   s rset.ClassName = "content.metadata"
   s rset.QueryName = "DateStatus"
-  d rset.Execute("CavUnEpca",date,state)   
+  d rset.Execute($$$IPREF_"UnEpca",date,state)   
   d ##class(content.engine).loop(rset,.output)     ; vysledek vracen v promenne output
    
   s item="", seq=0                                 ; inicializace cyklu
@@ -365,7 +367,7 @@ Navratova hodnota: "" - vse ok
         
     ; 02.09.14 jk; odeslani emailu pres tridu util.email.cls
     s bHtml=1 ; nastaveno napevno, puvodne to bylo v konfiguraci I2_EMAILS
-    s sSEP=$s(bHtml:"<br/>",1:$$$CRLF)
+    s sSEP=$s(bHtml:"<br>",1:$$$CRLF)
     s sMailBody=""
         
     for i=1:1:$l(pEmails,",")
@@ -406,7 +408,7 @@ Navratova hodnota: "" - vse ok
   s sBaseURL = ##class(i2.html.tpl).getBaseURL()  ; www adresa do rootu stránek IPCu
   s sRet = "",sZf="",sT200a=pT001,sTC60a="Nepodařilo se otevřít zdrojový dokument pro získání linku."
   
-  if ##class(User.MARC).readX(.handle,"CavUnEpca",pT001,"T") 
+  if ##class(User.MARC).readX(.handle,$$$IPREF_"UnEpca",pT001,"T") 
   { ; uspesne se podarilo otevrit
     s sZf=##class(User.Util).HTMLfixup($$$getTagX(.handle,"Tbca"))
     s sT200a=$$$getTagX(.handle,"200a")
@@ -416,10 +418,10 @@ Navratova hodnota: "" - vse ok
   }
   else
   { ; vypis chyby
-    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).MailBody"
+    s sRet=sRet_"Error: read handle: "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).MailBody"
   } 
-  s data("IDX")="cav_un_epca*"_pT001
-  s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_pT001,sT200a)
+  s data("IDX")=$$$GETICTX_"_un_epca*"_pT001
+  s sLinkRec=##class(i2.html.tpl).getPermalink2($$$GETICTX_"_un_epca*"_pT001,sT200a)
 
   /// 20.06.13 tt; MailBody: dan handle link jako link
   /// 15.06.14 tt; pridan text do emailu "English version below"
@@ -432,7 +434,7 @@ Navratova hodnota: "" - vse ok
   s pMailBody=pMailBody_"Trvalý odkaz: <a href=""" _sTC60a_""">"_sTC60a_"</a>"_pSEP
   s pMailBody=pMailBody_pSEP_"S pozdravem"_pSEP_pSEP
   s pMailBody=pMailBody_"Správa repozitáře: arl@lib.cas.cz"_pSEP
-  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx=cav"">https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx=cav</a>"_pSEP
+  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx="_$$$GETICTX_""">https:/asep.lib.cas.cz/i2/i2.entry.cls?ictx="_$$$GETICTX_"</a>"_pSEP
  
   ; 24.05.14 tt; pridana anglicka verze souhlasu se zverejnenim
   s pMailBody=pMailBody_pSEP_pSEP_pSEP_pSEP
@@ -442,7 +444,7 @@ Navratova hodnota: "" - vse ok
   s pMailBody=pMailBody_"Permanent link: <a href=""" _sTC60a_""">"_sTC60a_"</a>"_pSEP
   s pMailBody=pMailBody_pSEP_"Yours faithfully"_pSEP_pSEP
   s pMailBody=pMailBody_"The administration of The Institutional Repository: arl@lib.cas.cz"_pSEP
-  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/arl-cav/en/expanded-search/"">https:/asep.lib.cas.cz/arl-cav/en/expanded-search/</a>"_pSEP
+  s pMailBody=pMailBody_"URL: <a href=""https:/asep.lib.cas.cz/arl-"_$$$GETICTX_"/en/expanded-search/"">https:/asep.lib.cas.cz/arl-"_$$$GETICTX_"/en/expanded-search/</a>"_pSEP
 
 
   ; 20.06.13 tt; upraven text o diakritiku
@@ -469,7 +471,7 @@ Navratova hodnota: "" - vse ok
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
   s sRet="", bFind=0    ; navratova hodnota
-  if ##class(User.MARC).readX(.handle,"CavUnEpca",pT001) 
+  if ##class(User.MARC).readX(.handle,$$$IPREF_"UnEpca",pT001) 
   { ; uspesne se podarilo otevrit
     s c=0
     d { ; prohledame vsechny 856
@@ -489,12 +491,12 @@ Navratova hodnota: "" - vse ok
       d ##class(User.MARC).appendLineX(.handle,"856    "_$c(31)_"u"_pLink_$c(31)_"xN") 
       s st=##class(User.MARC).writeX(.handle)     ; ulozim handle
       ; zkontroluji spravnost
-      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genNusl856"
+      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genNusl856"
     }    
   }
   else
   { ; vypis chyby
-    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genNusl856"
+    s sRet=sRet_"Error: read handle: "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genNusl856"
   } 
   
   q sRet
@@ -536,7 +538,7 @@ Navratova hodnota: "" - vse ok
   s:($g(array("version"),"")="SML") sSml="sml"
   s sLokKey=$g(array("key"),"")
   
-  if ##class(User.MARC).readX(.handle,"CavUnEpca",pT001) 
+  if ##class(User.MARC).readX(.handle,$$$IPREF_"UnEpca",pT001) 
   { ; uspesne se podarilo otevrit
     s sTC52=$$$getTagX(.handle,"C52") ; vsetky citacie
     if (sTC52'="")
@@ -580,7 +582,7 @@ Navratova hodnota: "" - vse ok
       
       if (sSTm'="")
       { ; 13.03.15 tt; pridano generovani C52m 
-        s sSTmAll=$c(31)_"m"_##class(User.CavS).generateC52m(pT001,"CavUnEpca",$g(array("key"),""),sSTm)
+        s sSTmAll=$c(31)_"m"_##class(User.CavS).generateC52m(pT001,$$$IPREF_"UnEpca",$g(array("key"),""),sSTm)
         if (('$f(sTC52_$c(31),sSTmAll_$c(31))))
         { ; zpracovani subtagu m
           s sTC52=##class(User.MARC).setSubTagStr(sTC52,sSTmAll)
@@ -609,7 +611,7 @@ Navratova hodnota: "" - vse ok
         s:(sRec'="") sSTm=sSTm_"r"
         s:(sSml'="") sSTm=sSTm_"s"
         
-        s sSTmAll=$c(31)_"m"_##class(User.CavS).generateC52m(pT001,"CavUnEpca",$g(array("key"),""),sSTm)
+        s sSTmAll=$c(31)_"m"_##class(User.CavS).generateC52m(pT001,$$$IPREF_"UnEpca",$g(array("key"),""),sSTm)
         if (('$f((sTC52_$c(31)),(sSTmAll_$c(31)))))
         { ; zpracovani subtagu m
           s sTC52=##class(User.MARC).setSubTagStr(sTC52,sSTmAll)
@@ -631,13 +633,16 @@ Navratova hodnota: "" - vse ok
       s st=##class(User.MARC).writeX(.handle,1,1,,1_$c(10)_"arl_content"_$c(10)_"127.0.0.1")     ; ulozim handle
       //s st=##class(User.MARC).writeX(.handle,1,1,,0)     ; ulozim handle
       ; zkontroluji spravnost
-      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genC52"
+      s:('$$$ISOK(st)) sRet=sRet_"ERROR: writing record "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genC52"
     }
   }
   else
   { ; vypis chyby
-    s sRet=sRet_"Error: read handle: CavUnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genC52"
+    s sRet=sRet_"Error: read handle: "_$$$IPREF_"UnEpca*"_pT001_" in (i2.cust.cav.approvalAuthor).genC52"
   } 
+  
+  // 18.03.24 tt; pridana indexace zaznamu 
+  d ##class(User.ChangeLog).updateindexDelayed($$$HandleId(handle),$$$duiQSreferences)
   
   q sRet
 ]]></Implementation>
