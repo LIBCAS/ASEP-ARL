@@ -18,4 +18,8 @@
 	text : 'Ohlasy##Citations'.ls(),
 	formList : 'DFLT_CZ_CIT_J#DFLT_CZ_CIT_B#DFLT_CZ_CIT_M',
 	userGroupList : 'I3UG_IN#I3UG_ZP#I3UG_SU'
+}, {
+	id : 'U',
+	text : 'Uživatelé##Users'.ls(),
+	hidden : true
 }]

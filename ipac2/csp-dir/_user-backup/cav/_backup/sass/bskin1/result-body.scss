@@ -173,8 +173,8 @@
 
 		.longstring {
 			@include breakword;
-
-			display: inline-block;
+			display: block;
+			overflow: hidden;
 		}
 
 		&.zf-cover {
@@ -359,13 +359,15 @@
 
 			img {
 				width: 100%;
+				display:block;
 			}
 		}
 
 		&.martinus {
 			background-position: 100% 90%;
 			logo {
-				max-height:30px;
+				max-height: 30px;
+				display:block;
 			}
 		}
 	}

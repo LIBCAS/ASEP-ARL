@@ -18,9 +18,9 @@
          <csp:if condition=($g(data("CONTENT","1","isDelete"))="1")>    
 <ipac:form action="#(..base())#" id="#(data("PAGEID"))#-f">
 <button type="submit" title="#(..tx("DELALL_TITLE"))#"><ipac:tx param="DELALL_TEXT"/></button>
-<input type="hidden" name="idx" value="#(data("IDX"))#"/>
-<input type="hidden" name="delall" value="1"/>
-<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
+<input type="hidden" name="idx" value="#(data("IDX"))#">
+<input type="hidden" name="delall" value="1">
+<input type="hidden" name="op" value="#(data("PAGEID"))#">
 </ipac:form>
          </csp:if>      
     </csp:if>   

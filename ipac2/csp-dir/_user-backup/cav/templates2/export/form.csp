@@ -24,10 +24,10 @@
     <ipac:loop param="FORMAT">
 <div class="form-check">
 <csp:if condition=(..v("value")="SCSV")>
-<input name="format" type="radio" class="form-check-input" checked="checked" id="format-#(..v("value"))#" title="#(..tx("DOWNLOAD_TITLE"))#: #(..v("name"))#" value="#(..v("value"))#"/>
+<input name="format" type="radio" class="form-check-input" checked="checked" id="format-#(..v("value"))#" title="#(..tx("DOWNLOAD_TITLE"))#: #(..v("name"))#" value="#(..v("value"))#">
 </csp:if>
 <csp:if condition=(..v("value")'="SCSV")>
-<input name="format" type="radio" class="form-check-input" id="format-#(..v("value"))#" title="#(..tx("DOWNLOAD_TITLE"))#: #(..v("name"))#" value="#(..v("value"))#"/>
+<input name="format" type="radio" class="form-check-input" id="format-#(..v("value"))#" title="#(..tx("DOWNLOAD_TITLE"))#: #(..v("name"))#" value="#(..v("value"))#">
 </csp:if>
 
 <label for="format-#(..v("value"))#" class="form-check-label"><b>#(..v("name"))#</b></label> - #(..v("help"))#
@@ -43,12 +43,12 @@
     <ipac:dtx param="SEND_UP"/>
 
 <div class="submit">
-<input type="hidden" name="op" value="export"/>
-<input type="hidden" name="pg" value="#(data("PG"))#"/>
-<input type="hidden" name="idx" value="#(data("IDX"))#"/>
-<input type="hidden" name="export" value="1"/>
+<input type="hidden" name="op" value="export">
+<input type="hidden" name="pg" value="#(data("PG"))#">
+<input type="hidden" name="idx" value="#(data("IDX"))#">
+<input type="hidden" name="export" value="1">
 <button type="submit" name="export" value="1"><ipac:tx param="SEND"/></button>
-<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
         <ipac:dtx param="FORM_DOWN"/>
 </ipac:form>

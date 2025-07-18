@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1.4 (Build 505_1U)" ts="2021-11-12 08:39:15">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-12 15:09:39">
 <Class name="User.CavIsUser">
 <Description><![CDATA[
 <pre>
 
+12.07.24 ln; operace ipref
+28.05.24 tt; nastaveno U95a na 1 - příznak vypsání hlášky při editaci v I3 formuláři
+27.05.24 tt; allowSaveEx: provedena změna emailu pro uzivatela
+06.05.24 tt; allowSaveEx: doplneny jeste hodnoty 400c
+03.05.24 tt; allowSaveEx: doplnena funkčnost doplneni zpracovatele
 09.11.21 jk; zmena na ProcedureBlock
 10.10.20 tt; pridane osetreni, aby se pri obnove zaznam z chronologie obnovil
 09.10.19 jk; zmenena trida pro praci s emaily
@@ -39,7 +44,7 @@
 </pre>]]></Description>
 <ClassType>persistent</ClassType>
 <Super>User.DataTable</Super>
-<TimeChanged>66060,31142.763778</TimeChanged>
+<TimeChanged>67033,54574.434394751</TimeChanged>
 <TimeCreated>59563,76063.673917</TimeCreated>
 
 <Parameter name="INDEXPARAMS">
@@ -193,6 +198,7 @@ specialnych pripadoch.
 Navrat:
  pri chybe "|ERR..." jinak prazdne nebo nejake info (INF, WARN, text)
  
+27.05.24 tt; provedena změna emailu pro uzivatela
 01.03.19 tt; upraveno logika o login kontext - aby se pridala login kategorie
 05.10.16 tt; pridana automaticky 610 k existujicim uzivatelum
 09.10.15 tt; pridane login kontextu podle typu uzivatele
@@ -211,14 +217,18 @@ Navrat:
   s ret=""
   s sT001=$$$HandleT001(handle)       ; ziskani t001
   s sClass=$$$HandleClass(handle)     ; ziskani tridy
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
+  s ictx=$zcvt(ipref,"L")
+  
   if (sT001'="new")
   {
+    
     if '##class(User.MARC).readX(.handleUS,sClass,sT001)
     {
-      s ret="|ERR999#(User.CavIsUser).allowSaveEx sending email failed."
+      s ret="|ERR999#(User."_ipref_"IsUser).allowSaveEx sending email failed."
       ; 10.10.20 tt; pridane osetreni, aby se pri obnove zaznam z chronologie obnovil
       s isID=""
-      s isID=$o(^ooDataTableI("CmChronology","src"," cav_un_epca*"_sT001,isID),-1)
+      s isID=$o(^$$$MarcIndexG("CmChronology","src"," "_ictx_"_un_epca*"_sT001,isID),-1)
       q:(isID'="") ""
       q ret
     }
@@ -237,15 +247,33 @@ Navrat:
       s from="arl@lib.cas.cz"
       s copyTo="asep_repozitar@knav.cz"
       s subject="Registrace: "_t100b
-      s body="Dobrý den,"_$c(10)_"Vaše registrace byla potvrzena. Nyní již můžete svůj účet plně využívat."_$c(10)_"Přihlašovací jméno:"_t100b_$c(10)_"Heslo zůstává stejné, jak jste si ho zadal/a do přihlašovacího formuláře."_$c(10)_$c(10)
-                       _"Vyzkoušejte přihlášení do svého uživatelského účtu a v případě problému napište na arl@lib.cas.cz."_$c(10)_$c(10)_"Pěkný den"_$c(10)_"Správce dat ASEP"
+      s body="Dobrý den,"_$c(10)_
+             "Vaše registrace byla potvrzena. Nyní již můžete svůj účet plně využívat."_$c(10)_
+             "Přihlašovací jméno: "_t100b_$c(10)_
+             "Heslo zůstává stejné, jak jste si ho zadal/a do přihlašovacího formuláře. Vyzkoušejte přihlášení do svého uživatelského účtu a v případě problému napište na arl@lib.cas.cz."_$c(10)_
+             "Pěkný den"_$c(10)_
+             "Správce dat ASEP"_$c(10)_
+             $c(10)_$c(10)_
+             "Dear Sir/Madam,"_$c(10)_
+             "Your registration has been approved. You can now make full use of your account."_$c(10)_
+             "Your username: "_t100b_$c(10)_
+             "The password is the same as the one you entered on the registration form. Please try to log in to your account and if you have any problems, please write to arl@lib.cas.cz. "_$c(10)_
+             "Kind regards,"_$c(10)_
+             "ASEP Data Administrator"
       ; 09.10.19 jk; zmenena trida pro praci s emaily
-      d ##class(util.emailgw).send("Cav",,body,.sRet,"default",subject,,from,sEmail,copyTo)  
+      d ##class(util.emailgw).send(ipref,,body,.sRet,"default",subject,,from,sEmail,copyTo)  
 
       if (sRet'="")
       { ;chyba pri zasilani emailu
-        s ret="|ERR999#(User.CavIsUser).allowSaveEx sending email failed."
+        s ret="|ERR999#(User."_ipref_"IsUser).allowSaveEx sending email failed."
       }
+      ; 28.05.24 tt; nastaveno U95a na 1 - příznak vypsání hlášky při editaci v I3 formuláři
+      d ##class(User.MARC).setTagX(.handle,"U95    "_$c(31)_"a1")
+    }
+    else
+    { ; jinak musime U95 odmazat
+      ; 28.05.24 tt; nastaveno U95a na 1 - příznak vypsání hlášky při editaci v I3 formuláři
+      d:($$$getTagX(.handle,"U95")'="") ##class(User.MARC).delTagX(.handle,"U95")
     }
   }
   
@@ -280,10 +308,10 @@ Navrat:
            ; $$aCavISU0000098$$dcavgrp_form$$eCAV$$rcav_is_user*0000098
            s bFind=1
            s lsLineOld=lsLine   ;zaloha puvodni
-           s lsLine=$$$setSubTagStr(lsLine,$c(31)_"dcavgrp_form")
+           s lsLine=$$$setSubTagStr(lsLine,$c(31)_"d"_ictx_"grp_form")
            s lsLine=$$$setSubTagStr(lsLine,$c(31)_"e"_t600b)
            ; ze by byla T001 new by nemelo ve vetsine pripadu dojit
-           s:(sT001'="new") lsLine=$$$setSubTagStr(lsLine,$c(31)_"rcav_is_user*"_sT001)
+           s:(sT001'="new") lsLine=$$$setSubTagStr(lsLine,$c(31)_"r"_ictx_"_is_user*"_sT001)
 
            if (lsLineOld'=lsLine) 
            { ; ulozime zmenu a zapisem priznak zmeny
@@ -296,7 +324,7 @@ Navrat:
      
      if ((bFind=0)&&(sT001'="new"))
      { ; nenalezen uzivatel, pridame
-       d ##class(User.MARC).appendLineX(.hSU,"200    "_$c(31)_"a"_sIDUser_$c(31)_"dcavgrp_form"_$c(31)_"e"_t600b_$c(31)_"rcav_is_user*"_sT001)
+       d ##class(User.MARC).appendLineX(.hSU,"200    "_$c(31)_"a"_sIDUser_$c(31)_"d"_ictx_"grp_form"_$c(31)_"e"_t600b_$c(31)_"r"_ictx_"_is_user*"_sT001)
        s bChange=1
      }    
      
@@ -305,7 +333,7 @@ Navrat:
        s st=##class(User.MARC).writeX(.hSU,1,1,0,"","S") 
        if $$$ISERR(st) 
        { ; pokud mame chybu, vypiseme ji - pri ukladani       
-         s ret=ret_"|ERR999#(User.CavIsUser).allowSaveEx - neulozen zaznam CmSecurity - user - "_##class(User.Util).status2str(st)
+         s ret=ret_"|ERR999#(User."_ipref_"IsUser).allowSaveEx - neulozen zaznam CmSecurity - user - "_##class(User.Util).status2str(st)
        }
      }
     } 
@@ -323,7 +351,7 @@ Navrat:
   ; I3UG_SU - superuzivatel  
   s:(t100k="2") sLonginKU="I3UG_SU"    ; ziskam superuzivatele
   s s600=$$$getTagXC(.handle,"600",-1) 
-  s:$f(s600,$c(10)) ret=ret_"|ERR999#(User.CavIsUser).allowSaveEx - nedovolene opakovani tagu 600. Uzivatel:_"_sT001
+  s:$f(s600,$c(10)) ret=ret_"|ERR999#(User."_ipref_"IsUser).allowSaveEx - nedovolene opakovani tagu 600. Uzivatel:_"_sT001
   if (s600'="")
   {
     s s600a=$$$getSubTagStr(s600,"a")
@@ -356,14 +384,34 @@ Navrat:
     }
     s:(sLonginKU'="") s600iNew=s600iNew_","_sLonginKU    ; pridame novou login kategorii
     s $e(s600iNew,1)=""                                  ; odstranime prvni ","
-
+            
     if ((s600iNew'="")&&(s600iNew'=s600iOld))  
     { ; pokud se nam zmenila 600i, ulozime do handlu
       s s600=$$$setSubTagStr(s600,$c(31)_"i"_s600iNew)
       d ##class(User.MARC).setTagX(.handle,s600)
+    }
+    
+    if (($$$getTagX(.handle,"U99a")="1")&&($f(s600a,"!!!!!!Doplnit!!!!!!"))&&(t100k>0))
+    { ; 03.05.24 tt;  doplnena funkčnost doplneni zpracovatele
+      s userId=##class(i2.access).getLoginId()  ; ziskame id uzivatele
+      if ##class(User.MARC).readX(.handleUs,ipref_"IsUser",userId)
+      {   ; pokud je uzivatel, ktery edituje zpracovatel, doplni se
+          if ($f($$$getTagX(.handleUs,"600i"),"I3UG_ZP")&&(s600b=$$$getTagX(.handleUs,"600b")))             ; login options      
+          { ; jen zpracovateli se automaticky doplni
+            s s600=$$$setSubTagStr(s600,$c(31)_"a"_ictx_"_is_user*"_userId)
+            d ##class(User.MARC).setTagX(.handle,s600)
+            
+            ; 06.05.24 tt; doplneny jeste hodnoty 400c
+            s t400=$$$getTagX(.handle,"400")
+            s t400=$$$setSubTagStr(t400,$c(31)_"c9999")
+            d ##class(User.MARC).setTagX(.handle,t400)            
+          }
+      } 
+            
     }    
   }
-
+  d ##class(User.MARC).delTagX(.handle,"U99")
+  
   q ret
 ]]></Implementation>
 </Method>
@@ -384,7 +432,9 @@ Navrat:
   s retRight=..RightCHUser(.handle) 
   s t610b=$$$getTagX(.handle,"610b")
   s t100k=$$$getTagX(.handle,"100k")
-  s sT001=$$$HandleT001(handle)
+  
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s ictx=$zcvt(ipref,"L"), sT001=$$$HandleT001(handle)
   
   if ((retRight="")&&(t100k>0)&&(t610b="SAFE"))
   { ; 12.08.15 tt; dopracovani funkcnosti pro ulozeni uzivatele do security
@@ -406,10 +456,10 @@ Navrat:
            ; $$aCavISU0000098$$dcavgrp_form$$eCAV$$rcav_is_user*0000098
            s bFind=1
            s lsLineOld=lsLine   ;zaloha puvodni
-           s lsLine=$$$setSubTagStr(lsLine,$c(31)_"dcavgrp_form")
+           s lsLine=$$$setSubTagStr(lsLine,$c(31)_"d"_ictx_"grp_form")
            s lsLine=$$$setSubTagStr(lsLine,$c(31)_"e"_t600b)
            ; ze by byla T001 new by nemelo ve vetsine pripadu dojit
-           s:(sT001'="new") lsLine=$$$setSubTagStr(lsLine,$c(31)_"rcav_is_user*"_sT001)
+           s:(sT001'="new") lsLine=$$$setSubTagStr(lsLine,$c(31)_"r"_ictx_"_is_user*"_sT001)
 
            if (lsLineOld'=lsLine) 
            { ; ulozime zmenu a zapisem priznak zmeny
@@ -422,7 +472,7 @@ Navrat:
      
      if ((bFind=0)&&(sT001'="new"))
      { ; nenalezen uzivatel, pridame
-       d ##class(User.MARC).appendLineX(.hSU,"200    "_$c(31)_"a"_sIDUser_$c(31)_"dcavgrp_form"_$c(31)_"e"_t600b_$c(31)_"rcav_is_user*"_sT001)
+       d ##class(User.MARC).appendLineX(.hSU,"200    "_$c(31)_"a"_sIDUser_$c(31)_"d"_ictx_"grp_form"_$c(31)_"e"_t600b_$c(31)_"r"_ictx_"_is_user*"_sT001)
        s bChange=1
      }    
      
@@ -431,7 +481,7 @@ Navrat:
        s st=##class(User.MARC).writeX(.hSU,1,1,0,"","S") 
        if $$$ISERR(st) 
        { ; pokud mame chybu, vypiseme ji - pri ukladani       
-         s ret=ret_"|(User.CavIsUser).allowSaveEx - neulozen zaznam CmSecurity - user - "_##class(User.Util).status2str(st)
+         s ret=ret_"|(User."_ipref_"IsUser).allowSaveEx - neulozen zaznam CmSecurity - user - "_##class(User.Util).status2str(st)
        }
      }
     } 
@@ -543,7 +593,7 @@ https://cosmo2/wiki/index.php/Cust:CAV/Uzivatele
 </Method>
 
 <Storage name="Default">
-<Type>%Library.CacheStorage</Type>
+<Type>%Storage.Persistent</Type>
 </Storage>
 </Class>
 </Export>

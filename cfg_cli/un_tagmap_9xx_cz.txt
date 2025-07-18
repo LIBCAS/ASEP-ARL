@@ -1,0 +1,645 @@
+# @id UN_TAGMAP A_UN_TAGMAP_TXT
+002    -
+002    fiktivny tag - histora zmien suboru un_tagmap.txt 
+002    -
+002    03.06.24 tt; 978: pridane podpole Q
+002    28.05.24 tt; pridano podpole P do _978
+002    11.03.24 dk; založeno 978_USA pro EPCA údaje autorit
+002    21.02.23 tt; 961: založeno pole pro citace (inspirováno tagem 971 - případně převzít podpole dle potřeby)
+002    19.10.22 tt; 978: pridano podpole O
+002    23.03.22 tt; 978: pridany pole M N - po komunikaci s NA jako standard
+002    03.02.22 tt; pridano podpole M do 978
+002    28.01.22 dk; zalozeno pole UN_991 - kvuli ohlasum TU 
+002    04.01.22 tt; zalozena kvuli nove slovenske verzi EPCA - jen pro informaci
+002    01.12.20 tt; pridano podpole 971u - cislo archivni kopie
+002    16.02.20 js; _978: doplnene L - decil SJR
+002    18.04.18 tt; _978:pridany popole K - nejhorsi kvartil
+002    24.01.18 tt; UN_978:pridany popole J
+002    22.09.17 tt; UN_978:pridany popole G-I
+002    02.08.17 tt; UN_978:pridany popole D-F
+002    13.06.17 tt; UN_978:pridany popole A,B,C
+002    12.11.16 tt; UN_978:pridany popole 7
+002    13.09.16 tt; UN_978:pridany popole 2-6
+002    27.04.15 js; doplnene polia pre RDA
+002    20.02.15 js; doplnene un_911
+002    10.01.14 rn; doplnene podpolia "1" a "2" v 978
+002    02.04.14 js; un_971 doplnene cze popisky, upravene slo popisky
+002    28.03.14 js; upravene un_971
+002    13.08.13 js; upravene un_978
+002    02.02.12 js; upravene un_928
+002    03.09.10 js; zrusene un_999 a una_999 - bude sa pouzivat all_999, upravene pole un_969
+002    03.05.10 js; upravene pole 935 podla NFA
+002    19.02.10 lp; pridane podpole un_969$g
+002    19.02.10 js; doplnene poznamky k poliam
+002    10.11.09 js; nastavena povinnost a opakovatelnost poli a podpoli
+002    21.09.09 js; podpole 969$f nastavene ako opakovatelne
+002    18.08.09 js; upravene pole una_900
+002    17.08.09 js; doplnene una_969
+002    17.12.08 tt; opravovani formalnich chyb v souborech
+002    03.11.08 tt; formalni uprava konfiguracnich souboru
+002    23.01.08 jk; oprava cestiny
+002    15.01.08 jk; oprava cestiny
+002    29.06.06 lf; doplnenie narodneho pola 902 nadstandardní ISBN
+002    08.06.06 jj; doplneni prekladu 978
+002    27.04.06 js; v un_920 doplnene podpole x - oznacenie a cislo normy
+002    24.04.06 jr; oprava - tag 978 povolena duplikace celeho tagu
+002    21.03.06 on; do UN_9714 pridane nastaveni pro WOS
+002    28.02.06 jr; preklad tagu 985 do cestiny
+002    02.02.06 jr; vyhodeny ciselnik na 970x - DRUHX  (patri do uzivatelskych modifikaci)
+002    24.10.05 js; pridane pole UNA_909 (narodne pole pre autority)
+002    28.04.05 mk; pridany specialny druh dokumntu (SLDK)
+002    26.04.05 on; pridane XX_999$e
+002    18.01.05 jr; pridany tag UNA_900X - generovany tag Nazev pracoviste
+002    17.12.04 on; pridana def. hodnota do UN_928$a
+002    29.09.04 doplnene volanie 969f ciselnika
+002    02.03.04 zalozen soubor, tagy 9xx presunuty z un_tagmap
+###
+# @id UN_TAGMAP UNA_900
+002    pole NEPODPORUJEME - pre jednotlivé podpolia je vhodnejšie používať CXX polia
+002    18.08.09 js; do podpola $a,$b,$c pridany ciselnik
+100    aDoplnkové údaje pre autority#Doplňkové údaje pro autorityb0c0dO
+200    aabAkademický titul#Akademický titulcOd1eST,AUT_TITULnC06$a
+200    abbVedecký titul#Vědecký titulcOd1eST,AUT_TITUL2nC06$b
+200    acbVedecko-pedagogická hodnosť#Vědecko-pedagogická hodnostcOd1eST,AUT_HODNOSTnC06$c
+200    adbKód pracoviska#Kód pracovištěcOd0nC06$d
+200    aXbNázov pracoviska#Název pracovištěcOd0
+200    aebRodné číslo#Rodné číslocOd0nC06$e
+200    afbMiesto narodenia#Místo narozenícOd0nC02$b
+200    agbČíslo OP (ident.karty)#Číslo OP (ident. karty)cOd1nC06$f
+200    ahbKvalifikácia - rok ukončenia#Kvalifikace - rok ukončenícOd1nak sa opakuje tak spolu s $i,j,k
+200    aibKvalifikácia - názov školy#Kvalifikace - název školycOd1nak sa opakuje tak spolu s $h,j,k
+200    ajbKvalifikácia - titul#Kvalifikace - titulcOd1nak sa opakuje tak spolu s $i,h,k
+200    akbKvalifikácia - názov kvalifikačnej práce#Kvalifikace - název kvalifikační prácecOd1nak sa opakuje tak spolu s $i,j,h
+200    albProfesionálna kariéra - roky pôsobenia#Profesionální kariéra - roky působenícOd1nak sa opakuje tak spolu s $m,n
+200    ambProfesionálna kariéra - inštitúcia (názov, miesto)#Profesionální kariéra - instituce (název, místo)cOd1nak sa opakuje tak spolu s $l,n
+200    anbProfesionálna kariéra - pozícia#Profesionální kariéra - pozicecOd1nak sa opakuje tak spolu s $m,l
+200    aobProfesionálne zameranie (heslá)#Profesionální zaměření (hesla)cOd1nC03$a
+200    axbPripájané kódy autorít#Připojované kódy autorítcOd0
+200    apb...voľné podpole#...volné podpolecOd1
+200    aqbMiesto úmrtia#Místo úmrtícOd0nC02$e
+200    arbOblasti pôsobenia#Oblasti působenícOd1
+200    asbOdbor pôsobnosti v kultúre#Obor působnosti v kultuřecOd1
+200    atbŠpecializácia v kultúre#Specializace v kultuřecOd1
+200    aubInštitúcia pôsobenia v kultúre#Instituce působení v kultuřecOd1
+200    aybPovolania mimo kultúry#Povolání mimo kulturycOd1
+200    azbČlenstvo v kultúr. a umelec. orga.#Členství v kult.a uměl.org.cOd1
+###
+# @id UN_TAGMAP UNA_901
+002    pole NEPODPORUJEME - pre jednotlivé podpolia je vhodnejšie používať CXX polia
+100    aDoplnkové údaje pre autority - pokračovanie#Doplňkové údaj pro autority - pokračováníb0c0dO
+200    aabVyznamenania v kultúre#Vyznamenání v kultuřecOd1
+200    abbNárodnosť#NárodnostcOd0
+200    acbKľúčové slovo - predmetový termín#Klíčové slovo - předmětový termíncOd1nC03$a
+200    adbŽivotopiscOd0nC07$a
+200    afbDátum narodenia#Datum narozenícOd0nC02$c
+200    agbDátum úmrtia#Datum úmrtícOd0nC02$f
+200    ahbCharakteristikacOd0nC05$a
+###
+# @id UN_TAGMAP UNA_907
+002    pole sa NEPOUŽÍVA
+002    10.11.09 js; upravené podpolia $6, $7
+100    akopia NKP - Informačná poznámka#Kopie NKP - Informační poznámkab0c1dO
+200    ai1bTyp poznámky#Typ poznámkycO
+200    aabInformačná poznámka#Informační poznámkacOd0
+200    a6bÚdaje prepojenia medzi poľami#Data propojení mezi poli#Interfield Linking DatacOd0eCDmE,RO1
+200    a600bKód vysvetľujúci prepojenie#Kód vysvětlení propojení#Linking explanation codecOd0h1eST,UNA_TXXX6_1fST,UNA_TXXX6_1
+200    a601-02bPrepojovacie číslo#Propojovací číslo#Linking numbercOd0h2
+200    a603-05bTag prepojovaného poľa#Tag propojovaného pole#Tag of linked fieldcOd0h3
+200    a7bPísmo katalogizácie a písmo záhlavia#Písmo katalogizace a písmo záhlaví#Script of cataloguing and script of the base headingcOd0eCDmE,RO1
+200    a700-01bPísmo katalogizácie#Písmo katalogizace#Script of cataloguingd0h2eST,UNA_T100A_7fST,UNA_T100A_7
+200    a702bSmer písma katalogizácie#Směr písma katalogizace#Direction of the script of cataloguingd0h1eST,UNA_T100A_8fST,UNA_T100A_8
+200    a703bTransliteračné tabuľky pre písmo katalogizácie#Transliterační tabulky pro písmo katalogizace#Transliteration scheme for script of cataloguingd0h1eST,UNA_T100A_4fST,UNA_T100A_4
+200    a704-05bPísmo záhlavia#Písmo záhlaví#Script of base headingd0h2eST,UNA_T100A_7fST,UNA_T100A_7
+200    a706bSmer písma záhlavia#Směr písma záhlaví#Direction of the script of base headingd0h1eST,UNA_T100A_8fST,UNA_T100A_8
+200    a707bTransliteračné tabuľky pre písmo záhlavia#Transliterační tabulky pro písmo záhlaví#Transliteration scheme for script of base headingd0h1eST,UNA_T100A_4fST,UNA_T100A_4
+###
+# @id UN_TAGMAP UNA_908
+002    pole NEPODPORUJEME - vhodnejšie je použiť pole C13
+100    aCitácie#Citaceb0c1dO
+200    aabPrvý autor citovaného dokumentu#První autor citovaného dokumentucOd0
+200    abbĎalší autory citovaného dokumentu#Další autoři citovaného dokumentucOd1
+200    acbNázov citovaného dokumentu#Název citovaného dokumentucRd1
+200    adbEdičné údaje alebo údaje o zdroji#Ediční údaje nebo údaje o zdrojicOd1
+200    a3bČíslo záznamu v heslári#Číslo autoritního záznamu#Authority Record NumbercOd1
+###
+# @id UN_TAGMAP UNA_909
+002    národné pole ČR
+100    aKód proveniencie autora#Kód provenience autorab0c1dO
+200    aabKód krajiny#Kód zeměcRd0iCZnzapisuje sa len kód CZ pre českých autorov
+###
+# @id UN_TAGMAP UN_911
+002    20.02.15 js; doplnene
+100    aInformace o digitalizacib0c0
+200    aabSigla knihovny, která dokument digitalizovalacRd0
+200    adbStatus digitalizacecRd0
+200    arbRoky (u časopisů roky, které byly zdigitalizovány)cOd0
+200    asbSvazky (i u knih i u seriálů)cOd0
+200    aubUrl adresa, na které je dostupná zdigitaliz. kopiecOd1
+200    apbPoznámkacOd0
+###
+# @id UN_TAGMAP UNA_912
+002    pole NEPODPORUJEME - vhodnejšie je použiť pole C09
+100    aDátumy#Datumyb0c0dO
+200    aabDátum vzniku#Datum vznikucOd0
+200    abbVecné spresnenie vzniku#Věcné zpřesnění vznikucOd0
+200    acbDátum udalosti#Datum událosticOd1
+200    adbVecné spresnenie udalosti#Věcné zpřesnění událosticOd1
+200    aebDátum zániku#Datum zánikucOd0
+200    afbVecné spresnenie zániku#Věcné zpřesnění zánikucOd0
+###
+# @id UN_TAGMAP UNA_913
+002    pole NEPODPORUJEME je duplicitné k 908 - vhodnejšie je použiť pole C13
+100    aCitácie#Citaceb0c1dO
+200    aabPrvý autor citovaného dokumentu#První autor citovaného dokumentucOd0
+200    abbĎalší autory citovaného dokumentu#Další autoři citovaného dokumentucOd1
+200    acbNázov citovaného dokumentu#Název citovaného dokumentucOd1
+200    adbEdičné údaje alebo údaje o zdroji#Ediční údaje nebo údaje o zdrojicOd1
+200    a3bČíslo záznamu v heslári#Číslo autoritního záznamu#Authority Record NumbercOd0
+###
+# @id UN_TAGMAP UNA_914
+002    pole NEPODPORUJEME - vhodnejšie je použiť pole C14
+002    10.11.09 js; upravene podpolia $5, $7, $8
+100    aSmerovanie odkazu " pozri aj " - meno korporácie alebo akcie#Směrování odkazu " viz též " - jméno korporace nebo akceb0c1dO
+200    ai1bIndikátor druhu korporácie#Indikátor druhu korporacecO
+200    ai2bIndikátor spôsobu zapísania mena#Indikátor způsobu zapsání jménacO
+200    aabVstupný prvok#Odkazy na další korporacecOd0g210a
+200    abbPodčasť#ZpřesněnícOd1g210b
+200    acbDoplnky k menu alebo kvalifikátor#Doplňky ke jménu nebo kvalifikátorcOd1
+200    adbČíslo akcie a/alebo časti akcie#Číslo akce a/nebo části akcecOd1
+200    aebMiesto konania akcie#Místo konáni akcecOd0
+200    afbDátum akcie#Datum akcecOd0
+200    agbInvertovaný prvok#Invertovaný prvekcOd0
+200    ahbČasť mena iná než vstupný a invertovaný prvok#Část jména jiná než vstupní a invertovaný prvekcOd1
+200    a4bRelačný kód#Kód rolecOd1
+200    axbVecné podheslo#Věcné zpřesněnícOd1
+200    aybGeografické podheslo#Geografické zpřesněnícOd1
+200    azbChronologické podheslo#Chronologické zpřesněnícOd1
+200    a0bInštrukčná fráza#Instrukční frázecOd1
+200    a2bKód systému vecného spracovania#Kód systému věcného zpracovánícOd0
+200    a3bČíslo záznamu#Číslo záznamucOd0ePB,UN_AUTH^2fLINKg001.
+200    a5bKód vzťahu#Kód vztahu#Tracing controlcOd0eCDmE,RO1
+200    a500bKód vzťahu#Kód vztahu#Relationship codecOd0h1eST,UNA_TXXX5_1fST,UNA_TXXX5_1
+200    a501bKód potlačenia odkazu#Kód potlačení odkazu#Reference suppression codecOd0h1eST,UNA_TXXX5_2fST,UNA_TXXX5_2
+200    a6bÚdaje prepojenia medzi poľami#Data propojení mezi poli#Interfield Linking DatacOd0eCDmE,RO1
+200    a600bKód vysvetľujúci prepojenie#Kód vysvětlení propojení#Linking explanation codecOd0h1eST,UNA_TXXX6_1fST,UNA_TXXX6_1
+200    a601-02bPrepojovacie číslo#Propojovací číslo#Linking numbercOd0h2
+200    a603-05bTag prepojovaného poľa#Tag propojovaného pole#Tag of linked fieldcOd0h3
+200    a7bPísmo katalogizácie a písmo záhlavia#Písmo katalogizace a písmo záhlaví#Script of cataloguing and script of the base headingcOd0eCDmE,RO1
+200    a700-01bPísmo katalogizácie#Písmo katalogizace#Script of cataloguingd0h2eST,UNA_T100A_7fST,UNA_T100A_7
+200    a702bSmer písma katalogizácie#Směr písma katalogizace#Direction of the script of cataloguingd0h1eST,UNA_T100A_8fST,UNA_T100A_8
+200    a703bTransliteračné tabuľky pre písmo katalogizácie#Transliterační tabulky pro písmo katalogizace#Transliteration scheme for script of cataloguingd0h1eST,UNA_T100A_4fST,UNA_T100A_4
+200    a704-05bPísmo záhlavia#Písmo záhlaví#Script of base headingd0h2eST,UNA_T100A_7fST,UNA_T100A_7
+200    a706bSmer písma záhlavia#Směr písma záhlaví#Direction of the script of base headingd0h1eST,UNA_T100A_8fST,UNA_T100A_8
+200    a707bTransliteračné tabuľky pre písmo záhlavia#Transliterační tabulky pro písmo záhlaví#Transliteration scheme for script of base headingd0h1eST,UNA_T100A_4fST,UNA_T100A_4
+200    a8bJazyk katalogizácie a jazyk záhlavia#Jazyk katalogizace a jazyk záhlaví#Language of cataloguing and language of the base headingcOd0eCDmE,RO1
+200    a800-02bJazyk katalogizácie#Jazyk katalogizace#Language of cataloguingcOd0h3eST,UT_LANGUAGEfST,UT_LANGUAGE
+200    a803-05bJazyk záhlavia#Jazyk záhlaví#Language of base headingcOd0h3eST,UT_LANGUAGEfST,UT_LANGUAGE
+###
+# @id UN_TAGMAP UNA_915
+100    aDoplnky ku geografickým názvom#Doplňky ke geografickým názvůmc0dO
+200    aabOkrescOd0
+200    abbKrajcOd0
+200    acbŠtát#StátcOd0
+200    axbSpájané kódy#Spojované kódycOd0
+###
+# @id UN_TAGMAP UNA_935
+002    03.05.10 js; aktualizovane do takej podoby ako to vyuziva NFA
+002    pole pre udaje o filme pre NFA
+100    aPopis filmu#Popis filmuc0dO
+200    ai2bIndikátor formy mena#Indikátor formy jména#Form of Name IndicatorcPeST,UN_T700I2fST,UN_T700I2g200i2
+200    a3bRéžia - kód autority#Režie - kód autoritního záznamuePB,UN_AUTH^1,DFLT_UN_AUTH_200fLINK,,l_un_auth^1
+200    aabRéžia - priezvisko#Režie - příjmení
+200    abbRéžia - meno#Režie - jméno
+200    acbRéžia - údaj za menom#Režie - údaj za jménem
+200    afbRéžia - dátumy#Režie - data
+200    a4bRéžia - role autora#Režie - role autora
+###
+# @id UN_TAGMAP UNA_936
+002    11.11.09 js; pole pre udaje o filme pre NFA - NEPOUZIVANE
+100    aIndikátory filmu NFAc0dO
+200    aabIndikátor tvorbycOd0
+200    abbIndikátor druhu filmucOd0
+200    acbIndikátor distribucecOd0
+200    adbIndikátor u pracovního názvucOd0
+200    aebIndikátor u povídek a seriálůcOd0
+###
+# @id UN_TAGMAP UNA_950
+100    asprávní celky
+200    aabsprávny celok#správní celekcOd0
+###
+# @id UN_TAGMAP UNA_969
+002    17.08.09 js; doplnene pre potreby ceskych institucii - pouziva sa na oznacenie autorit, ktore nie su a nebudu odoslane do NA CR
+002    pomocne interne pole - nie je narodne pole
+100    aPomocne interne tagyb0c0
+200    afbĎalšie spracovanie#Další zpracování#Next processingcOd0nna KL ak obsahuje honotu NX nedava sa do indexu "har"
+###
+# @id UN_TAGMAP UNA_975
+100    aZmenené medzinárodné desatinné triedenie (UDC-MDT)#Změněné mezinárodní desetinné třídění (UDC-MDT)b0c1
+200    aabZnak MDT (alebo počiatok rozmedzia)#Znak MDT (nebo počátek rozmezí)cOd0
+200    abbKoniec rozmedzia#Konec rozmezícOd0
+200    acbVysvetľujúce pojmy#Vysvětlujíci termínycOd1
+200    avbVydanie MDT#Vydání MDTcOd0
+200    azbJazyk vydania#Jazyk vydánícOd0eST,UT_LANGUAGEfST,UT_LANGUAGE
+###
+# @id UN_TAGMAP UN_902
+002    Národní pole NK ČR (verzia z 18.05.06)
+100    aNadstandardní ISBNb1c1
+200    aabČíslo ISBN#Číslo ISBN#ISBN Numberc0d0
+200    abbPrívlastok / vysvetlivky#Vysvětlivka#QualificationcOd0
+200    adbDostupnosť a/alebo cena#Údaje o dostupnosti a/nebo ceně#Terms of Avalilability and/or PricecOd0
+200    azbISBN Chybné#Chybné ISBN#Erroneous ISSBNcOd1
+###
+# @id UN_TAGMAP UN_910
+100    aDoplňujúce údaje k seriálom#Doplňující údaje k serálům#Next Data of Serialsb0c1
+200    aubDoba uchovávania#Doba uchovávání#Save TimecOd0
+200    arbRoky odberu#Roky odběru#Year ReceiptscOd0
+200    aabSigla vlastníka#Sigla vlastníka#Sigla OwnercOd0
+200    asbZväzky#SvazkycOd0
+200    atbTyp dokumentu#Typ dokumentu#Document typecOd0
+###
+# @id UN_TAGMAP UN_915
+100    audaje o periodikach predbezne pre EU#pozor prelozene cez 911-ku z liberca!b0c0
+200    aabÚOP Ročník zväzok#ÚOP Ročník (svazek)cOd0
+200    abbÚOP Čísla#ÚOP ČíslacOd0
+200    acbÚOP Rok periodika#ÚOP Rok periodikacOd0
+200    adbÚOP Názov radu#ÚOP Název řadycOd0
+200    aebÚOP Číslo radu#ÚOP Číslo řadycOd0
+###
+# @id UN_TAGMAP UN_920
+100    aNormyb1c0
+200    aabDátum účinnosti#Datum účinnosticOd0
+200    abbDátum schválenia#Datum schválenícOd0
+200    acbDátum zrušenia#Datum zrušenícOd0
+200    axbOznačenie a číslo normy#Označení a číslo normycOd1n27.04.06 js; pridane podpole pre potreby IPVZ (mozu ho vyuzit aj ostatne institucie najma pre EPCA)
+###
+# @id UN_TAGMAP UN_925
+100    aAV dokumenty obsadenieb0c0
+200    aabAV Dokumenty - obsadenie#AV dokumenty - obsazenícOd0
+200    abbAV Dokumenty - obsadenie v kód.tvare#AV dokumenty - obsazení v kód.tvarucOd0
+200    acbAV Dokumenty - sólo v kód.tvare#AV dokumenty - sólo kód.tvarucOd0
+###
+# @id UN_TAGMAP UN_926
+100    aVýskumné správyb0c0
+200    aabOznačenie správycOd0
+200    abbDátum začiatku riešenia (RRRRMMDD)
+200    acbČíslo správy
+200    adbDátum ukončenia riešenia
+200    aebČíslo etapy - čiastkovej úlohy
+200    afbNázov etapy - čiastkovej úlohy
+200    agbDátum úlohy - vykazovacie obdobie
+200    anbNázov projektu
+200    aubČíslo projektu
+###
+# @id UN_TAGMAP UN_927
+100    aKvalifikačné práceb0c0
+200    aabDátum obhájenia
+200    abbDátum schválenia
+200    acbČíslo vedného odboru
+200    adbČíslo výskumnej úlohy
+200    aebČíslo štátnej registrácie
+200    afbNázov autoreferátu
+###
+# @id UN_TAGMAP UN_928
+002    02.02.12 js; ocislovane PB a nastavene spravne dotahovanie podpoli
+100    aNakladatel pro záznamy CIPb0c1
+200    a3bČíslo záznamu v heslári- nakladate#Číslo záznamu - nakladatel#Authority Record NumbercOd0ePBS,UN_AUTH^2488,DFLT_UN_AUTH_210_PfLINK,,l_un_auth^2488g001.,1
+200    aabVstupný prvok#Vstupní prvekcOd0g210a,1
+200    abbZpresnenie#ZpřesněnícOd1g210b,1
+200    acbDoplnky ku menu a/alebo kvalifikátor#Doplňky ke jménu a/nebo kvalifikátorcOd1g210c,1
+200    agbInvertovaný prvok#Invertovaný prvekcOd0g210g,1
+200    ahbČasť mena odlišná od vstupného prvku#Část jména jiná než vstupní nebo invertovaný prvekcOd1g210h,1
+200    aqbVariantný názov#Variantní název#Variant titlecOd0
+200    a4bKód rolecOd1g2104,1
+###
+# @id UN_TAGMAP UN_957
+100    aRegionálne triedenie#Regionální zatřízeníb0c0
+200    aabMiesto#MístocOd0
+200    abbOkrescOd0
+200    acbKrajcOd0
+200    a3bČíslo záznamucOd0
+###
+# @id UN_TAGMAP UN_958
+100    aFormálny deskriptor#Formální deskriptoryb0c0
+200    aabFormálny deskriptor#Formální deskriptorycOd0
+###
+# @id UN_TAGMAP UN_961
+002    21.02.23 tt; založeno pole pro citace (inspirováno tagem 971 - případně převzít podpole dle potřeby)
+100    aCitace dokumentub0c1
+200    anbNázov dokumentu#Název dokumentucOd0
+200    aabPreklad názvu#Překlad názvucOd0
+200    apbNázov zdrojového dokumentu#Název zdrojového dokumentucOd0
+200    arbVydav.údaje zdrojového dokumentu#Vydav. údaje zdrojvého dokumentucOd0
+200    asbLokalizácia ohlasu#Lokalizace ohlasucOd0
+200    acbCitačný index#Citační indexcOd0
+200    axbKód záznamu citácie#Kód záznamu citacecOd0
+200    aibIdentifikácia citácie podľa STN/ISO 690#Identifikace citace podle ISO 690cOd0
+200    aybISSNcOd0
+200    aebE-ISSNcOd0
+200    aubČíslo archívnej kópie podkladov k citáci#Číslo archivní kopie#Archive copy numbercOd0
+###
+# @id UN_TAGMAP UN_962
+100    aÚplne znaky MDTb0c1
+200    aabÚplné znaky MDT#Úplné znaky MDTcOd0
+###
+# @id UN_TAGMAP UN_964
+100    aPredmetové hesláb0c1
+200    aabPredmetové heslá#Předmětová heslacOd1
+###
+# @id UN_TAGMAP UN_966
+100    aHolding informations (user defined tag)b0c1
+200    aabČiarový kód#Čárový kód#BarcodecOd0
+200    abbČíslo dodávateľa#Číslo dodavatele#Vendor codecOd0
+200    acbCena v menovej jednotke dodávateľa#Cena v měnové jednotce dodavatele#Vendor price unitcOd0ePRICEfPRICE
+200    adbPrepočítaná cena#Přepočtená cena#Local price unitcOd0ePRICEfPRICE
+200    aebKurz##Exchange ratecOd0
+200    afbMenová jednotka#Měnová jednotka#CurrencycOd0
+200    agbDátum príjmu#Datum příjmu#Date receivedcOd0
+200    ahbDodací list#Dodací list#Packing listcOd0
+200    aibČíslo faktúry#Číslo faktury#Invoice numbercOd0
+200    ajbČíslo objednávky##Order numbercOd0
+200    akbPredplatné#Předplatné#Subscription numbercOd0
+200    albAkvizičná metóda#Akviziční metoda#Acquisition methodcOd0
+200    ambPobočka#Pobočka#BranchcOd0
+200    anbZúčtovacie stredisko#Zúčtovací středisko#Cost centrecOd0
+200    aobÚčet##AccountcOd0
+200    apbLokácia#Lokace#LocationcRd0
+200    arbDislokácia#Dislokace#DislocationcOd0
+200    asbDoba výpožičky#Doba výpůjčky#Issue periodcRd0
+200    atbPrírastkové číslo#Přírustkové číslo#Track numbercOd0
+###
+# @id UN_TAGMAP UN_967
+100    aHolding informations (user defined)b0c1
+200    aabSignatúra prefix#Signatura prefix#Signature / prefix partcOd0
+200    abbSignatúra číslo#Signatura číslo#Signature / number partcOd0
+200    acbSignatúra text#Signatura text#Signature / text partcOd0
+200    adbSignatúra multiplikátor#Signatura multiplikátor#Signature / multiplicator partcOd0
+200    aebVlastník##OwnercOd0
+200    afbČíslo príjmu#Číslo příjmu#Receive transaction numbercPd0
+200    agbČíslo výpožičky#Číslo výpůjčky#Issue transactioncPd0
+200    ahbČíslo rezervácie#Číslo rezervace#Reservation numbercPd0
+200    aibČíslo žiadanky#Číslo žádanky#Request numbercPd0
+200    ajbUpomienka#Upomínka#NoticecPd0
+200    akbPosledná upomienka#Poslední upomínka#Last noticecPd0
+200    albĎaľšie spracovanie#Další zpracování#Next processcOd0
+200    ambInfo 1cOd0
+200    anbInfo 2cOd0
+200    aobInfo 3cOd0
+200    apbSpracovateľ#Zpracovatel#Original processorcOd0
+200    arbDátum záznamu#Datum záznamu#Date of recordcOd0
+200    asbPrírastkové číslo suffix#Přírůstkové číslo suffix#Track number suffix partcOd0
+200    atbPoznámka##NotecOd0
+200    aubInterný kód#Interní kód
+200    axbŽiadateľ
+200    aybRECEIVE_TRX @vmcOd0
+200    azbRECEIVE_TRX @svmcOd0
+###
+# @id UN_TAGMAP UN_968
+100    aHolding informations (user defined)b0c1
+200    aabUžívateľské pole 1##User 1cOd0
+200    abbUžívateľské pole 2##User 2cOd0
+200    acbUžívateľské pole 3##User 3cOd0
+200    adbPoznámka k dodávateľovicOd0
+200    aebISSN väzbacOd0
+###
+# @id UN_TAGMAP UN_969
+002    28.10.09 js; podpolia d,e,g,h,i,j,k,l,m,n,p,q,r boli oznacene ako volne - odstranene z definicie
+002    19.02.10 lp; pridane podpole $g
+002    21.09.09 js; podpole $f nastavene ako opakovatelne
+100    aPomocne interne tagyb0c0
+200    aabČíslo vydavateľa#Číslo vydavatele#Publisher codecOd0
+200    abbČíslo záznamu v akvizícii#Číslo záznamu v akvizici#Acquicat codecOd0
+200    acbKód un_auth_230 -filmcOd0ePB,UN_AUTH,DFLT_UN_AUTH_230g001.
+200    afbĎalšie spracovanie#Další zpracování#Next processingcOd1eSTX,UN_T969FfSTX,UN_T969F
+200    agbDátum pre export cez OAI-PMH#Datum pro export přes OAI-PMH#Date for export by OAI-PMHcOd0npro rizene predavani zaznamu napr. do souborneho katalogu (neni vhodny datum posledni modifikace)
+200    aybČíslo záznamu prebrané (T001)
+###
+# @id UN_TAGMAP UN_970
+100    aPridané tágy EPCAb0c0
+200    aabKategória publikáciecOd0
+200    abbKód druhu dokumentucOd0
+200    acbKód vedného odborucOd0
+200    adbKód SIGLEcOd0
+200    aebTransliterácia hlavného názvucOd0
+200    afbPercentuálny podiel autora na dokumente (700)cOd0
+200    agbPercentuálny podiel autora na dokumente (701)cOd0
+200    ahbPercentuálny podiel autora na dokumente (702)cOd0
+200    aibPripojené obrázky#Připojené obrázky#Attached imagescOd0
+200    ajbUžívateľské pole 1cOd0
+200    akbKat.účasti na akcii - autor 700cOd0
+200    albPripojené obrázky - popis#Připojené obrázky - popis#Attached images - descriptioncOd0
+200    ambKód heslacOd0
+200    axbDrun dokumentu+cOd0
+###
+# @id UN_TAGMAP UN_971
+002    01.12.20 tt; pridano podpole 971u - cislo archivni kopie
+002    02.04.14 js; doplnene cze popisky, upravene slo popisky
+002    28.03.14 js; doplneny i1
+002    07.02.14 js; doplnene podpole pre identifikaciu dokumentu pre potreby zobrazenia hodnotiacich kriterii - $y, $e, $q, $t
+002    30.03.09 js; doplnene podpole pre vykazanie ohlasu
+100    aOhlasy na popisovaný dokument (EPCA)b0c1
+200    ai1bOznačenie ohlasu#Označení ohlasucOd0eST,EPC_T971I1fST,EPC_T971I1
+200    adbRok ohlasu#Rok ohlasucOd0
+200    avbRok pre vykázanie ohlasu#Rok pro vykázání ohlasucOd0g000xi''nvyplna sa len v pripade, ze je rok vykazania iny ako rok ohladu $d
+200    ambPriezvisko a meno citujúceho#Příjmení a jméno citujícíhocOd0
+200    anbNázov dokumentu#Název dokumentucOd0
+200    aabPreklad názvu#Překlad názvucOd0
+200    apbNázov zdrojového dokumentu#Název zdrojového dokumentucOd0
+200    arbVydav.údaje zdrojového dokumentu#Vydav. údaje zdrojvého dokumentucOd0
+200    asbLokalizácia ohlasu#Lokalizace ohlasucOd0
+200    acbCitačný index#Citační indexcOd0
+200    a4bKategória ohlasu#Kategorie ohlasucOd0eST,UN_EPCA_KATOHfST,UN_EPCA_KATOHkFWOS,CZECH REPUBLIC
+200    axbKód záznamu ohlasu#Kód záznamu ohlasucOd0
+200    aibIdentifikácia ohlasu podľa STN/ISO 690#Identifikace ohlasu podle ISO 690cOd0
+200    azbVydavateľ-DOCASNE NEPOUZIVATcOd0
+200    aybISSNcOd0
+200    aebE-ISSNcOd0
+200    aqbRočník zdrojového dokumentu#Ročník zdrojového dokumentu#VolumecOd0
+200    atbČíslo zdrojového dokumentu#Číslo zdrojového dokumentu#NumbercOd0
+200    aubČíslo archívnej kópie podkladov k citáci#Číslo archivní kopie#Archive copy numbercOd0
+200    a6bKategória ohlasu (nová)#Kategorie ohlasu(nová) - CREPČcOd0
+200    albDomácí/zahraniční ohlas - CREPČcOd0
+###
+# @id UN_TAGMAP UN_972
+100    aČíslo archívnej kópie (pre EPCA)b0c0
+200    aabČíslo archívnej kópie (pre EPCA)cOd0
+###
+# @id UN_TAGMAP UN_976
+002    04.01.22 tt; zalozena kvuli nove slovenske verzi EPCA
+100    aPridané tágy EPCA - verze 2022 - CREPČc1dO
+200    aabKategória publikáciecOd1
+###
+# @id UN_TAGMAP UN_974
+100    aPomocné interní tágy - film NFAb0c0
+200    a3bKód filmu - autority 230cOd0ePB,UN_AUTH,DFLT_UN_AUTH_230g001.
+200    anbNázev filmucOd0g230a
+200    akbRok vydaní filmucOd0g230k
+200    aabRežie - příjmenícOd1g935a
+200    abbRežie - jménocOd1g935b
+200    acbRežie - údaj za jménemcOd1g935c
+200    afbRežie - datumycOd1g935f
+###
+# @id UN_TAGMAP UN_978
+002    23.03.22 tt; 978: pridany pole M N - po komunikaci s NA jako standard
+002    02.08.17 tt; UN_978:pridany popole D-F
+002    13.09.16 tt; UN_978:pridany popole 2-6
+002    10.01.14 rn; doplnene podpolia "1" a "2"
+002    10.01.14 rn; doplnene podpolia
+002    13.08.13 js; doplnene podpolia
+100    aCharakteristika periodikab0c1
+200    aabRoky karentovania#Roky karentování#Year of KarentcOd1efn
+200    abbKarentovanosť#Karentovanost#Karent StatuscOd1eST,UN_EPCA_KARENTfST,UN_EPCA_KARENTn
+200    acbImpakt faktor#Impakt faktor#Impact FactorcOd1efn
+200    adbDatabázacOd1efnpre potreby RIV a pre SAV, moze sa pouzit ciselnik databaz
+200    aebVedný odbor JCR#Vedný obor JCRcOd1efn(v tvare: ??,0) ?? = označenie odboru, 0 = poradie, opakovateľné pre každý odbor
+200    afb5-ročný impakt faktor#5-letý impakt faktorcOd0efn5-year IF
+200    agbIndex bezprostredného vplyvucOd0efnimmediacy index
+200    ahbPolčas citovaniacOd0efncited half-life
+200    aibEigenfactorTM ScorecOd0efn
+200    ajbArticle InfluenceTM ScorecOd0efnAIS
+200    akbTotal citescOd0efn
+200    albArticlescOd0efn
+200    anbPriemerná hodnota N (výpočet podľa RIV)cOd0efnbudeme muset zjistit podle ISSN pořadí časopisu v daném oboru
+200    ambMaximálna hodnota NcOd0efnpre výpočet podľa RIV do roku 2007
+200    aobIn master list journalcOd0efn
+200    apbOznačenie prestížneho časopisucOd0efnP – prestížny časopis
+200    aqbH indexcOd0efn
+200    arbTotal doccOd0efn
+200    asbScientific journal rankingscOd0efnz databázy Scopus
+200    atbTotal docs 3 yearscOd0efn
+200    aubTotal referencescOd0efn
+200    avbScopus total citescOd0efn
+200    awbCitable docs 3 yearscOd0efn
+200    axbCites docs 2 yearscOd0efn
+200    aybRef docscOd0efn
+200    azbMLJ databasescOd0efn
+200    a1bSNIPcOd0efn
+200    a2bIPPcOd0efn
+200    a3bTotal Cites (3years)cOd0nScopus
+200    a4bSJR Best QuartilecOd0nScopus
+200    a5bImpact Factor without Journal Self CitescOd0nWos
+200    a6bCitable ItemscOd0nWos
+200    a7bJCR kvartilcOd0nWOS
+200    aAbAIS PCTcOd0nArticle InfluenceTM Score Percentile
+200    aBbAIS AL PCTcOd0nArticle InfluenceTM Score Article Level Percentile
+200    aCbIF PCTcOd0nImpakt faktor percentil - average jif percentile - pry je to prumerna hodnota za percentily v kategorií
+200    aDbQAIS Quartil Article Influence ScorecOd0nQuartil Article Influence Score
+200    aEbQSJR Quartil Scientific Journal RankingscOd0nQuartil Scientific Journal Rankings
+200    aFbQTC Quartil Clarivate AnalyticscOd0nQuartil Clarivate Analytics
+200    aGbScopus ASJC CodecOd0nCiteScore
+200    aHbPercentilecOd0nCiteScore
+200    aIbCiteScorecOd0nCiteScore
+200    aJbRating ABDCcOd0naustralsti dekani http://www.abdc.edu.au/index.php
+200    aKbJCR WORST kvartilcOd0nWOS
+200    aLbSJR 1.decilcOd0nSJR
+200    aMbJCI (Journal Citation Indicator)cOd0nWOS
+200    aNbJCI kvartilcOd0nWOS
+200    aObNordic List LevelcOd0eST,EPCA_NORDIC_LIST_LEVELfST,EPCA_NORDIC_LIST_LEVELnNordic List Level
+200    aPbJCR best journal IF percentilcOd0nJCR best journal IF percentil - je to nejlepší percentil v libovolné kategorii
+200    aQbSJR decil - vedná oblasťcOd0nPro Sav SJR decil vedná oblasť - Podpole L je SJR 1. decil, ale podla KATEGORII,a nasi si vymysleli podla VEDNYCH OBLASTI. 
+###
+# @id UN_TAGMAP UN_981
+100    aOsobní jméno - majitelb1c1
+200    ai2bForma mena#Indikátor formy jména#Form of Name IndicatorcPeST,UN_T702I2fST,UN_T702I2g200i2
+200    aabVstupný prvok#Příjmení#Entry ElementcPd0g200a
+200    abbČasť mena odlišná od vstupného prvku#Křestní jméno#Part of Name Other than Entry ElementcPd0g200b
+200    acbPrívlastky okrem dátumov#Doplňky ke jménu#Additions to Names Other than DatescPd1g200c
+200    adbRímske číslovky#Římské číslice#Roman NumeralscPd0g200d
+200    afbDátumy#Osobní data#DatescPd0g200f
+200    agbRozvinuté iniciály mena#Rozpis iniciál křestního jména#Expansion of Initials of FornamecPd0g200g
+200    a3bČíslo záznamu v heslári#Číslo záznamu v autoritách#Authority Record NumbercOd0ePB,UN_AUTH,DFLT_UN_AUTH_200fLINKg001.
+200    a4bKód funkcie#Kód role#Relator CodecOd1g2004eST,UT_RELATOR_CODEfST,UT_RELATOR_CODE
+200    a5bKód instituce: signaturacOd0
+200    apbPříslušnosť ku korporácii / adresa#Příslušnost ke korporaci / adresacOd0g200p
+200    a8bMiesto a dátum získania knihy#Místo a datum získání knihycOd0
+200    a9bKód pracoviska autoracOd0
+###
+# @id UN_TAGMAP UN_982
+100    aJméno korporace - majitelb1c1
+200    ai1bKorporácia alebo zhromaždenie#Indikátor akce#Meeting IndicatorcPeST,UN_T712I1g210i1
+200    ai2bForma pomenovania#Indikátor formy jména#Name inverted formcPeST,UN_T712I2g210i2
+200    aabNázev korporacecPd0g210a
+200    abbPodřízená složkacPd1g210b
+200    acbDoplnený prvok pomenovania.#Doplňky ke korporaci#Addition to Name or QualifiercPd1g210c
+200    adbČíslo zhromaždenia a/alebo zasadnutia#Číslo akce a/nebo části akce#Number of Meeting and/or Number of Part of MeetingcPd1g210d
+200    aebMiesto konania zhromaždenia.#Místo konání akce#Location of MeetingcPd0og210e
+200    afbDátum zhromaždenia#Datum konání akce#Date of MeetingcPd0g210f
+200    agbInvertovaný prvok.#Zkratky#Inverted ElementcPd0g210g
+200    ahbČasť pomenovania odlišná od vstupného a vyčleneného prvku#Část jména jiná než vstupní a invertovaný prvek#Part of Name Other than Entry Element and Inverted ElementcPd1g210h
+200    a3bČíslo záznamu v heslári#Číslo záznamu v autoritách - korporace#Authority Record NumbercOd0ePB,UN_AUTH,DFLT_UN_AUTH_210_CfLINKg001.
+200    a4bKód funkcie / Kód roly #Kód role#Relator CodecOd1eST,UT_RELATOR_CODEfST,UT_RELATOR_CODE
+200    apbAdresacOg210p
+200    a5bKód instituce: signaturacOd0
+200    a8bMiesto a dátum získania knihy#(Místo) a datum získání knihy (z exlibris, supralibros apod.)cOd0 
+200    a9bSlovné vyjadrenie kódu role#Slovní vyjádření kódu rolecOd0
+###
+# @id UN_TAGMAP UN_983
+100    aJméno rodiny (rodu) - majitelb1c1
+200    aabVstupný prvok#Jméno rodiny (rodu)#Entry ElementcOd0g220a
+200    afbDátumy#Data#DatescOd0g220f
+200    a3bČíslo záznamu v heslári#Číslo autoritního záznamu#Authority Record NumbercOd0ePB,UN_AUTH,DFLT_UN_AUTH_220fLINKg001.
+200    a4bKód funkcie#Kód role#Relator CodecOd1g2204
+200    a5bKód instituce: signaturacOd0
+200    a8bMiesto a dátum získania knihy#(Místo) a datum získání knihy (z exlibris, supralibros apod.)cOd0 
+200    a9bSlovné vyjadrenie kódu role#Slovní vyjádření kódu rolecOd0
+###
+# @id UN_TAGMAP UN_985
+100    aŠpecifické kódy (pre potreby projektu ProScientia)b0c0
+200    aabKód kategórie dokumentu#Kód kategorie dokumentu
+200    acbKód vedného odboru#Kód vědního oboru
+200    adbKód kategórie aktivity (učasť na konferencii, seminári a p.)#Kód kategorie aktivity
+200    afbKód fakulty
+200    akbKód katedry
+200    aobKód okresu sídla organizácie#Kód okresu sídla organizace
+200    apbKód študijného predmetu#Kód studijního předmětu
+200    arbRok za ktorý sa publikačná činnosť vykazuje#Rok za který se publikační činost vykazuje
+200    aubKód univerzity
+200    axbŠírka dokumentu#Šířka dokumentu
+200    aybOrganizacia v plnom tvare#Organizace v plném tvaru
+200    atb___VOLNE____ poz.257
+200    azb___VOLNE____ poz.243
+###
+# @id UN_TAGMAP UN_992
+100    aDruh dokumentu
+200    aabKód druhu dokumentu
+###
+# @id UN_TAGMAP UN_936
+002    27.04.15 js; doplnene dotahovanie dalsich podpoli z ciselnika
+002    20.03.15 js; doplnene podla M21
+100    a#Typ obsahu#Content Typec1dO
+200    aab#Typ obsahu - termín#Content type termcRd1eST2,UN_T936A,bb|c2fST2,UN_T936A
+200    abb#Typ obsahu - kód#Content type codecOd1
+200    a2bZdroj#Zdroj#SourcecOd0irdacontent
+200    a3bŠpecifikované materiály#Bližší určení dokumentu#Materials specifiedcOd0
+200    a6bPrepojenie#Propojení polí v jiném písmu#LinkagecOd0
+200    a8bPrepojenie a sekvenčné číslo poľa#Propojení souvisejících polí#Field link and sequence numbercOd1
+###
+# @id UN_TAGMAP UN_937
+002    27.04.15 js; doplnene dotahovanie dalsich podpoli z ciselnika
+002    20.03.15 js; doplnene podla M21
+100    a#Typ média#Media Typec1dO
+200    aab#Typ média - termín#Media type termcRd1eST2,UN_T937A,bb|c2fST2,UN_T937A
+200    abb#Typ média - kód#Media type codecOd1
+200    a2bZdroj#Zdroj#SourcecOd0irdamedia
+200    a3bŠpecifikované materiály#Bližší určení dokumentu#Materials specifiedcOd0
+200    a6bPrepojenie#Propojení polí v jiném písmu#LinkagecOd0
+200    a8bPrepojenie a sekvenčné číslo poľa#Propojení souvisejících polí#Field link and sequence numbercOd1
+###
+# @id UN_TAGMAP UN_938
+002    27.04.15 js; doplnene dotahovanie dalsich podpoli z ciselnika
+002    20.03.15 js; doplnene podla M21
+100    a#Typ nosiče#Carrier Typec1dO
+200    aab#Typ nosiče - termín#Carrier type termcRd1eST2,UN_T938A,bb|c2fST2,UN_T938A
+200    abb#Typ nosiče - kód#Carrier type codecOd1
+200    a2bZdroj#Zdroj#SourcecOd0irdacarrier
+200    a3bŠpecifikované materiály#Bližší určení dokumentu#Materials specifiedcOd0
+200    a6bPrepojenie#Propojení polí v jiném písmu#LinkagecOd0
+200    a8bPrepojenie a sekvenčné číslo poľa#Propojení souvisejících polí#Field link and sequence numbercOd1
+###
+# @id UN_TAGMAP UN_991
+100    aŠpecifické pole pre ohlasb0c0 
+200    a4bKategória ohlasu#Kategorie ohlasucOd0eST,UN_EPCA_KATOHfST,UN_EPCA_KATOHkFWOS,SLOVAKIA
+200    a6bKategória ohlasu od 2022#Kategorie ohlasu od 2022cOd0eST,EPCA_CREPC_KATOHfST,EPCA_CREPC_KATOHkFWOS,SLOVAKIA
+200    adbRok ohlasucOd0
+200    afbStatus ohlasucOd0
+200    azbCitačný index#Citační indexcOd0
+###

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-20 14:04:45">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-24 13:40:34">
 <Class name="content.reader">
 <Description><![CDATA[
 <pre> Ctecka zabezpecenych dokumentu
 zatim pouze pdf
 
+24.07.24 ln; ochrana pred chybejicim lomitkem v ceste
+12.03.24 ln; parametr full pro metodu regenerate
 20.04.23 ln; podpora vice repozitaru
 28.03.23 ln; metody regenerate a delThumbs
 07.10.21 ln; informovat o stavu ve zpracovani
@@ -12,7 +14,7 @@ zatim pouze pdf
 09.07.21 ln; dui fronta pro zabezpecene soubory
 </pre>]]></Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>66584,50675.096268</TimeChanged>
+<TimeChanged>67045,49178.794495651</TimeChanged>
 <TimeCreated>65605,36547.286953</TimeCreated>
 
 <Parameter name="PageID">
@@ -125,7 +127,7 @@ spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
   
   s node="", seq=0
   f { s node=$o(array("pgprev",node),1,val) q:node=""    
-    s data("CONT",node,"prev")=$zstrip(val,"*E'A'W'N",,".,@*")   ;$replace(val,$c(10),"<br/>")
+    s data("CONT",node,"prev")=$zstrip(val,"*E'A'W'N",,".,@*")   ;$replace(val,$c(10),"<br>")
     s data("CONT",node,"thumb")=$g(array("pgthumb",node)) ; imageServer
     s seq=seq+1    
   }
@@ -202,6 +204,8 @@ volano z rep.zf.images.cleanRecordThumbnails
 <FormalSpec>url:%String,verbose:%Boolean=0</FormalSpec>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  q:url="" ""
+  
   s start=$p(url,".",1,*-1)_"/"  
   s startL=$l(start)
   s node=start
@@ -381,6 +385,8 @@ d ##class(content.reader).task("cbvk")
 TODO: silece verze
 
 w ##class(content.reader).export("cbvk")
+
+24.07.24 ln; ochrana pred chybejicim lomitkem v ceste
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>ictx:%String,repo=""</FormalSpec>
@@ -395,6 +401,8 @@ w ##class(content.reader).export("cbvk")
   q:basePath="" "IMAGE_SERVER: "_repo_" is not set"
   
   s pathSep=##class(User.Util).getPathSepp()
+  ; 24.07.24 ln; ochrana pred chybejicim lomitkem v ceste
+  s:$e(basePath,*)'=pathSep basePath=basePath_pathSep
   s total=0
   
   &sql(DECLARE CR2 CURSOR FOR
@@ -584,8 +592,11 @@ indexuje se po souborech (vsetne vsech ostatnich indexu) i po strankach
 <Description><![CDATA[
 <pre> Pregenerovani zabezpecenych souboru zaznamu v aktivnim selectu
 d ##class(content.reader).regenerate()
+
+12.03.24 ln; parametr full pro metodu regenerate
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
+<FormalSpec>full:%Boolean=0</FormalSpec>
 <Implementation><![CDATA[
   s rid=""
   for { s rid=$o(^$$$ListsG($$$ListsActiveSel,$j,rid)) s id=rid q:id=""
@@ -600,6 +611,10 @@ d ##class(content.reader).regenerate()
     
     w !!,"============================"
     w !,class_" "_t001
+    d ##class(i2.init).batchinit(##class(User.Util).getClassPrefixParam(class))
+    
+    w:full !,"--  vymaz nahledu vsech souboru zaznamu --"
+    d:full ##class(rep.zf.images).cleanRecordThumbnails(class,t001,1)
     
     s item="", seq=0
     f { s item=$o(output(item),-1) q:item=""
@@ -611,6 +626,8 @@ d ##class(content.reader).regenerate()
       continue:'$isobject(obj)
       s type=$g(array("type")) ; TODO omezit select dotaz
       continue:type'="secure"
+      
+      if 'full && ($g(array("pgstate"))'="e") { continue }
       
       w !,"----------------------------"
       w !,array("repository")_" "_array("key")
@@ -625,10 +642,7 @@ d ##class(content.reader).regenerate()
       s res=obj.%Save()
       w !,res
       continue:'res
-      
-      w !,"--  vymaz vsech nahledu --"
-      d ##class(rep.zf.images).cleanRecordThumbnails(class,t001,1)
-      
+           
       w !,"--  predgenerovani vsech nahledu --"
       d ##class(content.reader).getThumbs(.array2,,1)
           

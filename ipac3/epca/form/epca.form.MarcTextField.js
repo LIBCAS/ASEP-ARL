@@ -1,7 +1,7 @@
 /**
  * @author Laco Clementis, Michal Namesny
  *
- *
+ * 04.02.25 on; jina hlaska pro povinne pole
  * 04.01.17 on; rozsireni funkce clearFields
  * 19.07.16 on; formular nemusi byt v tabu
  * 12.07.16 on; uprava metody getMarc
@@ -144,6 +144,13 @@ epca.form.TextField = Ext.extend(Ext.form.TextField, {
       bValidReq = true;
     }
 
+    // 04.02.25 on; jina hlaska pro povinne pole
+    if (!bValidReq) {
+    	this.invalidText = i3.ui.ext.tx.txBlankText;
+    } else {
+    	this.invalidText = i3.ui.ext.tx.txInvalidText;
+    }
+    
     // 05.03.14 on; zrusene
     /*if(Ext.isEmpty(this.customCode)) {
      return true;

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.1 (Build 380U)" ts="2024-01-24 11:29:53">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-04-02 13:23:18">
 <Class name="i2.cust.cav.uploader">
-<Super>content.uploader</Super>
-<TimeChanged>66863,41383.13307604</TimeChanged>
-<TimeCreated>62425,31868.699855</TimeCreated>
-
-<Parameter name="Ictx">
 <Description><![CDATA[
 <pre>
+27.03.25 ln; podpora S3
+19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
+07.06.24 tt; getUseStat2: upravena podminka nevystaveneho zaznamu
 24.01.24 ln; big data uploader je nyni /big
 24.08.23 tt; provedena zmena nacitani textu pro datove zaznamy 
 27.04.22 tt; runtime: dano osetreni na status - uzivatel nejakym zpusobem dokazal rozhodit funkcnost tak, ze status byl 2
@@ -28,8 +26,14 @@
 22.08.12 tt; drobna zmena logiky, aby se brala i 0 hodnota embarga
 22.08.12 tt; pridano cteni a zobrazeni embarga
 23.05.12 tt; drobna uprava sablony
-</pre>
-ictx instituce]]></Description>
+</pre>]]></Description>
+<Super>content.uploader</Super>
+<TimeChanged>67297,48186.599338731</TimeChanged>
+<TimeCreated>62425,31868.699855</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+ictx instituce</Description>
 <Default>cav</Default>
 </Parameter>
 
@@ -65,6 +69,56 @@ vraci retezec pri chybe
   s %response.Redirect="https://"_%request.CgiEnvs("HTTP_HOST")_"/big/uploader.html?ictx="_$$$GETICTX_"&lang="_$case($$$GETLANGUAGE,1:"sk",2:"cs",3:"en",:"")_"&repo="_repo_"&idx="_idx_"&user="_data("CREDUSER")_"&cred="_data("CRED")
   
   q ret
+]]></Implementation>
+</Method>
+
+<Method name="s3upload">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  d ##class(i2.base.request).get(.array)
+  d ##class(i2.base.request).pure(.array)
+  d ##class(i2.base.request).purge(.array)
+  d ##class(i2.base.request).first(.array)
+  
+  q:'$d(array("repository")) 1
+  
+  s idx=$g(array("idx"))
+  q:idx="" 0  
+  k array("idx")  
+  k array("FileStream")
+  q:'##class(i2.dblink).recordReadLX(.handle,idx,"T") 0
+  
+  s data("IDX")=idx
+  s data("REPO")=..userRepo()
+  d ..userData(.data,.handle)
+  q:'..apply(.data,.array) 0
+  
+  s class=##class(User.Util).lname2objectName($p($p(idx,"*",1),"-",1))
+  s t001=$p(idx,"*",2)
+  
+  s array("class")=class
+  s array("t001")=t001
+  k array("repository")
+  s node="",obj={}
+  for { s node=$o(array(node),1,val) q:node=""
+    d obj.%Set(node,val)
+  }
+  s par=##class(i2.html.base).encode(obj.%ToJSON())
+  
+  s runtime("class")=class
+  s runtime("t001")=t001
+  s type=$g(array("type"))
+  s:type="" type="content"
+  s runtime("type")=type
+  
+  q:'##class(content.api).engineUpload(data("REPO"),,.runtime) 0
+  
+  s login=##class(i2.access).getLoginId()
+  s pw=##class(i2.html.base).encode(%ipac2("arlsso"))
+  
+  s %response.Redirect="https://asep.lib.cas.cz/uploader/uppy.html?par="_par_"&_arlsso="_login_"&_arlssopw="_pw
+  q 0
 ]]></Implementation>
 </Method>
 
@@ -112,7 +166,7 @@ slouzi hlavne pro nacteni vsech ciselniku formulare
     ; 24.08.23 tt; provedena zmena nacitani textu pro datove zaznamy 
     s data("RECTITLE_Z")=$p($$$getTagX(.handle,"Tbca"),"\n",1)
     s SeznamFullT=##class(User.CavUnEpca).getNameFT(.handle)
-    s:(SeznamFullT'="") data("RECTITLE_Z")=data("RECTITLE_Z")_"<br /> Datové soubory v ASEP: "_SeznamFullT
+    s:(SeznamFullT'="") data("RECTITLE_Z")=data("RECTITLE_Z")_"<br> Datové soubory v ASEP: "_SeznamFullT
   } 
   
   s data("T001z")=$$$HandleT001(handle)
@@ -125,9 +179,18 @@ slouzi hlavne pro nacteni vsech ciselniku formulare
 </Method>
 
 <Method name="userRepo">
+<Description><![CDATA[
+<pre>
+27.03.25 ln; podpora S3 
+</pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%String</ReturnType>
-<Implementation><![CDATA[  q "crepo1"
+<Implementation><![CDATA[
+  s ictx=$g($$$GETICTX)
+  
+  q:ictx="" "crepo1"
+  q:ictx="cav" "crepo1"
+  q $$$GETICTX_"repo"
 ]]></Implementation>
 </Method>
 
@@ -227,13 +290,16 @@ parametry: t001 uzivatele
 <pre> Generovani runtime (promenlivych, neulozenych) dat do pole runtime
 parametry: class a t001 zaznamu
 
+27.03.25 ln; podpora S3 
 27.04.22 tt; dano osetreni na status - uzivatel nejakym zpusobem dokazal rozhodit funkcnost tak, ze status byl 2
 08.11.16 tt; upravy kvuli velkym datum
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&runtime,class,t001]]></FormalSpec>
 <Implementation><![CDATA[
-  s user=##class(i2.access).getLoginId()
+  ; 27.03.25 ln; podpora S3 
+  s user=$g(runtime("user"))
+  s:user="" user=##class(i2.access).getLoginId()
   
   s runtime("isSuper")=##class(User.CavS).FTgetIsUser(user,t001)
   ;s runtime("isAuthor")=##class(User.CavS).FTgetIsAutor(user,t001)
@@ -273,7 +339,7 @@ Parametry: data - byref pole pro ulozeni vysledku
 <ProcedureBlock>1</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
-  s sRet="", sClass="CavUnEpca",data("DK")=""
+  s sRet="", sClass=$$$IPREF_"UnEpca",data("DK")=""
   s sT001=$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")
   s sHelpLink=..tx("HELPLINK")                     ; nactemesi odkaz na napovedu
   s data("SHERPALINK")=""
@@ -303,7 +369,8 @@ Parametry: data - byref pole pro ulozeni vysledku
     }
     s data("DOI")="<div>&nbsp;&nbsp;&nbsp;&nbsp;"_##class(User.CavUnEpca).getDOIlink(.handle,"class")_"</div>"
     // po upgradu odkomentovat
-    /// s data("DOI")=$$$strswap(data("DOI"),"<img src=""user/cav/doi-ikona.gif"" alt=""DOI"" />","<span class=""icon-doi"" aria-hidden=""true""></span>")
+    /// s data("DOI")=$$$strswap(data("DOI"),"<img src=""user/"_$$$GETICTX_"/doi-ikona.gif"" alt=""DOI"">","<span class=""icon-doi"" aria-hidden=""true""></span>")
+    /// s data("DOI")=$$$strswap(data("DOI"),"<img src=""user/"_$$$GETICTX_"/doi-ikona.gif"" alt=""DOI"">","<i class=""icon-doi"" aria-hidden=""true""></i>")
   }
   else
   { ; vypis chyby
@@ -320,7 +387,7 @@ Parametry: data - byref pole pro ulozeni vysledku
     s data("RECTITLE_Z")=sRecT1
   }
   
-  s data("ODREC")=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_$$$HandleT001(handle),..tx("RECORD"))
+  s data("ODREC")=##class(i2.html.tpl).getPermalink2($$$GETICTX_"_un_epca*"_$$$HandleT001(handle),..tx("RECORD"))
   
   q sRet
 ]]></Implementation>
@@ -342,7 +409,7 @@ https://cosmo2/wiki/index.php/Cav-full_text_upload_25/content_statistiky
   s sRet=""                ; definijeme si promennou na navrat
   s userIdx=##class(User.Util).objectName2lname(##class(i2.access).getLoginClassName())_"*"_##class(i2.access).getLoginId()
   s:userIdx="*" userIdx=""
-  if (($tr(userIdx," *")'="")&&($f(userIdx,"cav_is_user")))
+  if (($tr(userIdx," *")'="")&&($f(userIdx,$$$GETICTX_"_is_user")))
   { ; pokud se nam podarilo ziskat uzivatele v CavIsUser
     if ##class(User.MARC).readLX(.handleU,userIdx)
     { ; pokud se poradi nacist uzivatele, pokracuji
@@ -449,11 +516,12 @@ Navrat - seznam pracovist - vlastnik + spolupracujici
 <Method name="getUseStat2">
 <Description><![CDATA[
 <pre> Naplneni uzivatelske polozky c.2 statistik - stav zaznamu. Zatim obsazene hodnoty:
-0 - nevystaveny zaznam v IPACu (969f "D")
+0 - nevystaveny zaznam v IPACu (969f "D") nabo N
 1 - vystaveny zaznam v IPACu (969f "" nebo "A")
 2 - jina hodnota
 https://cosmo2/wiki/index.php/Cav-full_text_upload_25/content_statistiky
 
+07.06.24 tt; upravena podminka nevystaveneho zaznamu 
 05.10.12 tt; zalozena metoda
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
@@ -470,7 +538,7 @@ https://cosmo2/wiki/index.php/Cav-full_text_upload_25/content_statistiky
     { ; pokud jde otevrit zaznam katalogu, muzeme pokracovat ve zpracovani
        ; odeslani zaznamu - 969f - "D" - neodeslan/ "" nebo "A" odeslany zaznam zverejneny v ipac2 
       s sT969f=$$$getTagX(.handle,"969f")            ; 969f katalogovoaho zaznamu 
-      if (sT969f="D") { s sRet=0 }                    ; nevystaven v ipacu
+      if ((sT969f="D")||(sT969f="N")) { s sRet=0 }                    ; nevystaven v ipacu
       elseif ((sT969f="")||(sT969f="A")) { s sRet=1 } ; vystaven v ipacu
       else { s sRet=2 }                               ; nepredvidana hodnota
     }

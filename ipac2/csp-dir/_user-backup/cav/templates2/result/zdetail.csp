@@ -31,7 +31,9 @@
 
 <ipac:zf version="2" tftype="css"/>
 
+<csp:if condition=((data("ZF_SEL")'="CAV_BIBCIT_ZP")&&(data("ZF_SEL")'="CAV_BIBCIT_INI")&&(data("ZF_SEL")'="CAV_BIBCITAV"))>
 <ipac:tpl version="tabs" page="result"/>
+</csp:if>
 
     <csp:if condition=($d(data("CITACEPRO")))>
         <ipac:tpl version="detail" page="citacepro" />

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-19 12:35:19">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-27 15:17:42">
 <Class name="content.engine">
 <Description><![CDATA[
 <pre> vykonne jadro contentServeru
 
+27.03.25 ln; podpora S3
+17.23.25 ln; volba -auto-orient pro generovani aratio
+15.01.25 ln; datasety nemaji C52
+24.07.24 ln; ochrana pred chybejicim lomitkem v ceste
+04.07.24 ln; magick nevypisuje warning jako novy convert
+19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 19.04.23 ln; watermark typu diag
 28.03.23 ln; volba flatten pro rozklad zabezpecenych pdf
 24.02.23 ln; watermark typy fit a tile
@@ -35,7 +41,7 @@
 18.09.12 ln; podpora pro pristup z zclienta
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>66583,45261.6286041</TimeChanged>
+<TimeChanged>67291,55038.646757296</TimeChanged>
 <TimeCreated>62187,27819.075418</TimeCreated>
 
 <Parameter name="pageSeparator">
@@ -48,6 +54,11 @@
 </Parameter>
 
 <Method name="call">
+<Description><![CDATA[
+<pre> Volani generovane metody pro overeni prav
+
+27.03.25 ln; podpora S3
+</pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&array,service:%String]]></FormalSpec>
 <ReturnType>%Integer</ReturnType>
@@ -59,6 +70,9 @@
   q:$f(callBack,".page404") 0
   
   if callBack'="" {
+    ; 27.03.25 ln; podpora S3    
+    s:$g(array("user"))'="" runtime("user")=array("user")
+    
     d $ZOBJCLASSMETHOD(callBack,"runtime",.runtime,$g(array("class")),$g(array("t001")))
     m array=runtime
   }    
@@ -95,18 +109,26 @@
 </Method>
 
 <Method name="open">
-<Description>
-31.10.12 ln; podpora verzovani</Description>
+<Description><![CDATA[
+<pre> Otevreni metadatoveho objektu
+
+27.03.25 ln; podpora S3
+31.10.12 ln; podpora verzovani
+</pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>repo:%String,key:%String,version=""</FormalSpec>
 <ReturnType>content.metadata</ReturnType>
 <Implementation><![CDATA[
   s id=""
+  ; 27.03.25 ln; podpora S3
+  s:$e(key,*)="k" key=$e(key,1,*-1)
+  
   if version="" {
     &sql(SELECT ID INTO id FROM content.metadata WHERE (Repo = :repo AND CKey = :key AND Version is NULL))
   } else {
     &sql(SELECT ID INTO id FROM content.metadata WHERE (Repo = :repo AND CKey = :key AND Version = :version))
   }
+  
   s obj=##class(content.metadata).%OpenId(id)
   q obj
 ]]></Implementation>
@@ -331,6 +353,8 @@
 <Method name="pure">
 <Description><![CDATA[
 <pre> Odstraneni standardnich runtime metadat z array
+
+19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&array]]></FormalSpec>
@@ -346,6 +370,10 @@
   k array("isAdmin")
   k array("isAuthor")
   k array("isSuper")
+  k array("isZprac")
+  k array("isDataset")
+  k array("isDataApprove")
+  k array("isDataStav")
   k array("nodesid")
   k array("nodeuser")
   k array("nodecred")
@@ -353,12 +381,14 @@
   k array("oldversion")
   k array("plang")
   k array("pretty")
+  k array("super")
   k array("user")
   k array("userstate")
   k array("CHANGED")
   k array("FILE")
   k array("DUPLICITY")
   k array("TEST")
+  k array("SIMUL")
 ]]></Implementation>
 </Method>
 
@@ -906,6 +936,7 @@ k ^ImageServer("thumb","file:///mnt/fat32/db_cosmo/content/I/m0007489_2.jpg")</D
 <pre> Generovani artefaktu pro zabezpecene dokumenty
 vraci 1/0 jestli se podarilo
 
+24.07.24 ln; ochrana pred chybejicim lomitkem v ceste
 28.03.23 ln; volba flatten pro rozklad zabezpecenych pdf
 08.07.21 ln; zabezpeceny dokument take jako typ pristupu
 29.05.20 ln; secure pipeline
@@ -936,6 +967,8 @@ vraci 1/0 jestli se podarilo
   }
   
   s pathSep=##class(User.Util).getPathSepp()
+  ; 24.07.24 ln; ochrana pred chybejicim lomitkem v ceste
+  s:$e(path,*)'=pathSep path=path_pathSep
   s path=path_$e(array("key"),1,2)_pathSep
   s keyname=$e(array("key"),3,*)
   s filename=keyname_"."_extension
@@ -1122,6 +1155,8 @@ pregenerovani pokud verbose=2
 <Description><![CDATA[
 <pre> aratio = <sirka>x<vyska>
 
+17.23.25 ln; volba -auto-orient pro generovani aratio
+04.07.24 ln; magick nevypisuje warning jako novy convert
 15.02.23 ln; snaha zabranit csp timeoutu kvuli aratio
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
@@ -1139,10 +1174,12 @@ pregenerovani pokud verbose=2
     q:pathRep="" 0
     
     s convert=$e(pathRep,1,$f(pathRep,pathSep_"arl"_pathSep)-1) ; problematicke
-                _"ImageMagick"_pathSep_convert    
+    ; 04.07.24 ln; magick nevypisuje warning jako novy convert
+                _"ImageMagick"_pathSep_"magick -quiet"_" "
   }
   
-  s cmd=convert_path_" -format ""%wx%h"" info:"  
+  ; 17.23.25 ln; volba -auto-orient pro generovani aratio
+  s cmd=convert_path_" -auto-orient -format ""%P"" info:"  
   s aratio=##class(util.ie.cmd).line(cmd)
   
   s:aratio'="" array("aratio")=aratio
@@ -1204,6 +1241,7 @@ pregenerovani pokud verbose=2
 <pre> Metoda pro vygenerovani/pridani do tagu C52
 volatelne bezpecne mimo CSP
 
+15.01.25 ln; datasety nemaji C52
 27.08.19 ln; podpole C52d
 03.02.15 tt; vyjimka pro CavUnEpca, kdy tato standardni funkcnost nici zakaznickou funkcnost vzniklou drive
 20.06.14 ln; C52 neukladat pro castkove zaznamy fotogalerii
@@ -1224,6 +1262,8 @@ volatelne bezpecne mimo CSP
   s t001=$$$HandleT001(handle)
   ; 03.02.15 tt; vyjimka pro CavUnEpca, kdy tato standardni funkcnost nici zakaznickou funkcnost vzniklou drive
   q:(class="CavUnEpca") 0
+  ; 15.01.25 ln; datasety nemaji C52
+  q:##class(User.MARC).getTagX(.handle,"C99d")="DFLT_DATA" 0
   ; 20.06.14 ln; C52 neukladat pro castkove zaznamy fotogalerii
   if (type="foto") && $f(t001,"_") { q 0 }
     

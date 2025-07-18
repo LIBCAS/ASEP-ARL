@@ -383,3 +383,15 @@
 4   string      moov        video/quicktime
 4   string      mdat        video/quicktime
 
+
+#------------------------------------------------------------------------------
+# application/x-coredump for LE/BE ELF
+#
+0       string          \177ELF
+>5      byte            1
+>16     leshort         4               application/x-coredump
+
+0       string          \177ELF
+>5      byte            2
+>16     beshort         4               application/x-coredump
+

@@ -1,0 +1,201 @@
+# @id UN_TAGMAP UNH_AA_NOTES
+002    -
+002    24.05.22 dk  pridane UNH_400z
+002    24.05.22 mk  pridane UNH_4001
+002    08.10.21 dk; pridani poli UNH_990 a UNH_991
+002    12.02.19 js; doplnene nove pole 100u
+002    18.09.17 js; doplnene validacie v 300, 400, 500
+002    17.09.14 js; doplnene 200$c
+002    02.02.13 js; doplnena anglictina
+002    22.01.13 js; upravene unh_969
+002    13.12.10 js; doplnene podpolia do 600
+002    20.10.10 js; doplnene nove pole 600
+002    15.03.10 js; v poli unh_100 opraveny drobny preklep
+002    09.12.09 js; definicia ush poli presunuta do noveho suboru un_tagmaph_m21
+002    09.12.08 jr; nastavena validace na 100l,100d
+002    03.11.08 tt; formalni uprava konfiguracnich souboru
+002    17.10.08 js; doplnene podpole 300q pre uplnost zvazku
+002    26.06.08 on; zmena indexu pro inventarizaci
+002    13.06.08 pb; pridane podpole UNH_500$f (Príznak archivácie inventarizácie)
+002    04.06.08 on; zapojeny ciselnik na 500b
+002    23.01.08 jk; oprava cestiny
+002    02.10.07 jr; oprava ceskych prekladu
+002    17.07.06 lp; pridane podpole UNH_300m
+002    01.12.05 pb; oprava preklepu v slovenskom texte v UNH_500$b
+002    19.09.05 ja; doplnenie poznamky do 300ip
+002    25.01.05 on; nastaveny index pro inventarizaci
+002    23.11.04 pb; pridany tag UNH_400y
+002    11.05.04 on; pridany tag UNH_500
+002    06.07.04 rs; este upraveny nazov ceny UNH_400c
+002    28.06.04 on; opravene nazvy cen UNH_400
+002    18.06.04 on; pridany ciselnik na pole 969f (ST_UNH_969f)
+002    16.06.04 on; pridany tag 969
+002    28.04.04 on; na pole UNH_100$i napojene specialni nastaveni (PB)
+002    20.04.04 on; pridane 400w - cena po sleve
+002    10.03.04 lp; pridane 300v (vyrazovaci seznam) a 300w (duvod vyrazeni)
+002    05.12.03 on; pridana validace ceny
+002    19.11.03 jr; pridane 400q (int.cislo fakt.) a 400v (rabat)
+002    06.11.03 jr; pridany popis tagu 000 a 999
+002    17.10.03 jj; doplneni USH tagu
+002    24.09.03 ja; doplnenie volanie statickyh tabuliek a PBS 
+002    03.09.03 ja; doplnenie do vsetkych zaznamov UN_TAGMAP
+002    02.09.03 rs; doplneny popis pola 200l - zmena 1/2/3/4/5->na velke pismena viz podpole $n
+002    21.08.03 ja; doplneny ciselnik pola 200l
+002    21.08.03 rs; doplneny popis pola 200l
+002    29.07.03 rs; doplneny popis pola 200l
+002    28.03.03 lp; doplneny popis podpole UNH_100r - knihovna
+002    08.11.02 jr; pridane nenumericke tagy
+002    03.09.01 vv; pridany fyzicky stav dokemntu ako UNH_300 podpole $s
+###
+# @id UN_TAGMAP UNH_000
+100    aNávestie záznamu#Návěští záznamu#Record labelb0c0
+200    a.bNávestie záznamu#Návěští záznamu#Record labelcRd0eCD
+200    a.1bDĺžka záznamu#Délka záznamu#Record lenghtcRd0h5
+200    a.2bStav zápisu#Status záznamu#Record statuscRd0eST,UN_T000A_2fST,UN_T000A_2h1
+200    a.3bAplikačné kódy / Typ dokumentu#Implementační kódy / Typ záznamu#Implementation Codes / Typ of recordcRd0eST,UN_T000A_3fST,UN_T000A_3h1
+200    a.4bAplikačné kódy / Bibliografická úroveň#Implementační kódy / Bibliografická úroveň#Implementation codes / Bibliographic levelcRd0eST,UN_T000A_4fST,UN_T000A_4h1
+200    a.5bAplikačné kódy / Kód hierarchickej úrovne#Implementační kódy / Kód hierarchické úrovně#Implementation codes / Hierarchical Level CodecRd0eST,UN_T000A_5fST,UN_T000A_5h1
+200    a.6bAplikačné kódy / Nedefinované#Implementační kódy / Nedefinováno#Implementation code / UndefinedcRd0h1
+200    a.7bDĺžka indikátora#Délka indikátoru#Indicator LengthcRd0h1
+200    a.8bDĺžka kódu podpoľa#Délka identifikátoru podpole#Subfield Identifier LengthcRd0h1
+200    a.9bAdresa bázy údajov#Bázová adresa údajů#Base Address of DatacRd0h5
+200    a.10bKód úrovne tvorby zápisu / záznamu#Úroveň úplnosti záznamu#Enconding LevelcRd0eST,UN_T000A_10fST,UN_T000A_10h1
+200    a.11bForma popisnej katalogizácie#Forma katalogizačního popisu (z hlediska souladu s ISBD)#Descriptive Cataloguing FormcRd0eST,UN_T000A_11fST,UN_T000A_11h1
+200    a.12bNedefinovaná#Nedefinováno#UndefinedcRd0h1
+200    a.13bMapa adresára / Dĺžka poľa#Mapa adresáře / Délka " délky pole "#Directory Map / Length of FieldcRd0h1
+200    a.14bMapa adresára / Pozícia prvého znaku#Mapa adresáře / Délka " počáteční pozice "#Directory Map / Starting Character PositioncRd0h1
+200    a.15bMapa adresára / Dĺžka aplikačnej časti#Mapa adresáře / Délka implementačně definové části#Directory Map / Length of Implementation-defined PortioncRd0h1
+200    a.16bMapa adresára / Nedefinovaná#Mapa adresáře / Nedefinován#Directory Map / UndefinedcRd0h1
+###
+# @id UN_TAGMAP UNH_001
+100    aIdentifikačné číslo záznamu#Identifikační číslo záznamu#Identification record numberb0c0
+200    a.bIdentifikačné číslo záznamu#Identifikační číslo záznamu#Identification record numbercRd0
+###
+# @id UN_TAGMAP UNH_005
+100    aDátum posledného spracovania záznamu#Datum posledního zpracování záznamu#Date and time of latest transactionb0c0
+200    a.bDátum posledného spracovania záznamu#Datum posledního zpracování záznamu#Date and time of latest transactioncOd0
+###
+# @id UN_TAGMAP UNH_100
+002    12.02.19 js; doplnene nove podpole $u pre umiestnenie - oznacenie regalu
+002    15.03.10 js; opraveny preklep v cze popise $t
+002    09.12.08 jr; doplnena validace lokace,dislokace
+100    aIdentifikace holdingu#Identifikace holdingu#Holding identificationb0c1
+200    abbČiarový kód#Čárový kód#BarcodecOd0
+200    atbPrírastkové číslo#Přírůstkové číslo#Track numbercOd0
+200    afbPrírastkové číslo suffix#Přírůstkové číslo suffix#Track number suffix partcOd0
+200    asbSignatúra#Signatura#Calll numbercOd0
+200    albLokácia#Lokace#LocationcRd0eSTX,LOCATIONfSTX,LOCATION
+200    adbDislokácia#Dislokace#DislocationcOd0eSTX,DISLOCATIONfSTX,DISLOCATION
+200    arbKnižnica#Knihovna#LibrarycOd0
+200    aibInterný kód#Interní kód#Internal codecOd0eSTX,INT_CODEkPBS,l_un_auth^2497,250a
+200    aubOznačenie regálu#Označení regálu#Shelf markcOd0
+###
+# @id UN_TAGMAP UNH_200
+002    17.09.14 js; doplnené označenie pre expemplár pre cirkuláciu
+100    aMožnosti výpožičky holdingu#Možnosti výpůjčky holdingu#Possibilities for holding loanb0c1
+200    avbČíslo výpožičky#Číslo výpůjčky#Loan numbercPd0
+200    arbČíslo rezervácie#Číslo rezervace#Reservation numbercPd0
+200    azbČíslo žiadanky#Číslo žádanky#Request numbercPd0
+200    aubUpomienka#Upomínka#Overdue noticecPd0
+200    adbDoba výpožičky#Doba výpůjčky#Loan periodcRd0
+200    apbPosledná upomienka#Poslední upomínka#Last overdue noticecPd0
+200    albBlokovanie#Blokování#LockcOd0eSTX,UNH_200LfSTX,UNH_200LnV-vypozicka,U-upo,R-rez,Z-ziadanka,I-blok.zobrazenia v IPAC
+200    acbOznačenie exemplára pre cirkuláciu seriálov#Označenie exepmláře pro cirkulaci seriálů#Mark of copy for serial circulationcOd0n1-expemlár je určený na cirkuláciu
+###
+# @id UN_TAGMAP UNH_300
+002    18.09.17 js; doplnena validacia v $s
+002    17.10.08 js; doplnene podpole 300q
+100    aPoznánky k holdingu#Poznámky k holdingu#Holding notesb0c1
+200    aibInventarizácia RL#Inventarizace RL#Inventory information from RLcOd0npolia potrebne pre konvertovane z RL
+200    apbĎalšie spracovanie RL#Další zpracování RL#Next processing code RLcOd0npolia potrebne pre konvertovane z RL
+200    ambPoznámka pre výpožičky#Poznámka pro výpůjčky#Note for loanscOd0
+200    anbPoznámka#Poznámka#NotecOd0
+200    aabUžívateľské pole 1#Uživatelské pole 1#Arbitrary note field 1cOd0
+200    abbUžívateľské pole 2#Uživatelské pole 2#Arbitrary note field 2cOd0
+200    acbUžívateľské pole 3#Uživatelské pole 3#Arbitrary note field 3cOd0
+200    adbUžívateľské pole 4#Uživatelské pole 4#Arbitrary note field 4cOd0
+200    aebUžívateľské pole 5#Uživatelské pole 5#Arbitrary note field 5cOd0
+200    afbUžívateľské pole 6#Uživatelské pole 6#Arbitrary note field 6cOd0
+200    aqbPoznámka o úplnosti zväzku periodika#Poznámka o úplnosti svazku periodika#Completeness of serial notecOd0
+200    asbFyzický stav dokumentu#Fyzický stav dokumentu#Condicion of documentcOd0eSTX,CONDITIONfSTX,CONDITION
+200    avbVyraďovací zoznam#Vyřazovací seznam#Dispose listcOd0
+200    awbDôvod vyradenia#Důvod vyřazení#Dispose reasoncOd0
+###
+# @id UN_TAGMAP UNH_400
+002    18.09.17 js; doplnena validacia v $m, $l, $n, $p
+100    aAkvizičné informácie#Akviziční informace#Acquisition informationb0c1
+200    aabDátum príjmu#Datum příjmu#Receiving datecOd0
+200    abbČíslo dodávateľa#Číslo dodavatele#Vendor identification numbercOd0ePBS,UN_AUTH^2487,DFLT_UN_AUTH_210_VfLINK,,l_un_auth^2487g001.,1
+200    acbPredajná cena v mene dodávateľa#Prodejní cena v měně dodavatele#Price in the supplier's currencycOd0ePRICEfPRICE
+200    adbPrepočítaná cena#Přepočítaná cena#Converted pricecOd0ePRICEfPRICE
+200    aebKurz#Kurz#Exchange ratecOd0
+200    afbMenová jednotka#Měnová jednotka#CurrencycOd0
+200    agbDodací list#Dodací list#Packing listcOd0
+200    ahbČíslo faktúry#Číslo faktury#Invoice numbercOd0ePBS,INVOICE^2001,DFLT_INVOICEfLINK,,l_invoice^2001g001.,2
+200    aibČíslo objednávky#Číslo objednávky#Order numbercOd0ePBS,ORDER^2006,DFLT_ORDERfLINK,,l_order^2006g001.,3
+200    ajbPredplatné#Předplatné#Subscription numbercOd0
+200    akbAkvizičná metóda#Akviziční metoda#Acquisition methodcOd0eSTX,ACQM
+200    albPobočka#Pobočka#BranchcOd0eSTX,BRANCHlSTX,BRANCH
+200    ambÚčet#Účet#AccountcOd0eSTX,ACCOUNTfSTX,ACCOUNT
+200    anbZúčtovacie stredisko#Zúčtovací středisko#Accounting centrecOd0eSTX,COST_CENTREfSTX,COST_CENTRE
+200    aobVlastník#Vlastník#OwnercOd0
+200    apbŽiadateľ#Žadatel#OrderercOd0eSTX,REQUESTORfSTX,REQUESTOR
+200    aqbInterné číslo faktúry#Interní číslo faktury#Internal invoice numbercOd0
+200    arbAkvizičná informácia 1#Akviziční informace 1#Arbitrary acquisition information field 1cOd0
+200    asbAkvizičná informácia 2#Akviziční informace 2#Arbitrary acquisition information field 2cOd0
+200    atbAkvizičná informácia 3#Akviziční informace 3#Arbitrary acquisition information field 3cOd0
+200    aubPoznámka k dodávateľovi#Poznámka k dodavateli#Note about vendorcOd0
+200    avbRabat#Rabat#DiscountcOd0
+200    awbCena po zľave#Cena po slevě#Price with discountcOd0ePRICEfPRICE
+200    axbISSN väzba#ISSN vazba#ISSN of bindingcOd0
+200    aybVýrobné číslo#Výrobní číslo#Production numbercOd0
+200    azbURL objednávky#URL objednávky#Order URLcOd0
+200    a1bFormát signatúry#Formát signatury#Signature formatcOd0
+###
+# @id UN_TAGMAP UNH_500
+002    18.09.17 js; doplnena validacia v $b
+100    aInformácie o inventarizácii#Informace o inventarizaci#Information about inventoryc0dO
+200    aabNázov inventarizácie#Název inventarizace#Inventory control namecOd0k2418
+200    abbStatus#Status#StatuscOd0eSTX,INVENTORY_STATUSfSTX,INVENTORY_STATUS
+200    acbDátum a čas#Datum a čas#Date and timecOd0
+200    adbDislokácia#Dislokace#DislocationcOd0
+200    aebLogin#Login#LogincOd0
+200    afbPríznak archivácie inventarizácie#Příznak archivace inventarizace#Inventory archiv statuscOd0
+200    albLokácia#Lokace#LocationcOd0
+200    anbPoznámka#Poznámka#NotecOd0
+200    asbSignatúra#Signatura#Call numbercOd0
+200    atbPrírastkové číslo#Přírůstkové číslo#Track numbercOd0
+###
+# @id UN_TAGMAP UNH_600
+002    13.12.10 js; doplnene podpolia
+002    20.10.10 js; doplnene pole pre potreby SKP - moze sa pouzit aj inde
+100    aPopis holdingu#Popis holdingu#Holding descriptionc0dO
+200    acbSignatúra neviazaných periodík#Signatura nevázaných periodik#Call number of unbound serialscOd0
+200    asbZväzky#Svazky#VolumescOd0
+200    arbRoky (rozpätie rokov)#Roky (rozpětí let)#Years (years range)cOd0
+200    apbPoznámka (neúplné)#Poznámka (neúplné)#Note (incomplete)cOd0
+200    awbOdkaz na lokálny záznam (kód lokálneho záznamu)#Odkaz na lokální záznam (kód lokálního záznamu)#Link to local record (local record identification number)cOd0
+200    albKód lokácie#Kód lokace#Location codecOd0
+200    ambTyp výpožičky#Typ výpůjčky#Loan typecOd0
+200    anbAkvizičná metóda (interný údaj)#Akviziční metoda (interní data)#Acquisition number (internal information)cOd0
+###
+# @id UN_TAGMAP UNH_969
+002    22.01.13 js; upraveny nazov ciselnika
+100    aPomocné interné údaje#Pomocné interní data#Additional internal datab0c0
+200    afbĎalšie spracovanie#Další zpracování#Next processingcOd0eST,ST_UNH_969FfST,ST_UNH_969F
+###
+# @id UN_TAGMAP UNH_990
+002    08.10.21 dk; zalozeno pro ucely uchovani vsech puvodnich dat ZAO, univerzalne pouzitelne pole
+100    a#Tag 990#c0dO
+###
+# @id UN_TAGMAP UNH_991
+002    08.10.21 dk; zalozeno pro ucely uchovani vsech puvodnich dat ZAO, univerzalne pouzitelne pole
+100    a#Tag 991#c0dO
+###
+# @id UN_TAGMAP UNH_999
+100    aInformácie o verzii záznamu#Informace o verzi záznamu#Record version informationc0dO
+200    aabVerzia#Verze#VersioncOd0
+200    abbVlastník záznamu#Vlastník záznamu#Owner of the recordcOd0
+200    acbLokačná skratka#Lokační zkratka#Shorcut of the locationcOd0
+200    adbChronológia#Chronologie#ChronologycOd0
+###

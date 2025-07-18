@@ -13,7 +13,7 @@
 <label for="sender" class="col-form-label"><ipac:tx param="EMAIL_1"/>: <em>*</em></label>
 <div class="half fv-row">
 <input type="email" class="form-control" autocomplete="email" inputmode="email" required="required" name="xemail" id="xemail" value="#(data("EMAIL_V"))#"
-data-fv-email-address="true" data-fv-email-address___message="#(..tx("ERR_EMAIL_VALID"))#" data-fv-not-empty___message="#(..tx("EMAILERR"))#"/>
+data-fv-email-address="true" data-fv-email-address___message="#(..tx("ERR_EMAIL_VALID"))#" data-fv-not-empty___message="#(..tx("EMAILERR"))#">
 </div>
 </div>
 
@@ -33,12 +33,12 @@ data-fv-email-address="true" data-fv-email-address___message="#(..tx("ERR_EMAIL_
 	<csp:if condition=(data("STAV_ZADOSTI")<8)>
 <button type="submit" class="btn btn-primary" name="send" value="1"><ipac:tx param="SEND"/></button>
     </csp:if>
-<input type="hidden" name="idx" value="#(data("idx"))#"/>
-<input type="hidden" name="repo" value="#(data("repo"))#"/>
-<input type="hidden" name="key" value="#(data("key"))#"/>
-<input type="hidden" name="op" value="cavclaimret"/>
-<input type="hidden" name="state" value="#(data("STAV_ZADOSTI"))#"/>
-<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+<input type="hidden" name="idx" value="#(data("idx"))#">
+<input type="hidden" name="repo" value="#(data("repo"))#">
+<input type="hidden" name="key" value="#(data("key"))#">
+<input type="hidden" name="op" value="cavclaimret">
+<input type="hidden" name="state" value="#(data("STAV_ZADOSTI"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
 
 <ipac:dtx param="FORM_DOWN"/>

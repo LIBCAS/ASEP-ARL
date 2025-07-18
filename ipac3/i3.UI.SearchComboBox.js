@@ -1,6 +1,7 @@
 /**
  * Vyhladavaci ComboBox
  *
+ * 20.03.25 on; podpora skryte limity
  * 27.09.23 on; moznost vracet pouze obsah pole jako retezec (ne cely objekt)
  * 27.08.23 on; pridana podminka
  * 29.03.22 on; dotazeni i do jinych poli
@@ -131,7 +132,7 @@ i3.ui.SearchComboBoxFs = Ext.extend(Ext.form.ComboBox, {
             } else {
                 sValue = this.getValue();
             }
-            if (sValue && sValue.length > this.minQueryLength) {
+            if (sValue && (sValue.length > this.minQueryLength)) {
                 // 20.10.21 on; scan
                 if (this.csScan || this.csScanAndSearch) {
                     this.store.setScanQuery(this.store.baseParams.index, sValue);
@@ -140,6 +141,16 @@ i3.ui.SearchComboBoxFs = Ext.extend(Ext.form.ComboBox, {
                         1: this.store.baseParams.index, //'1',
                         5: '1' // // 05.09.11 on; zmena z 4 na 5 = truncation
                     }, sValue);
+                }
+                // 20.03.25 on; podpora skryte limity
+                var sDB = this.store.baseParams.db;
+                var nAttrNo = this.store.baseParams.index;
+                if ((this.colLimitsApplyCB || i3.colLimitsApplyCB) && (sDB.indexOf('I2e') === -1)) {
+                    if (this.colLimitsApplyCB) {
+                        this.colLimitsApplyCB(this.store, /*this.colLimitsData*/ undefined, nAttrNo);
+                    } else if (i3.colLimitsApplyCB) {
+                        i3.colLimitsApplyCB(this.store, /*this.colLimitsData*/ undefined, nAttrNo);
+                    }
                 }
                 //this.store.baseParams.query = "@attr 1=1 @attr 5=1 @attr 4=1 '" + this.getValue() + "'";
                 this.store.load({
@@ -326,7 +337,7 @@ i3.ui.SearchComboBoxFs = Ext.extend(Ext.form.ComboBox, {
                 // 19.06.17 on; pokud je potreba nejak osetrit data pred dotazenim, lze to pres metodu
                 if (ownerFS.csBeforePopulate) {
                     // 24.01.22 on; pridan hledany termin
-                    ownerFS.csBeforePopulate(lin, pRecord, this.value);
+                    ownerFS.csBeforePopulate(lin, pRecord, this.value, this.subtag);
                 }
                 this.populate(ownerFS, lin);
                 // 20.08.12 on; podminka
@@ -591,9 +602,12 @@ i3.ui.SearchComboBox = Ext.extend(i3.ui.SearchComboBoxFs, {
         if (lin) {
             var namsp = this.nameSpace || 'a';
             // 16.06.17 on; pokud je potreba nejak osetrit data pred dotazenim, lze to pres metodu
+            if (this.csBeforePopulate) {
+                this.csBeforePopulate(lin, pRecord, this.values[this.subtag], this.subtag);
+            } else
             if (this.csDataForm && this.csDataForm.csBeforePopulate) {
                 // 26.09.23 on; pridan hledany termin
-                this.csDataForm.csBeforePopulate(lin, pRecord, this.values[this.subtag]);
+                this.csDataForm.csBeforePopulate(lin, pRecord, this.values[this.subtag], this.subtag);
             }
             this.csDataForm.populate(lin, namsp, 'field', {
                 setupAll: false

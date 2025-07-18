@@ -2,15 +2,15 @@
 
 <script data-main="#(..cb(..script(1)_"conf."_data("PAGEID")_".js"))#" src="#(..cb(..script()_"require.js"))#"></script>
 
-<link rel="preconnect" href="https://cache2.obalkyknih.cz/" crossorigin="anonymous"/>
-<link rel="dns-prefetch" href="https://cache2.obalkyknih.cz/"/>
+<link rel="preconnect" href="https://cache2.obalkyknih.cz/" crossorigin="anonymous">
+<link rel="dns-prefetch" href="https://cache2.obalkyknih.cz/">
 
 <csp:if condition=(data("SRCTYPE")="L")>
 <ipac:link rel="alternate" op="result" param="st=feed&feed=rss#(data("URLSELF"))#" type="application/rss+xml" title="#(..tx("RSS_TITLE"))# - RSS 2.0"/>
 </csp:if>
 
 <csp:if condition=($$$I2isOp("LOGORESULT"))>
-<meta property="og:image" content="#(..img(1))#logo-result.jpg"/>
+<meta property="og:image" content="#(..img(1))#logo-result.jpg">
 </csp:if>
 
   <ipac:loop param="PAGING">

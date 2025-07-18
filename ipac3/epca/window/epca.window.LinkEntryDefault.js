@@ -1,4 +1,5 @@
 /**
+ * 13.06.24 on; zmena text ZF
  * 24.09.20 on; vymaz 200v
  * 08.01.20 on; vyjimnka dotazeni TXX tagu
  * 13.12.19 on; prefix subtagu
@@ -644,7 +645,9 @@ epca.window.LinkEntryDefault = Ext.extend(Ext.Window, {
           displayFmt : config.fmt,
           idxlistStoreId : config.idxlistStoreId,
           displayFmtPnl : config.displayFmtList,
-          initUseAttr : config.index
+          initUseAttr : config.index,
+          // 13.06.24 on; zmena text ZF 
+          csDisplayFormatText : epca.Config.User.DisplayFormatText 
         },
         csEditFieldName : '000x',
         csLoadMarcRecord : function(pRecord) {

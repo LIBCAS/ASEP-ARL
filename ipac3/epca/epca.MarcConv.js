@@ -1,4 +1,5 @@
 /*
+ * 23.05.25 on; doplneno pole 801
  * 15.07.11 on; doplnena pole
  * 12.07.11 on; doplnene chybejici pole
  * 21.10.10 on; doplnene pole US_710
@@ -267,6 +268,10 @@ Ext.apply(epca.marcConv, {
             }, {
                 tag: '675',
                 subfields: ['a', 'b', 'c', 'v', 'z', '3']
+            }, {
+                // 23.05.25 on; doplneno
+                tag: '801',
+                subfields: ['i2', 'a', 'b', 'c']
             }, {
                 tag: '810',
                 subfields: ['a', 'b']

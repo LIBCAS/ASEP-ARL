@@ -44,6 +44,8 @@ $skin-user-dir: "../bs1/";
 /// @type URL
 $img-user-dir: "../img/";
 
+$img-dir: "../../../img/";
+
 /// Adresář fontů zákaznika
 /// @name fonts-user-dir
 /// @type URL
@@ -53,6 +55,7 @@ $fonts-user-dir: "../fonts/";
 @import "../../../../../sass/bskin1/_oldbs34";
 @import "../../../../../sass/plugins/mixins";
 @import "../../../../../sass/bskin1/icons";
+@import "../../../../../sass/bskin1/barcode";
 @import "../../../../../sass/plugins/stars-ratings";
 
 ///	Pluginy třetích stran
@@ -100,6 +103,9 @@ $fonts-user-dir: "../fonts/";
 
 /// Tree
 @import "../../../../../sass/plugins/a11yTree";
+
+/// Mapa leaflet
+@import "../../../../../sass/plugins/leaflet/leaflet";
 
 ///	Hlavní části stránky
 @import "../../../../../sass/bskin1/aside";

@@ -1,6 +1,7 @@
 ﻿/**
  * @author Michal Namesny
  *
+ * 04.02.25 on; jina hlaska pro povinne pole
  * 23.11.22 on; csCBParams - jazykova mutace
  * 18.11.22 on; oprava csCBParams
  * 25.02.20 on; moznost zakazat validaci podle ciselniku
@@ -261,6 +262,13 @@ epca.form.CodedDataComboBox = Ext.extend(Ext.form.ComboBox, {
       bValidReq = (this.getValue() !== '');
     } else {
       bValidReq = true;
+    }
+    
+    // 04.02.25 on; jina hlaska pro povinne pole
+    if (!bValidReq) {
+    	this.invalidText = i3.ui.ext.tx.txBlankText;
+    } else {
+    	this.invalidText = i3.ui.ext.tx.txInvalidText;
     }
 
     // 05.03.14 on; zrusene

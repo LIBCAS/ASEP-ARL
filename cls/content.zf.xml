@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2.2 (Build 865_3U)" ts="2022-08-15 12:41:47">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.3 (Build 517U)" ts="2024-11-01 15:31:51">
 <Class name="content.zf">
 <Description><![CDATA[
 <pre> zobrazovaci bloky pro contentServer
 
-; 15.08.22 ln; fix pristupu "S"
+01.11.24 on; zmena lup na https
+20.03.24 on; doplnen prefix "ws1://"
+06.03.24 tt; pridan typ pro zobrazeni - type
+10.01.24 ln; modifikator all pro klienta
+15.08.22 ln; fix pristupu "S"
 08.04.22 ln; rank trideni pres api selectRecAll
 24.03.22 ln; zruseni podpory verze bez bootstrap
 22.12.21 ln; podpora CRank
@@ -36,13 +40,14 @@
 ...
 </pre>]]></Description>
 <IncludeCode>Common,%occCommon,I2</IncludeCode>
-<TimeChanged>66336,45643.458564</TimeChanged>
+<TimeChanged>67145,51069.5997867</TimeChanged>
 <TimeCreated>62188,40801.56001</TimeCreated>
 
 <Method name="fmtContent">
 <Description><![CDATA[
 <pre> blok vypisujici tabulku se soubory contentServeru
 
+10.01.24 ln; modifikator all pro klienta
 15.08.22 ln; fix pristupu "S"
 08.04.22 ln; rank trideni pres api selectRecAll
 22.12.21 ln; podpora CRank
@@ -116,6 +121,9 @@
   w !,"</pre>"  
   */
   
+  ; 10.01.24 ln; modifikator all pro klienta
+  s mall=+$g(par("pm",1,"M=all"))
+  
   ; 03.09.14 ln; filtrace radku podle hodnoty
   s filter=$g(par("pm",1,"M=filter"))
   s fvalue=$p(filter,"-",2)
@@ -125,7 +133,7 @@
   ; 05.06.17 ln; modifikator blank
   s target=""
   s blank=+$g(par("pm",1,"M=blank"))
-  s:blank target=""" data-target=""_blank"
+  s:blank target=""" target=""_blank"
   
   ; 01.09.14 ln; libovolny metadatovy sloupec
   s node=""
@@ -154,11 +162,14 @@
     continue:'mode
     ; 26.09.12 ln; aktualizace imageServeru pri zmene typu 
     s type=$g(array("type")) ; TODO omezit select dotaz
+    ; 10.01.24 ln; modifikator all pro klienta
     ; 31.05.16 ln; cover toc a foto se filtruji vzdy
     ; 23.07.13 ln; podpora pro fotogalerii
-    continue:type="cover" 
-    continue:type="toc"
-    continue:type="foto"
+    if $$$IsSessionI2 || 'mall  {
+      continue:type="cover" 
+      continue:type="toc"
+      continue:type="foto"
+    }
     
     ; 13.10.20 ln; fulltextove solr jadro
     s iset=$$$GETREQVAR("iset")
@@ -281,14 +292,18 @@
       }
     }
     
+    ; 06.03.24 tt; pridan typ pro zobrazeni - type
     s line="CON    "_$c(31)_"i"_icon_$c(31)_"n"_orig_$c(31)_"c"_coment_$c(31)_"v"_version_$c(31)_
       "s"_size_$c(31)_"f"_format_$c(31)_"a"_access_$c(31)_"b"_count_$c(31)_"t"_typeacc_$c(31)_"l"_nusl
       ; 11.11.16 ln; do pole CON pridan repozitar a klic pro symboliky
-      _$c(31)_"r"_repo_$c(31)_"k"_key_$c(31)_"u"_userF
+      _$c(31)_"r"_repo_$c(31)_"k"_key_$c(31)_"u"_userF_$c(31)_"x"_type
     
+    ; 01.11.24 on; zmena na https
+    ; 20.03.24 on; doplnen prefix "ws1://"
     ; 12.02.19 ln; podpora transfercontent
-    s:bTrans line=line_$c(31)_"A<a title="""_transcont_""" rel=""nofollow"" href=""MOVEFILE*"_repo_"*"_key_""">⮳</a>"
-    
+    ;s:bTrans line=line_$c(31)_"A<a title="""_transcont_""" rel=""nofollow"" href=""ws1://MOVEFILE*"_repo_"*"_key_""">⮳</a>"
+    s:bTrans line=line_$c(31)_"A<a title="""_transcont_""" rel=""nofollow"" href=""https://ws1/MOVEFILE*"_repo_"*"_key_""">⮳</a>"
+        
     ; 01.09.14 ln; libovolny metadatovy sloupec
     s node=""
     f { s node=$o(other(node),1,val) q:node=""      

@@ -1,0 +1,745 @@
+# @id UN_TAGMAP A_UN_TAGMAP_TXT
+002    -
+002    fiktivny tag - histora zmien suboru un_tables_help.txt 
+002    -
+002    20.01.12 js; doplnene oznacenia jazykovych mutacii a vyclenen 9XX a CXX polia
+002    08.12.09 tt; uprava oddelovace zaznamu
+002    17.12.08 tt; opravovani formalnich chyb v souborech
+002    03.11.08 tt; uprava konfiguracnich souboru
+002    22.07.08 on; doplnene chybejici "_"
+002    31.03.08 jk; oprava cestiny
+002    15.01.06 lf; doplnene slo a cze preklady + helpy pre Cxx tagy
+002    21.12.05 js; doplneny slo a cze preklad HELP_UNA_T340, HELP_UNA_T101, HELP_UNA_T102
+002    02.12.05 js; doplneny cze preklad HELP_UNA_T856 (vratane podpoli)
+002    05.10.04 ja; zalozenie A_UN_TAGMAP_TXT, doplnene HELP_UNA_T035,T100A_8,T101,T102,T106,T123,T216,T260,T340,T356,T416,T460,T480,T516,T560,T716,T760,T780,T836,T856
+###
+# @id UN_TABLES HELP_UNA_T000A_2
+200    a1bStatus záznamu (pozícia 5)\n\nKódy sú dostupné na klávesu F2.\n\nc - opravený alebo revidovaný\nd - zrušený\nn - nový záznam
+200    a2b.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T001
+200    a1bIdentifikačné číslo záznamu\n\nPole obsahuje kontrolné číslo záznamu autority pridelené organizáciou vytvá-\nrajúcou, využivajúcou alebo distribuujúcou záznam.\nPole je neopakovateľné.
+200    a2bIdentifikační číslo záznamu\n\nToto pole obsahuje kontrolní číslo záznamu autority, přidělené organizaci\nvytvářející, využívající nebo distribuující záznam.\nPole není opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T005
+200    a1bDátum posledného spracovania záznamu\n\nPole obsahuje 16 znakov určujúcich dátum a čas poslednej transakcie záznamu.\nDátum sa zaznamenáva podľa ISO 2014 a čas podľa ISO 3307. Zápis dátumu do po-\nľa vyžaduje osem numerických znakov (4 pre rok, 2 pre mesiac, 2 pre deň).\nZápis času do poľa vyžaduje tiež osem numerických znakov (2 pre hodiny, 2 pre\nminúty, 2 pre sekundy a 2 pre desatiny sekundy vrátane desatinnej čiarky).\nPole je neopakovateľné.
+200    a2bDatum posledního zpracování záznamu\nToto pole obsahuje 16 znaků, určujících datum a čas poslední transakce zázna-\nmu. Datum se zaznamenáva podle ISO 2014 a čas podle ISO 3307. Zápis data do\npole vyžaduje též osm numerických znaků (4 pro rok, 2 pro měsíc, 2 pro den).\nZápis času do pole vyžaduje též osm numerických znaků (2 pro hodiny, 2 pro\nminuty, 2 pro sekundy a 2 pro desetiny sekundy včetně desetinné čárky).\nPole není opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T015
+200    a1bVyhradené pre ISADN.
+200    a2bMezinárodní standardní číslo dat autorit (ISADN)\n\nVyhrazeno pro ISADN.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T035
+200    a1bThis field contains the control number of records obtained from other sources.
+200    a2bThis field contains the control number of records obtained from other sources.
+200    a3bThis field contains the control number of records obtained from other sources.
+###
+# @id UN_TABLES HELP_UNA_T035A
+200    a1bA code for the organisation in parentheses followed by the system control number for the record in that \n organisation's database. Since there are no internationally accepted codes, the codes from the USMARC \n Code List for Organisations are recommended. Otherwise the full name of the agency or a national code \n may be used. Not repeatable.
+200    a2bA code for the organisation in parentheses followed by the system control number for the record in that \n organisation's database. Since there are no internationally accepted codes, the codes from the USMARC \n Code List for Organisations are recommended. Otherwise the full name of the agency or a national code \n may be used. Not repeatable.
+200    a3bA code for the organisation in parentheses followed by the system control number for the record in that \n organisation's database. Since there are no internationally accepted codes, the codes from the USMARC \n Code List for Organisations are recommended. Otherwise the full name of the agency or a national code \n may be used. Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T100
+200    a1bVšeobecné údaje spracovania - povinné (len určité údaje)\n\nPole obsahuje základné kódované údaje vzťahujúce sa ku všetkým záznamom auto-\nrít. Údaje, ktoré nie sú obsadené kódmi, budú obsahovať výplňové znaky.\nPole je neopakovateľné.
+200    a2bVšeobecná data zpracování - povinné (pouze pro určité datové prvky)\n\nToto pole obsahuje základní kódovaná data vztahující se ke všem záznamům\nautorit. Datové prvky, které nejsou obsazeny kódy, budou obsahovat výplňové\nznaky.\nPole není opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T100A_1
+200    a1bDátum uloženia do súboru (povinné) (pozície 0-7)\n\nOsem numerických znakov, ktoré udávajú dátum, kedy bol záznam uložený do\nsystému, ako indikácia platnosti záznamu. Pri opravách záznamu kvôli chybám\npri zápise alebo editovaní sa dátum nemení. Dátum sa delí na tri časti: prvá\nštvorznaková časť reprezentuje roky a ďalšie dve po dvoch znakoch reprezentu-\njú mesiac a deň.\n\nPríklad:\nOctober 5, 1967:  19671005
+200    a2bDatum uložení do souboru (povinné) (pozice 0-7)\n\nOsm numerických znaků, které udávají datum, kdy byl záznam uložen do systému,\njako indikaci platnosti záznamu. Při opravách záznamu kvůli chybám při zápisu\nnebo editování se datum nemění. Datum se dělí na tři části:\nprvní čtyřznaková část reprezentuje roky a další dvě po dvou znacích repre-\nzentují měsíc a den.\n\nPříklad:\nOctober 5, 1967:               19671005
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T100A_2
+200    a1bKód statusu autoritatívneho záhlavia (pozícia 8)\n\nJednoznakový alfabetický kód sa používa na určenie úrovne stanovenia záhlavia\nautoritatívneho hesla.\n\nPoznámka: Tento údaj by nemal byť zamieňaný s úrovňou úplnosti v návestí záz-\nnamu, ktorá sa vzťahuje k úplnosti daného záznamu.\n\na = definitívne (t.j. záhlavie je definitívne stanovené)\n\nc = dočasné (t.j. záhlavie nemôže byť stanovené definitívne z dôvodu nedostat-\nku adekvátnych informácií; keď sa záhlavie použije nabudúce, malo by sa\njeho použitie zvážiť z hľadiska ďalších informácií)\n\nx = nie je použiteľné (t.j. záznam je záznamom odkazového alebo všeobecne\nvysvetľujúceho hesla, a preto pole 2-- pre záhlavie záznamu hesla obsa-\nhuje variantné záhlavie).\n\nKódy sú dostupné na klávesu F2.
+200    a2bKód statusu autoritního záhlaví (pozice 8)\n\nJednoznakový alfabetický kód se užívá k určení úrovně zavedení záhlaví auto-\nritního hesla.\nPoznámka: Tento datový prvek by neměl být zaměňován s úrovní úplnosti v návěš-\ntí záznamu, která se vztahuje k úplnosti daného záznamu.\n\na = definitivní (tj. záhlaví je zavedeno jako definitivní)\n\nc = prozatímní (tj. záhlaví nemůže být definitivně zavedeno z důvodu nedostat-\nku adekvátních informací; když se záhlaví užije příště, mělo by být po-\nužití znovu zváženo ve světle dalších informací)\n\nx = není použitelné (tj. záznam je záznamem odkazového nebo všeobecně vysvět-\nlujícího hesla, a proto pole 2-- pro záhlaví záznamu hesla obsahuje va-\nriantní záhlaví)
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T100A_3
+200    a1bJazyk katalogizácie (povinné) (pozície 9-11)\n\nTrojznakový kód označuje jazyk použitý pri katalogizácii. Záhlavie bloku 2--\nsa objavuje v podobe, akú malo v katalógu, založenom na tu špecifikovanom ja-\nzyku. Poznámky a ďalšie inštruktážne informácie sú v jazyku katalogizácie.\nPre túto pozíciu sa používajú Kódy jazykov UNIMARC. Kódy jazykov sú uvedené\nv prílohe A UNIMARC: Bibliografický formát.\nSamotné záhlavie môže byť i v jazyku odlišnom od jazyka katalogizácie. Napr.\npodľa niektorých katalogizačných pravidiel by bol unifikovaný názov pre fran-\ncúzske anonymné diela stanovený vo francúzštine bez ohľadu na jazyk katalogi-\nzácie.
+200    a2bJazyk katalogizace (povinný) (pozice 9-11)\n\nTříznakový kód označuje jazyk užitý při katalogizaci. Záhlaví bloku 2-- se\nobjevuje v podobě, jakou by mělo v katalogu, založeném na zde specifikovaném\njazyku. Také poznámky nebo další návodné informace jsou v jazyce katalogizace.\nPro tuto pozici se užívají Kódy jazyků UNIMARC. Kódy jsou uvedeny v Příloze\nA UNIMARC: Bibliografický formát.\nSamotné záhlaví může být i v jazyce odlišném od jazyku katalogizace. Např.\npodle některých katalogizačních pravidel by byl unifikovaný název pro fran-\ncouzská anonymní díla ustaven ve francouzštině bez ohledu na jazyk katalogi-\nzace.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T100A_4
+200    a1bKód transliterácie (pozícia 12)\n\nJednoznakový kód označujúci systém transliterácie použitý pre záhlavie v blo-\nku 2-- záznamu.\n\na = transliterácia ISO\nb = iná\nc = viac transliterácií: ISO alebo iný systém\ny = nie je použitý žiadny systém transliterácie
+200    a2bKód transliterace (pozice 12)\n\nJednoznakový kód označující systém transliterace užitý pro záhlaví v bloku\n2-- záznamu.\n\na = transliterace ISO\nb = jiná\nc = více transliterací: ISO nebo jiný systém\ny = není užit žádný systém transliterace
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T100A_5
+200    a1bZnaková sada (povinné) (pozície 13-16)\n\nŠtyri znaky označujú hlavnú sadu grafických znakov použitých v zázname. Pozí-\ncie 13-14 označujú sadu G0 a pozície 15-16 označujú sadu G1. Ak sada G1 nie\nje potrebná, pozície 15-16 obsahujú medzery.\n\n01 = ISO 646, verzia IRV (latinka - základná sada)\n02 = ISO registrácia #37 (cyrilika - základná sada)\n03 = ISO 5426 (latinka - rozšírená sada)\n04 = ISO 5427 (cyrilika - rozšírená sada)\n05 = ISO 5428 (grécka abeceda)\n06 = ISO 6438 (africká kódovaná znaková sada)\n\nPríklady:\n\nPrenos v 8-bitovom kóde so sadou G0 podľa ISO 646 a sadou G1 podľa ISO pre\nrozšírenú latinku: 0103\nPrenos v 8-bitovom kóde vytvorenom zo základnej a rozšírenej cyriliky: 0204\nPrenos v 7-bitovom kóde s použitím iba ISO 646: 01íí
+200    a2bZnaková sada (povinné) (pozice 13-16)\n\nTyto čtyři znaky označují hlavní sadu grafických znaků užitých v záznamu.\nPozice 13-14 označuje sadu G0 a pozice 15-16 označuje sadu G1. Jestliže\nsada G1 není zapotřebí, pozice 15-16 obsahují mezery.\n\n01 = ISO 646, verze IRV (latinka - základní sada)\n02 = ISO registrace #37 (cyrilice - základní sada)\n03 = ISO 5426 (latinka - rozšířená sada)\n04 = ISO 5427 (cyrilice - rozšířená sada)\n05 = ISO 5428 (řecká abeceda)\n06 = ISO 6438 (africká kódovaná znaková sada)\n\nPříklady:\nPřenos v 8-bitovém kódu se sadou G0 podle ISO 646 a sadou G1 podle ISO pro\nrozšířenou latinku: 0103\nPřenos v 8-bitovém kódu vytvořeném ze základní a rozšířené cyrilice: 0204\nPřenos v 7-bitovém kódu s užitím pouze ISO 646: 01íí
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T100A_6
+200    a1bDoplnková znaková sada (pozície 17-20)\n\nDva dvojznakové kódy označujú až dve doplnkové znakové sady použité v komu-\nnikácii záznamov. Kódy sú totožné s kódmi na pozíciách 13-16. Pozície 17-18\noznačujú sadu G2 a pozície 19-20 označujú sadu G3. Ak nie sú potrebné do-\nplnkové znakové sady, byty obsahujú medzery. (Príloha F k UNIMARC: Bibliogra-\nfický formát popisuje požadovaný postup, ak majú byť uvedené viac než štyri\nznakové sady). Ak sa nepoužívajú doplnkové sady, tieto štyri pozície obsahu-\njú medzery.
+200    a2bDoplňková znaková sada (pozice 17-20)\n\nDva dvouznakové kódy označují až dvě doplňkové sady užité v komunikaci zázna-\nmů. Kódy jsou totožné s kódy na pozicích 13 - 16. Pozice 17 - 18 označují sa-\ndu G2 a pozice 19 - 20 označují sadu G3. Jestliže není zapotřebí doplňkových\nznakových sad, byty obsahují mezery. (Příloha F k UNIMARC: Bibliografický\nformát popisuje požadovaný postup, musí-li být uvedeny více než čtyři znakové\nsady.) Jestliže se neužívají doplňkové sady, obsahují tyto čtyři pozice meze-\nry.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T100A_7
+200    a1bPísmo katalogizácie (pozície 21-22)\n\nDvojznakový kód označujúci písmo použité pri katalogizácii. V tomto písme sa\nobjavuje záhlavie záznamu 2--, rovnako ako poznámky a ďalšie inštruktážne\ninformácie.\n\nba = latinka\nca = cyrilika\nda = japonské písmo (nešpecifikované)\ndb = japonské písmo (kandži)\ndc = japonské písmo (kana)\nea = čínske písmo\nfa = arabské písmo\nga = grécke písmo\nha = hebrejské písmo\nia = thajské písmo\nja = devanagari\nka = kórejské písmo\nla = tamilské písmo\nzz = iné písmo
+200    a2bPísmo katalogizace (pozice 21-22)\n\nDvouznakový kód označující písmo použité při katalogizaci. V tomto písmu se\nobjevuje záhlaví záznamu v bloku 2--, stejně jako poznámky a další návodné\ninformace.\n\nba = latinka\nca = cyrilice\nda = japonské písmo (nespecifické)\ndb = japonské písmo (kandži)\ndc = japonské písmo (kana)\nea = čínské písmo\nfa = arabské písmo\nga = řecké písmo\nha = hebrejské písmo\nia = thajské písmo\nja = devanagari\nka = korejské písmo\nla = tamilské písmo\nzz = jiné písmo
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T100A_8
+200    a1bJednoznakový kód určujúci smer písma použitého pri katalogizácii,\n t.j. písma obsiahnutého v znakoch pozícii 100/21-22\n 
+200    a2bJednoznakový kod určující směr písma katalogizace,\n písma nacházející se ve znacích pozice 100/21-22\n 
+200    a3bA single-character code indicates the direction of the script used in cataloguing,\n as coded in character positions 100/21-22\n 
+###
+# @id UN_TABLES HELP_UNA_T101
+200    a1bPole obsahuje kódovanú informáciu vzťahujúcu sa k jazyku alebo jazykom, ktoré používa entita identifikovaná v poliach 2--. Touto entitou môže byť autor (t.j. osoba, korporácia, rod - rodina) alebo dielo.
+200    a2bPole obsahuje kódovanou informaci vztahující se k jazyku nebo jazykům, které používá entita identifikovaná v polích 2--. Entitou může být autor (t.j. osoba, korporace, rod) nebo dílo.
+200    a3bThis field contains coded information relating to the language or languages used by the entity\n identified by 2--. The entity may be an author (i.e., a person, a family, a corporate body) or a work.
+###
+# @id UN_TABLES HELP_UNA_T102
+200    a1bPole obsahuje kódované informácie vzťahujce sa k národnosti osoby, korporácie, rodiny/rodu a obchodnej značky.
+200    a2bPole obsahuje kódované informace vztahující se k národnosti osoby, korporace, rodiny/rodu a obchodní značce.
+200    a3bThis field contains coded information relating to the nationality of a person,\n  corporate body, family, a trademark.
+###
+# @id UN_TABLES HELP_UNA_T106
+200    a1bPole kódovaných údajov: Osoba/Korporácia/Rodina/rod/Obchodná značka\n používané ako predmetové heslo. Pole obsahuje kódované údaje pevnej dĺžky vzťahujúce sa na používanie záhlavia ako predmetového hesla.\nMožno ho aplikovať na osobné meno, názov korporácie, rodinné meno alebo obchodnú značku.
+200    a2bThis field contains fixed length coded data relating to the use of the heading\n as subject heading. It is applicable to a name of person, a corporate body, family\n or  a trademark.
+200    a3bThis field contains fixed length coded data relating to the use of the heading\n as subject heading. It is applicable to a name of person, a corporate body, family\n or  a trademark.
+###
+# @id UN_TABLES HELP_UNA_T120
+200    a1bPole kódovaných údajov - osobné meno.\nPole obsahuje kódované údaje pevnej dĺžky aplikovateľné pre autoritatívne záznamy, ktoré obsahujú pole 200.\nPole je nepovinné a neopakovateľné.
+200    a2bThis field contains fixed length coded data applicable to authority records in which tag 200 is present.
+200    a3bThis field contains fixed length coded data applicable to authority records in which tag 200 is present.
+###
+# @id UN_TABLES HELP_UNA_T123
+200    a1bPole kódovaných údajov - teritoriálny alebo geografický názov.\nPole obsahuje súradnice entity zapísanej v bloku 2-- (t.j. 215, 260).\nPole je nepovinné, opakovateľné.	
+200    a2bThis field contains the co-ordinate data of the entity described in block 2--.	
+200    a3bThis field contains the co-ordinate data of the entity described in block 2--.	
+###
+# @id UN_TABLES HELP_UNA_T150
+200    a1bPole kódovaných údajov pre mená\n\nAk je záhlavím v poli bloku 2-- meno (osobné, meno korporácie, akcie, rodiny\n(rodu) alebo geografické meno), potom sa používa pole kódovaných údajov na\nposkytnutie doplnkových informácií o mene.\nPole je neopakovateľné.
+200    a2bPole kódovaných dat pro jména\n\nJe-li záhlavím v poli bloku 2-- jméno (osobní jméno, jméno korporace, akce,\nrodiny (rodu) nebo geografické jméno), pak se používa pole kódovaných dat k\nposkytnutí doplňkových informací o jménu.\nPole není opakovatelné.
+200    a3b. 
+###
+# @id UN_TABLES HELP_UNA_T150A_1
+200    a1bTyp vládnej agentúry (pozícia 0)\n\nJednoznakový kód, ktorý označuje, či ide o záhlavie pre vládnu agentúru.\n(Akademické inštitúcie sa nepovažujú za vládnu agentúru.)\n\na = federálna / národná\nb = štátna / oblastná\nc = krajská / okresná\nd = lokálna (mestská atď.)\ne = pôsobiaca vo viacerých lokalitách (na nižšej než národnej úrovni)\nf = medzivládna\ng = vládna exilová alebo utajená\nh = úroveň nie je určená\ny = nejde o vládnu agentúru\nz = iná vládna úrove
+200    a2bTyp vládní agentury (pozice 0)\n\nJednoznakový kód, který označuje, zda se jedná o záhlaví pro vládní agenturu.\n(Akademické instituce nejsou považovány za vládní agentury.)\n\na = federální / národní\nb = státní / oblastní\nc = krajská / okresní\nd = lokální (městská atd.)\ne = působící ve více lokalitách (na nižší než národní úrovni)\nf = mezivládní\ng = vládní exilová nebo utajená\nh = úroveň není určena\ny = nejedná se o vládní agenturu\nz = jiná vládní úroveň
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T152
+200    a1bPravidlá\n\nPole identifikuje systém pravidiel, podľa ktorých bolo formulované záhlavie\nv bloku 2-- a sprievodná štruktúra odkazov.\nPole je neopakovateľné.
+200    a2bPravidla\n\nToto pole identifikuje systém pravidel, podle nichž bylo formulováno záhlaví\nv bloku 2-- a doprovodná struktura odkazů.\nPole není opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T152A
+200    a1bKatalogizačné pravidlá\n\nPodpole $a identifikuje katalogizačné pravidlá použité pri formulácii štruk-\ntúry záhlavia a/alebo odkazu. Malo by byť použiteľné pre väčšinu mien, náz-\nvov a mien/názvov. Katalogizačné  pravidlá by mali byť špecifikované pomocou\nkódov v Prílohe H UNIMARC: Bibliografický formát, alebo by sa mal uviesť ú-\nplný názov pravidiel. Pri zobrazení sa môžu použiť kódy na to, aby sa gene-\nrovali skratky špecifikované v Guidelines for Authority and Reference\nEntries, Príloha C.
+200    a2bKatalogizační pravidla\n\nPodpole $a identifikuje katalogizační pravidla použitá pro formulaci struktu-\nry záhlaví a/nebo odkazu. Mělo by být použitelné pro většinu jmen, názvů a\njmen/názvů. Katalogizační pravidla by měla být specifikována pomocí kódů v\nPříloze H UNIMARC: Bibliografický formát, nebo by se měl uvést plný název\npravidel. Při zobrazení mohou být použity kódy k tomu, aby byly generovány\nzkratky specifikované v Guidelines for Authority and Reference Entries, Pří-\nloha C.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T152B
+200    a1bSystém vecného spracovania\n\nPodpole $b identifikuje systém vecného spracovania použitého pri formulácii\nštruktúry záhlavia/odkazu. Toto podpole sa používa najmä pre predmetové heslá,\nmôže sa však uplatniť tiež pri menách a názvoch. V niektorých systémoch môže\nbyť štruktúra záhlavia a/alebo odkazu forulovaná podľa katalogizačných\npravidiel a použitá aj v systéme vecného spracovania. Takto môže byť meno\nkódované ako pre pravidlá menného popisu, tak pre systém vecného spracovania.\nSystém sa môže označiť kódmi z Prílohy G UNIMARC: Bibliografický formát alebo\núplným názvom tezauru.
+200    a2bSystém věcného zpracování\n\nPodpole $b identifikuje systém věcného zpracování užitý pro formulaci struk-\ntury záhlaví/odkazu. Toto podpole se používá hlavně pro věcná témata, může\nse však uplatnit také u jmen a názvů. V některých systémech může být struktura\nzáhlaví a/nebo odkazu formulována podle katalogizačních pravidel a použita\ntéž v systému věcného zpracování. Tak může být jméno kódováno jak pro pravid-\nla jmenného popisu, tak pro systém věcného zpracování. Systém může být označen\nkódy Přílohy G UNIMARC: Bibliografický formát nebo plným názvem tezauru.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T154
+200    a1bPole kódovaných údajov pre unifikované názvy\n\nAk je záhlavím v poli 2-- unifikovaný názov, potom sa na poskytnutie doplnko-\nvých informácií používa toto pole kódovaných údajov.\nPole je neopakovateľné.
+200    a2bPole kódovaných dat pro unifikované názvy\n\nJe-li záhlavím v poli 2-- unifikovaný název, pak se k poskytnutí doplňkových\ninformací používa toto pole kódovaných dat.\nPole není opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T154A_1
+200    a1bKód typu edície (pozícia 0)\n\nJednoznakový kód označuje typ edície, ak je záhlavím unifikovaný názov edície.\n\na = monografická edícia\nb = viaczväzková popisná jednotka (napr. súbory/súpravy, partitúra a party,\nviaczväzková monografia)\nc = označenie podobné označeniu edície (nepokladá sa za edíciu)\nz = iné
+200    a2bKód typu edice (pozice 0)\n\nJednoznakový kód označuje typ edice, je-li záhlavím unifikovaný název edice.\n\na = monografická edice\nb = vícedílná popisná jednotka (např. soubory/soupravy, partitura a party,\nvíce svazková monografie)\nc = označení podobné označení edice (nepokládá se za edici)\nz = jiné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T160
+200    a1bKód geografickej oblasti\n\nPole obsahuje kód geografickej oblasti, ak sa k záhlaviu viaže určitá geogra-\nfická oblasť. Schéma kódu zahŕňa 7 znakov - abecedných znakov a pomlčiek - a\npokiaľ je to možné, poskytuje informáciu o hierarchických vzťahoch medzi geo-\ngrafickými a politickými oblasťami. Používajú sa kódy geografických oblastí\nUNIMARC. Ich zoznam je obsahom Prílohy D UNIMARC: Bibliografický formát.\nPole je neopakovateľné.
+200    a2bKód geografické oblasti\n\nToto pole obsahuje kód geografické oblasti, pojí-li se nějaká geografická\noblast k záhlaví. Schéma kódu zahrnuje 7 znaků a pomlček - a, pokud je to\nmožné, poskytuje informace o hierarchických vztazích mezi geografickými a\npolitickými oblastmi. Užívá se kódů geografických oblastí UNIMARC. Jejich\nseznam je obsahem Přílohy D UNIMARC: Bibliografický formát.\nPole není opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T200
+200    a1bAutoritatívne záhlavie - osobné meno\n\nPole obsahuje osobné meno ako autoritatívne záhlavie.\nPole je opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - osobní jméno\n\nToto pole obsahuje osobní jméno jako záhlaví. Pole je opakovatelné pro\nalternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2000
+200    a1bInštrukčná fráza\n\nPodpole $0 (nula) obsahuje špeciálnu uvádzaciu frázu, ktorá môže byť použitá\npri zobrazení smerovania ako odkaz. Inštrukčná fráza môže slúžiť namiesto\nvzťahového kódu v podpoli $5 alebo ako doplnok k nemu. Fráza môže byť použi-\ntá v poliach smerovania odkazov blokov 4-- a 5--. Ďalšie informácie o použi-\ntí tohto a príbuzných podpolí pozri Pokyny pre použitie, (11), Zobrazenie\nodkazovývh a autoritatívnych hesiel.\n\nPoznámka: Inštrukčná fráza slúži na uvedenie záhlavia z poľa 200 v odkaze ge-\nnerovanom zo smerovania odkazu.
+200    a2bInstrukční fráze\n\nToto podpole $0 (nula) obsahuje speciální uvozující frázi, která může být\npoužita při zobrazení směrování jako odkazu. Instrukční fráze může sloužit\nmísto vztahového kódu v podpoli $5 nebo jako doplněk k němu. Fráze může být\nužita v polích směrování odkazů bloků 4-- a 5--. Další informace o použití\ntohoto a příbuzných podpolí viz kapitoly Pokyny pro použití, (11), Zobrazení\nodkazových a autoritních hesel.\n\nPoznámka: Instrukční fráze slouží pro uvedení záhlaví z pole 200 v odkazu,\ngenerovaném ze směrování odkazu.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2002
+200    a1bKód systému vecného spracovania\n\nPodpole identifikuje systém vecného spracovania, ku ktorému patrí smerovanie\nalebo záhlavie (1), ak sa odlišuje od záhlavia záznamu špecifikovaného v poli\n152, $b alebo (2) ak sa smerovanie predmetového hesla objavuje v zázname\nmenného alebo názvového autoritatívneho hesla, ktorého záhlavie nie je vhodné\nna použitie ako predmetu. Obyčajne je záhlavie pre predmetové heslo a jeho\nsmerovanie súčasťou systému vecného spracovania špecifikovaného v poli 152,\n$b, avšak záhlavia, ktoré by sa objavili v inom systéme vecného spracovania,\nmôžu byť použité ako smerovania odkazov na zabezpečenie prepojenia medzi sys-\ntémami.\nKód systému vecného spracovania môže byť použitý v smerovaní odkazu v blokoch\n4-- a 5-- alebo v poliach pre prepojenie záhlaví v bloku 7--. Používa sa\nabecedný kód premenlivej dĺžky s maximálnou dĺžkou sedem znakov. V prílohe\nG UNIMARC: Bibliografický formát sú uvedené kódy, ktoré je možné použiť.\nTáto publikácia zároveň podáva inštrukcie na získanie kódu.
+200    a2bKód systému věcného zpracování\n\nToto podpole identifikuje systém věcného zpracování, ke kterému patří směro-\nvání nebo záhlaví (1), když se liší od záhlaví záznamu, specifikovaného v\npoli 152, $b, nebo (2) když směrování věcného tématu objevuje v záznamu jmen-\nného nebo názvového autoritního hesla, jehož záhlaví není vhodné pro použití\njako předmětu. Obvykle je záhlaví pro věcné téma a jeho směrování součástí\nsystému věcného zpracování, specifikovaného v poli 152, $b, avšak záhlaví,\nkterá by se objevila v jiném systému věcného zpracování, mohou být použita\njako směrování odkazů pro zajištění propojení mezi systémy.\nKód systému věcného zpracování může být použit ve směrování odkazu v blocích\n4-- a 5-- nebo v polích pro propojení záhlaví v bloku 7--. Užívá se abecední\nkód proměnné délky s maximální délkou sedm znaků. V příloze G UNIMARC: Biblio-\ngrafický formát jsou uvedeny kódy, které lze použít. Tato publikace zároveň\npodáva instrukce pro získaní kódu.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2003
+200    a1bČíslo záznamu\n\nPodpole identifikuje záznam, v ktorom je použité záhlavie v poli záhlavia v\nbloku 2-. Môže byť použité v poliach 5-- smerovanie odkazu " pozri aj ", v\npoliach pre prepojenie záhlavia v bloku 7-- a v poliach 4-- smerovanie odkazu\n" pozri ". V poliach 5-- a 7-- je súvisiaci záznam záznamom autoritatívneho\nhesla. V poliach 4-- smerovanie odkazu " pozri " je súvisiaci záznam záznamom\nodkazu, ktorý sa používa na zobrazenie s prednostným generovaním zobrazenia\nz polí 4--. Podpolia $3 sa môžu použiť v poli 4--, keď 4-- tiež obsahuje pod-\npole $5 (Riadenie smerovania), v ktorom pozícia 1 (Kód potlačenia odkazu)\nobsahuje hodnotu 0 (potlačenie odkazu.
+200    a2bČíslo záznamu\n\nToto podpole identifikuje záznam, ve kterém je použité záhlaví v poli záhlavím\nv bloku 2--. Může být užito v polích 5-- směrování odkazu " viz též ", v po-\nlích pro propojení záhlaví v bloku 7-- a v polích 4-- směrování odkazu\n" viz ". V polích 5-- a 6-- je související záznam záznamem autoritního hesla.\nV polích 4-- směrování odkazu " viz " je související záznam záznamem odkazu,\nkterý se používá pro zobrazení s přednostním generováním zobrazení z polí\n4--. Podpole $3 mohou být použita v poli 4--, když 4-- také obsahuje podpole\n$5 (Řízení směrování), v němž pozice 1 (Kód potlačení odkazu) obsahuje hodno-\ntu 0 (potlačení odkazu).
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2005_1
+200    a1bKód vzťahu (pozícia 0)\n\nPodpole obsahuje kódované údaje pevnej dĺžky vzťahujúce sa k použitiu alebo\nzobrazeniu smerovania odkazov v poliach 4-- a 5-. Pokiaľ nie sú pre dané po-\nlia potrebné zvláštne inštrukcie, kontrolné podpole nemusí byť v takom poli\npoužité. Ak je však použité, potom kódovanie na ľubovoľnej pozícii znamená,\nže každá predchádzajúca pozícia bude tiež explicitne kódovaná. Výplňový znak\nsa môže použiť na ľubovoľnej pozícii a je to žiadúce len preto, že sa využije\nnasledujúca pozícia. Akékoľvek pozície za poslednou požadovanou pre pole sa\nvynechávajú.\nAk nemá byť stanovený zvláštny vzťah a nie je potrebná informácia o potlače-\nní odkazu, podpole $5 sa nevyskytne. Ak je potrebné upozorniť iba na vzťah,\npotom bude podpole $5 obsahovať znak len na jednej pozícii. Ak je potrebný\nlen kód potlačenia odkazu, potom pozícia 0 bude obsahovať výplňový znak.\nAk sú potrebné oba údaje, budú obsahovať platné hodnoty.\nJednoznakový alfabetický kód označuje špecifickú súvislosť medzi smerovaním\na záhlavím záznamu hesla v bloku 2-. Kód vzťahu sa používa na generovanie\ninštrukčnej frázy pri zobrazení odkazu smerovanom v poli (ako je uvedené v\ntabuľke ďalej). Vyjadrený vzťah je tak sémanticky transformovaný na inštrukčnú\nfrázu generovanú pre odkaz. Význam kódu vzťahu sa môže použiť priamo pri zo-\nbrazení záznamu autoritatívneho hesla (pozri príklad ďalej). Použitie zvlášt-\nnej frázy je však pri zobrazení nepovinné. Rovnako je prípustné použitie in-\nštrukcie > alebo >>.\nVzťahový kód sa môže použiť s poľami smerovania odkazu 4-- a 5--. Pre ďalšie\ninformácie o použití tohto a príbuzných podpolí pozri kapitoly Pokyny pre po-\nužitie, (11), Zobrazenie odkazových a autoritatívnych hesiel. Definované sú\nnasledujúce hodnoty kódov:\n\na = predchádzajúce záhlavie\nb = novšie záhlavie\nd = akronym\ne = pseudonym\nf = skutočné meno\ng = nadriadený pojem\nh = podriadený pojem\nz = iné\n\nPríklad inštrukčných fráz generovaných z kódov vzťahov\n(v angličtine / slovenčine):\n\nKód vzťahu              Inštrukčná fráza            Inštrukčná fráza pri\na informácia      pri zobrazení odkazu z poľa     zobrazení odkazu z poľa\no súvislosti               bloku 4--                     bloku 5--\n------------------------------------------------------------------------------\n\na = predchchádza-   see under later heading     see also under later heading\njúce záhlavie   /pozri novšie záhlavie      /pozri aj novšie záhlavie\n\nb = novšie          see under earlier heading   see also under earlier heading\nzáhlavie        /pozri predch. záhlavie     /pozri aj predch. záhlavie\n\nd = akronym         see under expanded form     see also under expanded form\n/pozri rozšírenú formu      /pozri aj rozšírenú formu\n\ne = pseudonym       see under the author'real    see also under the author's\nname / pozri autorovo sku-   real name / pozri autorovo\ntočné meno                   skutočné meno\n\nf = skutočné meno   see under the pseudonym      see also under the pseudonym\n/pozri pseudonym             /pozri aj pseudonym\n\ng = nadriadený      see under narrower term      see also under narrower term\npojem           /pozri podriadený pojem      /pozri aj podriadený pojem\n\nh = podriadený      see under broader term       see also under broader term\npojem           /pozri nadriadený pojem      /pozri aj nadriadený pojem\n\n\nPríklad:\n\nZáznam autoritatívneho hesla:\n210 02$aDunedin Savings Bank\n510 02$5a$aOtago Savings Bank\n\nZobrazenie autoritatívneho hesla:\nDunedin Savings Bank\n<<Otago Savings Bank (earlier Heading) (predchádzajúce záhlavie)\n\nPoznámka: Hodnota " a " v podpoli $5 bola použitá pre zobrazenie informácie\no vzťahu "(predchádzajúce záhlavie)" pri zobrazení tohto záznamu\nautoritatívneho hesla a pre generovanie inštrukčnej frázy pre zobra-\nzenie odkazu uvedeného nižšie.\n\nZobrazenie odkazového hesla:\nOtago Savings Bank\nSee also under later heading (Pozri aj novšie záhlavie):>>Dunedin Savings Bank
+200    a2bKód vztahu (pozice 0)\n\nToto podpole obsahuje kódovaná data pevné délky, vztahující se k užití nebo\nzobrazení směrování odkazů v polích 4-- a 5--. Pokud nejsou pro dané pole\nnutní zvláštní instrukce, řídicí podpole nemusí být v takovém poli použito.\nJe-li použito, pak kódování na libovolné pozici znamená, že každá předchozí\npozice bude též explicitně kódována. Vyplňový znak může být použit na libo-\nvolné pozici, požadované pouze kvůli tomu, že se bude využívat následující\nnásledující pozice. Jakékoli pozice za poslední požadovanou pro pole se vy-\nnechávají.\nJestliže nemá být stanoven zvláštní vztah a není potřebná informace o potla-\nčení odkazu, podpole $5 se nevyskytne. Jestliže je potřebné upozornit pouze\nna vztah, pak bude podpole $5 obsahovat znak pouze na jedné pozici. Je-li po-\ntřebný pouze pro kód potlačení odkazu, pak pozice 0 bude obsahovat výplňový\nznak. Jsou-li potřebný pouze kód potlačení odkazu, pak pozice 0 bude obsahovat\nvýplňový znak. Jsou-li potřebné oba datové prvky, budou oba dosahovat platné\nhodnoty.\nJednoznakový alfabetický kód označuje specifickou souvislost mezi směrováním\na záhlavím záznamu hesla v bloku 2--. Kód vztahu se používa ke generování\ninstrukční fráze při zobrazení odkazu, směrovanému v poli (jak je uvedeno\nv tabulce níže). Vyjádřený vztah je tak sémanticky převeden na instrukční\nfrázi, generovanou pro odkaz. Význam kódu vztahu může být použit přímo při\nzobrazení záznamu autoritního hesla (viz příklad níže). Užití zvláštní fráze\nje však při zobrazení volitelné. Není chybou použít jen instrukci > nebo >>.\nVztahový kód může být použit s poli směrování odkazu 4-- a 5--. Pro další\ninformace o použití tohoto a příbuzných podpolí viz kapitoly Pokyny, (11),\nZobrazení odkazových a autoritních hesel. Jsou definovány nasledující hodnoty\nkódů:\n\na = dřívější záhlaví\nb = novější záhlaví\nd = akronym\ne = pseudonym\nf = skutečné jméno\ng = nadřazený termín\nh = podřazený termín\nz = jiné\n\n\nPříklad instrukčních frází generovaných z kódů vztahů\n(v angličtině / češtině):\n\nKód vztahu             Instrukční fráze               Instrukční fráze\na informace         při zobrazení odkazu           při zobrazení odkazu\no souvislosti          z pole bloku 4--               z pole bloku 5--\n_____________________________________________________________________________\n\na = dřívější           see under later                see also under later\nzáhlaví            heading / viz                  heading / viz též\nnovější záhlaví                novější záhlaví\nb = novější            see under earlier              seee also under earlier\nzáhlaví            heading / viz                  heading / viz též\ndřívější záhlaví               dřívější záhlaví\nd = akronym            see under expanded             see also under expanded\nheading / viz                  heading / viz též\nrozšířený název                rozšířený název\ne = pseudonym          see under the                  see also under the\nauthor's real name /           author's real name /\nviz autorovo skutečné          viz též autorovo\nskutečné jméno                 skutečné jméno\nf = skutečné jméno     see under the                  see also under the\npseudonym / viz                pseudonym / viz též\npseudonym                      pseudonym\ng = nadřazený termín   see under narrower             see under also narrower\nterm / viz podřízený           term / viz též\npodřízený termín               podřízený termín\nh = podřízený termín   see under broader              see under also broader\nterm / viz                     term / viz též\nnadřazený termín               nadřazený termín\n\n\nPříklad:\n\nZáznam autoritního hesla:\n210  02$aDunedin Savings Bank\n510  02$5a$aOtago Savings Bank\n\nZobrazení autoritního hesla:\nDunedin Savings Bank (earlier heading) (dřívější záhlaví)\n\nPoznámka: Hodnota " a " v podpoli $5 byla užita pro zobrazení informace o\nvztahu " (dřívější záhlaví) " při zobrazení tohoto záznamu autoritního hesla\na pro generování instrukční fráze pro zobrazení odkazu uvedeného níže.\n\nZobrazení odkazového hesla:\nOtago Savings Bank\nSee also under later heading (Viz též novější záhlaví): Dunedin Savings Bank
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2005_2
+200    a1bKód potlačenia odkazu (pozícia 1)\n\nPodpole obsahuje kódované údaje pevnej dĺžky vzťahujúce sa k použitiu alebo\nzobrazeniu smerovania odkazov v poliach 4-- a 5-. Pokiaľ nie sú pre dané po-\nlia potrebné zvláštne inštrukcie, kontrolné podpole nemusí byť v takom poli\npoužité. Ak je však použité, potom kódovanie na ľubovoľnej pozícii znamená,\nže každá predchádzajúca pozícia bude tiež explicitne kódovaná. Výplňový znak\nsa môže použiť na ľubovoľnej pozícii a je to žiadúce len preto, že sa využije\nnasledujúca pozícia. Akékoľvek pozície za poslednou požadovanou pre pole sa\nvynechávajú.\nAk nemá byť stanovený zvláštny vzťah a nie je potrebná informácia o potlače-\nní odkazu, podpole $5 sa nevyskytne. Ak je potrebné upozorniť iba na vzťah,\npotom bude podpole $5 obsahovať znak len na jednej pozícii. Ak je potrebný\nlen kód potlačenia odkazu, potom pozícia 0 bude obsahovať výplňový znak.\nAk sú potrebné oba údaje, budú obsahovať platné hodnoty.\nJednoznakový číselný kód, ktorý indikuje, že odkazové heslo nemá byť genero-\nvané automaticky, ak sa vyskytuje v oddelenom zázname odkazového hesla texto-\nvá poznámka k odkazu 310. V obidvoch prípadoch je účelné, aby bola pri zobra-\nzení použitá iba poznámková forma odkazu.\n\n0 = potlačenie odkazu\n\nPríklad:\nZáznam 1 (záznam odkazového hesla)\n210  02$aParibas\n310  0í$aVoir au$bGroupe Paribas$aet á sa compagnie holding de contrôle\nla$bCompagnie financiére de Paribas$aainsi qu' á sese filiales\n\n\nZáznam 2 (záznam autoritatívneho hesla)\n210  02$aGroupe Paribas\n300  0í$aGroupe multinational constitué par: la Compagnie financiére de Pari-\nbas, société holding de contrôle du Groupe; un ensemble de banques; de\nnombreuses participations, en particulier dans des entreprises industriel-\nles et commerciales, regroupées dans des sociétés holding spécialisées\n410  02$5z0$aParibas\n\n\nZáznam 3 (záznam autoritatívneho hesla)\n210  02$aCompagnie financiére de Paribas\n300  0í$aSociété holding de contrôle du Groupe Paribas. Nationalisée en 1982\n410  02$5z0$aParibas
+200    a2bKód potlačení odkazu (pozice 1)\n\nToto podpole obsahuje kódovaná data pevné délky, vztahující se k užití nebo\nzobrazení směrování odkazů v polích 4-- a 5--. Pokud nejsou pro dané pole\nnutné zvláštní instrukce, řídicí podpole nemusí být v takovém poli použito.\nJe-li použito, pak kódování na libovolné pozici znamená, že každá předchozí\npozice bude též explicitně kódována. Výplňový znak může být použit na libo-\nvolné pozici, požadované pouze kvůli tomu, že se bude využívat následující\nnásledující pozice. Jakékoli pozice za poslední požadovanou pro pole se vy-\nnechávají.\n\nJestliže nemá být stanoven zvláštní vztah a není potřebná informace o\npotlačení odkazu, podpole $5 se nevyskytne. Jestliže je potřebné upozornit\npouze na vztah, pak bude podpole $5 obsahovat znak pouze na jedné pozici.\nJe-li potřebný pouze pro kód potlačení odkazu, pak pozice 0 bude obsahovat\nvýplňový znak. Jsou-li potřebný pouze kód potlačení odkazu, pak pozice 0 bude\nobsahovat výplňový znak. Jsou-li potřebné oba datové prvky, budou oba\ndosahovat platné hodnoty.\n\nJednoznakový abecední kód, který indikuje, že odkazové heslo nemá být genero-\nváno automaticky, vyskytuje-li se v odděleném záznamu odkazového hesla texto-\nvá poznámka k odkazu 310. V obou případech je účelem, aby při zobrazení byla\nužita pouze poznámková forma odkazu.\n\n0 = potlačení formy\n\nPříklad:\nZáznam 1 (záznam odkazového hesla)\n210  02$aParibas\n0íaVoir au$bGroupe Paribas$aet a sa compagnie holding de controle\nla$bCompagnie financiere de Paribas$aainsi qu'a ses filiales\n\n\nZáznam 2 (záznam autoritního hesla)\n210  02$aGroupe Paribas\n0í$aGroupe multinational constitué par: la Compagnie finaciere de\nParibas, societé holding de controle du Groupe; un ensemble de banques;\nde nombreuses participations, en particulier dans des enterprises\nindustrielles er commerciales, regroupées dans des sociétés holding\nspécialisées\n410  02$z0$aParibas\n\n\nZáznam 3 (záznam autoritního hesla)\n210  02$aCompagnie financiere de Paribas\n300  0í$aSocieté holding de controle du Groupe Paribas. Nationalisée en 1982\n410  02$5z0$aParibas
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2006_1
+200    a1bKód vysvetľujúci prepojenie (pozícia 0)\n\nPodpole obsahuje informáciu, ktorá umožňuje, aby bolo pole prepojené za úče-\nlom spracovania s inými poľami v zázname hesla. Obidve polia, ktoré majú byť\nprepojené, budú obsahovať podpole $6, tak ako je špecifikované nižšie. Podpole\ntiež obsahuje kód, určujúci dôvod prepojenia. Prvé dva prvky v podpoli musia\nbyť vždy prítomné, keď sa použije podpole, tretí prvok je nepovinný. Toto\npodpole sa môže použiť v informačnej poznámke v bloku 3- a v smerovacích po-\nliach blokov 4-- a 5--.\nKód špecifikuje dôvod prepojenia medzi poľami.\n\na = alternatívne písmo\nz = iný dôvod
+200    a2bKód vysvětlení propojení (pozice 0)\n\nToto podpole obsahuje informaci, která umožňuje, aby bylo propojeno pro úče-\nly zpracování s jinými poli v záznamu hesla. Obě pole, která mají být propo-\njena, budou obsahovat $6 tak, jak je specifikován níže. Podpole také obsahuje\nkód, určující důvod propojení. První dva prvky v podpoli musí být přítomny\nvždy, když je podpole použito, třetí prvek je volitelný. Toto podpole může být\npoužito v informační poznámce v bloku 3-- a ve směrovacích polích bloků 4--\na 5--.\nTento kód specifikuje důvod propojení mezi poli.\n\na = alternativní písmo\nz = jiný důvod
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2006_2
+200    a1bPrepojovacie číslo (pozície 1-2)\n\nPodpole obsahuje informáciu, ktorá umožňuje, aby bolo pole prepojené za úče-\nlom spracovania s inými poľami v zázname hesla. Obidve polia, ktoré majú byť\nprepojené, budú obsahovať podpole $6, tak ako je špecifikované nižšie. Podpole\ntiež obsahuje kód, určujúci dôvod prepojenia. Prvé dva prvky v podpoli musia\nbyť vždy prítomné, keď sa použije podpole, tretí prvok je nepovinný. Toto\npodpole sa môže použiť v informačnej poznámke v bloku 3- a v smerovacích po-\nliach blokov 4-- a 5--.\nDvojciferné číslo sa uvádza v podpoli $6 v každom z polí, ktoré majú byť pre-\npojené. Funkciou prepojovacieho čísla je umožniť spojenie príbuzných polí.\n(Nemá žiadnym spôsobom fungovať ako poradové číslo alebo označenie polohy.)\nPrepojovacie číslo môže byť pridelené náhodne, pokiaľ je identické v každom\nz polí, ktoré majú byť navzájom prepojené a nie je duplikátom čísla, ktoré sa\npoužilo na prepojenie iných skupín polí v zázname hesla.
+200    a2bPropojovací číslo (pozice 1-2)\n\nToto podpole obsahuje informaci, která umožňuje, aby bylo propojeno pro úče-\nly zpracování s jinými poli v záznamu hesla. Obě pole, která mají být propo-\njena, budou obsahovat $6 tak, jak je specifikován níže. Podpole také obsahuje\nkód, určující důvod propojení. První dva prvky v podpoli musí být přítomny\nvždy, když je podpole použito, třetí prvek je volitelný. Toto podpole může být\npoužito v informační poznámce v bloku 3-- a ve směrovacích polích bloků 4--\na 5--.\nToto dvouciferné číslo se uvádí v podpoli $6 v každém z polí, která mají být\npropojena. Funkcí propojovacího čísla je umožnit spojení příbuzných polí.\n(Nemá žádným způsobem fungovat jako pořadové číslo nebo označení polohy.)\nPropojovací číslo může být přidělené náhodně, pokud je identické v každém\nz polí, která mají být navzájem propojena, a není duplikátem čísla, které je\npoužito k propojení jiných skupin polí v záznamu hesla.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2006_3
+200    a1bTag prepojovaného poľa (pozície 3-5)\n\nPodpole obsahuje informáciu, ktorá umožňuje, aby bolo pole prepojené za úče-\nlom spracovania s inými poľami v zázname hesla. Obidve polia, ktoré majú byť\nprepojené, budú obsahovať podpole $6, tak ako je špecifikované nižšie. Podpole\ntiež obsahuje kód, určujúci dôvod prepojenia. Prvé dva prvky v podpoli musia\nbyť vždy prítomné, keď sa použije podpole, tretí prvok je nepovinný. Toto\npodpole sa môže použiť v informačnej poznámke v bloku 3- a v smerovacích po-\nliach blokov 4-- a 5--.\nTento údajový prvok indikuje tag poľa, ku ktorému sa vytvára prepojenie.\nPrvok je nepovinný. Ak tag poľa, ktoré má byť prepojené, je taký istý ako tag\npoľa, s ktorým sa prepája, spravidla sa tento prvok vynechá.\n\nPríklad:\n100  $a,pozície 21-22: ba\n200  í1$aAndo,$bSizuo\n200  í1$7db$a[Osobné meno v japonskej kandži]\n400  í1$6a03$aKasima,$bYasuzo\n400  í1$6a03$7db$a[Osobné meno v japonskej kandži]\n400  í1$6a25$aTakai,$Syozo\n400  í1$6a25$7db$a[Osobné meno v japonskej kandži]\n\nKatalogizačná agentúra uvádza vo svojich záznamoch miestnu formu každého zá-\nhlavia, odkazu a jeho formu v latinke.
+200    a2bTag propojovaného pole (pozice 3-5)\n\nToto podpole obsahuje informaci, která umožňuje, aby bylo propojeno pro úče-\nly zpracování s jinými poli v záznamu hesla. Obě pole, která mají být propo-\njena, budou obsahovat $6 tak, jak je specifikován níže. Podpole také obsahuje\nkód, určujíci důvod propojení. První dva prvky v podpoli musí být přítomny\nvždy, když je podpole použito, třetí prvek je volitelný. Toto podpole může být\npoužito v informační poznámce v bloku 3-- a ve směrovacích polích bloků 4--\na 5--.\nTento datový prvek indikuje tag pole, k němuž je konstruováno propojení. Prvek\nje volitelný. Jestliže tag pole, které má být propojeno, je stejný jako tag\npole, se kterým je propojováno, zpravidla se tento prvek vynechává.\n\nPříklad:\n100  $a, pozice 21-22: ba\n200  í1$aAndo,$bSizmo\n200  í1$7db$a[Osobní jméno v japonské kandži]\n400  í1$6a03$aKato,$bYasuzo\n400  í1$6a03$7db$a[Osobní jméno v japonské kandži)\n400  í1$6a25$aTakai,$bSyozo\n400  í1$6a25$7db$a[Osobní jméno v japonské kandži]\n\nKatalogizační agentura uvádí ve svých záznamech místní formu každého záhlaví,\nodkazu a jeho formu v latince.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2007
+200    a1bPísmo\n\nPodpole špecifikuje písmo údajov v poli, ak sa vyskytuje záhlavie, smerovanie\nalebo poznámka v rôznych písmach, napr. japončina písaná kandži alebo kana,\nhebrejčina písaná hebrejským písmom a latinkou.\nPodpole $7 môže byť použité spolu so záhlavím v poli 2-, informačnou poznám-\nkou v poli 3-, smerovaním v poliach 4- a 5- a v poliach 7- pre prepojenie zá-\nhlaví. Písmo prvého záhlavia v poli 2- a základné písmo všetkých ostatných\npolí, ktoré inak nie je uvedené v podpoli $7, sa uvádza v poli 100 na pozí-\nciách 21-22. Ak je v poliach 2- zapísaných viac záhlaví, potom sú výnimkou pr-\nvého v alternatívnych písmach a budú obsahovať podpole $7 označujúce písmo.\nĎalšie informácie o použití rôznych typov písma pozri Pokyny pre použitie,\n(8) Údaje v alternatívnom písme.\nDvojznakový abecedný kód špecifikuje písmo záhlavia, keď sa identické záhla-\nvie objavuje v zázname v rôznych písmach. Používajú sa nasledujúce hodnoty\nkódov:\n\nba = latinka\nca = cyrilika\nda = japonské písmo - nešpecifikované\ndb = japonské písmo - kandži\ndc = japonské písmo - kana\nea = čínske písmo\nfa = arabské písmo\nga = grécke písmo\nha = hebrejské písmo\nia = thajské písmo\nja = devanagari\nka = kórejské písmo\nla = tamilské písmo\nzz = iné\n\nPríklad:\n100  $a, pozície 21-22: ba\n210  02$aNihon Tosyokan Kyokai\n210  02$7db$a[Názov korporácie v japonskej kandži]
+200    a2bPísmo\n\nToto podpole specifikuje písmo dat v poli, vyskytuje-li se záhlaví, směro-\nvání nebo poznámka v různých písmech, např. japonština psaná kandži nebo ka-\nnou, hebrejština psaná hebrejským písmem a latinkou.\nPodpole $7 může být použito spolu se záhlavím v poli 2--, informační poznám-\nkou v poli 3--, směrováním v polích 4-- a 5-- a v polích 7-- pro propojení\nzáhlaví. Písmo prvního záhlaví v poli 2-- a základní písmo všech ostatních\npolí, které jinak není uvedeno v podpoli $7, se uvádí v poli 100 na pozicích\n21-22. Je-li v polích 2-- zapsáno více než jedno záhlaví, pak jsou s výjim-\nkou prvního v alternativních písmech a budou obsahovat podpole $7 označující\npísmo, Další informace o použití různych typů písma viz Pokyny pro použití,\n(8), Data v alternativním písmu.\nDvouznakový abecední kód specifikuje písmo záhlaví, když se identické záhla-\nví objevuje v záznamu v různých písmech. Užívají se následující hodnoty kó-\ndů:\n\nba = latinka\nca = cyrilice\nda = japonské písmo - nespecifikované\ndb = japonské písmo - kandži\ndc = japonské písmo - kana\nea = čínské písmo\nfa = arabské písmo\nga = řecké písmo\nha = hebrejské písmo\nia = thajské písmo\nja = devanagari\nka = korejské písmo\nla = tamilské písmo\nzz = jiné\n\nPříklad:\n100  $a, pozice 21-22: ba\n210  02$aNihon Tosyokan Kyokai\n210  02$7db$a[Název korporace v japonské kandži]
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T2008
+200    a1bJazyk katalogizácie\n\nPodpole špecifikuje jazyk katalógu, pre ktorý bolo dané záhlavie alebo smero-\nvanie formulované v prípade, že sa odlišuje od jazyka záhlavia záznamu v blo-\nku 2--. Jazyk katalogizácie pre záhlavie záznamu hesla z bloku 2- a tým\ndefinovaný pre všetky údaje, sa uvádza v poli 100. Jazyk sa môže použiť v\nsmerovaní v bloku 4- a v poliach pre prepojenie záhlaví v bloku 6-. Pre ďal-\nšie informácie o jazyku katalogizácie pozri kapitoly Pokyny pre použitie, (8)\nSúbežné údaje.\nTrojznakový abecedný kód špecifikuje jazyk katalógu, pre ktorý je určené zá-\nhlavie v poli. Mali by byť použité kódy jazykov UNIMARC. Kódy sú uvedené v\nPrílohe A UNIMARC: Bibliografický formát.\n\nPríklad:\n\n100 $a,pozície 9-11 = fre\n210 01$aCanada.$bGroupe de travail du Ministre sur la protection des enfants\nen cas d'accidents de véhicules automobiles\n710 01$8eng$aCanada.$bMinister's Task Force on Crash Protection for Infant and\nChild Passengers in Motor Vehicles.
+200    a2bJazyk katalogizace\n\nToto podpole specifikuje jazyk katalogu, pro který bylo dané záhlaví nebo\nsměrování formulováno, v případe, že se liší od jazyka záhlaví záznamu v\nbloku 2--. Jazyk katalogizace pro záhlaví záznamu hesla z bloku 2--, a tím\ndefinovaný pro všechna data se uvádí v poli 100. Jazyk může být použit ve\nsměrování v bloku 4-- a v polích pro propojení záhlaví v bloku 6--. Pro další\ninformace o jazyce katalogizace viz kapitoly Pokyny pro použití, (8), Sou-\nběžná data.\nTříznakový abecední kód specifikuje jazyk katalogu, pro který je určeno zá-\nhlaví v poli. Měly by být použity kódy jazyků UNIMARC. Kódy jsou uvedeny v\nPříloze A UNIMARC: Bibliografický formát.\n\nPříklad:\n100  $a, pozice 9-11 = fre\n210  íí$aCanada,$bGroupe de travail du Ministre sur la protection des enfants\nen cas d'accidents de vehicules automobiles\n710  íí$8eng$aCanada.$bMinister's Task force on Crash Protection for Infant\nand Child Passengers in Motor Vehicles
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T210
+200    a1bAutoritatívne záhlavie - meno korporácie alebo akcie\n\nPole obsahuje meno korporácie alebo akcie ako autoritatívne záhlavie. Geogra-\nfické mená, za ktorými nasleduje vlastné meno korporácie alebo akcie sa pova-\nžujú za mená korporácií alebo akcií (tag 210); samostatné geografické mená\nv spojení len s predmetovým podheslom sa považujú za geografické mená (tag\n215).\nPole je opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - jméno korporace nebo akce\n\nToto pole obsahuje jméno korporace nebo akce jako záhlaví. Geografická jména následo-\nnásledovaná vlastním jménem korporace nebo akce se považují za jména korpora-\ncí nebo akcí (tag 210); samostatná geografická jména ve spojení pouze s před-\nmětným zpřesněním se považují za geografická jména (tag 215).\nPole je opakovatelné pro alternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T215
+200    a1bAutoritatívne záhlavie - geografické meno\n\nPole obsahuje geografické meno ako autoritatívne záhlavie. Samostatné geog-\ngrafické mená v spojení len s predmetovým podheslom sa považujú za geogra-\nfické mená (tag 215); geografické mená, za ktorými nasleduje vlastné meno\nkorporácie alebo akcie, sa považujú za mená korporácií alebo akcií (tag 210).\nPole je opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - geografické jméno\n\nToto pole obsahuje geografické jméno jako záhlaví. Samostatná geografická\njména ve spojení pouze předmětným zpřesněním se považují za geografická\njména (tag 215); geografická jména následovaná vlastním jménem korporace\nnebo akce se považují za jména korporací nebo akcí (tag 210).\nPole je opakovatelné pro alternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T216
+200    a1bAutoritatívne záhlavie - Názov obchodnej značky.\n\nObchodná značka alebo "značka" je rozlišovacie slovo, fráza, logo-\nalebo akýkoľvek iný prostriedok, ktorý môže reprezentovať graficky.-\nPoužíva ho firma alebo spoločnosť na identifikáciu svojich výrobkov alebo služieb-\na odlišuje ich od produktov a služieb vytvorených, predávaných alebo poskytovaných -\nniekým iným. Príklady:  Levi's (obchodná značka firmy Levi Strauss & Co. Pentium (značka Intel Corporation).-\nObchodný názov firmy môže zároveň vystupovať ako jeho značka, napr. Sony Music.-\nIndikátory nie sú definované, prázdne.\n Pole je opakovateľné pre alternatívne formy písma.   
+200    a2bZáhlaví - Název obchodní značky.\n\nObchodná značka alebo "značka" je rozlišovacie slovo, fráza, logo-\nalebo akýkoľvek iný prostriedok, ktorý môže reprezentovať graficky.-\nPoužíva ho firma alebo spoločnosť na identifikáciu svojich výrobkov alebo služieb-\na odlišuje ich od produktov a služieb vytvorených, predávaných alebo poskytovaných -\nniekým iným. Príklady:  Levi's (obchodná značka firmy Levi Strauss & Co. Pentium (značka Intel Corporation).-\nObchodný názov firmy môže zároveň vystupovať ako jeho značka, napr. Sony Music.-\nIndikátory nie sú definované, prázdne.    
+200    a3bThis field contains a trademark name heading. 
+###
+# @id UN_TABLES HELP_UNA_T216A
+200    a1bVstupný prvok - názov obchodnej značky.\nPole nie je opakovateľné.
+200    a2bThe trademark  name in access point form.\n Not repeatable
+200    a3bThe trademark  name in access point form.\n Not repeatable
+###
+# @id UN_TABLES HELP_UNA_T216F
+200    a1bV podpoli f pri tomto type záhlavia uvádzame roky, keď sa určitá obchodná značka používala,\nak sú tieto údaje potrebné ako súčasť záhlavia, napr. ako rozlišovacie kvalifikátory.\nPodpole nie je opakovateľné.
+200    a2bThe dates between which a particular trademark was in use, \n when they  are required as part of the heading,\n for example, as qualifiers.\n Not repeatable
+200    a3bThe dates between which a particular trademark was in use, \n when they  are required as part of the heading,\n for example, as qualifiers.\n Not repeatable
+###
+# @id UN_TABLES HELP_UNA_T216C
+200    a1bDoplnky k menu iné než dátumy.\n Podpole je opakovateľné. 
+200    a2bAny addition to the name of the trademark added by the cataloguer, other than dates (EX 3,4).\n Repeatable. 
+200    a3bAny addition to the name of the trademark added by the cataloguer, other than dates (EX 3,4).\n Repeatable. 
+###
+# @id UN_TABLES HELP_UNA_T216J
+200    a1bPodheslo formy.\nIde o pojem pripájaný k predmetovému heslu na bližšiu špecifikáciu druhu alebo žánru materiálu.\nAgentúry však môžu miesto neho používať podpole $x.\nPodpole je opakovateľné.
+200    a2bA term added to a subject heading to further specify the kind(s) or genre(s) of material.\n Agencies not using this subdivision should use $x instead. Repeatable.
+200    a3bA term added to a subject heading to further specify the kind(s) or genre(s) of material.\n Agencies not using this subdivision should use $x instead. Repeatable.
+###
+# @id UN_TABLES HELP_UNA_T216X
+200    a1bVecné podheslo.\nPodpole je opakovateľné.
+200    a2bA term added to a subject heading to further specify the topic the heading represents\n Repeatable
+200    a3bA term added to a subject heading to further specify the topic the heading represents\n Repeatable
+###
+# @id UN_TABLES HELP_UNA_T216Y
+200    a1bGeografické podheslo.\nPodple je opakovateľné.
+200    a2bA term added to a subject heading to specify a place in relation \n to a trademark which the subject heading represents.
+200    a3bA term added to a subject heading to specify a place in relation \n to a trademark which the subject heading represents.
+###
+# @id UN_TABLES HELP_UNA_T216Z
+200    a1bChronologické podheslo.\n Podpole je opakovateľné.
+200    a2bA term added to a subject heading to specify the period in time in relation\n to a trademark which the subject heading represents.\n Repeatable.
+200    a3bA term added to a subject heading to specify the period in time in relation\n to a trademark which the subject heading represents.\n Repeatable.
+###
+# @id UN_TABLES HELP_UNA_T220
+200    a1bAutoritatívne záhlavie - meno rodiny (rodu)\n\nPole obsahuje meno rodiny (rodu) ako autoritatívne záhlavie.\nPole je opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - jméno rodiny (rodu)\n\nToto pole obsahuje jméno rodiny (rodu) jako záhlaví.\nPole je opakovatelné pro alternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T230
+200    a1bAutoritatívne záhlavie - unifikovaný názov\n\nPole obsahuje unifikovaný názov ako autoritatívne záhlavie. Unifikovaný názov\nje ako záhlavie určený na to, aby spojil záznamy pre vydania jedného diela,\nktoré boli publikované pod rôznymi názvami, alebo názvami častí edície. Pole\nje opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - unifikovaný název\n\nToto pole obsahuje unifikovaný název jako záhlaví. Unifikovaný název je jako\nzáhlaví určen k tomu, aby svedl dohromady záznamy pro vydání jednoho díla,\nkterá byla publikována pod různymi názvy, nebo názvy částí edice.\nPole je opakovatelné pro alternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T235
+200    a1bAutoritatívne záhlavie - skupinový unifikovaný názov\n\nPole obsahuje skupinový unifikovaný názov ako autoritatívne záhlavie. Skupi-\nnový unifikovaný názov ako záhlavie je určený na to, aby spojil záznamy rôz-\nnych diel autora.\nPole sa používa iba v poli 245 Záhlavie - meno / skupinový unifikovaný názov.\nPole je opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - skupinový unifikovaný název\n\nToto pole obsahuje skupinový unifikovaný název jako záhlaví. Skupinový uni-\nfikovaný název jako záhlaví je určen k tomu, aby svedl dohromady záznamy\nrůzných děl autora.\nToto pole se používa pouze v poli 245 Záhlaví - jméno / skupinový unifikovaný\nnázev.\nPole je opakovatelné pro alternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T240
+200    a1bAutoritatívne záhlavie - meno / názov\n\nPole obsahuje meno / názov ako autoritatívne záhlavie. Záhlavie typu meno /\nnázov je určené na to, aby spojilo záznamy pre rôzne vydania toho istého die-\nla alebo časti edície.\nKaždý údaj je označený podľa príslušného údaja z poľa 2--: 200 Autoritatívne\nzáhlavie - osobné meno , 210 Autoritatívne záhlavie - meno korporácie alebo\nakcie, 215 Autoritatívne záhlavie - geografické meno, alebo 220 Autoritatívne\nzáhlavie - meno rodiny (rodu) pre mená; a 230 Autoritatívne záhlavie - unifi-\nkovaný názov pre názov. Tag, indikátory a podpolia údajov pre mená a názvy\nsú vložené v poli 240, kde každému predchádza kód podpoľa $1. Predmetové pod-\nheslo sa uvádza vo vloženom poli názvu.\nAk sú potrebné riadiace podpolia, mali by predchádzať pred prvým podpoľom $1,\nktoré obsahuje vložené údaje (Riadiace podpolia definované pre polia 200, 210,\n215, 220 alebo 230 sa nevkladajú do podpoľa $1.)\nPodrobnejší popis vložených polí je obsiahnutý v UNIMARC: Bibliografický for-\nmát v bloku polí 4--.\nPole je opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - jméno / název\n\nToto pole obsahuje jméno / název jako záhlaví. Záhlaví typu jméno / název je\nurčeno k tomu, aby svedlo dohromady záznamy pro různá vydání téhož díla nebo\nčásti edice.\nKaždý prvek je označen podle příslušného prvku z pole 2--: 200 Záhlaví - o-\nsobní jméno, 210 Záhlaví - jméno korporace nebo akce, 215 Záhlaví - geografic-\nké jméno, nebo 220 Záhlaví - jméno rodiny (rodu) pro jména; a 230 Záhlaví -\nunifikovaný název pro název. Tag, indikátory a datová podpole pro jména a\nnázvy jsou vloženy v poli 240, kde každému předchází identifikátor podpole\n$1. Předmětné zpřesnění se uvádí ve vloženém poli názvu.\nJsou-li zapotřebí řídicí podpole, měla by předcházet před prvním podpolem $1,\nobsahujícím vložená data (Řídicí podpole definovaná pro pole 200, 210, 215,\n220, nebo 230 se nevkládají do podpole $1.)\nDetailnější popis vložených polí je obsažen v UNIMARC: Bibliografický formát\nv bloku polí 4--.\nPole je opakovatelné pro alternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T245
+200    a1bAutoritatívne záhlavie - meno / skupinový unifikovaný názov\n\nPole obsahuje meno / skupinový unifikovaný názov ako autoritatívne záhlavie.\nZáhlavie typu meno / skupinový unifikovaný názov je určené na to, aby spojilo\nzáznamy pre rôzne diela autora.\nKaždý prvok sa označuje podľa príslušného typu poľa 2--: 200 Autoritatívne\nzáhlavie - osobné meno, 210 Autoritatívne záhlavie - meno korporácie alebo\nakcie, 215 Autoritatívne záhlavie - geografické meno, alebo 220 Autoritatív-\nne záhlavie - meno rodiny (rodu) pre mená; a 235 Autoritatívne záhlavie -\nskupinový unifikovaný názov pre názov. Tag, indikátory a údajové podpolia pre\nmená a názvy sú vložené v poli 245, kde každému predchádza identifikátor pod-\npoľa $1. Predmetové heslo sa uvádza vo vloženom poli názvu.\nAk sú potrebné riadiace podpolia, mali by predchádzať pred prvým podpoľom $1,\nktoré obsahuje vložené údaje (Riadiace podpolia definované pre polia 200, 210,\n215, 220 alebo 235 sa nevkladajú do podpoľa $1.)\nPodrobnejší popis vložených polí je obsiahnutý v UNIMARC: Bibliografický for-\nmát v bloku polí 4--.\nPole je opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - jméno / skupinový unifikovaný název\n\nToto pole obsahuje jméno / skupinový název jako záhlaví. Záhlaví typu jméno /\nskupinový unifikovaný název je určen k tomu, aby svedl dohromady záznamy\npro různá díla autora.\nKaždý prvek se označuje podle příslušného typu pole 2--: 200 Záhlaví - osobní\njméno, 210 Záhlaví - jméno korporace nebo akce, 215 Záhlaví - geografické\njméno, nebo 220 Záhlaví - jméno rodiny (rodu) pro jména; a 230 Záhlaví - sku-\npinový unifikovaný název pro skupinový název. Tag, indikátory a datová podpo-\nle jmen a názvů se vkládají v rámci pole 245, kde každému předchází identifi-\nkátor podpole $1. Předmětné zpřesnění se uvádí ve vloženém poli názvu.\nJsou-li zapotřebí řídicí podpole, měla by předcházet před prvním podpole $1\nobsahujícím vložená data. (Řídicí podpole definovaná pro pole 200, 210, 215,\n220 nebo 235 se do podpole $1 nevkládajjí.)\nDetailnější popis vložených polí je obsažen v UNIMARC: Bibliografický formát\nv bloku polí 4--.\nPole je opakovatelné pro alternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T250
+200    a1bAutoritatívne záhlavie - predmetové heslo\n\nPole obsahuje predmetové heslo dokumentu.\nPole je opakovateľné pre alternatívne formy písma.
+200    a2bZáhlaví - věcné téma\n\nToto pole obsahuje věcné téma dokumentu.\nPole je opakovatelné pro alternativní formy písma.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T260
+200    a1bAutoritatívne záhlavie - Miesto pôvodu publikácie.\nPole obsahuje formu prístupového výrazu pre miesto vydania, výroby atď.\n Pole je nepovinné, opakovateľné pre rôzne typy písma.
+200    a2bZáhlaví - místo původu publikace.\n Pole obsahuje formu přístupového výrazu pro místo vydání, výroby atd.\n Pole je nepovinné, opakovatelné pro alternativní formy písma.
+200    a3bThis field contains an access point form of a place of publication,\n production, etc.  The field may include the name of a country,\n state or province, county and/or city.
+###
+# @id UN_TABLES HELP_UNA_T280
+200    a1bAutoritatívne záhlavie - Forma, žáner, fyzická charakteristika.\nPole obsahuje výraz/výrazy označujúce formu, žáner a/alebo fyzickú charakteristiku popisovaných jednotiek,\npoužíva sa ako predmetové heslo.
+200    a2bZáhlaví - forma, žánr, fyzická charakteristika.\nPole obsahuje výraz/výrazy označujúce formu, žáner a/alebo fyzickú charakteristiku popisovaných jednotiek,\npoužíva sa ako predmetové heslo.
+200    a3bThis field contains a term or terms indicating the form,\n genre and/or physical characteristics of the items being\n described used as a heading.
+###
+# @id UN_TABLES HELP_UNA_T280A
+200    a1bVstupný prvok.\n Podpole je neopakovateľné.
+200    a2bThe term in the form prescribed by the system of form headings used.\n Not repeatable
+200    a3bThe term in the form prescribed by the system of form headings used.\n Not repeatable
+###
+# @id UN_TABLES HELP_UNA_T280J
+200    a1bPodheslo formy.\nIde o pojem pripájaný k predmetovému heslu na bližšiu špecifikáciu druhu alebo žánru materiálu.\nAgentúry však môžu miesto neho používať podpole $x.\nPodpole je opakovateľné. 
+200    a2bA term added to the subject heading to further specify the kind(s)\n or genre(s) of material (EX 11). Agencies not using this subdivision \n should use $x instead (EX 12).\n Repeatable. 
+200    a3bA term added to the subject heading to further specify the kind(s)\n or genre(s) of material (EX 11). Agencies not using this subdivision \n should use $x instead (EX 12).\n Repeatable. 
+###
+# @id UN_TABLES HELP_UNA_T280X
+200    a1bVecné podheslo.\nPodpole je opakovateľné.
+200    a2bVěcné zpřesnění.\nPodpole je opakovatelné.
+200    a3bA term added to the form heading to specify the aspect that the heading represents. \n(EX 2). Repeatable
+###
+# @id UN_TABLES HELP_UNA_T280Y
+200    a1bGeografické podheslo.\nPodpole je opakovateľné. 
+200    a2bGeografické zpřesnění.\nPodpole je opakovatelné.
+200    a3bA term added to a subject heading to specify a place in relation to a a form,\n genre or physical characteristic that the subject heading represents (EX 1). \nRepeatable. 
+###
+# @id UN_TABLES HELP_UNA_T280Z
+200    a1bChronologické podheslo.\nPodpole je opakovateľné.
+200    a2bChronologické zpřesnění.\nPodpole je opakovatelné.
+200    a3bA term added to a subject heading to specify the period in time in relation \n to a form, genre or physical characteristic that the subject heading represents.\n (EX 1, 2) Repeatable. 
+###
+# @id UN_TABLES HELP_UNA_T300
+200    a1bInformačná poznámka\n\nPole sa používa v zázname autoritatívneho alebo odkazového hesla, aby na-\npomoholo k objasneniu vzťahu medzi autoritaívnym záhlavím v bloku 2-- a iný-\nmi jednotkami. Pole sa zároveň používa na uvedenie informácie o histórii zá-\nhlavia.\nPole je opakovateľné.
+200    a2bInformační poznámka\n\nToto pole sa používa v záznamu autoritního nebo odkazového hesla, aby napo-\nmohlo k objasnění vztahu mezi záhlavím v bloku 2-- a jinými entitami. Toto\npole se též používá pro uvedení informace o historii záhlaví.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T305
+200    a1bTextová poznámka k odkazu " pozri aj "\n\nPole sa používa v zázname autoritatívneho hesla, ak nemôže byť adekvátny od-\nkaz " pozri aj " vytvorený len z obsahu jedného alebo viacerých polí pre sme-\nrovanie odkazu " pozri aj " bloku 5--, obsiahnutých v záznamoch autoritatív-\nnych hesiel pre príslušné záhlavia. Unifikované záhlavie, z ktorého sa vyko-\nnáva odkaz, je záhlavím záznamu autoritatívneho hesla z bloku 2--. Každé u-\nnifikované záhlavie, na ktoré sa odkazuje a inštrukcia " pozri aj " (alebo\npodobná), sa uvádzajú v poli 305.\nTáto poznámka sa zvyčajne nepoužíva namiesto smerovania, ale ako doplnok ku\nsmerovaniu odkazu " pozri aj " v zázname pre súvisiace záhlavia. Unifikova-\nné záhlavie v poli bloku 2-- sa smeruje ako smerovanie odkazu " pozri aj "\nv bloku 5-- v zázname autoritatívneho hesla pre každé záhlavie, na ktoré sa\nodkazuje v poznámke 305. Ak je vzťah medzi unifikovanými záhlaviami reci-\npročný, záznam autoritatívneho hesla, ktorý obsahuje túto poznámku, obsahu-\nje tiež smerovanie odkazu " pozri aj " z bloku 5-- pre každé záhlavie, na\nktoré sa odkazuje v poznámke. Ak poznámka neodkazuje priamo na iné unifiko-\nvané záhlavie, ale len uvádza príklad, potom nebude mať žiadne zodpovedajúce\nsmerovanie. Príklad záhlaví by mal byť citovaný v poli 825 Poznámka o použi-\ntí v príklade v zázname autoritatívneho hesla pre každé záhlavie.\nPole je opakovateľné.
+200    a2bTextová poznámka k odkazu " viz též "\n\nToto pole se používa v záznamu autoritního hesla, nemůže-li být adekvátní\nodkaz " viz též " vytvořen pouze z obsahu jednoho nebo více polí pro směro-\nvání odkazu " viz též " bloku 5--, obsažených v záznamech autoritních hesel\npro příslušná záhlaví. Unifikované záhlaví, z něhož se provádí odkaz, je\nzáhlavím záznamu autoritního hesla z bloku 2--. Každé unifikované záhlaví, na\nněž se odkazuje, a instrukce " viz též " (nebo podobná) se uvádějí v poli 305.\nTato poznámka se obvykle neužívá namísto směrování, ale jako doplněk ke smě-\nrování odkazu " viz též " v záznamu pro související záhlaví. Unifikované zá-\nhlaví v poli bloku 2-- se směruje jako směrování odkazu " viz též " v bloku\n5-- v záznamu autoritního hesla pro každé záhlaví, na něž se odkazuje v poz-\nnámce 305. Jestliže je vztah mezi unifikovanými záhlavími reciproční, záznam\nautoritního hesla, který obsahuje tuto poznámku, obsahuje též směrování odkazu\n" viz též " z bloku 5-- pro každé záhlaví, na něž se odkazuje v poznámce.\nJestliže poznámka neodkazuje přímo n jiné unifikované záhlaví, ale pouze uvá-\ndí příklad, potom nebude mít žádné odpovídající směrování. Příklad záhlaví\nby měl být citován v poli 825 Poznámka o použití v příkladu v záznamu auto-\nritního hesla pro každé záhlaví.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T310
+200    a1bTextová poznámka k odkazu " pozri "\n\nPole sa používa v zázname odkazového hesla, pokiaľ nemôže byť adekvátny odkaz\n" pozri " vytvorený len z obsahu jedného alebo viacerých smerovacích polí od-\nkazu " pozri " v bloku 4--. Variantná forma mena, z ktorej sa odkazuje, je zá-\nhlavím záznamu odkazového hesla v bloku 2--. Každé záhlavie, na ktoré sa od-\nkazuje a inštrukcia " pozri " (alebo podobná) sa uvádzajú v bloku 310. Každé\nzáhlavie v poli bloku 2-- záznamu odkazového hesla sa uvádza v poli smerova-\nnia odkazu " pozri " bloku 4-- v zázname autoritatívneho hesla, na ktoré sa\nodkazuje, pokiaľ poznámka neuvádza len príklady. V takom prípade potom nie\nsú potrebné žiadne smerovania v bloku 4--, ale použije sa pole 825 Poznámka\no použití príkladu v zázname autoritatívneho hesla pre každé záhlavie.\nPole je opakovateľné.
+200    a2bTextová poznámka k odkazu " viz "\n\nToto pole se používa v záznamu odkazového hesla, nemůže-li být adekvátní odkaz\n" viz " vytvořen pouze z obsahu jednoho nebo více směrovacích polí odkazu\n" viz " v bloku 4--.  Variantní forma jména, z něhož se odkazuje, je záhlavím\nzáznamu odkazového hesla v bloku 2--. Každé záhlaví, na něž se odkazuje, a\ninstrukce " viz " (nebo podobná) se uvádějí v poi 310. Každé záhlaví v poli\nbloku 2-- záznamu odkazového hesla se uvádí v poli směrování odkazu " viz "\nbloku 4-- v záznamu autoritního hesla, na něž se odkazuje, pokud poznámka neu-\nvádí pouze příklady. V takovém případě pak nejsou nutná žádná směrování v\nbloku 4--, ale použije se pole 825 Poznámka o použití příkladu v záznamu\nautoritního hesla pro každé záhlaví.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T320
+200    a1bPoznámka k všeobecnému vysvetľujúcemu heslu\n\nPole sa používa v zázname všeobecného vysvetľujúceho hesla, aby poskytlo\nobjasňujúce informácie, ktoré by pomohli pri vyhľadávaní alebo radení. Slovo\nalebo fráza, z ktorej sa odkazuje, sa uvádza v poli 2-- a vysvetľujúce infor-\nmácie v poli 320. Odkaz nie je smerovaný na žiaden záznam autoritatívneho hes-\nla.\nPole je neopakovateľné.
+200    a2bPoznámka k všeobecnému vysvětlujícímu heslu\n\nToto pole se používá v záznamu všeobecného vysvětlujícího hesla proto, aby\nposkytlo informace, které by napomohly při vyhledávání nebo řazení. Slovo\nnebo fráze, z nichž se odkazuje, se uvádí v poli 2-- a vysvětlující informa-\nce v poli 320. Odkaz není směrován na žádný záznam autoritního hesla.\nPole není opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T330
+200    a1bVšeobecná poznámka k rozsahu\n\nPole sa používa v zázname autoritatívneho hesla na popísanie rozsahu záhlavia\nv poli 2--. Informácia o rozsahu môže poskytovať presnú definíciu potenciálne\nnejednoznačných pojmov, porovnanie s podobnými pojmami, poznámky pre používa-\nteľa atď. Pole je opakovateľné.
+200    a2bVšeobecná poznámka k rozsahu\n\nToto pole se používá v záznamu autoritního hesla pro popsání rozsahu záhlaví\nv poli 2--. Informace o rozsahu může poskytovat přesnou definici potenciálně\nnejednoznačných termínů, porovnání s podobnými termíny, poznámky pro uživate-\nle atd.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T340
+200    a1bPole sa používa v autoritatívnom zázname na zaznamenanie biografických údajov alebo poznámok o činnosti entity uvedenej v poli 200, 210, 216 alebo 220. 
+200    a2bPole se používá v záznamu autoritního hesla pro zaznamenání biografických údajů nebo poznámek o činnosti entity uvedené v poli 200, 210, 216 nebo 220. 
+200    a3bThis field is used in an authority entry or a reference record to record\n biographical details or activity notes about the entity\n recorded in the 200, 210, 216 or 220 field. 
+###
+# @id UN_TABLES HELP_UNA_T356
+200    a1bGeografická poznámka.
+200    a2bThis field is used in an authority entry or a reference record to record \ngeographical details about the entity recorded in the 215 field. 
+200    a3bThis field is used in an authority entry or a reference record to record \ngeographical details about the entity recorded in the 215 field. 
+###
+# @id UN_TABLES HELP_UNA_T356A
+200    a1bPole zaznamenáva v geografickom zázname geografické špecifiká o entite uvedenej v poli 215. Neopakovateľné.
+200    a2bContains the text of the geographical note. Not repeatable.
+200    a3bContains the text of the geographical note. Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T400
+200    a1bSmerovanie odkazu " pozri " - osobné meno\n\nPole obsahuje smerovanie pre formu osobného mena, z ktorej sa odkazuje.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz " - osobní jméno\n\nToto pole obsahuje směrování pro formu osobního jména, z níž se odkazuje.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T410
+200    a1bSmerovanie odkazu " pozri " - meno korporácie alebo akcie\n\nPole obsahuje smerovanie pre formu mena korporácie alebo akcie, z ktorej sa\nvykonáva odkaz. Geografické mená, za ktorými nasleduje meno korporácie alebo\nakcie ako súčasť záhlavia, sa považujú za mená korporácií alebo akcií (tagy\n410), geografické mená samotné alebo doplnené len predmetovým podheslom sa\npovažujú za geografické mená (tagy 415).\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz " - osobní jméno\n\nToto pole obsahuje směrování pro formu jména korporace nebo akce, z níž se\nprovádí odkaz. Geografická jména, za nimiž následuje jméno korporace nebo\nakce jako součást záhlaví, se považují za jména korporací nebo akcí (tagy\n410), geografická jména samotná nebo doplněná pouze předmětním zpřesněním\nse považují za geografické jména (tagy 415).\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T415
+200    a1bSmerovanie odkazu " pozri " - geografické meno\n\nPole obsahuje smerovanie pre formu geografického mena, z ktorej sa vytvára\nodkaz. Geografické mená samotné alebo doplnené len podheslami, sa považujú\nza geografické mená (tagy 415); geografické mená, za ktorými nasleduje meno\nkorporácie alebo akcie, sa považujú mená korporácií alebo akcií (tagy 410).\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz " - geografické jméno\n\nToto pole obsahuje směrování pro formu geografického jména, z níž se prová-\ndí odkaz. Geografická jména samotná, nebo doplněná pouze zpřesněními, se po-\nvažují za geografická jména (tagy 415); geografická jména, za nimiž následuje\njméno korporace nebo akce, se považují za jména, za nimiž následuje jméno\nkorporace nebo akce, se považují za jména korporaci nebo akcí (tagy 410).\nPole opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T416
+200    a1bSmerovanie odkazu "pozri" - obchodná značka. 
+200    a2bThis field contains the tracing for a form of trademark referred from. 
+200    a3bThis field contains the tracing for a form of trademark referred from. 
+###
+# @id UN_TABLES HELP_UNA_T420
+200    a1bSmerovanie odkazu " pozri " - meno rodiny (rodu)\n\nPole obsahuje smerovanie pre formu mena rodiny (rodu), z ktorej sa vytvára\nodkaz.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz " - jméno rodiny (rodu)\n\nToto pole obsahuje směrování pro formu jména rodiny (rodu), z níž se provádí\nodkaz.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T430
+200    a1bSmerovanie odkazu " pozri " - unifikovaný názov\n\nPole obsahuje smerovanie pre formu unifikovaného názvu, z ktorej sa vytvára\nodkaz. Pole je opakovateľné.
+200    a2bSměrování odkazu " viz " - unifikovaný název\n\nToto pole obsahuje směrování pro formu unifikovaného názvu, z níž se provádí\nodkaz.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T440
+200    a1bSmerovanie odkazu " pozri " - meno / názov\n\nPole obsahuje smerovanie pre formu unifikovaného názvu, z ktorej sa vytvára\nodkaz.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz " - jméno / název\n\nToto pole obsahuje směrování pro formu odkazu jména/názvu, z níž se provádí\nodkaz. Data se zapisují do příslušných polí bloku 2-- vložených v poli 440\nvložených technikou, popsanou v poli 240.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T445
+200    a1bSmerovanie odkazu " pozri " - meno / skupinový unifikovaný názov\n\nPole obsahuje smerovanie odkazu pre formu mena / skupinového unifikovaného\nnázvu, z ktorej sa vytvára odkaz. Údaje sa zapisujú do príslušných polí bloku\n2-- vložených v poli 445 technikou, ktorá je popísaná v poli 245.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz " - jméno / název\n\nToto pole obsahuje směrování pro formu jména / názvu, z níž se provádí odkaz.\nData do příslušných polí bloku 2-- vložených v poli 440 technikou, popsanou\nv poli 240.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T450
+200    a1bSmerovanie odkazu " pozri " - predmetové heslo\n\nPole obsahuje smerovanie pre formu predmetovného hesla, z ktorej sa vytvára\nodkaz.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz " - věcné téma\n\nToto pole obsahuje směrování pro věcné téma, z něhož se provádí odkaz.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T460
+200    a1bSmerovanie odkazu " pozri " - miesto pôvodu publikácie\n\nPole obsahuje smerovanie pre formu miesta pôvodu publikácie, z ktorej sa vytvára\nodkaz.\nPole je opakovateľné. 
+200    a2bSee Reference Tracing – Place Access \n This field contains the tracing for a form of place access referred from. 
+200    a3bSee Reference Tracing – Place Access \n This field contains the tracing for a form of place access referred from. 
+###
+# @id UN_TABLES HELP_UNA_T480
+200    a1bSmerovanie odkazu " pozri " - forma, žáner, fyzická charakteristika\n\nPole obsahuje smerovanie pre formu žáner, fyzickú charakteristiku, z ktorej sa vytvára\nodkaz.\nPole je opakovateľné.
+200    a2bThis field contains  the tracing for a form of the form,\n genre and/or physical characteristics heading referred from.
+200    a3bThis field contains  the tracing for a form of the form,\n genre and/or physical characteristics heading referred from.
+###
+# @id UN_TABLES HELP_UNA_T500
+200    a1bSmerovanie odkazu " pozri aj " - osobné meno\n\nPole obsahuje smerovanie pre unifikované personálne záhlavie, ktoré súvisí so\nzáhlavím v poli 2--.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - osobní jméno\n\nToto pole obsahuje směrování pro unifikované personální záhlaví, související\nse záhlavím v poli 2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T510
+200    a1bSmerovanie odkazu " pozri aj " - meno korporácie alebo akcie\n\nPole obsahuje smerovanie pre unifikované korporatívne záhlavie, ktoré súvisí\ns autoritatívnym záhlavím v poli 2-. Geografické mená, za ktorými nasleduje\nmeno korporácie alebo akcie ako súčasť záhlavia, sa považujú za mená korpo-\nrácií alebo akcií (tag 510), geografické mená samotné alebo doplnené len\npredmetovým podheslom sa považujú za geografické mená (tag 515).\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - jméno korporace nebo akce\n\nToto pole obsahuje směrování pro unifikované korporativní záhlaví, související\nse záhlavím v poli 2--. Geografická jména, za nimiž následuje jméno korporace\nnebo akce jako součást záhlaví, se považují za jména korporací nebo akcí (tag\n510), geografická jména samotná nebo doplněná pouze předmětným zpřesněním se\npovažují sa geografická jména (tag 515).\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T515
+200    a1bSmerovanie odkazu " pozri aj " - geografické meno\n\nPole obsahuje smerovanie pre unifikované geografické záhlavie, ktoré súvisí\ns autoritatívnym záhlavím v poli 2--. Geografické mená samotné alebo doplne-\nné len predmetovými podheslami, sa považujú za geografické mená (tag 515),\ngeografické mená, za ktorými nasleduje meno korporácie alebo akcie ako sú-\nčasť záhlavia, sa považujú z mená korporácií alebo akcií (tag 510).\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - geografické jméno\n\nToto pole obsahuje směrování pro unifikované geografické záhlaví, související\nse záhlavím v poli 2--. Geografická jména samotná, nebo doplněná pouze zpřes-\nněním se považují za geografická jména (tag 515), geografická jména, za nimiž\nnásleduje jméno korporace nebo akce jako součást záhlaví, se považují za jmé-\nna korporací nebo akcí (tag 510).\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T516
+200    a1bSmerovanie odkazu " pozri aj " - obchodná značka\n\nPole obsahuje smerovanie pre unifikované záhlavie obchodnej značku, ktoré súvisí\ns autoritatívnym záhlavím v poli 2--.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - obchodní značka\n\nToto pole obsahuje směrování pro unifikovanoué geografické záhlaví, související\nse záhlavím v poli 2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T520
+200    a1bSmerovanie odkazu " pozri aj " - meno rodiny (rodu)\n\nPole obsahuje smerovanie pre unifikované rodinné (rodové) záhlavie, ktoré\nsúvisí s autoritatívnym záhlavím v poli 2--.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - jméno rodiny (rodu)\n\nToto pole obsahuje směrování pro unifikované rodinné (rodové) záhlaví, souvi-\nsející se záhlavím v poli 2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T530
+200    a1bSmerovanie odkazu " pozri aj " - unifikovaný názov\n\nPole obsahuje smerovanie pre unifikované názvové záhlavie, ktoré súvisí s\nautoritatívnym záhlavím v poli 2--.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - unifikovaný název\n\nToto pole obsahuje směrování pro unifikované názvové záhlaví, související se\nzáhlavím v poli 2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T540
+200    a1bSmerovanie odkazu " pozri aj " - meno / názov\n\nPole obsahuje smerovanie pre unifikované záhlavie typu meno/názov, ktoré sú-\nvisí so záhlavím v poli 2--. Údaje sa zapisujú do príslušných polí bloku 2--\nvložených v poli 540 technikou, ktorá je popísaná v poli 240.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - jméno / název\n\nToto pole obsahuje směrování pro unifikované záhlaví typu jméno / název, sou-\nvisející se záhlavím v poli 2--. Data se uvádějí v příslušných polích 2--\nvložených do pole 540 technikou popsanou v poli 240.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T545
+200    a1bSmerovanie odkazu " pozri aj " - meno / skupinový unifikovaný názov\n\nPole obsahuje smerovanie pre unifikované záhlavie typu meno / skupinový unifi-\nkovaný názov, ktorý súvisí so záhlavím v poli 2--. Údaje sa zapisujú do prís-\nlušných polí bloku 2-- vložených v poli 545 technikou, ktorá je popísaná v\npoli 245.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - jméno / skupinový  unifikovaný název\n\nToto pole obsahuje směrování pro unifikované záhalví typu jméno / skupinový\nunifikovaný název, související se záhlavím v poli 2--. Data se uvádějí v\npříslušných polích 2-- vložených do pole 545.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T550
+200    a1bSmerovanie odkazu " pozri aj " - predmetové heslo\n\nPole obsahuje smerovanie pre unifikované záhlavie pre predmetové heslo, ktoré\nsúvisí so záhlavím v poli 2--.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - věcné téma\n\nToto podpole obsahuje směrování pro unifikované záhlaví pro věcné téma, sou-\nvisející se záhlavím v poli 2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T560
+200    a1bSmerovanie odkazu " pozri aj " - miesto pôvodu publikácie\n\nPole obsahuje smerovanie pre unifikované záhlavie pre miesto pôvodu publikácie, ktoré\nsúvisí so záhlavím v poli 2--.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - místo původu publikace\n\nToto podpole obsahuje směrování pro unifikované záhlaví pro místo původu publikace, sou-\nvisející se záhlavím v poli 2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T580
+200    a1bSmerovanie odkazu " pozri aj " - forma, žáner, fyzická charakteristika\n\nPole obsahuje smerovanie pre unifikované záhlavie pre formu, žáner, fyzickú charakteristiku, ktoré\nsúvisí so záhlavím v poli 2--.\nPole je opakovateľné.
+200    a2bSměrování odkazu " viz též " - forma, žánr, fyzická charakteristika\n\nToto podpole obsahuje směrování pro unifikované záhlaví pro formu, žánr, fyzickou charakteristiku, sou-\nvisející se záhlavím v poli 2--.\nPole je opakovatelné.
+200    a3bThis field contains  the tracing for a related form of the form, genre and/or physical\n characteristics heading referred from.
+###
+# @id UN_TABLES HELP_UNA_T675
+200    a1bMedzinárodné desatinné triedenie (UDC-MDT)\n\nPole obsahuje znak MDT alebo rozmedzie znakov, ktoré je spojené s autorita-\ntívnym záhlavím. Znak MDT môže byť doplnený slovným vyjadrením, ktoré ho i-\ndentifikuje.\nPole je opakovateľné.
+200    a2bMezinárodní desetinné třídění (UDC-MDT)\n\nToto pole obsahuje znak MDT nebo rozmezí znaků, spojené s autoritním záhlavím.\nZnak MDT může být doplněn slovním vyjádřením, které jej identifikuje.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T676
+200    a1bDeweyeho desatinné triedenie (DDC)\n\nPole obsahuje znak DDC alebo rozmedzie znakov, ktoré je spojené s autorita-\ntívnym záhlavím. Znak MDT môže byť doplnený slovným vyjadrením, ktoré ho\nidentifikuje.\nPole je opakovateľné.\n\nPríklad:\n250  íí$aGold\n676  íí$a669.22$cInterdisciplinary$v19\n676  íí$a549.23$cMineralogy$v19\n676  íí$a553.41$cEconomic geology$v19
+200    a2bDeweyeho desetinné třídění (DDC)\n\nToto pole obsahuje znak DDC nebo rozmezí znaků, spojené s autoritním záhlavím.\nZnak MDT můžea být doplněn slovním vyjádřením, které jej identifikuje.\nPole je opakovatelné.\n\nPříklad:\n\n250  íí$aGold\n676  íí$a669.22$cInterdisciplinary$v19\n676  íí$a549.23$cMineralogy$v19\n676  íí$a553.41$cEconomic geology$v19
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T680
+200    a1bTriedenie Kongresovej knižnice (LCC)\n\nPole obsahuje znak LCC alebo rozmedzie znakov, ktoré je spojené s autorita-\ntívnym záhlavím. Znak LCC môže byť doplnený slovným vyjadrením, ktoré ho i-\ndentifikuje.\nPole je opakovateľné.\n\nPríklady:\n\n250  íí$aScaffolding\n680  íí$aTH5281\n\n250  íí$aString quartet\n680  íí$aML1160$cHistory\n680  íí$aMT728$cInstruction and study
+200    a2bTřídění Kongresové knihovny (LCC)\n\nToto pole obsahuje znak LCC nebo rozmezí znaků, spojené s autoritním záhlavím.\nZnak MDT může být doplněn slovním vyjádřením, které jej identifikuje.\nPole je opakovatelné.\n\nPříklady:\n\n250  íí$aScaffolding\n680  íí$aTH5281\n\n250  íí$aString quartet\n680  íí$aML1160$cHistory\n680  íí$aMT728$cInstruction and study
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T686
+200    a1bĎalší systematický selekčný jazyk (Ďalšie klasifikačné čísla)\n\nPole obsahuje triedu alebo rozmedzie znakov (klasifikačných systémov, ktoré\nnie sú medzinárodne používané, majú však širokú používateľskú základňu), kto-\nré súvisia s autoritatívnym záhlavím. Systematicky selekčný jazyk je identi-\nfikovaný v podpoli $2. Kódy pre identifikáciu sú uvedené v Prílohe G UNIMARC:\nBibliografický formát.\nPole je opakovateľné.
+200    a2bDalší systematický selekční jazyk\n\nToto pole obsahuje třídu nebo rozmezí znaků (klasifikačních systémů, které\nnejsou mezinárodně používané, mají však širokou uživatelskou základnu), sou-\nvisející s autoritním záhlavím. Systematický selekční jazyk je identifikován\nv podpoli $2. Kódy pro identifikaci jsou uvedeny v Příloze G UNIMARC: Biblio-\ngrafický formát.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T700
+200    a1bPrepojovacie záhlavie - osobné meno\n\nPole obsahuje unifikované osobné záhlavie, ktoré je inou formou autoritatív-\nneho záhlavia uvedeného v poli 2--.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - osobní jméno\n\nToto pole obsahuje unifikované osobní záhlaví, které je jinou formou záhlaví\nuvedeného v poli 2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T710
+200    a1bPrepojovacie záhlavie - meno korporácie alebo akcie\n\nPole obsahuje unifikované korporatívne záhlavie, ktoré je inou formou auto-\nritatívneho záhlavia z poľa 2--. Geografické mená, za ktorými nasleduje meno\nkorporácie ako súčasť záhlavia, sa považujú za mená korporácií alebo akcií\n(tag 710), geografické mená samotné alebo doplnené len predmetovým podheslom\nsa považujú za geografické mená (tag 715).\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - jméno korporace nebo akce\n\nToto pole obsahuje unifikované korporativní záhlaví, které je jinou formou\nzáhlaví z pole 2--. Geografická jména, za nimiž následuje jméno korporace jako\nsoučást záhlaví, se považují za jména korporací nebo akcí (tag 710), geogra-\nfická jména samotná nebo doplněná pouze předmětným zpřesněním se považují za\ngeografická jména (tag 715).\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T715
+200    a1bPrepojovacie záhlavie - geografické meno\n\nPole obsahuje geografické záhlavie, ktoré je inou formou autoritatívneho zá-\nhlavia v poli 2--. Geografické mená samotné alebo doplnené len predmetovým\npodheslom, sa považujú za geografické mená (tag 715), geografické mená, za\nktorými nasleduje meno korporácie alebo akcie ako súčasť záhlavia, sa považu-\njú za mená korporácií alebo akcií (tag 710).\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - geografické jméno\n\nToto pole obsahuje geografické záhlaví, které je jinou formou záhlaví v poli\n2--. Geografická jména samotná nebo doplněná pouze předmětným zpřesněním se\npovažují za geografická jména (tag 715), geografická jména, za nimiž následu-\nje jméno korporace nebo akce jako součást záhlaví, se považují za jména korpo-\nrací nebo akcí (tag 710).\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T716
+200    a1bPrepojovacie záhlavie - obchodná značka\n\nPole obsahuje záhlavie obchodnej značky, ktoré je inou formou autoritatívneho zá-\nhlavia v poli 2--.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - obchodní značka\n\nToto pole obsahuje záhlaví obchodní značky, které je jinou formou záhlaví v poli\n2--.\nPole je opakovatelné.
+200    a3bThis field contains a trademark heading that is another form of the 2-- heading.\nNotes on field contents\nThe field contains a heading for a trademark, formulated in accordance with the rules in use \n by the agency which creates it, and which is linked to the form in 216
+###
+# @id UN_TABLES HELP_UNA_T720
+200    a1bPrepojovacie záhlavie - meno rodiny (rodu)\n\nPole obsahuje unifikované záhlavie pre meno rodiny, ktoré je v inej forme než\nautoritatívne záhlavie v poli 2--.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - jméno rodiny (rodu)\n\nToto pole obsahuje unifikované záhlaví pro jméno rodiny (rodu), které je v\njiné formě než záhlaví v poli 2--.\nPol je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T730
+200    a1bPrepojovacie záhlavie - unifikovaný názov\n\nPole obsahuje unifikovaný názov, ktorý má inú formu než autoritatívne záhla-\nvie v poli 2--.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - unifikovaný název\n\nToto pole obsahuje unifikovaný název, který má jinou formu než záhlaví v poli\n2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T740
+200    a1bPrepojovacie záhlavie - meno / názov\n\nPole obsahuje unifikované záhlavie typu meno / názov, ktoré je v inej forme\nnež autoritatívne záhlavie v poli 2--. Údaje sa uvádzajú v príslušných po-\nliach vložených do poľa 740 technikou popísanou v poli 240.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - jméno / název\n\nToto pole obsahuje unifikované záhlaví typu jméno / název, které je v jiné\nformé než záhlaví v poli 2--. Data se uvádějí v příslušných polích 2-- vlo-\nžených do pole 740 technikou popsanou v poli 240.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T745
+200    a1bPrepojovacie záhlavie - meno / skupinový unifikovaný názov\n\nPole obsahuje unifikované záhlavie typu meno / skupinový unifikovaný názov,\nktoré je v inej forme než autoritatívne záhlavie v poli 2--. Údaje sa uvádza-\njú v príslušných poliach 2-- vložených do poľa 745 technikou popísanou v po-\nli 245.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - jméno / skupinový unifikovaný název\n\nToto pole obsahuje unifikované záhlaví typu jméno / skupinový unifikovaný ná-\nzev, které je v jiné formě než záhlaví v poli 2--. Data se uvádějí v přísluš-\nných polích 2-- vložených do pole 745 technikou popsanou v poli 245.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T750
+200    a1bPrepojovacie záhlavie - predmetové heslo\n\nPole obsahuje unifikované záhlavie pre predmetové heslo, ktoré je v inej for-\nme než autoritatívne záhlavie v poli 2--.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - věcné téma\n\nToto pole obsahuje unifikované záhlaví pro věcné téma, které je v jiné formě\nnež záhlaví v poli 2--.\nPole je opakovatelné.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T760
+200    a1bPrepojovacie záhlavie - miesto pôvodu publikácie\n\nPole obsahuje unifikované záhlavie pre miesto pôvodu publikácie, ktoré je v inej for-\nme než autoritatívne záhlavie v poli 2--.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - místo původu publikace\n\nToto pole obsahuje unifikované záhlaví pro místo původu publikace, které je v jiné formě\nnež záhlaví v poli 2--.\nPole je opakovatelné.
+200    a3bThis field contains the tracing for a place access heading that is another form of the heading in the 2-- field.\nNotes on Field Contents\nThe field contains the form of a place access heading linked to the heading used in 260.
+###
+# @id UN_TABLES HELP_UNA_T780
+200    a1bPrepojovacie záhlavie - forma, žáner, fyzická charakteristika\n\nPole obsahuje unifikované záhlavie pre formu, žáner, fyzickú charakteristiku, ktoré je v inej for-\nme než autoritatívne záhlavie v poli 2--.\nPole je opakovateľné.
+200    a2bPropojovací záhlaví - forma, žánr, fyzická charakteristika\n\nToto pole obsahuje unifikované záhlaví pro formu, žánr, fyzickou charakteristiku, které je v jiné formě\nnež záhlaví v poli 2--.\nPole je opakovatelné.
+200    a3bThis field contains the tracing for an alternative form of the form, genre and/or physical \n characteristics heading referred from.\n Notes on  Field Contents\n This field contains data entered according to the provisions of the system of form headings used. 
+###
+# @id UN_TABLES HELP_UNA_T801
+200    a1bZdroj pôvodnej katalogizácie - povinné\n\nPole identifikuje agentúru zodpovednú za vytvorenie záznamu a dátumu uloženia\nzáznamu. Pole je opakoveteľné, aby bolo možné uviesť transkribujúcu, modifi-\nkujúcu alebo vydávajúcu agentúru. Pri nových záznamoch sa uvádza dátum vytvo-\nrenia záznamu. V revidovaných záznamoch sa uvádza dátum poslednej revízie.\nPole je opakovateľné.\n\nPríklad:\n801  í0$aUS$bDLC$c19800516\n801  í3$aGB$bBL$c19831121\n\nKrajina sa kóduje podľa ISO 3166. Názov agentúry sa môže zapísať v kódovanej\nforme s použitím kódov uvedených v Guidelines for Authority and Reference\nEntries, Príloha B; kódov zo Symbols of American Libraries, ktoré zahŕňajú\nmnožstvo mimoamerických knihovníckych agentúr; vo forme plného názvu agentúry\nalebo národného kódu. Dátum poslednej transakcie by sa mal uvádzať podľa\nISO 2014, t.j. vo forme RRRRMMDD.
+200    a2bZdroj původní katalogizace - povinné\n\nToto pole identifikuje agenturu odpovědnou za vytvoření záznamu a datum ulo-\nžení záznamu. Pole je opakovatelné, aby bylo možné uvést transkribující,\nmodifikující nebo vydávající agenturu. U nových záznamů se uvádí datum\nvytvoření záznamu. V revidovaných záznamech se uvádí datum poslední revize.\nPole je opakovatelné.\n\n\nPříklady:\n\n801  í0$aUS$bDLC$c19800516\n801  í3$aGB$bBL$c19831121\n\nZemě se kóduje podle ISO 3166. Název agentury je možné uvádět v kódované for-\nmě s použitím kódů nalezených v Guidelines for Authority and Reference\nEntries, Příloha B; kódů ze Symbols of American Libraries, které zahrnují mno-\nho mimoamaerických knihovních agentur; ve formě plného názvu agentury či ná-\nrodního kódu. Datum poslední transakce by se mělo uvádět podle ISO 2014, tj.\nve formě RRRRMMDD
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T810
+200    a1bZdroj overenia údajov\n\nPole obsahuje citáciu zdroja, v ktorom boli nájdené informácie o záhlaví. Pr-\nvé pole 810 obyčajne obsahuje citáciu bibliografického diela, pri katalogizo-\nvaní ktorého bolo záhlavie stanovené.\nPole je opakovateľné.\n\nPríklady:\n\n200  í1$aAvery,$bHarold Eric\n400  í1$aAvery,$bH.E.\n810  ííaHis Advanced physical chemistry calculations, 1971:t.p.$b(H.E. Avery,\nB.Sc.,Ph.D.,Dept. of Chem., Liverpool Polytechnic)
+200    a2bZdroj ověření dat\n\nToto pole obsahuje citaci zdroje, v němž byly nalezeny informace o záhlaví.\nPrvní pole 810 obvykle obsahuje citaci bibliografického díla, při jehož kata-\nlogizaci bylo záhlaví stanoveno.\nPole je opakovatelné.\n\nPříklady:\n\n200  í1$aAvery,$bHarold Eric\n400  í1$aAvery,$bH.E.\n810  ííaHis Advanced physical chemistry calculations, 1971:t.p.$b(H.E. Avery,\nB.Sc.,Ph.D.,Dept. of Chem., Liverpool Polytechnic)
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T815
+200    a1bZdroj preverovaný s negatívnym výsledkom\n\nPole obsahuje citácie preverených referenčných zdrojov, v ktorých sa o záhla-\nví nenašla žiadna informácia.\nPole je opakovateľné.\n\nPríklady:\n\n200  í1$aJones,$bA. Wesley\n815  íí$aDir. Amer. Schol.,1974;$aNational faculty dir., 1979;$aAmer. men/wo-\nmen sci., soc. and beh. sci., 1978; $aWWA., 1978-79
+200    a2bZdroj prověřovaný s negativním výsledkem\n\nToto pole obsahuje citace prověřených regerenčních zdrojů, ve kterých nebyla\nnalezena o záhlaví žádná informace.\nPole není opakovatelné.\n\nPříklady:\n\n200  í1$aJones,$bA. Wesley\n815  íí$aDir. Amer. Schol.,1974;$aNational faculty dir., 1979;$aAmer. men/wo-\nmen sci., soc. and beh. sci., 1978; $aWWA., 1978-79
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T820
+200    a1bPoužitie alebo účel informácie\n\nPole obsahuje informácie obmedzujúce použitie záhlavia záznamu v poľa 2--\na/alebo rozlišujúce osoby alebo korporácie s podobnými menami.\nPole je opakovateľné.\n\nPríklad:\n\n200  í1$aSmithe,$bSam\n820  íí$aNot to be confused with Smith, Sam (Nezaměňovat se Smith, Sam)
+200    a2bUžití nebo rozsah informace\n\nToto pole obsahuje informace omezující použití záhlaví záznamu z pole 2--\na/nebo rozlišující osoby nebo korporace s podobnými jmény.\nPole je opakovatelné.\n\nPříklady:\n\n200  í1$aSmithe,$bSam\n820  íí$aNot to be confused with Smith, Sam (Nezaměňovat se Smith, Sam)
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T825
+200    a1bPoznámka o použití v príklade\n\nPole sa používa v zázname hesla na označenie, že autoritatívne záhlavie v po-\nli 2-- bolo použité ako príklad alebo bolo citované v poznámke v inom zázna-\nme hesla. Toto pole obsahuje pole 2-- iného záznamu hesla.\nPole je opakovateľné.\n\nPríklady:\n\n210  02$aLeague of Nations$xOfficials and employees\n825  íí$aExample under regerence from Officials and employees (Příklad pod\nodkazem z Official and Employees)\n825  íí$aNote under Public officers (Poznámka pod Public officers)\n\n250  íí$aJudges$xTravel regulations\n825  íí$aExample under regerence from Travel regulations
+200    a2bPoznámka o použití v příkladu\n\nToto pole se používa v záznamu hesla k označení, že záhlaví v poli 2-- bylo\npoužito jako příklad nebo bylo citováno v poznámce v jiném záznamu hesla. Toto\npole obsahuje pole 2-- jiného záznamu hesla.\nPole je opakovatelné.\n\nPříklady:\n\n210  02$aLeague of Nations$xOfficials and employees\n825  íí$aExample under regerence from Officials and employees (Příklad pod\nodkazem z Official and Employees)\n825  íí$aNote under Public officers (Poznámka pod Public officers)\n\n250  íí$aJudges$xTravel regulations\n825  íí$aExample under regerence from Travel regulations
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T830
+200    a1bVšeobecná poznámka katalogizátora\n\nPole sa používa na zaznamenanie biografických, historických alebo iných in-\nformácií o autoritaívnom záhlaví. Údaje môžu obsahovať odkazy na použité špe-\ncifické pravidlá, poznámky objasňujúce výber formy autoritatívneho záhlavia\natď. Takéto údaje by sa mohli objaviť aj ako súčasť iných polí, napr. Zdroj\nnájdených údajov v poli 810.\nPole je opakovateľné.\n\nPríklady:\n200  í1$aKorman,$bGerd\n830  ííab. 1928;$aPhD\n\n200  í1$aOtter$bA.A.den$g(Andy Albert den),$f1941\n830  íí$aAACR2 22.4A. Name established according to author's preference.\n(Meno stanovené v súlade s autorovou preferenciou.)
+200    a2bVšeobecná poznámka katalogizátora\n\nToto pole se používá pro zaznamenání biografických, historických nebo jiných\ninformací o záhlaví. Data mohou zahrnovat odkazy na použitá specifická pra-\nvidla, poznámky ospravedlňující výběr formy záhlaví atd. Taková data by se\ntaké mohla objevit jako součást jiných polí, jako např. Zdroj nalezených\ndat v poli 810.\nPole je opakovatelné.\n\nPříklady:\n\n200  í1$aKorman,$bGerd\n830  ííab. 1928;$aPhD\n\n200  í1$aOtter$bA.A.den$g(Andy Albert den),$f1941\n830  íí$aAACR2 22.4A. Name established according to author's preference.\n(Jméno ustaveno v souladu s autorovou preferencí.)
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T835
+200    a1bInformácia o zrušenom záhlaví\n\nPole sa používa na zaznamenanie dôvodov, prečo bolo autoritatívne záhlavie v\npoli 2-- zrušené zo súboru autorít. Objavuje sa v zázname, ktorého návestie,\nStav záznamu (pozícia 5), obsahuje hodnotu d, ktorá označuje skutočnosť, že\nide o zrušený záznam.\nPole je opakovateľné.\n\nPríklad:\nNávestie záznamu, pozícia 5 = d (zrušený záznam)\n250  ííaOrphans and orphan-asylums\n835  íí$aThis heading has been replaced by the headings (Toto záhlaví bylo na-\nhrazeno záhlavími)$bOrphans$aand$bOrphanages.
+200    a2bInformace o zrušeném záhlaví\n\nToto pole se užívá pro zaznamenání důvodu, proč bylo zrušeno záhlaví v poli\n2-- ze souboru autorit. Objevuje se v záznamu, jehož návěští. Stav záznamu\n(pozice 5), obsahuje hodnotu d označující skutečnost, že jde o zrušený záznam.\nPole je opakovatelné.\n\nPříklad:\n\nNávěští záznamu, pozice 5 = d (zrušený záznam)\n250  ííaOrphans and orphan-asylums\n835  íí$aThis heading has been replaced by the headings (Toto záhlaví bylo na-\nhrazeno záhlavími)$bOrphans$aand$bOrphanages.
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T836
+200    a1bThis field is used to record why the heading in the 2XX is being replaced from an authority file.\n It appears in a record in which Record Label, Record Status (character position 5), contains value.c (corrected record) or n (new record)
+200    a2bThis field is used to record why the heading in the 2XX is being replaced from an authority file.\n It appears in a record in which Record Label, Record Status (character position 5), contains value.c (corrected record) or n (new record)
+200    a3bThis field is used to record why the heading in the 2XX is being replaced from an authority file.\n It appears in a record in which Record Label, Record Status (character position 5), contains value.c (corrected record) or n (new record)
+###
+# @id UN_TABLES HELP_UNA_T856
+200    a1bAdresa elektronického zdroja\nToto pole obsahuje informáciu potrebnú na vyhľadanie elektronického dokumentu. Informácia identifikuje elektronické umiestnenie, ktoré obsahuje daný dokument\nalebo z ktorého umiestnenia je dokument prístupný. Obsahuje aj informáciu na vyhľadanie dokumentu prístupovou metódou identifikovanou prvou pozíciou indikátora.\nInformácia obsiahnutá v tomto poli je postačujúca na umožnenie elektronického prenosu súboru, zapísania\ndo elektronického žurnálu alebo prihlásenia do elektronického zdroja. V niektorých prípadoch sú zaznamenané len unikátne údajové elementy,\nktoré umožnia používateľovi pristupovať do tabuľky lokátorov na vzdialenom hostiteľovi.\nTáto tabuľka obsahuje zvyšnú informáciu potrebnú na sprístupnenie dokumentu.
+200    a2bToto pole obsahuje informace nutné pro lokalizaci elektronických popisných jednotek. Informace identifikují místo, kde je uložena elektronická popisná jednotka nebo z něhož je dostupná. Pole obsahuje též informace potřebné pro vyhledání popisné jednotky pomocí způsobu přístupu, identifikovaného prvním indikátorem. \nInformace obsažená v tomto poli je dostatečná pro to, aby umožnila elektronický přenos souboru, předplacení elektronického časopisu nebo přihlášení se (login) k elektronickému zdroji. V některých případech jsou zaznamenány pouze jedinečné datové prvky, které umožňují uživateli přístup k tabulce lokátoru na vzdáleném hostitelském počítači, která obsahuje zbývající informace nutné pro přístup k popisné jednotce.
+200    a3bThis field contains the information required to locate an electronic item. The field may be used in an authority \n record to provide supplementaty information available electronically about the entity for which the record was \n created. The information identifies the electronic location containing the item or from which it is available. It also \n contains information to retrieve the item by the access method identified in the first indicator position. \n It can be used to generate the ISBD(ER) Notes relating to mode of access.
+###
+# @id UN_TABLES HELP_UNA_T856A
+200    a1bMeno hostiteľa\nOpakovateľné
+200    a2bJméno hostitele\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856B
+200    a1bPrístupové číslo\nPrístupové číslo zviazané s hostiteľom. Môže obsahovať IP adresu, ak je dokument internetový zdroj, alebo telefónne číslo pri Dial-up prístupe.\nTieto údaje sa môžu často meniť a môžu byť generované systémom a nie staticky uložené. Podpole $b sa môže opakovať, ak sa aplikujú všetky iné informácie v poli. Telefónne číslo je zaznamenané ako [kód krajiny]-[kód oblasti]-[telefónne číslo]. 
+200    a2bČíslo pro přístup spojené s hostitelským počítačem. Může obsahovat číselnou (IP) adresu internetovského protokolu, jestliže popisná jednotka je internetovským zdrojem, nebo telefonní číslo, jestliže je spojení dosahováno pomocí telefonní linky. Tyto údaje se mohou často měnit a proto je vhodnější generovat je systémem než je staticky ukládat. Podpole $b může být opakováno pro více přístupů. Telefonní číslo je zaznamenáno takto: [kód země]-[kód oblasti]-[telefonní číslo]. Příklad: 49-69-15251140 (číslo ve Frankfurtu, Německo); 1-202-7076237 (číslo ve Washingtonu, D.C., USA). Má-li být uvedena linka, bude následovat po telefonním čísle a předcházet jí bude "x". Príklad: 1-703-35898000x515 (telefonní číslo s linkou). Opakovatelné.
+200    a3bThe access number is associated with a host. It can contain the Internet Protocol (IP) numeric address if the \n item is an Internet resource, or a telephone number if dial-up access is provided through a telephone line. This \n data may change frequently and may be generated by the system, rather than statically stored. Subfield $b \n may be repeated if all the other information in the field applies. A telephone number is recorded as follows: [country code]-[area code]-[telephone number]. Example: 49-69-15251140 (a number in Frankfurt, \n Germany); 1-202-7076237 (a number in the U.S., Washington, D.C.). If an extension is applicable, include \n it after the telephone number preceded by ‘x’. Example: 1-703-3589800x515 (telephone number with \n extension). Repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856C
+200    a1bInformácia o kompresii\nOpakovateľné
+200    a2bInformace o kompresi\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856D
+200    a1bCesta\nOpakovateľné
+200    a2bCesta\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856E
+200    a1bDátum a hodina konzultácií a prístupu\nČas vo formáte YYYYMMDDHHMM, v ktorom bol elektronický dokument poslednýkrát sprístupnený. Neopakovateľné.
+200    a2bThe time, in the form YYYYMMDDHHMM, at which the electronic item was last accessed.  Not repeatable.
+200    a3bThe time, in the form YYYYMMDDHHMM, at which the electronic item was last accessed.  Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856F
+200    a1bElektronické meno súboru ako existuje v adresári/podadresári indikované v podpoli $d na hostiteľovi identifikovanom v podpoli $a. Podpole $f sa smie opakovať, ak bol jednoduchý logický súbor rozdelený na časti a uložený pod rôznymi menami. V tomto prípade oddelené časti musia tvoriť jednoduchý bibliografický dokument.\nVo všetkých ostatných prípadoch súbor, ktorý môže byť získaný pod rôznymi menami viacnásobný výskyt poľa 856, každý s príslušným elektronickým menom v podpoli $f.\nMeno súboru môže obsahovať dive znaky (napríklad: "*" "?"), ak sú aplikovateľné, s poznámkou v podpoli $z vysvetľujúcou, ako sú súbory pomenované. POZNÁMKA: Mená súborov môžu byť  v niektorých systémoch citlivé na veľkosť písmen. Toto podpole môže tiež obsahovať meno elektronickej publikácie alebo konferencie. Opakovateľné.
+200    a2bElektornické jméno souboru v podobě, v jaké existuje v adresáři/podadresáři, uvedeném v podpoli $d v hostitelském počítači, uvedeném v podpoli $a. Podpole $f může být opakováno, jestliže jeden logický soubor byl rozdělen na části a uložen pod různými jmény. V takovém případě by jednotlivé časti měly obsahovat jednotlivé bibliografické jednotky. Ve všech ostatních případech záznam souboru, který může být vyhledán pod různými jmény, obsahuje více výskytů pole 856, z nichž v každém je příslušné jméno souboru v podpoli $f. Podle potřeby může jméno souboru obsahovat maskovací znaky (např. "e" nebo "?"), s poznámkou v podpoli $z, vysvětlující pojmenování souborů. POZNÁMKA: Některé systémy mohou rozlišovat velká a malá písmena. \nToto podpole také může obsahovat název elektronické publikace nebo konfrence. Opakovatelné.
+200    a3bThe electronic name of a file as it exists in the directory/subdirectory indicated in subfield $d on the host  \n identified in subfield $a. Subfield $f may be repeated if a single logical file has been divided into parts and  \n stored under different names. In this case, the separate parts should constitute a single bibliographic item. In \n all other cases, a file that may be retrieved under different filenames contains multiple occurrences of field \n 856, each with its corresponding electronic name in subfield $f. A filename may include wildcard \n characters (e.g., ‘*’ or ‘?’) if applicable, with a note in subfield $z explaining how files are named. NOTE: Filenames may be case sensitive for some systems. This subfield may also contain the name of the electronic \n publication or conference. Repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856G
+200    a1bJednotné meno zdroja\nURN, ktoré plní funkciu globálne unikátneho identifikátora, nezávislého od umiestnenia. Opakovateľné.
+200    a2bURN poskytované globálně jedinečný identifikátor umístění. Opakovatelné.
+200    a3bThe URN, which provides a globally unique location independent identifier.  Repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856H
+200    a1bSpracovateľ požiadavky\nMeno používateľa alebo spracovateľa požiadavky; všeobecne údaje, ktoré sa nachádzajú pred znakom nachádzajú pred znakom „@" v adrese hostiteľa. Neopakovateľné.
+200    a2bJméno uživatele nebo programu, který zpracovává požadavek; obecně jsou to údaje, které v adrese hostitelského počítače předcházejí před znakem "@". Neopakovatelné.
+200    a3bThe username, or processor of the request; generally the data which precedes the at sign ( ‘@’) in the host address. \n Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856I
+200    a1bInštrukcia\nInštrukcia alebo príkaz potrebná pre vzdialeného hostiteľa na spracovanie požiadavky. Opakovateľné.
+200    a2bInstrukce nebo příkaz, který je třeba k tomu, aby vzdálený hostitelský počítač zpracoval požadavek. Opakovatelné.
+200    a3bAn instruction or command needed for the remote host to process a request. Repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856J
+200    a1bPočet bitov za sekundu\nNajvyšší a najnižší počet bitov (binárnych jednotiek) údajov, ktoré môžu byť prenesené za sekundu počas pripojenia k hostiteľovi. Syntax na zapísanie počtu bitov za sekundu (BPS) by malo byť: [najnižšie BPS]-[najvyššie BPS]. Ak je dané iba najnižšie: [najnižšie BPS]-. Ak je dané iba najvyššie (alebo ekvivalent v jazyku katalogizácie): -[najvyššie BPS]. Neopakovateľné.
+200    a2bNejnižší a nejvyšší počet bitů (binárních jednotek) dat, který může být přenesen za sekundu při připojení k hostitelskému počítači. Syntaxe pro zaznamenání počtu bitů za sekundu (BPS) by měla být: [nejnižší BPS]-[nejvyšší BPS]. Pokud je udána pouze nejnižší přenosová rychlost: [nejnižší BPS]-; pokud je udána pouze nejvyšší přenosová rychlosti -[nejvyšší BPS]. Neopakovatelné.
+200    a3bThe lowest and highest number of bits (binary units) of data that can be transmitted per second when \n connected to a host. The syntax for recording the number of bits per second (BPS) should be: [Lowest BPS]- \n [Highest BPS]. If only lowest given: [Lowest BPS]-.  If only highest given: -[Highest BPS]. \n Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856K
+200    a1bHeslo\nPoužíva sa na zaznamenanie hesla na všeobecné použitie a nemalo by obsahovať heslá vyžadujúce bezpečnosť. Neopakovateľné.
+200    a2bPoužívá se pro zaznamenání obecně používaných hesel a nemělo by obsahovat heslo, vyžadující bezpečnost. Neopakovatelné.
+200    a3bUsed to record general-use passwords, and should not contain passwords requiring security. \n Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856L
+200    a1bLogin\nLogin je reťazec pre všeobecné použitie, ktorý nevyžaduje špeciálnu bezpečnosť. Neopakovateľné.
+200    a2bVšeobecně používané loginy, ktoré nevyžadují zvláštní bezpečnost. Neopakovatelné.
+200    a3bGeneral-use logon/login strings which do not require special security.  Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856M
+200    a1bKontakt na asistenciu k prístupu\nOpakovateľné
+200    a2bKontakt na asistenci k přístupu\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856N
+200    a1bMeno umiestenenia hostiteľa v podpoli $a\nNeopakovateľné
+200    a2bJméno umístění hostitele v podpoli $a\nNeopakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856O
+200    a1bOperačný systém\nPre informáciu, operačný systém používaný hostiteľom v podpoli $a.Neopakovateľné.
+200    a2bPro informaci je možno uvést operační systém, používaný na hostitelském počítači, ktoré je zapsán v podpoli a$. Neopakovatelné.
+200    a3bFor information, the operating system used by the host specified in subfield $a is indicated \n in this subfield.  Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856P
+200    a1bPort\nČasť adresy, ktorá identifikuje proces alebo službu na hostiteľovi. Neopakovateľné.
+200    a2bČást adresy, které identifikuje proces nebo služby hostitelského počítače. Neopakovatelné.
+200    a3bThe portion of the address that identifies a process or service in the host. \n Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856Q
+200    a1bTyp elektronického formátu\nObsahuje identifikáciu typu elektronického formátu, ktorý určuje ako sú údaje prenášané sieťou. Zvyčajne môže byť textový súbor prenášaný ako znakové údaje, čo vo všeobecnosti obmedzuje text na znaky v ASCII (americký národný štandardný kód na výmenu informácií) znakovej sade (t. j. základná latinská abeceda, čísla 0 až 9, niekoľko špeciálnych znakov a väčšina interpunkčných znamienok). Textové súbory so znakmi mimo znakovej sady ASCII alebo netextové údaje (napr. počítačové programy, obrázky) musia byť prenášané použitím iného režimu prenosu súborov, zvyčajne binárny režim. Typy elektronických formátov môžu byť prevzaté zo zoznamov ako sú registrované médiové typy Internetu (MIME typy). Neopakovateľné.
+200    a2bObsahuje identifikaci typu elektronického formátu, který určuje způsob, jakým jsou data přenášena po síti. Zpravidla může být textový soubor přenášen jako znaková data, což obecně omezuje text na znaky ve znakové sadě ASCII (american National Standard Code for Information Interchange - Americký národní standardní kód pro výměnu informací), tedy na základní latinku, číslice 0-9, několik speciálních znaků a většinu interpunkčných znamének. Textové soubory se znaky nad rámec ASCII nebo netextová data (např. počítačové programy, obrazová data) musí být přenášena s použitím binárního režimu. Typ elektronického formátu může být převzat z výčtových seznamů jako jsou např. registrované typy MIME (Internet Media Types - Typy médií na Internetu). Neopakovatelné.
+200    a3bContains an identification of the electronic format type, which determines how data are transferred through a \n network. Usually, a text file can be transferred as character data which generally restricts the text to \n characters in the ASCII (American National Standard Code for Information Interchange) character set (i.e., \n the basic Latin alphabet, digits 0-9, a few special characters, and most punctuation marks). Text files with \n characters outside of the ASCII set, or non-textual data (e.g., computer programs, image data) must be \n transferred using another file transfer mode, usually binary mode. Electronic format type may be taken from \n lists such as registered Internet Media types (MIME types) .\n Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856R
+200    a1bNastavenia\nNastavenia používané na prenos údajov. Zahrnuté nastavenia sú: 1. počet údajových bitov (počet bitov na znak); 2. počet stop bitov (počet bitov na signalizáciu ukončenia bajtu); 3. parita (použitá technika na kontrolu parity). Syntax týchto elementov je: [parita]-[počet údajových bitov]-[počet stop bitov]. Ak je daná len parita, ostatné elementy v nastavení a s nimi zviazané pomlčky sú vynechané (t. j. [parita]). Ak je daný jeden z nasledujúcich dvoch elementov, pomlčka pre chýbajúci element je zaznamenaná na jej povodnej pozícii, t. j. ([parita]—[počet stop bitov] alebo ([parita]-[počet údajových bitov]-). Hodnoty pre paritu sú: O (nepárna), E (párna), N (žiadna), S (medzera) M (značka). Neopakovateľné.
+200    a2bNastavení použitá pro přenos dat. nastevení zahrnují: 1) počet datových bitů (počet bitů na znak); 2) počet bitů pro zastavení (počet bitů, které signalizují konec bytu); 3) paritu (použité techniky kontroly parity). Syntaxe těchto prvků je: [parita]-[počet datových bitů]-[počet bitů pro zastavení]. Pokud je udána pouze parita, jsou ostatní prvky nastavení a k nim vztažené pomlčky vynechány (tj. [parita]). jestliže je uveden jeden ze dvou ostatních prvků, pomlčky pro chybějící prvky jsou zaznamenány na místech, na nichž by měly prvky být (tj. [parita]-[počet bitů pro zastavení] nebo [parita]-[počet datových bitů]-). Hodnoty pro paritu jsou: O (odd - sudá), E (even - lichá), N (none - žádná), S (space - mezera) a M (mark - značka). Neopakovatelné.
+200    a3bThe settings used for transferring data. Included in settings are: 1) Number Data Bits (the number of bits per \n character); 2) Number Stop Bits (the number of bits to signal the end of a byte); and 3) Parity (the parity \n checking technique used). The syntax of these elements is: \n[Parity]-[Number of Data Bits]-[Number of Stop Bits].  If only the parity is given, the other elements of \n settings and their related hyphens are omitted (i.e., [Parity]). If one of the other two elements is given, the \n hyphen for the missing element is recorded in its proper position (i.e., [Parity]--[Number of Stop Bits] or \n [Parity]-[Number of Data Bits]-).  The values for parity are: O (Odd), E (Even), N (None), S (Space), and M \n (Mark).  Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856S
+200    a1bVeľkosť súboru\nVeľkosť súboru uloženého pod menom, ktoré je indikované v podpoli $f. Vo všeobecnosti je vyjadrené vo forme osembitových bajtov (oktetov). Môže byť opakované v prípadoch, keď je opakované meno súboru a priamo nasleduje za popoľom $f, na ktoré je aplikované. Táto informácia sa neudáva pre žurnály, keďže pole 856 sa vzťahuje na celé tituly, nie na jednotlivé vydania. Opakovateľné.
+200    a2bVelikost souboru týkající se souboru jež je uložen pod jménem zapsaným v podpoli $f. Obecně se vyjadřuje v jednotkách o velikosti 8 bitů (oktotetch). Může se opakovat, jestliže se opakuje jméno souboru a přímo následuje za podpolen $f, ke kterému patří. tato informace se nezapisuje pro časopisy, protože pole 856 se vztahuje k celému titulu, nikoliv k jednotlivým číslům. Opakovatelné.
+200    a3bThe size of the file as stored under the filename indicated in subfield $f. It is generally expressed in terms of \n 8-bit bytes (octets). It may be repeated in cases where the filename is repeated and directly follows the \n subfield $f to which it applies. This information is not given for journals, since field 856 relates to the entire \n title, not to particular issues.  Repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856T
+200    a1bEmulácia terminálu\nOpakovateľné
+200    a2bEmulace terminálu\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856U
+200    a1bJednotný lokátor zdroja\nJednotný lokátor zdroja URL, ktorý plní funkciu elektronického prístupu k údajom v štandardnej syntaxi. Tieto údaje môžu byť použité na automatizovaný prístup k elektronickému dokumentu použitím jedného z Internetových protokolov. Pole 856 je štruktúrované na umožnenie tvorby URL kombinovaním údajov z iných podpolí 856. Podpole $u môže byť použité na miesto tamtých oddelených podpolí alebo spolu s ním. Neopakovateľné.
+200    a2bUnifikovaný lokátor zdroje (URL), který poskytuje údaje pro elektronický přístup ve standardní formě zápisu. Tyto údaje mohou být použity pro automatický přístup k elektronickým popisným jednotkám s použitím jednoho z protokolů inernetu. Pole 856 je strukturováno tak, aby umožnilo vytvoření URL ze spojení hodnot uložených do jiných oddělených podpolí pole 856. Podpole $u může být použito místo těchto oddělených podpolí, nebo navíc společně s nimi. Opakovatelné, pokud jsou v poli použity jiné související informace.
+200    a3bThe Uniform Resource Locator (URL), which provides electronic access data in a standard syntax. This data \n can be used for automated access to an electronic item using one of the Internet protocols. Field 856 is \n structured to allow the creation of a URL by combining data from other 856 subfields. Subfield $u may be \n used instead of those separate subfields or in addition to them. Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T856V
+200    a1bČasová prístupnosť\nHodiny, v ktorých je elektronický zdroj prístupný na umiestnení indikovanom v tomto poli. Opakovateľné.
+200    a2bČasové údaje v hodinách, udávající dostupnost elektronického zdroje pro přístup v místě, uvedeném v tomto poli. Opakovatelné.
+200    a3bThe hours that access to an electronic resource is available at the location indicated in this field.\n  Repeatable
+###
+# @id UN_TABLES HELP_UNA_T856W
+200    a1bKontrólne číslo záznamu\nOpakovateľné
+200    a2bKontrólní číslo záznamu\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856X
+200    a1bNeverejná poznámka\nOpakovateľné
+200    a2bNeveřejná poznámka\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856Y
+200    a1bPrístupová metóda\nOpakovateľné
+200    a2bMetoda přístupu\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T856Z
+200    a1bVerejná poznámka\nOpakovateľné.
+200    a2bVeřejná poznámka\nOpakovatelné
+200    a3b.
+###
+# @id UN_TABLES HELP_UNA_T886
+200    a1bInformácie o cudzom MARCU\nToto pole obsahuje údaje, pre ktoré neexistuje špecifické pole v UNIMARCU. Používa sa, keď agentúra konvertuje záznamy z iného formátu a želá si zachovať elementy v poliach, ktoré nemajú ekvivalent.\nNepovinné. Opakovateľné.
+200    a2bInformace o cizím MARCU\nToto pole obsahuje údaje, pro které neexistuje specifické pole v UNIMARCU. Používá se, když agentura konvertuje záznamy z jiného formátu a přeje si zachovat elementy v polích, které nemají ekvivalent.\nNepovinné. Opakovatelné.
+200    a3bThis field contains data for which there is no specific UNIMARC field. It is used when an \n agency is converting records from another format and wishes to retain elements in fields \n which have no equivalent.
+###
+# @id UN_TABLES HELP_UNA_T886A
+200    a1bTag poľa v zdrojovom formáte\nToto pole nebude prítomné, ak má indikátor 1 hodnotu 0. Toto podpole môže byť použité iba raz s hodnotou tagu poľa v zdrojovom formáte. Všetky ostatné podpolia $a v tomto poli majú hodnoty pridelené poľom v zdrojovom formáte.
+200    a2bThis subfield will not be present if Indicator 1 has the value 0.\n Not repeatable.
+200    a3bThis subfield will not be present if Indicator 1 has the value 0.\n Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T886B
+200    a1b indikátory a podpolia poľa v zdrojovom formáte\nToto podpole bude obsahovať indikátory, identifikátory podpolí a podpolia originálneho poľa v ich pôvodnom poradí. Toto podpole môže byť použité iba raz s hodnotami indikátorov a podpolí v poli v zdrojovom formáte. Všetky ostatné podpolia $b v tomto poli majú hodnoty pridelené poľom v zdrojovom formáte.
+200    a2bThis subfield will contain the indicators, subfield identifiers and subfields of the original\n  field in their original order.  Not repeatable.
+200    a3bThis subfield will contain the indicators, subfield identifiers and subfields of the original\n  field in their original order.  Not repeatable.
+###
+# @id UN_TABLES HELP_UNA_T886C
+200    a1bThe name of the format used for the machine-readable record. \n See Appendix H in UNIMARC Manual: Bibliographic Format for codes. Not repeatable.
+200    a2bThe name of the format used for the machine-readable record. \n See Appendix H in UNIMARC Manual: Bibliographic Format for codes. Not repeatable.
+200    a3bThe name of the format used for the machine-readable record. \n See Appendix H in UNIMARC Manual: Bibliographic Format for codes. Not repeatable.
+###

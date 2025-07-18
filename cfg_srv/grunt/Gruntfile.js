@@ -1,6 +1,7 @@
 /* 
  * Konfigurace Gruntu
  * Gruntfile
+ * 2024-04-30 on; na "prettier:i3appEpca" mne to pada, zakomentovano
  * 2023-08-29 on; formular serialu pro male knihovny
  * 2023-08-23 on; formular knihy pro male knihovny
  * 2023-06-27 on; epca.form.Button
@@ -527,7 +528,9 @@ module.exports = function(grunt) {
 			});
 			grunt.task.run(["prettier:i3app", "dart-sass:i3app", "bom:i3app", "jsbeautifier:i3app", "jshint:i3app", "jsdoc:i3app", "concat:i3app"]);
 			if (app2 === "epcadesigner") {
-				grunt.task.run(["prettier:i3appEpca", "dart-sass:i3appEpca"]);
+				// 30.04.24 on; na "prettier:i3appEpca" mne to pada, zakomentovano
+				//grunt.task.run(["prettier:i3appEpca", "dart-sass:i3appEpca"]);
+				grunt.task.run(["dart-sass:i3appEpca"]);
 				grunt.task.run(["jshint:i3appEpcaD", "concat:i3appEpcaD", "copy:i3appEpcaD", "uglify:i3appEpcaD"]);
 			}
 			grunt.task.run(["concat:i3app", "copy:i3app", "uglify:i3app", "compress:i3app"]);

@@ -2,6 +2,9 @@
  * Zakladna obrazovka na editaciu zaznamov.
  * Zodpoveda "WINDOW" z terminologie AREVu.
  *
+ * 09.04.25 on; funkce tisk a copy jen pokud funkce existuji
+ * 29.08.24 on; pokud je titul readonly, nekontrolovat ztratu poli
+ * 08.03.24 on; objekt s dalsimi parametry
  * 17.02.23 on; kopie zaznamu + uprava menu
  * 07.10.22 on; poznaci si, ze ciselnik ma sufix pobocky a ze pripadne nacist ciselnik bez ni
  * 30.08.22 on; zmena na ikonu v souboru
@@ -286,7 +289,10 @@ Ext.apply(i3.ui.DataTable, {
             toolBarMenu = toolBarMenu.concat([{
                 text: i3.ui.DataTable.tx.txInventory,
                 handler: function() {
-                    i3.Inventory.csOnInventory(this.csClassSrchBib + 'H', this.csBranch);
+                    // 08.03.24 on; objekt s dalsimi parametry
+                    i3.Inventory.csOnInventory(this.csClassSrchBib + 'H', this.csBranch, {
+                        csInventoryUseOnlyExistingTag500: this.csInventoryUseOnlyExistingTag500
+                    });
                 },
                 scope: this
             }]);
@@ -297,8 +303,9 @@ Ext.apply(i3.ui.DataTable, {
                 xtype: 'menuseparator'
             }]);
         }
+        // 09.04.25 on; doplnena podmnika this.csPrintDF
         // 17.02.23 on; tisk zaznamu
-        if (!config.csSkipPrintRecMenu) {
+        if ((!config.csSkipPrintRecMenu) && (this.csPrintDF)) {
             toolBarMenu = toolBarMenu.concat([{
                 html: '<span class="icon-print" aria-hidden="true"></span> ' + i3.ui.DataTable.tx.txPrintRecord,
                 //handler: this.csPrintDF.createDelegate(this)
@@ -308,8 +315,9 @@ Ext.apply(i3.ui.DataTable, {
                 scope: this
             }]);
         }
+        // 09.04.25 on; doplnena podmnika this.csOnCopy
         // 17.02.23 on; kopie zaznamu
-        if (!config.csSkipCopyRecMenu) {
+        if ((!config.csSkipCopyRecMenu) && (this.csOnCopy)) {
             toolBarMenu = toolBarMenu.concat([{
                 handler: function() {
                     this.csOnCopy();
@@ -1220,7 +1228,7 @@ i3.ui.DataTable.Panel = Ext.extend(Ext.form.FormPanel, {
                 // 17.03.22 on; podpora pro info zpravy
                 if (!i3.isEmptyString(oResponse.ret_msg)) {
                     var m = new i3.WS.Msg(oResponse.ret_msg);
-                    sMsg += '<br/><br/>' + m.userText;
+                    sMsg += '<br><br>' + m.userText;
                 }
                 i3.msg(sMsg);
                 /// 30.07.15 on; predani options - pouzito v nra
@@ -1341,8 +1349,10 @@ i3.ui.DataTable.Panel = Ext.extend(Ext.form.FormPanel, {
         this.csUnlockRecord(this.csLinRecord);
         var oErr = {};
         this.csOrigMarcRecord = null;
+        // 29.08.24 on; pokud je titul readonly, nekontrolovat ztratu poli
         // 02.05.11 on; pridany parametr pro kontrolu ztraty poli
-        this.csLinRecord = i3.DataFmt.fromMarc(this.csMarcConvDef, oRec, oErr, true);
+        //this.csLinRecord = i3.DataFmt.fromMarc(this.csMarcConvDef, oRec, oErr, true);
+        this.csLinRecord = i3.DataFmt.fromMarc(this.csMarcConvDef, oRec, oErr, !this.csTitleReadOnly);
         // encode/decode vyrobi klon (sice mierne nasilne; zatial ma nic lepsie nenapada)
         // ak by sme nespravili klon, da sa cez pointer (via csLinRecord) pomenit obsah csOrigLinRecord
         this.csOrigLinRecord = Ext.decode(Ext.encode(this.csLinRecord));
@@ -1415,7 +1425,7 @@ i3.ui.DataTable.Panel = Ext.extend(Ext.form.FormPanel, {
         var s = 'csLinRecord: ' + this.csEncode(this.csLinRecord);
         var oRec = this.csGetMarc();
         if (oRec) {
-            s += '<br/><br/>csGetMarc(): ' + this.csEncode(oRec);
+            s += '<br><br>csGetMarc(): ' + this.csEncode(oRec);
         }
         // 01.03.18 on; nstaveni session
         if (i3.Login && i3.Login.ctx) {

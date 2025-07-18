@@ -2,6 +2,7 @@
  * Kniznica zmien Ext-u. T.j. zasahy priamo do vnutra Ext komponent.
  * Mala by byt nacitana po i3.Base.js a po skupine nevizualnych tried (Marc a WS).
  *
+ * 04.02.25 on; zacinat budeme pondelkem
  * 05.12.23 on; zvyseny timeout
  * 12.06.20 on; timeou pro ajax requesty
  * 25.11.15 on; MenuLayout
@@ -125,7 +126,7 @@ Ext.override(Ext.layout.FormLayout, {
 /**
  * @class Ext.EventObject
  Konstanty klaves F1 az F4.
- Neviem z akeho dovodu, ale standardne je definovane len F5, takze tu si pridavam dalsie konstanty.<br/><br/>
+ Neviem z akeho dovodu, ale standardne je definovane len F5, takze tu si pridavam dalsie konstanty.<br><br>
  Nic viac tu zatial nie je.
  */
 if (!Ext.EventObject.F1) {
@@ -393,7 +394,8 @@ if (Ext.form.DateField) {
         disabledDaysText: i3.ui.ext.tx.txDisabled,
         disabledDatesText: i3.ui.ext.tx.txDisabled,
         minText: i3.ui.ext.tx.txMinTextDateField,
-        maxText: i3.ui.ext.tx.txMaxTextDateField
+        maxText: i3.ui.ext.tx.txMaxTextDateField,
+        startDay: 1 // 04.02.25 on; zacinat budeme pondelkem
         //invalidText : i3.ui.ext.tx.txInvalidDate  // toto je predefiniovane uz vys
         //format : "d.m.Y",
         //altFormats : "d/m/Y|d-m-y|d-m-Y|d/m|d-m|dm|dmy|dmY|d|Y-m-d"

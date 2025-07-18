@@ -49,41 +49,41 @@ i3.version = 'i3 #(data("APP_DIR"))# 1.0.0a - DD.MM.YYYY';
 <csp:else><!DOCTYPE html>
 <html dir="#(data("DIR"))#" lang="#(data("LANG_CODE"))#">
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-<meta charset="utf-8"/>
-<meta name="robots" content="index,nofollow"/>
-<meta id="arl" name="author" content="#(i3.tx(.data,"META_AUTHOR"))#" data-ictx="#(data("ICTX"))#" data-ns="#(data("NAMESPACE"))#" data-login=""/>
-<meta id="meta-description" name="description" content="#($g(data("DESCRIPTION")))#" data-name="#($g(data("TITLE")))#" data-version="#($g(data("APP_VERSION")))#" data-lastmodified="#($g(data("LAST_MODIFIED")))#"/>
-<meta content="name=#(i3.tx(.data,"LOGOUT"))#;action-uri=#(i3.appLink(.data,"logout=1"))#;icon-uri=#(data("FAVICON"))#" name="msapplication-task"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta charset="utf-8">
+<meta name="robots" content="index,nofollow">
+<meta id="arl" name="author" content="#(i3.tx(.data,"META_AUTHOR"))#" data-domain="#(data("DOMAIN"))#" data-ictx="#(data("ICTX"))#" data-ns="#(data("NAMESPACE"))#" data-login="">
+<meta id="meta-description" name="description" content="#($g(data("DESCRIPTION")))#" data-name="#($g(data("TITLE")))#" data-version="#($g(data("APP_VERSION")))#" data-lastmodified="#($g(data("LAST_MODIFIED")))#">
+<meta content="name=#(i3.tx(.data,"LOGOUT"))#;action-uri=#(i3.appLink(.data,"logout=1"))#;icon-uri=#(data("FAVICON"))#" name="msapplication-task">
 
 #(i3.CSS(.data))#
 
-<link id="favicon" data-alt="Logo ARL" rel="shortcut icon" href="#(data("FAVICON"))#"/>
+<link id="favicon" data-alt="Logo ARL" rel="shortcut icon" href="#(data("FAVICON"))#">
 <csp:if condition=(data("WIKI_CLIENT")'="")>
-<link id="link-help" rel="help" href="#(data("WIKI_CLIENT"))#" title="#(i3.tx(.data,"MANUAL"))#"/>
+<link id="link-help" rel="help" href="#(data("WIKI_CLIENT"))#" title="#(i3.tx(.data,"MANUAL"))#">
 </csp:if>
 <csp:if condition=(data("WIKI_COSMO")'="")>
-<link id="link-cosmo" rel="help" href="#(data("WIKI_COSMO"))#" title="#(i3.tx(.data,"MANUAL"))#"/>
+<link id="link-cosmo" rel="help" href="#(data("WIKI_COSMO"))#" title="#(i3.tx(.data,"MANUAL"))#">
 </csp:if>
-<link id="link-home" rel="canonical" href="#(data("APP_URL"))#"/>
+<link id="link-home" rel="canonical" href="#(data("APP_URL"))#">
 <csp:if condition=(data("APP_DIR")="webadmin")||(data("APP_DIR")="cle")>
-<link id="link-param" rel="home" href="#(i3.appLink(.data,"class="_$g(%request.Data("class",1))_"&t001="_$g(%request.Data("t001",1))))#" data-class="#(..EscapeHTML($g(%request.Data("class",1))))#" data-t001="#(..EscapeHTML($g(%request.Data("t001",1))))#"/>
+<link id="link-param" rel="home" href="#(i3.appLink(.data,"class="_$g(%request.Data("class",1))_"&t001="_$g(%request.Data("t001",1))))#" data-class="#(..EscapeHTML($g(%request.Data("class",1))))#" data-t001="#(..EscapeHTML($g(%request.Data("t001",1))))#">
 </csp:if>
 
-<meta name="application-name" content="#(data("TITLE"))#"/>
-<meta name="application-url" content="#(data("APP_URL"))#"/>
-<meta name="msapplication-TileImage" content="#(data("MSA_TILEIMAGE"))#"/>
-<meta name="msapplication-TileColor" content="#(data("MSA_TILECOLOR"))#"/>
-<meta name="theme-color" content="#(data("MSA_TILECOLOR"))#"/>
+<meta name="application-name" content="#(data("TITLE"))#">
+<meta name="application-url" content="#(data("APP_URL"))#">
+<meta name="msapplication-TileImage" content="#(data("MSA_TILEIMAGE"))#">
+<meta name="msapplication-TileColor" content="#(data("MSA_TILECOLOR"))#">
+<meta name="theme-color" content="#(data("MSA_TILECOLOR"))#">
 <csp:if condition=(data("DESCRIPTION")'="")>
-<meta name="msapplication-tooltip" content="#(data("DESCRIPTION"))#"/>
+<meta name="msapplication-tooltip" content="#(data("DESCRIPTION"))#">
 </csp:if>
-<meta name="msapplication-starturl" content="#(data("APP_URL"))#"/>
+<meta name="msapplication-starturl" content="#(data("APP_URL"))#">
 
 #(i3.JS(.data))#
 
-<title>#(data("TITLE"))#</title>
+<title>#(data("TITLE"))# - #(data("DOMAIN"))#</title>
 </head>
 <body role="application">
 
@@ -97,29 +97,29 @@ i3.version = 'i3 #(data("APP_DIR"))# 1.0.0a - DD.MM.YYYY';
 <noscript><p>#(data("NOSCRIPT"))#</p></noscript>
 <iframe name="formSending" class="x-hidden"></iframe>
 <form id="login_formx" action="/i3/images/s.gif" method="post" target="formSending">
-<input id="login_namex" type="text" name="username" class="x-hidden"/>
-<input id="login_pwdx" type="password" name="password" class="x-hidden"/>
-<input id="login_submitx" type="submit" class="x-hidden"/>
+<input id="login_namex" type="text" name="username" class="x-hidden">
+<input id="login_pwdx" type="password" name="password" class="x-hidden">
+<input id="login_submitx" type="submit" class="x-hidden">
 </form>
 
 <div id="about-app" style="display:none;" title="O aplikaci">
-#(data("DESCRIPTION"))#<br/>
-<br/>
+#(data("DESCRIPTION"))#<br>
+<br>
 <csp:if condition=(data("APP_VERSION")'="")>
-<b>Ver.</b>: #(data("APP_VERSION"))#<br/>
+<b>Ver.</b>: #(data("APP_VERSION"))#<br>
 <csp:else>
-<b>#(data("LAST_MODIFIED"))#</b><br/>
+<b>#(data("LAST_MODIFIED"))#</b><br>
 </csp:if>
-<br/>
+<br>
 <span onclick="window.open('https://www.cosmotron.cz/', '_blank');" title="www.cosmotron.cz" style="display:inline-block;cursor:pointer;background-color:white;padding:5px;width:300px;min-height:100px;">
-<img height="95" width="300" src="../images/cosmotron-logo.jpg" alt="Logo Cosmotron"/>
-<br/>
-<br/>
+<img height="95" width="300" src="../images/cosmotron-logo.jpg" alt="Logo Cosmotron">
+<br>
+<br>
 <a target="_blank" rel="external" href="https://www.cosmotron.cz/">&copy; Cosmotron Slovakia & Bohemia</a></span>
 </div>
 
-<div id="footer-app" style="display:none;">
-<div id="footer">&copy; 1993-2023 <a target="_blank" rel="external" href="https://www.cosmotron.cz/">Cosmotron Slovakia & Bohemia</a></div>
+<div id="footer-app" style="display:none">
+<div id="footer">&copy; 1993-2024 <a target="_blank" rel="external" href="https://www.cosmotron.cz/">Cosmotron Slovakia &amp; Bohemia</a></div>
 </div>
 
 </body>

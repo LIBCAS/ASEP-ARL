@@ -1,0 +1,471 @@
+openapi: 3.0.1
+info:
+  title: ARL REST API
+  description: |-
+    ### REST API pro přístup k funkcím knihovního informačního systému <a href=https://www.cosmotron.cz/produkty/arl/>Advanced Rapid Library</a> (ARL)
+    Služby jsou rozděleny do modulů podle druhu použití.
+
+    ## Autentizace
+    - Před provoláním služeb je potřeba provést přihlášení službou GET Auth
+    - Přihlašuje se jménem a heslem viz. <a href=https://en.wikipedia.org/wiki/Basic_access_authentication>HTTP Basic Auth</a>
+      
+      #### Request Headers:
+      <pre>
+      Accept: application/json
+      <b>Authorization: Basic YXJsOnJhZ2Vy</b></pre>
+
+    - Služba vrací Bearer Token, který <b>expiruje po 4 hodinách</b>, následně je potřeba se znovu přihlásit
+      #### Response:
+      <pre>
+      {
+        "state": "authenticated",
+        "token": "<b>OTJBNTJGNzNGMTM2QzI4ODhGQg</b>",
+        "user": "arl",
+        "time_exp_local_odbc_utc": "2024-02-02T14:51:47+01:00",
+        "time_exp_local_odbc": "2024-02-02 14:51:47",
+        "sigla": "CBA001",
+        "branch": "",
+        "branch_title": ""
+      }</pre>
+
+    - Bearer Token slouží pro autentizaci do ostatních služeb
+      #### Request Headers:
+      <pre>
+      Accept: application/json
+      <b>Authorization: Bearer OTJBNTJGNzNGMTM2QzI4ODhGQg</b></pre>
+  version: "1.0"
+servers:
+- url: https://server/apiarl/prod
+tags:
+- name: Auth
+  description: Autentizace
+  externalDocs:
+    description: ARL wiki
+    url: https://arl2.library.sk/wiki_arl/index.php/Main_Page
+- name: General
+  description: Obecné funkce
+  externalDocs:
+    description: ARL wiki
+    url: https://arl2.library.sk/wiki_arl/index.php/Main_Page
+- name: Rec
+  description: "MARC záznamy (autority, katalog, číselníky, ...)"
+  externalDocs:
+    description: ARL wiki
+    url: https://arl2.library.sk/wiki_arl/index.php/Main_Page
+- name: Cir
+  description: "Cirkulace (čtenáři, výpůjčka, návrat, platba, ...)"
+  externalDocs:
+    description: ARL wiki
+    url: https://arl2.library.sk/wiki_arl/index.php/Main_Page
+- name: MVS
+  description: Meziknihovní výpůjční služba
+  externalDocs:
+    description: ARL wiki
+    url: https://arl2.library.sk/wiki_arl/index.php/Main_Page
+paths:
+  /v1/{ictx}/auth:
+    get:
+      tags:
+      - Auth
+      summary: Autentizace HTTP Basic Auth
+      description: |-
+        ## Autentizace HTTP Basic Auth
+         Vrací **Bearer token** který se využívá pro autentizaci v ostatních API REST službách, token expiruje po 4 hodinách.
+      operationId: auth
+      parameters:
+      - $ref: '#components/parameters/ictx'
+      responses:
+        "200":
+          description: Bearer token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: authenticated
+                  token:
+                    type: string
+                    example: MTQ4MDdGREI4RjIyNERGQjk1Qw
+                  user:
+                    type: string
+                    example: username
+                  time_exp_local_odbc_utc:
+                    type: string
+                    example: 2024-01-26T15:17:36+01:00
+                  time_exp_local_odbc:
+                    type: string
+                    example: 2024-01-26 15:17:36
+                  sigla:
+                    type: string
+                    example: CBA001
+                  branch:
+                    type: string
+                    example: ""
+                  branch_title:
+                    type: string
+                    example: ""
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResp401'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResp406'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpErrRespGeneral'
+      security:
+      - basicAuth: []
+  /v1/{ictx}/authinfo:
+    get:
+      tags:
+      - Auth
+      summary: Informace o přihlášeném
+      description: "Informace o přihlášeném uživateli a platnosti **Bearer token**."
+      operationId: authinfo
+      parameters:
+      - $ref: '#components/parameters/ictx'
+      responses:
+        "200":
+          description: Auth information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: authenticated
+                  token:
+                    type: string
+                    example: MTQ4MDdGREI4RjIyNERGQjk1Qw
+                  user:
+                    type: string
+                    example: username
+                  time_exp_local_odbc_utc:
+                    type: string
+                    example: 2024-01-26T15:17:36+01:00
+                  time_exp_local_odbc:
+                    type: string
+                    example: 2024-01-26 15:17:36
+                  sigla:
+                    type: string
+                    example: CBA001
+                  branch:
+                    type: string
+                    example: ""
+                  branch_title:
+                    type: string
+                    example: ""
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResp401'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResp406'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/logout:
+    get:
+      tags:
+      - Auth
+      summary: Odhlášení uživatele
+      description: "Odhlášení všech **Bearer tokenů** uživatele a uvolnění přihlašovacích slotů."
+      operationId: logout
+      parameters:
+      - $ref: '#components/parameters/ictx'
+      responses:
+        "200":
+          description: Logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    example: logged out
+                  token_deleted_count:
+                    type: string
+                    example: 1
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResp401'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResp406'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/version:
+    get:
+      tags:
+      - General
+      summary: Verze ARL
+      description: |-
+       Vrací informace o verzi této instance ARL.
+       Tato služba nevyžaduje autentizaci a použití tokenu.
+      operationId: version
+      parameters:
+      - $ref: '#components/parameters/ictx'
+      responses:
+        "200":
+          description: Version information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  appName:
+                    type: string
+                    example: Advanced Rapid Library
+                  version:
+                    type: string
+                    example: 4.7.1
+                  releaseDate:
+                    type: string
+                    example: YYYY-MM-DD
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpErrRespGeneral'
+
+  /v1/{ictx}/record:
+    $ref: 'arl-v1_rec.yaml#/paths/~1v1~1{ictx}~1record'
+  /v1/{ictx}/record/{class}/{term}:
+    $ref: 'arl-v1_rec.yaml#/paths/~1v1~1{ictx}~1record~1{class}~1{term}'
+  /v1/{ictx}/list/{class}/{term}:
+    $ref: 'arl-v1_rec.yaml#/paths/~1v1~1{ictx}~1list~1{class}~1{term}'
+  /v1/{ictx}/list/{class}/{page}/{field}:
+    $ref: 'arl-v1_rec.yaml#/paths/~1v1~1{ictx}~1list~1{class}~1{page}~1{field}'
+  /v1/{ictx}/cir/patron/{term}:
+    $ref: 'arl-v1_cir.yaml#/paths/~1v1~1{ictx}~1cir~1patron~1{term}'
+  /v1/{ictx}/cir/patron/{term}/is-valid:
+    $ref: 'arl-v1_cir.yaml#/paths/~1v1~1{ictx}~1cir~1patron~1{term}~1is-valid'
+  /v1/{ictx}/cir/checkout:
+    $ref: 'arl-v1_cir.yaml#/paths/~1v1~1{ictx}~1cir~1checkout'
+  /v1/{ictx}/cir/checkin:
+    $ref: 'arl-v1_cir.yaml#/paths/~1v1~1{ictx}~1cir~1checkin'
+  /v1/{ictx}/cir/createpayment:
+    $ref: 'arl-v1_cir.yaml#/paths/~1v1~1{ictx}~1cir~1createpayment'
+  /v1/{ictx}/cir/ebook/checkout:
+    $ref: 'arl-v1_cir.yaml#/paths/~1v1~1{ictx}~1cir~1ebook~1checkout'
+  /v1/{ictx}/mvs/zk/request:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1zk~1request'
+  /v1/{ictx}/mvs/zk/request/{ticketId}:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1zk~1request~1{ticketId}'
+  /v1/{ictx}/mvs/zk/request/{ticketId}/status:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1zk~1request~1{ticketId}~1status'
+  /v1/{ictx}/mvs/zk/request/{ticketId}/checkout:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1zk~1request~1{ticketId}~1checkout'
+  /v1/{ictx}/mvs/zk/request/{ticketId}/checkin:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1zk~1request~1{ticketId}~1checkin'
+  /v1/{ictx}/mvs/zk/request/{ticketId}/storno:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1zk~1request~1{ticketId}~1storno'
+  /v1/{ictx}/mvs/dk/request:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1dk~1request'
+  /v1/{ictx}/mvs/dk/request/{subticketId}:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1dk~1request~1{subticketId}'
+  /v1/{ictx}/mvs/dk/request/{subticketId}/status:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1dk~1request~1{subticketId}~1status'
+  /v1/{ictx}/mvs/dk/request/{subticketId}/checkout:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1dk~1request~1{subticketId}~1checkout'
+  /v1/{ictx}/mvs/dk/request/{subticketId}/checkin:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1dk~1request~1{subticketId}~1checkin'
+  /v1/{ictx}/mvs/dk/request/{subticketId}/storno:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1dk~1request~1{subticketId}~1storno'
+  /v1/{ictx}/mvs/library/{sigla}:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1library~1{sigla}'
+  /v1/{ictx}/mvs/notify:
+    $ref: 'arl-v1_mvs.yaml#/paths/~1v1~1{ictx}~1mvs~1notify'
+components:
+  schemas:
+    HttpRespCreated:
+      type: object
+      properties:
+        state:
+          type: string
+          example: created
+        message:
+          type: string
+    HttpRespUpdated:
+      type: object
+      properties:
+        class:
+          type: string
+        t001:
+          type: string
+        state:
+          type: string
+          example: updated
+    HttpErrRespGeneral:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+              domains:
+                type: string
+                example: ArlErrors
+              error:
+                type: string
+              id:
+                type: string
+                example: Arl
+              params:
+                type: array
+                items:
+                  type: string
+        summary:
+          type: string
+    HttpResp401:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: ERR_AUTH001
+              domains:
+                type: string
+                example: ArlErrors
+              error:
+                type: string
+                example: ERR_AUTH001#Authentication required
+              id:
+                type: string
+                example: Arl
+              params:
+                type: array
+                items:
+                  type: string
+        summary:
+          type: string
+          example: ERR_AUTH001#Authentication required
+    HttpResp406:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: ERR_REST008
+              domains:
+                type: string
+                example: ArlErrors
+              error:
+                type: string
+                example: ERR_REST008#Accept 'application/json' only
+              id:
+                type: string
+                example: Arl
+              params:
+                type: array
+                items:
+                  type: string
+        summary:
+          type: string
+          example: ERR_REST008#Accept 'application/json' only
+    MarcRecordJson:
+      $ref: 'arl-v1_rec.yaml#/components/schemas/MarcRecordJson'
+    MarcRecordList:
+      $ref: 'arl-v1_rec.yaml#/components/schemas/MarcRecordList'
+    HttpRespPatron:
+      $ref: 'arl-v1_cir.yaml#/components/schemas/HttpRespPatron'
+    HttpRespPatronValidation:
+      $ref: 'arl-v1_cir.yaml#/components/schemas/HttpRespPatronValidation'
+    CheckOutReqJsonBody:
+      $ref: 'arl-v1_cir.yaml#/components/schemas/CheckOutReqJsonBody'
+    CheckInReqJsonBody:
+      $ref: 'arl-v1_cir.yaml#/components/schemas/CheckInReqJsonBody'
+    CreatePaymentReqJsonBody:
+      $ref: 'arl-v1_cir.yaml#/components/schemas/CreatePaymentReqJsonBody'
+    EbookCheckOutReqJsonBody:
+      $ref: 'arl-v1_cir.yaml#/components/schemas/EbookCheckOutReqJsonBody'
+    MvsReqJsonBody:
+      $ref: 'arl-v1_mvs.yaml#/components/schemas/MvsReqJsonBody'
+    MvsReqZkStatusJsonBody:
+      $ref: 'arl-v1_mvs.yaml#/components/schemas/MvsReqZkStatusJsonBody'
+    MvsReqDkJsonBody:
+      $ref: 'arl-v1_mvs.yaml#/components/schemas/MvsReqDkJsonBody'
+    MvsReqDkStatusJsonBody:
+      $ref: 'arl-v1_mvs.yaml#/components/schemas/MvsReqDkStatusJsonBody'
+    MvsReqNotifyJsonBody:
+      $ref: 'arl-v1_mvs.yaml#/components/schemas/MvsReqNotifyJsonBody'
+    MvsRespZkJsonBody:
+      $ref: 'arl-v1_mvs.yaml#/components/schemas/MvsRespZkJsonBody'
+    MvsRespDkJsonBody:
+      $ref: 'arl-v1_mvs.yaml#/components/schemas/MvsRespDkJsonBody'
+  parameters:
+    ictx:
+      name: ictx
+      in: path
+      description: Prefix instituce
+      required: true
+      schema:
+        type: string
+    class:
+      name: class
+      in: path
+      description: Třída
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    basicAuth:
+      type: http
+      scheme: basic

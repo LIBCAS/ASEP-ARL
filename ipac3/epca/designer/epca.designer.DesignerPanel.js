@@ -2,6 +2,8 @@
  * EPCA Form Designer
  * @author Kungfu
  *
+ * 23.01.25 on; moznost skryt ohraniceni
+ * 29.04.24 on; nastaveni css bude pouze v csp souboru
  * 21.02.23 on; jazykova mutace nazvu formulare
  * 28.01.22 on; podminka - pole v kontejneru bez podpoli
  * 07.01.21 on; icon-error-epca
@@ -20,10 +22,11 @@
 
 Ext.ns('epca.designer');
 
+// 29.04.24 on; nastaveni bude pouze v csp souboru
 // 03.03.20 on; konstanty
-epca.designer.c = {
-  sActualCssStyle : 'css/' + i3.ictx.toLowerCase() + '1.css' // globalni promenna - defaultni styl
-};
+//epca.designer.c = {
+//  sActualCssStyle : 'css/' + i3.ictx.toLowerCase() + '1.css' // globalni promenna - defaultni styl
+//};
 
 /*
  * Mame tri typy uzlov (formPartType) - nic lepsie ma nenapadlo:
@@ -281,6 +284,8 @@ epca.designer.DesignerPanel = Ext.extend(Ext.Panel, {
             this.openForm.formTablesdCache = rootNode.attributes.formProperties.formTablesdCache;
             // 16.10.15 on;
             this.openForm.formDFST = rootNode.attributes.formProperties.formDFST;
+            // 23.01.25 on; moznost skryt ohraniceni
+            this.openForm.formHideBorder = rootNode.attributes.formProperties.formHideBorder;
 
             this.openForm.content = (this.getFormTreePanel()).getDesignedFormContent();
 
@@ -339,6 +344,8 @@ epca.designer.DesignerPanel = Ext.extend(Ext.Panel, {
                       formTablesdCache : rootNode.attributes.formProperties.formTablesdCache,
                       // 16.10.15 on;
                       formDFST : rootNode.attributes.formProperties.formDFST,
+                      // 23.01.25 on; moznost skryt ohraniceni
+                      formHideBorder : rootNode.attributes.formProperties.formHideBorder,
 
                       defaultValues : (this.openForm) ? this.openForm.defaultValues : undefined,
                       content : (this.getFormTreePanel()).getDesignedFormContent()
@@ -571,9 +578,9 @@ epca.designer.DesignerPanel = Ext.extend(Ext.Panel, {
           csStatTableN : 'EPCA_CSS_LIST',
           // 05.03.20 on; zruseno
           //csAutoSelectFirst : i3.isEmptyString(Ext.util.Cookies.get('i3styledesigner')) ? true : false,
-          // 05.03.20 on; doplneno
-          //value : Ext.util.Cookies.get('i3styledesigner') || '',
-          value : Ext.util.Cookies.get('i3styledesigner') || epca.designer.c.sActualCssStyle,
+          // 29.04.24 on; upraveno
+          //value : Ext.util.Cookies.get('i3styledesigner') || epca.designer.c.sActualCssStyle,
+          value : Ext.util.Cookies.get('i3styledesigner') || getActCss(),
           //tooltip : epca.Config.User.ShowURLBtnFnHint || '',
           forceSelection : true,
           width : 120,
@@ -622,6 +629,8 @@ epca.designer.DesignerPanel = Ext.extend(Ext.Panel, {
     formNode.attributes.formProperties.formDBTable = epca.UnFormat.getDBName(this.unFormat);
     formNode.attributes.formProperties.formTablesdCache = epca.Config.User.tablesdCache;
     formNode.attributes.formProperties.formDFST = '';
+    // 23.01.25 on; moznost skryt ohraniceni
+    formNode.attributes.formProperties.formHideBorder = false;
 
     // 19.07.11 on; nastavi spravny nazev DB
 
@@ -954,7 +963,7 @@ epca.designer.DesignerPanel = Ext.extend(Ext.Panel, {
     }
 
     var helpHTML = Ext.isDefined(tagHelp) ? '<h2>Tag ' + tagHelp.tag + '</h2>' + '<p>' + tagHelp.help + '</p>' : '';
-    helpHTML = helpHTML.replace(/\\n/g, '<br />');
+    helpHTML = helpHTML.replace(/\\n/g, '<br>');
 
     tagDetail.hide().update(helpHTML).slideIn('l', {
       stopFx : true,
@@ -997,7 +1006,9 @@ epca.designer.DesignerPanel = Ext.extend(Ext.Panel, {
             //formDBTable: epca.Config.dbAuth
             formDBTable : epca.Config.User.dbCat,
             formTablesdCache : epca.Config.User.tablesdCache,
-            formDFST : ''
+            formDFST : '',
+            // 23.01.25 on; 
+            formHideBorder : false
           }
         },
         listeners : {
@@ -1066,11 +1077,15 @@ epca.designer.DesignerPanel = Ext.extend(Ext.Panel, {
       sValue = cmp.getValue();
     }
 
+    // 29.04.24 on; upraveno
     // pouze pokud se lisi od aktualniho
-    if (epca.designer.c.sActualCssStyle !== sValue) {
+    //if (epca.designer.c.sActualCssStyle !== sValue) {
+    if (getActCss() !== sValue) {
       //Replace all occurences "oldstyle.css" with "newstyle.css"
-      replacejscssfile(epca.designer.c.sActualCssStyle, sValue);
-      epca.designer.c.sActualCssStyle = sValue;
+      // 29.04.24 on; upraveno
+      //replacejscssfile(epca.designer.c.sActualCssStyle, sValue);
+      //epca.designer.c.sActualCssStyle = sValue;
+      replacejscssfile(getActCss(), sValue);
 
       var d = new Date();
       d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));

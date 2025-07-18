@@ -8,10 +8,10 @@
 <span class="col-sm-10">
 <csp:if condition=($find(..v("ctype"),"image"))>
 #($zabs(data("COUNT")-node+1))#. #(..tx("PICTURE"))# &nbsp;
-<ipac:a title="#(..v("origname"))#" data-toggle="lightbox" data-type="image" data-footer="#(..v("humansize"))#, #(..v("description"))#" data-title="#(..v("origname"))#" aria-label="#(..v("origname"))#" op="csg" param="repo=#(..v("repository"))#&key=#(..v("key"))#"><span class="icon-picture" aria-hidden="true"></span></ipac:a> &nbsp; #(..v("origname"))#
+<ipac:a title="#(..v("origname"))#" data-toggle="lightbox" data-type="image" data-footer="#(..v("humansize"))#, #(..v("description"))#" data-title="#(..v("origname"))#" aria-label="#(..v("origname"))#" op="csg" param="repo=#(..v("repository"))#&key=#(..v("key"))#"><i class="icon-picture" aria-hidden="true"></i></ipac:a> &nbsp; #(..v("origname"))#
 <csp:else>
 #($zabs(data("COUNT")-node+1))#. #(..tx("FILE"))# &nbsp;
-<ipac:a title="#(..v("origname"))#" op="csg" param="repo=#(..v("repository"))#&key=#(..v("key"))#" target="_blank"><span class="icon-mydocuments" aria-hidden="true"></span></ipac:a> &nbsp; #(..v("origname"))#
+<ipac:a title="#(..v("origname"))#" op="csg" param="repo=#(..v("repository"))#&key=#(..v("key"))#" target="_blank"><i class="icon-mydocuments" aria-hidden="true"></i></ipac:a> &nbsp; #(..v("origname"))#
 </csp:if>
 <csp:if condition=(..v("ver")'=1)><span class="col-sm-2 text-right"><b>#(..tx("VER"))#: #(..v("ver"))#</b></span></csp:if>
 </span>
@@ -45,26 +45,26 @@
     </csp:if>
 
     <csp:if condition=(..v("isEdit"))>
-<button type="submit" name="edit" class="btn btn-primary" value="#(..tx("SET"))#" title="#(..tx("SET_TITLE"))# #(..v("origname"))#"><span class="icon-save" aria-hidden="true"></span> &nbsp;<ipac:tx param="SET"/></button>
+<button type="submit" name="edit" class="btn btn-primary" value="#(..tx("SET"))#" title="#(..tx("SET_TITLE"))# #(..v("origname"))#"><i class="icon-save" aria-hidden="true"></i> &nbsp;<ipac:tx param="SET"/></button>
     </csp:if>
     <csp:if condition=(..v("isChange"))>
-<button type="submit" name="change" class="btn btn-primary" value="#(..tx("CHANGE"))#" title="#(..tx("CHANGE_TITLE"))# #(..v("origname"))#"><span class="icon-save" aria-hidden="true"></span> &nbsp;<ipac:tx param="CHANGE"/></button>
+<button type="submit" name="change" class="btn btn-primary" value="#(..tx("CHANGE"))#" title="#(..tx("CHANGE_TITLE"))# #(..v("origname"))#"><i class="icon-save" aria-hidden="true"></i> &nbsp;<ipac:tx param="CHANGE"/></button>
     </csp:if>
     <csp:if condition=(..v("isDelete"))>
-<button type="submit" name="delete" class="btn btn-light" value="#(..tx("DELETE"))#" title="#(..tx("DELETE_TITLE"))# #(..v("origname"))#"><span class="icon-remove" aria-hidden="true"></span> &nbsp;<ipac:tx param="DELETE"/></button>
+<button type="submit" name="delete" class="btn btn-light" value="#(..tx("DELETE"))#" title="#(..tx("DELETE_TITLE"))# #(..v("origname"))#"><i class="icon-remove" aria-hidden="true"></i> &nbsp;<ipac:tx param="DELETE"/></button>
     </csp:if>
 
 <csp:if condition=(..isPage("contchro"))>
     <ipac:a op="contchro" class="btn btn-light" title="#(..txg("PG_CONTCHRO_TITLE"))# #(..v("origname"))#" param="repo=#(..v("repository"))#&key=#(..v("key"))#" restore><i class="icon-show" aria-hidden="true"></i> &nbsp;<ipac:tx param="CHRONO"/></ipac:a>
 </csp:if>
 
-<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
-<input type="hidden" name="idx" value="#(data("IDX"))#"/>
-<input type="hidden" name="key" value="#(..v("key"))#"/>
-<input type="hidden" name="status" value="#(data("STATUS"))#"/>
-<input type="hidden" name="stateorig" value="#(..v("status"))#"/>
-<input type="hidden" name="repo" value="#(data("REPO"))#"/>
-<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+<input type="hidden" name="op" value="#(data("PAGEID"))#">
+<input type="hidden" name="idx" value="#(data("IDX"))#">
+<input type="hidden" name="key" value="#(..v("key"))#">
+<input type="hidden" name="status" value="#(data("STATUS"))#">
+<input type="hidden" name="stateorig" value="#(..v("status"))#">
+<input type="hidden" name="repo" value="#(data("REPO"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
 </div>
 

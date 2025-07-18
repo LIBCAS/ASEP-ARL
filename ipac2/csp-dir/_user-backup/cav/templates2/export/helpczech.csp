@@ -5,7 +5,7 @@ Exportovat lze buď jednotlivé záznamy pomocí funkce v nástroji Bookmark neb
 </p>
 
 <p class="fragment">
-<img src="#(..img(1))#help/bookmark-cs.png" class="img-fluid" alt="Bookmark"/>
+<img src="#(..img(1))#help/bookmark-cs.png" class="img-fluid" alt="Bookmark">
 </p>
 
 <p class="fragment">
@@ -18,10 +18,10 @@ Při exportu se zvolí znaková sada (Windows CP1250 nebo UTF8) a formát, do k
 
 <div class="row">
 <p class="col-md-6 fragment">
-<img src="#(..img(1))#help/export-format-cs.png" class="img-fluid" alt="Export - formát"/>
+<img src="#(..img(1))#help/export-format-cs.png" class="img-fluid" alt="Export - formát">
 </p>
 <p class="col-md-6 fragment">
-<img src="#(..img(1))#help/export-charset-cs.png" class="img-fluid" alt="Export - znaková sada"/>
+<img src="#(..img(1))#help/export-charset-cs.png" class="img-fluid" alt="Export - znaková sada">
 </p>
 </div>
 
@@ -37,11 +37,11 @@ V případě znakové sady UTF8 se musí soubor uložit na lokální disk s p�
 </p>
 
 <p class="fragment">
-<img src="#(..img(1))#help/export-csv-charset-cs.png" class="img-fluid" alt="Import CSV - znaková sada"/>
+<img src="#(..img(1))#help/export-csv-charset-cs.png" class="img-fluid" alt="Import CSV - znaková sada">
 </p>
 
 <p class="fragment">
-<img src="#(..img(1))#help/export-csv-cs.png" class="img-fluid" alt="Import CSV - nastavení"/>
+<img src="#(..img(1))#help/export-csv-cs.png" class="img-fluid" alt="Import CSV - nastavení">
 </p>
 
 
@@ -59,12 +59,12 @@ Soubor obsahuje záznamy spolupracujících institucí AV ČR. To znamená, že 
 Prezentace formátu MARC ve struktuře XML - jednotlivé prvky záznamu (pole a podpole) jsou převedeny na XML značky. 
 </p>
 
-<h2> Formát <ipac:abbr lang="en-GB" title="Research Information Systems">RIS</ipac:abbr></h2>
+<h2> Formát <abbr lang="en-GB" title="Research Information Systems">RIS</abbr></h2>
 <p>
 Standardizovaný tagovaný formát, který umožňuje citačním programům a manažerům výměnu dat, umožňuje import a export výsledků vyhledávání do/z různých databází. Tento formát lze použít například pro import dat z ASEP do ResearcherID:
 </p><ul>
 <li> <strong>RIS</strong> – obsahuje pole: název, autor, zdrojový dokument, UT ISI, stránkování, rok publikování, afiliace autora, URL, abstrakt, klíčová slova, <strong>s diakritikou</strong>.</li>
-<li> <strong>RIS – <ipac:abbr lang="en-GB" title=" American Standard Code for Information Interchange">ASCII</ipac:abbr></strong> – obsahuje pole: název, autor, zdrojový dokument, UT ISI, stránkování, rok publikování, afiliace autora, URL, abstrakt, klíčová slova, <strong>bez diakritiky</strong>.</li>
+<li> <strong>RIS – <abbr lang="en-GB" title=" American Standard Code for Information Interchange">ASCII</abbr></strong> – obsahuje pole: název, autor, zdrojový dokument, UT ISI, stránkování, rok publikování, afiliace autora, URL, abstrakt, klíčová slova, <strong>bez diakritiky</strong>.</li>
 </ul>
 <h2> Řádkový MARC</h2>
 <p>

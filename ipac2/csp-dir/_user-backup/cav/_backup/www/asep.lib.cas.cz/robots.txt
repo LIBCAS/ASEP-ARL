@@ -1,0 +1,19 @@
+# ARL IPAC, Cosmotron, Robots v5.2 for asep.lib.cas.cz
+# revised: 2024-09-24T19:10:45+00:00
+User-agent: *
+Disallow: /arl-cav/en/trpur/
+Disallow: /arl/
+Disallow: /aRLlog/
+Disallow: /aRLreports/
+Disallow: /aRLcrep*
+Disallow: /csp/
+Disallow: /arl-*/*/gwext/
+Disallow: /i2/
+Disallow: /i3/
+Disallow: /i2t/
+Disallow: /i3t/
+Allow: /i2/css/
+Allow: /i2/js/
+Allow: /i2/img/
+
+Sitemap: https://asep.lib.cas.cz/aRLreports/sitemaps/sitemap_index.xml

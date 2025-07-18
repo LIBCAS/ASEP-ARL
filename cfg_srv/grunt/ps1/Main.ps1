@@ -1,5 +1,5 @@
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-$PSDefaultParameterValues['*:Encoding'] = 'utf8'
+$PSDefaultParameterValues['Out-File:Encoding'] = 'UTF8'
+$PSDefaultParameterValues['*:Encoding'] = 'UTF8'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 <#
@@ -8,9 +8,9 @@ $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 .DESCRIPTION
 
 .NOTES
-  Version:        1.2
+  Version:        1.3
   Author:         Karel Pavelka
-  Creation Date:  10.6.2023
+  Creation Date:  14.10.2024
 #>
 
 # Identifikace jazyka
@@ -26,7 +26,7 @@ try {
 }
 catch {
     # If the language file cannot be loaded, fall back to English
-    $language = "en-US"
+    $language = "en-GB"
     $localText = Get-Content -Path "$($appDir)/_locales/$($language).json" -Raw | ConvertFrom-Json
 }
 
@@ -72,32 +72,58 @@ function TranslateTemplate {
     return $Template
 }
 
+
+function LoadAndTranslateTemplate {
+    param(
+        [string]$templatePath,
+        [PSCustomObject]$localText
+    )
+
+    # Načtení externí šablony
+    $htmlTemplate = Get-Content -Path $templatePath -Raw
+
+    # Přeložení šablony
+    return TranslateTemplate -Template $htmlTemplate -localText $localText
+}
+
+function ReplaceTemplatePlaceholders {
+    param(
+        [string]$template,
+        [string]$taskOutput,
+        [string]$appDir
+    )
+
+    $filledTemplate = $template.Replace("{0}", "../../$($appDir)/")
+    $filledTemplate = $filledTemplate.Replace("{1}", $taskOutput)
+    return $filledTemplate
+}
+
 function Process-GruntOutput {
     param(
-        [Parameter(Mandatory = $true)]
         [string]$taskOutput
     )
-    
-    Write-Footer "IPAC: $($localText.sass_documentation)" 
+
+    Write-Footer "IPAC: $($localText.sass_documentation)"
     $id = "task"
     $sTemplatePath = "$($appDir)/$($id)/template.html"
     $sReportPath = "temp/$($appDir)/$($id).html"
     
-    # Načtení externí šablony
-    $htmlTemplate = Get-Content -Path $sTemplatePath -Raw
+    # Načtení a přeložení šablony
+    $htmlTemplate = LoadAndTranslateTemplate -templatePath $sTemplatePath -localText $localText
+
+    # Nahrazení proměnných ve šabloně
+    $filledTemplate = ReplaceTemplatePlaceholders -template $htmlTemplate -taskOutput $taskOutput -appDir $appDir
     
-    # Přeložení šablony
-    $htmlTemplate = TranslateTemplate -Template $htmlTemplate -localText $localText
-    
-    $filledTemplate = $htmlTemplate.Replace("{0}", "../../$($appDir)/")
-    $filledTemplate = $filledTemplate.Replace("{1}", $taskOutput)
+    # Úprava výstupu z Gruntu
     $filledTemplate = BeakOutputGrunt $filledTemplate
     
+    # Uložení výsledné šablony
     $filledTemplate | Out-File -FilePath $sReportPath
     
-    # Open the HTML file in the default browser
+    # Otevření HTML souboru v prohlížeči
     Start-Process -FilePath $sReportPath
 }
+
 
 # Zalomení výstupu z Gruntu 
 function BeakOutputGrunt {
@@ -105,15 +131,22 @@ function BeakOutputGrunt {
         [AllowNull()][string] $filledTemplate
     )
     if ($filledTemplate) {
-        $filledTemplate = $filledTemplate.Replace("Loading", "<br>Loading")
-        $filledTemplate = $filledTemplate.Replace("Registering", "<br>Registering")
-        $filledTemplate = $filledTemplate.Replace("Parsing", "<br>Parsing")
-        $filledTemplate = $filledTemplate.Replace("Verifying", "<br>Verifying")
-        $filledTemplate = $filledTemplate.Replace("Reading", "<br>Reading")
-        $filledTemplate = $filledTemplate.Replace("Files", "<br>Files")
-        $filledTemplate = $filledTemplate.Replace("OK", "<b class='ok'>OK</b>")
-        $filledTemplate = $filledTemplate.Replace("Options", "<br>Options")
-        $filledTemplate = $filledTemplate.Replace(">>", "<br>>>")
+        # Nahrazení pomocí více pravidel najednou
+        $replaceMap = @{
+            "Loading"      = "<br>Loading";
+            "Registering"  = "<br>Registering";
+            "Parsing"      = "<br>Parsing";
+            "Verifying"    = "<br>Verifying";
+            "Reading"      = "<br>Reading";
+            "Files"        = "<br>Files";
+            "OK"           = "<b class='ok'>OK</b>";
+            "Options"      = "<br>Options";
+            ">>"           = "<br>>>"
+        }
+
+        foreach ($key in $replaceMap.Keys) {
+            $filledTemplate = $filledTemplate.Replace($key, $replaceMap[$key])
+        }
     }
     return $filledTemplate
 }
@@ -201,18 +234,26 @@ function Read-Key($prompt) {
     return $keyInfo.Key
 }
 
-# Run task
-function RunTask($functionName) {
+function Invoke-Task {
+    param (
+        [string]$functionName
+    )
     Invoke-Command -ScriptBlock (Get-Command $functionName).ScriptBlock
+}
+
+# Run task
+function RunTask {
+    param(
+        [string]$functionName
+    )
+
+    Invoke-Task -functionName $functionName
 
     # Nabídnout znovu spustit úlohu
-    $response = Read-Host $localText.run_again
-
-    # Pokud uživatel odpoví ano (y/a), znovu spustit úlohu
     $key = Read-Key $localText.run_again
     while ($key -eq 'y' -or $key -eq 'a') {
-        Invoke-Command -ScriptBlock (Get-Command $functionName).ScriptBlock
-        $response = Read-Host $localText.run_again
+        Invoke-Task -functionName $functionName
+        $key = Read-Key $localText.run_again
     }
 }
 

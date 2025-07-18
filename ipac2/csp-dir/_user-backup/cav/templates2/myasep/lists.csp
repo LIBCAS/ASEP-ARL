@@ -3,7 +3,7 @@
 <div class="row">
 <div class="col-md-6 col-12">
 
-<csp:if condition=('data("ZKONTROLA"))>
+<csp:if condition=('data("ZKONTROLA")&&data("ZRECORDS"))>
 
 <h2><ipac:tx param="NADZPRAC"/></h2>
 <ul class="list-group">
@@ -25,14 +25,15 @@
 <h2><ipac:tx param="NADSMLUV"/></h2>
 <ul class="list-group">
         <csp:if condition=(data("USTAV_Z")="KONTROLA")>
-           <li class="list-group-item"><ipac:search fld1="ZSML" term1="a" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
+           <li class="list-group-item"><ipac:search fld1="ZSML" term1="a" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
         <csp:else>
-           <li class="list-group-item"><ipac:search fld1="PRA" rel="nofollow" term1="#(data("USTAV"))#" boolop1="and" fld2="ZSML" term2="a" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
+           <li class="list-group-item"><ipac:search fld1="PRA" rel="nofollow" term1="#(data("USTAV"))#" boolop1="and" fld2="ZSML" term2="a" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
         </csp:if>
 </ul>
 </csp:if>
 
 
+<csp:if condition=(data("ZRECORDS"))>
 <h2>
   <ipac:off>Aktuální rok sběru - záznamy s aktuálním rokem sběru podle kontextu uživatele</ipac:off>
   <csp:if condition=(data("ZPRAC")||data("ZSUPER"))><ipac:tx param="ZARZ"/></csp:if>
@@ -41,13 +42,13 @@
 <ul class="list-group">
   <ipac:off>
       <csp:if condition=(data("ZSUPER"))>
-      <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZARZ"/></ipac:search></li>
+      <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZARZ"/></ipac:search></li>
       </csp:if>
       <csp:if condition=(data("ZPRAC"))>
-        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZARZ"/></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZARZ"/></ipac:search></li>
       </csp:if>
       <csp:if condition=(data("ZUSER"))>
-        <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZARZ"/></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZARZ"/></ipac:search></li>
       </csp:if>
   </ipac:off>
   <ipac:off>
@@ -55,91 +56,92 @@
       Neosdeslané záznamy
   </ipac:off>
   <csp:if condition=(data("ZSUPER"))>
-   <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-4" qt="asep" sort="AUP_TITLE"><ipac:tx param="VZARZ"/></ipac:search></li>
-   <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="OZ"/></ipac:search></li>
-   <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="DKF" term3="dflt_data" boolop3="not" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZ"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="AUP_TITLE"><ipac:tx param="VZARZ"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="OZ"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="DKF" term3="dflt_data" boolop3="not" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZ"/></ipac:search></li>
    <csp:if condition=(data("ZLINKWOSSCOPUSRZ"))>
-   <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" boolop3="and" fld4="DKF" term4="dflti_epca_cz_wosscopus" boolop4="not" fld5="ZWDUP" term5="wos" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSZ"/></strong></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" boolop3="and" fld4="DKF" term4="dflti_epca_cz_wosscopus" boolop4="not" fld5="ZWDUP" term5="wos" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSZ"/></strong></ipac:search></li>
    </csp:if>
     <csp:if condition=(data("ZLINKDUPLWOS"))>
-       <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" boolop3="and" fld4="ZWDUP" term4="wos" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSDUPZ"/></strong></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" boolop3="and" fld4="ZWDUP" term4="wos" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSDUPZ"/></strong></ipac:search></li>
     </csp:if>  
    
    <ipac:off> vsechny zaznamy s rokem vykaznovani vetsim +1
         <csp:if condition=(data("ZLINKWOSSCOPUSRZADD"))>
-            <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU1"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" boolop3="and" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSRZZ"/>#(data("ZAKTROKZBERU1"))#</strong></ipac:search></li>
+            <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU1"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" boolop3="and" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSRZZ"/>#(data("ZAKTROKZBERU1"))#</strong></ipac:search></li>
         </csp:if>
-        <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU1"))#" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-4" qt="asep" sort="AUP_TITLE"><ipac:tx param="VZARZ"/>#(data("ZAKTROKZBERU1"))#</ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU1"))#" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="AUP_TITLE"><ipac:tx param="VZARZ"/>#(data("ZAKTROKZBERU1"))#</ipac:search></li>
  
-        <li class="list-group-item"><ipac:search fld1="DS" term1="n" rel="nofollow" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="DKF" term3="dflt_data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZ"/></ipac:search> </li>
-        <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="and" fld2="ZSML" term2="a" boolop2="not" fld3="SZ" term3="data" rel="nofollow" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="DS" term1="n" rel="nofollow" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="DKF" term3="dflt_data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZ"/></ipac:search> </li>
+        <li class="list-group-item"><ipac:search fld1="YEV" term1="#(data("ZAKTROKZBERU"))#" boolop1="and" fld2="ZSML" term2="a" boolop2="not" fld3="SZ" term3="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
    </ipac:off>
   
   </csp:if>
   <csp:if condition=(data("ZPRAC")&&(data("USTAV_ZPRAC_JMENO")'="SPEC_ZPRAC"))>
-    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" boolop3="not" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRAC"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="OZZPRAC"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="DKF" term4="dflt_data" boolop4="not" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZZPRAC"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" boolop3="not" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRAC"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="OZZPRAC"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="DKF" term4="dflt_data" boolop4="not" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZZPRAC"/></ipac:search></li>
     <csp:if condition=(data("ZLINKWOSSCOPUSRZ"))>
-        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" boolop3="not" fld4="ZWDUP" term4="#(data("USTAV_Z")_"wos")#" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRACSTAZ"/></ipac:search></li>
-        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" boolop5="not" fld6="ZWDUP" term6="#(data("USTAV_Z")_"wos")#" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSZ"/></strong></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" boolop3="not" fld4="ZWDUP" term4="#(data("USTAV_Z")_"wos")#" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRACSTAZ"/></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" boolop5="not" fld6="ZWDUP" term6="#(data("USTAV_Z")_"wos")#" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSZ"/></strong></ipac:search></li>
     </csp:if>    
     <csp:if condition=(data("ZLINKDUPLWOS"))>
-        <li class="list-group-item"><ipac:search fld1="ZWDUP" rel="nofollow" term1="#(data("USTAV_Z")_"wos")#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSDUPZ"/></strong></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="ZWDUP" rel="nofollow" term1="#(data("USTAV_Z")_"wos")#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSDUPZ"/></strong></ipac:search></li>
     </csp:if>    
     <li class="list-group-item"><ipac:a op="epref"><ipac:tx param="WOSN"/></ipac:a></li>
     <ipac:off> vsechny zaznamy s rokem vykaznovani vetsim +1
         <csp:if condition=(data("ZLINKWOSSCOPUSRZADD"))>
-            <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU1"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSRZZ"/>#(data("ZAKTROKZBERU1"))#</strong></ipac:search></li>
+            <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU1"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSRZZ"/>#(data("ZAKTROKZBERU1"))#</strong></ipac:search></li>
         </csp:if>
     
-        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU1"))#" boolop2="not" fld3="SZ" term3="data" boolop3="not" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRAC"/>#(data("ZAKTROKZBERU1"))#</ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU1"))#" boolop2="not" fld3="SZ" term3="data" boolop3="not" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRAC"/>#(data("ZAKTROKZBERU1"))#</ipac:search></li>
     </ipac:off>
     <csp:if condition=((data("USTAV_Z")="GFUE"))>
-        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="1993" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="DKF" term4="dflt_data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZ"/> - konverze 1993</ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="1993" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="DKF" term4="dflt_data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZ"/> - konverze 1993</ipac:search></li>
     </csp:if>
-    <ipac:off><li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="ZSML" term3="a" boolop3="not" fld4="SZ" term4="data" rel="nofollow" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li></ipac:off>
+    <ipac:off><li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="ZSML" term3="a" boolop3="not" fld4="SZ" term4="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li></ipac:off>
     
   </csp:if>
   <csp:if condition=(data("ZPRAC")&&(data("USTAV_ZPRAC_JMENO")="SPEC_ZPRAC"))>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" boolop3="not" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRAC"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="OZZPRAC"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" boolop3="not" fld4="DKF" term4="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRAC"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="OZZPRAC"/></ipac:search></li>
     
-    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="DKF" term4="dflt_data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZZPRAC"/></ipac:search></li></ipac:off>
+    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="DKF" term4="dflt_data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZZPRAC"/></ipac:search></li></ipac:off>
     
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="DKF" term4="dflt_data" boolop4="not" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZZPRAC"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="DKF" term4="dflt_data" boolop4="not" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZZPRAC"/></ipac:search></li>
     <csp:if condition=(data("ZLINKWOSSCOPUSRZ"))>
-        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-4" boolop3="not" fld4="ZWDUP" term4="#(data("USTAV_Z")_"wos")#" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRACSTAZ"/></ipac:search></li>
-        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" boolop5="not" fld6="ZWDUP" term6="#(data("USTAV_Z")_"wos")#" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSZ"/></strong></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-4" boolop3="not" fld4="ZWDUP" term4="#(data("USTAV_Z")_"wos")#" qt="asep" sort="ZID"><ipac:tx param="VZARZZPRACSTAZ"/></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" boolop5="not" fld6="ZWDUP" term6="#(data("USTAV_Z")_"wos")#" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSZ"/></strong></ipac:search></li>
     </csp:if>
     <csp:if condition=(data("ZLINKDUPLWOS"))>
-        <li class="list-group-item"><ipac:search fld1="ZWDUP" rel="nofollow" term1="#(data("USTAV_Z")_"wos")#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSDUPZ"/></strong></ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="ZWDUP" rel="nofollow" term1="#(data("USTAV_Z")_"wos")#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSDUPZ"/></strong></ipac:search></li>
     </csp:if>  
     <li class="list-group-item"><ipac:a op="epref"><ipac:tx param="WOSN"/></ipac:a></li>
     <ipac:off> vsechny zaznamy s rokem vykaznovani vetsim +1
         <csp:if condition=(data("ZLINKWOSSCOPUSRZADD"))>
-            <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU1"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSRZZ"/>#(data("ZAKTROKZBERU1"))#</strong></ipac:search></li>
+            <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU1"))#" boolop2="and" fld3="DS" term3="n" boolop3="not" fld4="SZ" term4="data" boolop4="and" fld5="DKF" term5="dflti_epca_cz_wosscopus" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="WOSRZZ"/>#(data("ZAKTROKZBERU1"))#</strong></ipac:search></li>
         </csp:if>
-        <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU1"))#" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-4" qt="asep" sort="AUP_TITLE"><ipac:tx param="VZARZ"/>#(data("ZAKTROKZBERU1"))#</ipac:search></li>
+        <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU1"))#" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="AUP_TITLE"><ipac:tx param="VZARZ"/>#(data("ZAKTROKZBERU1"))#</ipac:search></li>
     </ipac:off>
     
-    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="ZSML" term3="a" boolop3="not" fld4="SZ" term4="data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li></ipac:off>
+    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="YEV" term2="#(data("ZAKTROKZBERU"))#" boolop2="and" fld3="ZSML" term3="a" boolop3="not" fld4="SZ" term4="data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li></ipac:off>
     
   </csp:if>
   <csp:if condition=(data("ZUSER"))>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="not" fld2="SZ" term2="data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZOKU"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="not" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="OZU"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="DKF" term3="dflt_data" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZU"/></ipac:search></li>
-    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" boolop3="and" fld4="ZSML" term4="a" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li></ipac:off>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="not" fld2="SZ" term2="data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="VZOKU"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="not" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="OZU"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="DKF" term3="dflt_data" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="NZU"/></ipac:search></li>
+    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="DS" term2="n" boolop2="not" fld3="SZ" term3="data" boolop3="and" fld4="ZSML" term4="a" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li></ipac:off>
   </csp:if>
 
    <ipac:off>
        Autority - toto je potřeba ujasnit ze strany ČAV.
        <csp:if condition=(data("ZPRAC")||data("ZSUPER"))>
-       <li class="list-group-item"><ipac:search fld1="DK" rel="nofollow" term1="xszp" boolop1="not" fld2="DS" term2="n" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="AUTR"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="DK" rel="nofollow" term1="xszp" boolop1="not" fld2="DS" term2="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="AUTR"/></ipac:search></li>
        </csp:if>
    </ipac:off>
 </ul>
+</csp:if>
 
 
 <ipac:off>Výstupy</ipac:off>
@@ -160,51 +162,60 @@
 </ul>
 </csp:if>
 
+<ipac:off>Sprava uzivatelu</ipac:off>
+<csp:if condition=(data("ZPRAC")||data("ZSUPER"))>
+<h2><ipac:tx param="USER_ACCOUNT"/></h2>
+<ul class="list-group">
+    <li class="list-group-item"> <ipac:a op="usersadmin"><ipac:tx param="USER_MANAGEMET"/></ipac:a></li>  
+</ul>
+</csp:if>
 
-<csp:if condition=(data("ZPRAC")||data("ZSUPER")||data("ZAUTHOR"))>
+
+
+<csp:if condition=(data("ZRECORDS")&&(data("ZPRAC")||data("ZSUPER")||data("ZAUTHOR")))>
 <h2><ipac:tx param="NADZST"/></h2>
 <ul class="list-group">
   <csp:if condition=(data("ZAUTHOR"))>
-    <li class="list-group-item"><ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" boolop1="not" fld2="DS" term2="d" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca" qt="asep" sort="ZID"><ipac:tx param="ZAVI"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" boolop1="not" fld2="DS" term2="d" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca" qt="asep" sort="ZID"><ipac:tx param="ZAVI"/></ipac:search></li>
   </csp:if>
   <csp:if condition=(data("ZPRAC"))>
-    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="not" fld2="DS" term2="d" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZUVI"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="not" fld2="DS" term2="d" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZUVI"/></ipac:search></li>
   </csp:if>
   <li class="list-group-item">
     <csp:if condition=(data("ZAUTHOR"))>
-  <ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" bool1="and" field2="UPS" term2="4" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFT"/></ipac:search>
+  <ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" bool1="and" field2="UPS" term2="4" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFT"/></ipac:search>
     <csp:elseif condition=(data("ZPRAC"))>
-  <ipac:search field1="PRAD" term1="#(data("USTAV_Z"))#" bool1="and" field2="UPS" term2="4" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFT"/></ipac:search>
+  <ipac:search field1="PRAD" term1="#(data("USTAV_Z"))#" bool1="and" field2="UPS" term2="4" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFT"/></ipac:search>
     <csp:else>
-  <ipac:search field1="UPS" term1="4" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFT"/></ipac:search>
+  <ipac:search field1="UPS" term1="4" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFT"/></ipac:search>
    </csp:if>
   </li>
     <csp:if condition=(data("ZPRAC"))>
-  <li class="list-group-item"><ipac:search field1="PRAD" term1="#(data("USTAV_Z"))#" bool1="and" field2="UPS" term2="rec" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTR"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="PRAD" term1="#(data("USTAV_Z"))#" bool1="and" field2="UPS" term2="rec" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTR"/></ipac:search></li>
     <csp:elseif condition=(data("ZSUPER"))>
-  <li class="list-group-item"><ipac:search field1="UPS" term1="rec" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTR"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="UPS" term1="rec" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTR"/></ipac:search></li>
     </csp:if>
     <csp:if condition=(data("ZSUPER"))>
   <li class="list-group-item"><ipac:sso rel="external" class="external" target="_blank" app="webadmin">webadmin</ipac:sso></li>
-  <li class="list-group-item"><ipac:search field1="UPS" term1="n" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTN"/></ipac:search></li>
-  <li class="list-group-item"><ipac:search field1="UPS" term1="a" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTA"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="UPS" term1="n" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTN"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="UPS" term1="a" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTA"/></ipac:search></li>
     </csp:if>
     <csp:if condition=(data("ZPRAC"))>
-  <li class="list-group-item"><ipac:search field1="UPS" term1="n" rel="nofollow" bool1="and" field2="PRAD" term2="#(data("USTAV_Z"))#" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTN"/></ipac:search></li>
-  <li class="list-group-item"><ipac:search field1="UPS" term1="a" rel="nofollow" bool1="and" field2="PRAD" term2="#(data("USTAV_Z"))#" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTA"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="UPS" term1="n" rel="nofollow" bool1="and" field2="PRAD" term2="#(data("USTAV_Z"))#" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTN"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="UPS" term1="a" rel="nofollow" bool1="and" field2="PRAD" term2="#(data("USTAV_Z"))#" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="ZSFTA"/></ipac:search></li>
     </csp:if>
     <csp:if condition=(data("ZAUTHOR"))>
-  <li class="list-group-item"><ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" bool1="and" field2="ZMDT" term2="mdi" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDI"/></ipac:search></li>
-  <li class="list-group-item"><ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" bool1="and" field2="ZMDT" term2="mde" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDE"/></ipac:search></li>
-  <br><li class="list-group-item"><ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" boolop1="and" fld2="ZSML" term2="a" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" bool1="and" field2="ZMDT" term2="mdi" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDI"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" bool1="and" field2="ZMDT" term2="mde" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDE"/></ipac:search></li>
+  <br><li class="list-group-item"><ipac:search fld1="AUK" rel="nofollow" term1="#(##class(User.Util).strswap(data("LINK_AUTORITA"),"*","\*"))#" boolop1="and" fld2="ZSML" term2="a" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
     <csp:elseif condition=(data("ZPRAC"))>
-  <li class="list-group-item"><ipac:search field1="PRAD" term1="#(data("USTAV_Z"))#" bool1="and" field2="ZMDT" term2="mdi" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDI"/></ipac:search></li>
-  <li class="list-group-item"><ipac:search field1="PRAD" term1="#(data("USTAV_Z"))#" bool1="and" field2="ZMDT" term2="mde" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDE"/></ipac:search></li>
-  <br><li class="list-group-item"><ipac:search field1="PRA" term1="#(data("USTAV"))#" boolop1="and" fld2="ZSML" term2="a" boolop2="not" fld3="SZ" term3="data" src="cav_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="PRAD" term1="#(data("USTAV_Z"))#" bool1="and" field2="ZMDT" term2="mdi" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDI"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="PRAD" term1="#(data("USTAV_Z"))#" bool1="and" field2="ZMDT" term2="mde" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDE"/></ipac:search></li>
+  <br><li class="list-group-item"><ipac:search field1="PRA" term1="#(data("USTAV"))#" boolop1="and" fld2="ZSML" term2="a" boolop2="not" fld3="SZ" term3="data" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
      <csp:else>
-  <li class="list-group-item"><ipac:search field1="ZMDT" term1="mdi" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDI"/></ipac:search></li>
-  <li class="list-group-item"><ipac:search field1="ZMDT" term1="mde" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDE"/></ipac:search></li>
-  <br><li class="list-group-item"><ipac:search field1="ZSML" term1="a" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="cav_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="ZMDT" term1="mdi" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDI"/></ipac:search></li>
+  <li class="list-group-item"><ipac:search field1="ZMDT" term1="mde" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDE"/></ipac:search></li>
+  <br><li class="list-group-item"><ipac:search field1="ZSML" term1="a" boolop1="not" fld2="SZ" term2="data" rel="nofollow" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="ZID"><ipac:tx param="ZAZSMLUV"/></ipac:search></li>
    </csp:if>
 
 
@@ -254,90 +265,93 @@
    </ul>
    <h2><ipac:tx param="NADDATAPR"/></h2>
 <ul class="list-group">
-   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="md" rel="nofollow" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
-   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mdv" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
-   <li class="list-group-item"><ipac:search fld1="DS" term1="n" rel="nofollow" boolop1="and" fld2="ZMDS" term2="mdz" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZ"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="md" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mdv" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="DS" term1="n" rel="nofollow" boolop1="and" fld2="ZMDS" term2="mdz" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZ"/></ipac:search></li>
    <br>
-   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mddsvjr" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li>
-   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mdsds" rel="nofollow" src="cav_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDIDAT"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mddsvjr" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mdsds" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDIDAT"/></ipac:search></li>
   </csp:if>
   <csp:if condition=(data("ZPRAC")&&(data("USTAV_ZPRAC_JMENO")'="SPEC_ZPRAC"))>
-      <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZSOUHZZPRAC"/></ipac:search></li>
+      <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZSOUHZZPRAC"/></ipac:search></li>
       <csp:if condition=(data("ZLINKDATAKONTROLA"))>
           <ipac:off>link - datové záznamy ke kontrole - jen na základě existence dat</ipac:off>
-          <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" boolop2="and" fld3="DS" term3="n" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="MDNZSOUHZ"/></strong></ipac:search></li>
+          <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" boolop2="and" fld3="DS" term3="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="MDNZSOUHZ"/></strong></ipac:search></li>
       </csp:if>
     </ul>
     <h2><ipac:tx param="NADDATAPR"/></h2>
 <ul class="list-group">
-    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdv" boolop2="not" fld3="DS" term3="n" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
-    <ipac:off><li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mddsvjr" boolop2="and" fld3="DS" term3="n" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li></ipac:off>
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdv" boolop2="not" fld3="DS" term3="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
+    <ipac:off><li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mddsvjr" boolop2="and" fld3="DS" term3="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li></ipac:off>
   </csp:if>
   <csp:if condition=(data("ZPRAC")&&(data("USTAV_ZPRAC_JMENO")="SPEC_ZPRAC"))>
-      <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZSOUHZZPRAC"/></ipac:search></li>
+      <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZSOUHZZPRAC"/></ipac:search></li>
       <csp:if condition=(data("ZLINKDATAKONTROLA"))>
           <ipac:off>link - datové záznamy ke kontrole - jen na základě existence dat</ipac:off>
-          <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" src="cav_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="MDNZSOUHZ"/></strong></ipac:search></li>
+          <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="MDNZSOUHZ"/></strong></ipac:search></li>
       </csp:if>
     </ul>
     <h2><ipac:tx param="NADDATAPR"/></h2>
 <ul class="list-group">
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdv" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
-    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mddsvjr" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li></ipac:off>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdv" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
+    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mddsvjr" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li></ipac:off>
   </csp:if>
   <csp:if condition=(data("ZUSER"))>
 
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZA"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZA"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZA"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZA"/></ipac:search></li>
      </ul>
     <h2><ipac:tx param="NADDATAPR"/></h2>
 <ul class="list-group">
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdv" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdv" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
    </csp:if>
 
 </ul>
 </csp:if>
 </csp:if>
 
-<csp:if condition=(data("ZPRAC")||data("ZSUPER"))>
-   
-   <csp:if condition=(data("ZSUPER"))>
+<csp:if condition=(data("ZRECORDS")&&(data("ZPRAC")||data("ZSUPER")))>
    <h2><ipac:tx param="HOD_NAD"/></h2>
+   <csp:if condition=(data("ZSUPER"))>
      <ul class="list-group">
-       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="allRecHod" src="cav_un_epca-3" qt="asep" sort="DT1_UST"><ipac:tx param="HOD_ALL"/></ipac:search></li>
-       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="orechod" src="cav_un_epca-3" qt="asep" sort="DT1_UST"><ipac:tx param="HOD_REC"/></ipac:search></li>
-       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="ocithod" src="cav_un_epca-3" qt="asep" sort="DT1_UST"><ipac:tx param="HOD_CIT"/></ipac:search></li>
-       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="nfthod" src="cav_un_epca-3" qt="asep" sort="DT1_UST"><ipac:tx param="HOD_TEXT"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="oft" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_OFT"/></ipac:search></li>
+       <ipac:off>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="orecp" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_REC"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="allRecHod" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_ALL"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="ocithod" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_CIT"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="nfthod" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_TEXT"/></ipac:search></li>
+       </ipac:off>
      </ul>   
    </csp:if>
-   <ipac:off> - zakomentovane hodnoceni pro tok 2020
    <csp:if condition=(data("ZPRAC"))>
     <ul class="list-group">
-       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="allRecHod" boolop1="and" fld2="ZTU" term2="#(data("USTAV_Z"))#" src="cav_un_epca-3" qt="asep" sort="DT1_UST"><ipac:tx param="HOD_ALL"/></ipac:search></li>
-       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="orechod" boolop1="and" fld2="ZTU" term2="#(data("USTAV_Z"))#" src="cav_un_epca-3" qt="asep" sort="DT1_UST"><ipac:tx param="HOD_REC"/></ipac:search></li>
-       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="ocithod" boolop1="and" fld2="ZTU" term2="#(data("USTAV_Z"))#" src="cav_un_epca-3" qt="asep" sort="DT1_UST"><ipac:tx param="HOD_CIT"/></ipac:search></li>
-       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="nfthod" boolop1="and" fld2="ZTU" term2="#(data("USTAV_Z"))#" src="cav_un_epca-3" qt="asep" sort="DT1_UST"><ipac:tx param="HOD_TEXT"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="oft" boolop1="and" fld2="PRA" term2="#("""^"_data("USTAV")_"^""")#" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_OFT"/></ipac:search></li>
+       <ipac:off>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="orecp" boolop1="and" fld2="PRA" term2="#("""^"_data("USTAV")_"^""")#" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_REC"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="allRecHod" boolop1="and" fld2="ZTU" term2="#(data("USTAV_Z"))#" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_ALL"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="ocithod" boolop1="and" fld2="ZTU" term2="#(data("USTAV_Z"))#" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_CIT"/></ipac:search></li>
+       <li class="list-group-item"><ipac:search fld1="ZHOD" rel="nofollow" term1="nfthod" boolop1="and" fld2="ZTU" term2="#(data("USTAV_Z"))#" src="#($$$GETICTX)#_un_epca-3" qt="asep" sort="DT1_UST" limv_DATE_1="2020" limv_DATE_2="2024"><ipac:tx param="HOD_TEXT"/></ipac:search></li>
+       </ipac:off>
      </ul>   
    </csp:if>  
-   </ipac:off>
 </csp:if>
 
 </div>
 
 <ipac:off>
     zpracovatel -Všechny datové záznamy+ specialni jako druha varianta
-    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="md" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="md" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="md" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="md" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
     zpracovatel -Neodeslané datové záznamy - neodsouhlasené + specialni jako druha varianta
-    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" boolop2="and" fld3="DS" term3="n" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZNESOUH"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZNESOUH"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" boolop2="and" fld3="DS" term3="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZNESOUH"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZNESOUH"/></ipac:search></li>
     zpracovatel -Datové záznamy bez datasetů
-    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdbds" boolop2="and" fld3="DS" term3="n" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDBDS"/></ipac:search></li>
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdbds" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDBDS"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdbds" boolop2="and" fld3="DS" term3="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDBDS"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdbds" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDBDS"/></ipac:search></li>
     uzivatel - autor - Odeslané datové záznamy s datasetem v jiném repozitáři
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mddsvjr" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mddsvjr" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li>
     uzivatel - Datové záznamy bez datasetů
-    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="cav_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdbds" src="cav_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDBDS"/></ipac:search></li>
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdbds" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDBDS"/></ipac:search></li>
 
 </ipac:off>
 

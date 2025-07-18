@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2024-01-08 16:08:16">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-19 14:50:03">
 <Class name="i2.cust.cav.result">
 <Description><![CDATA[
 <pre>
+19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
+11.06.24 tt; pridan priznak otevreni prvni zalozky u zf pro data
 08.01.24 ln; prefetch detekovan podle hlavicky
 24.10.23 ln; prefetch fix
 04.09.23 tt; provedeno nastaveni defaultnich hodnotu pro scholarly
@@ -36,7 +38,7 @@
 11.10.12 tt; zalozena metoda pro zobrazovani informaci v panelu u vyhledavani
 </pre>]]></Description>
 <Super>i2.ui.result</Super>
-<TimeChanged>66847,58086.280864485</TimeChanged>
+<TimeChanged>67040,53152.617677903</TimeChanged>
 <TimeCreated>62741,48621.550522</TimeCreated>
 
 <Parameter name="Ictx">
@@ -77,10 +79,10 @@ slouzi pro odchylky
  if (userId'="")
  {
    ; zjistime roli uzivatele na zaklade uzivatele a zaznamu
-   s sRoleU=##class(User.CavS).GetRoleUser("cav_is_user*"_userId, "", "", 0, .handlexx)
+   s sRoleU=##class(User.CavS).GetRoleUser($$$GETICTX_"_is_user*"_userId, "", "", 0, .handlexx)
    s data("ZNewsRoleU")=sRoleU
 
-   if ##class(User.MARC).readX(.handleU,"CavIsUser",userId)
+   if ##class(User.MARC).readX(.handleU,$$$IPREF_"IsUser",userId)
    {  
      s sUT100k=$$$getTagX(.handleU,"100k")             ; ustav uzivatele 
      s sUT100b=$$$getTagX(.handleU,"100b")             ; anonymni uzivatel
@@ -123,9 +125,9 @@ slouzi pro odchylky
      q:((sId="") || (brk=""))
      ; 04.09.23 tt; provedeno nastaveni defaultnich hodnotu pro scholarly
      s data("RECORDS",sId,"scholarly")=0 
-     if $f($p(data("RECORDS",sId),"*",1),"cav_un_epca")
+     if $f($p(data("RECORDS",sId),"*",1),$$$GETICTX_"_un_epca")
      {
-       s x=##class(User.MARC).readX(.handle,"CavUnEpca",$p(data("RECORDS",sId),"*",2),"T")
+       s x=##class(User.MARC).readX(.handle,$$$IPREF_"UnEpca",$p(data("RECORDS",sId),"*",2),"T")
        if x=1
        { 
          s sRT970b=$$$getTagX(.handle,"970b")  
@@ -198,16 +200,20 @@ slouzi pro odchylky
          s data("RECORDS",sId,"DataVersionsLink")=""    
          s data("RECORDS",sId,"DataVersionsCount")=0      
          s data("RECORDS",sId,"DataCopyVersion")=0  // 22.11.22 tt; podpora linku na kopii datového záznamu - je nutne doplnit podminky pro moznost kopie
-
+         s data("RECORDS",sId,"licence")=0
+         
          s:(sRTC99d="DFLT_EPCA3") data("RECORDS",sId,"ZFormType")="&formtype=c"
          s:(sRTC99d="DFLT_CAT_BCA") data("RECORDS",sId,"ZFormType")="&formtype=c"
          s:(sRTC99d="DFLT_CAT_BXXS") data("RECORDS",sId,"ZFormType")="&formtype=c"
          s:(sRTC99d="DFLT_DATA") data("RECORDS",sId,"ZFormType")="&formtype=e"
-         s dataMD=##class(User.MARC).getIDByIndex("CavUnEpca","zmdl","cav_un_epca*"_$p(data("RECORDS",sId),"*",2),"")
+         // 11.06.24 tt; pridan priznak otevreni prvni zalozky u zf pro data
+         s:(sRTC99d="DFLT_DATA")&&($$$getTagX(.handle,"C76u")'="") data("RECORDS",sId,"licence")=1
+         
+         s dataMD=##class(User.MARC).getIDByIndex($$$IPREF_"UnEpca","zmdl",$$$GETICTX_"_un_epca*"_$p(data("RECORDS",sId),"*",2),"")
          if (dataMD'=0) 
          {
            s data("RECORDS",sId,"ZRecMDLink")=1
-           s data("RECORDS",sId,"ZRecMDLinkHod")="cav_un_epca"_$p(data("RECORDS",sId),"*",2)
+           s data("RECORDS",sId,"ZRecMDLinkHod")=$$$GETICTX_"_un_epca"_$p(data("RECORDS",sId),"*",2)
          }
          if (sRTC99d="DFLT_DATA") 
          {
@@ -248,7 +254,7 @@ slouzi pro odchylky
              { ; doplněna podmínka na zobrazování počtu linků
                continue:(data("RECORDS",sId,"DataVersionsLink")'="")
                s linkVer=$$$getTagX(.handle,"U033")
-               s:(linkVer="") linkVer="cav_un_epca"_$$$HandleT001(handle)
+               s:(linkVer="") linkVer=$$$GETICTX_"_un_epca"_$$$HandleT001(handle)
                s data("RECORDS",sId,"DataVersionsLink")=$tr(linkVer,"*","")               
              }
              continue:($f(sVerze1,("*"_$$$HandleT001(handle))))
@@ -269,7 +275,7 @@ slouzi pro odchylky
          {
            ////////////////////////////////
            ; zjistime roli uzivatele na zaklade uzivatele a zaznamu
-           s sRole=##class(User.CavS).GetRoleUser("cav_is_user*"_userId, "", "", 0, .handle)
+           s sRole=##class(User.CavS).GetRoleUser($$$GETICTX_"_is_user*"_userId, "", "", 0, .handle)
            ; zjistime prava uzivatele podle role na dany zaznam
            s sPrava=##class(User.CavS).GetAllOperation("", sRole, "", 0, .handle)
            s data("RECORDS",sId,"ZNewsRole")=sRole
@@ -320,7 +326,7 @@ slouzi pro odchylky
            s data("RECORDS",sId,"ZsTypUser")=sTypUser  
            s data("RECORDS",sId,"ZsRT969f")=sRT969f
                    
-           if ##class(User.MARC).readX(.handleU,"CavIsUser",userId)
+           if ##class(User.MARC).readX(.handleU,$$$IPREF_"IsUser",userId)
            {
              s sUT610b=$$$getTagX(.handleU,"610b")             ; priznak, ze se muze uzivatel hlasit pres ipac do formularu
              ; pridan priznak testovaciho uzivatele pro potreby vytvareni nove funkcnosti
@@ -355,9 +361,9 @@ slouzi pro odchylky
          }
        }
     }
-    if $f($p(data("RECORDS",sId),"*",1),"cav_un_auth")
+    if $f($p(data("RECORDS",sId),"*",1),$$$GETICTX_"_un_auth")
     {  ; 20.10.15 tt; pridany autority
-       s x=##class(User.MARC).readX(.handle,"CavUnAuth",$p(data("RECORDS",sId),"*",2),"T")
+       s x=##class(User.MARC).readX(.handle,$$$IPREF_"UnAuth",$p(data("RECORDS",sId),"*",2),"T")
        if x=1
        { 
          ; 11.08.15 tt; upravena funcnost kvuli funkcnosti novych formularu - blok operaci u záznamu
@@ -374,7 +380,7 @@ slouzi pro odchylky
          {
            ////////////////////////////////
            ; zjistime roli uzivatele na zaklade uzivatele a zaznamu
-           s sRole=##class(User.CavS).GetRoleUser("cav_is_user*"_userId, "", "", 0, .handle)
+           s sRole=##class(User.CavS).GetRoleUser($$$GETICTX_"_is_user*"_userId, "", "", 0, .handle)
            ; zjistime prava uzivatele podle role na dany zaznam
            s sPrava=##class(User.CavS).GetAllOperation("", sRole, "", 0, .handle)
            s data("RECORDS",sId,"ZNewsRole")=sRole
@@ -397,7 +403,7 @@ slouzi pro odchylky
            s sRT969f=$$$getTagX(.handle,"969f")  
            s sRTC99d=$$$getTagX(.handle,"C99d")  
            s sHclass=$$$HandleClass(handle)
-           if ((sHclass="CavUnAuth")&&(sTypUser=6))
+           if ((sHclass=$$$IPREF_"UnAuth")&&(sTypUser=6))
            { ; souborne zaznamy muze editovat jen superuzivatel
              s data("RECORDS",sId,"ZRecEdit")=1
              s data("RECORDS",sId,"ZRecDel")=1               
@@ -406,7 +412,7 @@ slouzi pro odchylky
            s data("RECORDS",sId,"ZsTypUser")=sTypUser  
            s data("RECORDS",sId,"ZsRT969f")=sRT969f
            
-           if ##class(User.MARC).readX(.handleU,"CavIsUser",userId)
+           if ##class(User.MARC).readX(.handleU,$$$IPREF_"IsUser",userId)
            {
              s sUT610b=$$$getTagX(.handleU,"610b")             ; priznak, ze se muze uzivatel hlasit pres ipac do formularu
              ; pridan priznak testovaciho uzivatele pro potreby vytvareni nove funkcnosti

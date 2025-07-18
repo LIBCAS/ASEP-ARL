@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2023-05-22 20:08:24">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-19 14:43:18">
 <Class name="i2.cust.cav.prereg">
 <Description><![CDATA[
 <pre> Předregistrace - zákaznická úprava
 
+19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
 22.05.23 tt; zmena hlasky - po neuspesne validaci emailu
 22.05.23 tt; vyloucit vsechny emaily krome cz - cav - predregistrace - v mailu pouze cz - cs122246
 27.10.20 tt; pridany kontrola, aby email nebyl comn pripadne czn
@@ -23,7 +24,7 @@
 19.08.11 kp; Vytvoření formuláře
 </pre>]]></Description>
 <Super>i2.ui.prereg</Super>
-<TimeChanged>66616,72494.973582375</TimeChanged>
+<TimeChanged>67040,52984.76316465</TimeChanged>
 <TimeCreated>62322,39981.960126</TimeCreated>
 
 <Parameter name="Ictx">
@@ -103,7 +104,7 @@ Vraci pripadny text chyby
     s sT600b=##class(User.MARC).getTagX(.handle,"600b")
     s sPomNameUst=$zcvt($p(sT600b,"-",1),"L")                    ; konverze na mala pismena a zacatka zkratky
     s:(sPomNameUst'="") sPomNameUst=sPomNameUst_"-"     ; pridame pomlcku
-    s sHod600b=##class(User.Util).sXlate("UT_WORKPLACE_PREREG",sT600b,"N","Cav")
+    s sHod600b=##class(User.Util).sXlate("UT_WORKPLACE_PREREG",sT600b,"N",$$$IPREF)
     
     s sT200m=##class(User.MARC).getTagX(.handle,"200m")          ; dotazeni mesta
     s sT200m=""
@@ -121,7 +122,7 @@ Vraci pripadny text chyby
     
     s barc=sPomNameUst_sT100aPrijmeni_sCislo
     s barc1=$zcvt($zstrip(barc,"<>W"),"L")
-    if ($d(^ooDataTableI("CavIsUser","bc"," "_barc1))'=0)
+    if ($d(^ooDataTableI($$$IPREF_"IsUser","bc"," "_barc1))'=0)
     { ; pokud mam jiz hodnotu, vratim handle k zpracovani a pokracuji
       d ##class(User.MARC).mergeX(.handle,.handleZal)     ; zazalohujeme si handle
       s barc=""
@@ -214,8 +215,8 @@ Zmeny oproti standard verzi:
     d ##class(i2.html.tpl).callTpl(.data,..#PageID,"emaillibtxt")
     s bodyTxt=data("stream").Read()
     /*    ; 30.08.18 tt; provedena oprava linku na napovedu
-    s bodyTxt=$$$strswap(bodyTxt,"<a href=""https://asep.lib.cas.cz/arl-cav/cs/napoveda/?key=prereg"" title=""Nápověda k online katalogu IPAC"" target=""_blank"" rel=""noopener"">Nápověda</a>","")
-    s bodyHtml=$$$strswap(bodyHtml,"<a href=""https://asep.lib.cas.cz/arl-cav/cs/napoveda/?key=prereg"" title=""Nápověda k online katalogu IPAC"" target=""_blank"" rel=""noopener"">Nápověda</a>","")
+    s bodyTxt=$$$strswap(bodyTxt,"<a href=""https://asep.lib.cas.cz/arl-"_$$$GETICTX_"/cs/napoveda/?key=prereg"" title=""Nápověda k online katalogu IPAC"" target=""_blank"" rel=""noopener"">Nápověda</a>","")
+    s bodyHtml=$$$strswap(bodyHtml,"<a href=""https://asep.lib.cas.cz/arl-"_$$$GETICTX_"/cs/napoveda/?key=prereg"" title=""Nápověda k online katalogu IPAC"" target=""_blank"" rel=""noopener"">Nápověda</a>","")
     s bodyTxt=$$$strswap(bodyTxt,"Heslo zůstává stejné, jak jste si ho zadal/a do přihlašovacího formuláře.","")
     s bodyHtml=$$$strswap(bodyHtml,"Heslo zůstává stejné, jak jste si ho zadal/a do přihlašovacího formuláře.","")
    */
@@ -231,8 +232,8 @@ Zmeny oproti standard verzi:
       s bodyTxt=data("stream").Read()
           
       /* ; 30.08.18 tt; provedena oprava linku na napovedu
-      s bodyTxt=$$$strswap(bodyTxt,"https://asep.lib.cas.cz/arl-cav/cs/napoveda/?key=prereg","https://www.lib.cas.cz/asep/pro-autory/uzivatelske-ucty/individualni-ucet/")
-      s bodyHtml=$$$strswap(bodyHtml,"https://asep.lib.cas.cz/arl-cav/cs/napoveda/?key=prereg","https://www.lib.cas.cz/asep/pro-autory/uzivatelske-ucty/individualni-ucet/")
+      s bodyTxt=$$$strswap(bodyTxt,"https://asep.lib.cas.cz/arl-"_$$$GETICTX_"/cs/napoveda/?key=prereg","https://www.lib.cas.cz/asep/pro-autory/uzivatelske-ucty/individualni-ucet/")
+      s bodyHtml=$$$strswap(bodyHtml,"https://asep.lib.cas.cz/arl-"_$$$GETICTX_"/cs/napoveda/?key=prereg","https://www.lib.cas.cz/asep/pro-autory/uzivatelske-ucty/individualni-ucet/")
        */
       d ##class(util.emailgw).send($$$IPREF,bodyHtml,bodyTxt,.err,"ipac_prereguser",subject,$$$GETLANGUAGE,,toUser)
       s:err'="" ret=..tx("ERR_MAIL")_"<!-- "_err_" -->"

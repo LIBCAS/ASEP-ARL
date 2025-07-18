@@ -49,10 +49,10 @@ For each format, links to WOS, SCOPUS, PUBMED, DOI, RIV - if the record contains
  The display format contains the data to be submitted to RIV for a particular record.
 </p>
 
-<h3><ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr></h3>
+<h3><abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr></h3>
 <p>
 It is a specialized format that displays a record in an exchange format 
-<ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> - 
+<abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr> - 
 every line displays one 
-<ipac:abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</ipac:abbr> record field.
+<abbr lang="en-GB" title="MAchine-Readable Cataloging">MARC</abbr> record field.
 </p>

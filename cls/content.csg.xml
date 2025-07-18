@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-06-09 08:54:47">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-28 14:14:55">
 <Class name="content.csg">
 <Description><![CDATA[
 <pre> Content Server Gateway brana
 
+28.03.25 ln; podpora S3
 09.06.23 ln; podpora transparentniho prihlaseni pres 7
 19.04.23 ln; login kategorie NOWATER
 15.08.22 ln; fix pristupu "S"
@@ -21,7 +22,7 @@
 </pre>]]></Description>
 <IncludeCode>I2</IncludeCode>
 <Super>%CSP.Page</Super>
-<TimeChanged>66634,29349.8668352</TimeChanged>
+<TimeChanged>67292,51261.835292792</TimeChanged>
 <TimeCreated>62185,35704.618863</TimeCreated>
 
 <Method name="OnPreHTTP">
@@ -141,6 +142,16 @@ Return <b>0</b> to prevent <method>OnPage</method> from being called.]]></Descri
     s %response.Status="404 Not Found"
     d %response.SetHeader("Status","404 Not Found")
     q 1
+  }
+  
+  if $e(key,*)="k" {
+    ; 28.03.25 ln; podpora S3
+    s config=##class(util.rest.v1.s3REST).commonConfig(repo,key)
+    s config.origname=array("origname")
+    s url=##class(util.rest.v1.s3REST).getFile(config...)
+    s ret=##class(content.api).increment(repo,key)
+    d ##class(content.stat).addRead(.array,ret)
+    q url
   }
  
   s sPathSep=##class(User.Util).getPathSepp()

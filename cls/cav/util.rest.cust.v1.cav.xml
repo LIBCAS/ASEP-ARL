@@ -1,0 +1,997 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-04-16 11:45:21">
+<Class name="util.rest.cust.v1.cav">
+<Description><![CDATA[
+<pre> Sluzby REST API pro cav
+
+14.04.25 ln; nededuplikovat autory shodnych jmen a ruznych t001
+09.04.25 ln; optimalizace lateral join a %PARALLEL
+07.04.25 ln; optimalizace pomoci indexu zaura
+12.03.25 ln; optimalizace CROSS JOIN na INNER JOIN
+28.02.25 ln; fitrace sloupcu grafu jen s nulami
+17.02.25 ln; pristup podle IP adres a uzivatele
+14.02.25 ln; fazety pro grafy
+10.01.25 ln; podpora jazykovych mutaci
+15.11.24 ln; ida - autorske identifikatory
+26.09.24 ln; generovani tokenu pro export (wkhtmltopdf)
+</pre>]]></Description>
+<Super>util.rest.superREST</Super>
+<TimeChanged>67311,37800.075034161</TimeChanged>
+<TimeCreated>66858,37156.8890089</TimeCreated>
+
+<Parameter name="HandleCorsRequest">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="CONTENTTYPE">
+<Default>application/json</Default>
+</Parameter>
+
+<Parameter name="CHARSET">
+<Default>utf-8</Default>
+</Parameter>
+
+<Parameter name="CONVERTINPUTSTREAM">
+<Default>1</Default>
+</Parameter>
+
+<XData name="UrlMap">
+<XMLNamespace>http://www.cosmotron.cz/urlmap</XMLNamespace>
+<Data><![CDATA[
+<Routes>
+<Route Url="/config/:rec" Method="GET" Call="configGET"/>
+<Route Url="/authors/:ustav" Method="GET" Call="authorsGET"/>
+<Route Url="/page/:page" Method="GET" Call="pageGET"/>
+<Route Url="/graph" Method="GET" Call="graphGET"/>
+</Routes>
+]]></Data>
+</XData>
+
+<Method name="configGET">
+<Description><![CDATA[
+<pre> Nacteni kongiracniho zaznamu z CavUnTablesd
+
+https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/config/test
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>rec:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ictx="cav", class="CavUnTablesd"
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+    
+  if rec="" {
+   s %response.Status = ..#HTTP400BADREQUEST
+   s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#Class and Term required")
+   w err
+   q $$$OK
+  }
+ 
+  s t001="ANALYTIKA_"_$zcvt(rec,"U")
+  if '##class(User.MARC).readX(.handle,class,t001) {
+    s %response.Status = ..#HTTP404NOTFOUND
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST003#Error reading record "_class_"*"_t001)
+    w err
+    q $$$OK
+  }
+  
+  d ##class(User.MARC).delTagX(.handle,"005"_$c(10)_"999")
+  s recJson=##class(util.rest.v1.utils).handle2Json(.handle,$g(%request.Data("fmt",1),"simple"))
+  w recJson
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="authorsGET">
+<Description><![CDATA[
+<pre> autori vcetne vyhledavani
+d ##class(util.rest.cust.v1.cav).authorsGET("uivt-o")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ustav:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ictx="cav", class="CavUnTablesd"
+  s conf="ANALYTIKA_KONFIG_STRANA_UT04"
+  s cm = {}, autori = []
+  s index="zaall"
+  s active=$g(%request.Data("active",1))
+  s:(active=1)||(active="true") index="zaact"
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+  
+  if ustav="" {
+    s %response.Status = ..#HTTP400BADREQUEST
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#ustav required")
+    w err
+    q $$$OK
+  }
+  
+  ;s search="Kůrk"
+  s search=$g(%request.Data("search",1))
+  s sr=##class(User.Util).diaTRU($zcvt($zstrip(search,"<>W"),"L"))
+  s srl=$l(sr)
+  
+  s node=" "_$zcvt(ustav,"L")_";", start=node, len=$l(start)
+  s:ustav="all" node=" ", start=node, len=$l(start)
+  for { s node=$o(^$$$MarcIndexG("CavUnAuth",index,node),1,val) q:node=""
+    q:$e(node,1,len)'=start
+    
+    s t001=$p(node,";",3)
+    continue:t001=""
+    continue:'##class(User.MARC).readX(.handle,"CavUnAuth",t001)
+        
+    s line=##class(User.MARC).getTagX(.handle,"200")
+    s jmeno=##class(User.MARC).getSubTagStr(line,"a")
+    s jmDia=##class(User.Util).diaTRU($zcvt($zstrip(jmeno,"<>W"),"L"))
+    s prijmeni=##class(User.MARC).getSubTagStr(line,"b")
+    s prDia=##class(User.Util).diaTRU($zcvt($zstrip(prijmeni,"<>W"),"L"))
+    continue:jmeno_prijmeni=""
+    
+    if (sr'="") {
+      if ($f(sr,",") || $f(sr," ")) {
+	    continue:sr'=(jmDia_", "_prDia)
+      }
+      elseif (sr'=$e(jmDia,1,srl)) && (sr'=$e(prDia,1,srl)) {
+        continue
+      }
+      
+      if ustav="all" {
+        s pra=##class(User.MARC).getTagX(.handle,"C06d")
+        continue:pra=""
+        s array(jmeno_prijmeni_t001)={ "name" : (jmeno_", "_prijmeni), "lname" : ("cav_un_auth*"_t001)
+        , "ustav" : (pra), "ida" : (..ida(.handle)) }
+        continue
+      }
+      s variall=##class(User.MARC).getTagX(.handle,"400",-1)
+      if variall'="" { ; TODO ? druhy indikator 1
+        for i=1:1:$l(variall,$c(10)) {
+          s variline=$p(variall,$c(10),i)
+          s varijm=##class(User.MARC).getSubTagStr(variline,"a")
+          s varipr=##class(User.MARC).getSubTagStr(variline,"b")
+          s link=##class(User.MARC).getSubTagStr(variline,"3")
+          if (varijm_varipr'="") && ##class(User.MARC).readLX(.vhandle,link) {
+            continue:(active=2)&&'$d(^$$$MarcIndexG("CavUnAuth",$g(vhandle("id"),0),"ds"," actv"))
+            s array(varijm_varipr_$p(link,"*",2))={ "name" : (varijm_", "_varipr), "lname" : (link), "ida" : (..ida(.vhandle)) }
+          }
+        }
+      }
+    } 
+    elseif index="zaact" {
+      s id=##class(User.MARC).recordIdX(.handle)
+      continue:##class(User.MARC).getIdxVal("CavUnAuth",id,"zmain")'="" ; bez variant
+    }
+    continue:(active=2)&&'$d(^$$$MarcIndexG("CavUnAuth",$g(handle("id"),0),"ds"," actv"))
+    ; 14.04.25 ln; nededuplikovat autory shodnych jmen a ruznych t001
+    s array(jmeno_prijmeni_t001)={ "name" : (jmeno_", "_prijmeni), "lname" : ("cav_un_auth*"_t001), "ida" : (..ida(.handle)) }
+  }
+  
+  s node=""
+  for { s node=$o(array(node),1,val) q:node=""
+    d autori.%Push(val)
+  }
+  
+  s cm.hists=autori.%Size()
+  s cm.index=index
+  s cm.search=search
+  s cm.ustav=ustav
+  s cm.authors=autori
+  d cm.%ToJSON()
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="pageGET">
+<Description><![CDATA[
+<pre> strankovany search
+
+https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>page:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ictx="cav", ipref="Cav", class="CavUnTablesd"
+  s cm = {}, facets = 0
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+  
+  s:page="f" page=1, facets=1
+  s page=+page
+  if 'page {
+    s %response.Status = ..#HTTP400BADREQUEST
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#page required")
+    w err
+    q $$$OK
+  }
+  s params=$g(%request.Data("params",1))
+  if params="" {
+    s %response.Status = ..#HTTP400BADREQUEST
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#params required")
+    w err
+    q $$$OK
+  }  
+  s json={}.%FromJSON(params)
+  s conf=$g(%request.Data("conf",1))
+  s:conf="" conf=json.conf
+  s t001="ANALYTIKA_"_$zcvt(conf,"U")
+  if '##class(User.MARC).readX(.handle,class,t001) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST003#No record found by T001 "_class_"*"_t001)
+    w err
+    q $$$OK
+  }
+  s ustav=json.ustav
+  if ustav="" {
+    s %response.Status = ..#HTTP400BADREQUEST
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#ustav required")
+    w err
+    q $$$OK
+  }  
+  s dyn={}.%FromJSON(##class(User.Util).sXlate(t001,"VYSLEDKY",,ipref,"d"))
+  ; 14.02.25 ln; fazety pro grafy
+  s:'$isobject(dyn) dyn={}.%FromJSON(##class(User.Util).sXlate(t001,"GRAF",,ipref,"d")), facets=2
+  if '$isobject(dyn) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST003#No VYSLEDKY config found")
+    w err
+    q $$$OK
+  }
+  s mutace=$g(%request.Data("mutace",1))
+  s:mutace="" mutace=json.mutace
+  s:(mutace'="cs")&&(mutace'="en") mutace="cs"
+  
+  s pageSize=$normalize(+$g(%request.Data("pageSize",1)),0)
+  s:'pageSize pageSize=$normalize(+json.pageSize,0)
+  s:'pageSize||(pageSize>$s(json.zf="CSV":500,1:100))||(pageSize<0) pageSize=50
+  
+  s export=""
+  s:$g(%request.Data("export",1)) export=json
+  
+  s cm.hits=0
+  s cm.page=page
+  s cm.pageSize=pageSize
+  s cm.pageLast=page
+  s cm.first=page-1*pageSize+1  
+  s cm.conf=conf
+  s cm.mutace=mutace
+  s cm.ustav=ustav
+  d ..variAutor(cm,json.autor)
+  s cm.class=$zstrip(##class(User.Util).sXlate(t001,"DB",,ipref,"110b"),">W")
+  s:cm.class="" cm.class="CavUnEpca"
+  s:cm.class="CavUnAuth" json.auth=1
+  s cm.zf=json.zf
+  s:cm.zf="" cm.zf=dyn.zf
+  s cm.trideni=json.trideni
+  s:cm.trideni="" cm.trideni=dyn.trideni  
+  s cm.pqf=..pqf(json,t001,ipref)  
+  s ret=..search(cm,facets,export)
+  s:'ret cm.records=[]
+    
+  d cm.%ToJSON()
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="graphGET">
+<Description><![CDATA[
+<pre> tagulka / graf
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s ictx="cav", ipref="Cav", class="CavUnTablesd"
+  s cm = {}, isAccess=1
+    
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+  
+  s params=$g(%request.Data("params",1))
+  if params="" {
+    s %response.Status = ..#HTTP400BADREQUEST
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#params required")
+    w err
+    q $$$OK
+  }  
+  s json={}.%FromJSON(params)
+  s conf=$g(%request.Data("conf",1))
+  s:conf="" conf=json.conf
+  s t001="ANALYTIKA_"_$zcvt(conf,"U")
+  if '##class(User.MARC).readX(.handle,class,t001) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST003#No record found by T001 "_class_"*"_t001)
+    q $$$OK
+  }
+  s ustav=json.ustav
+  if ustav="" {
+    s %response.Status = ..#HTTP400BADREQUEST
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#ustav required")
+    q $$$OK
+  }
+  s dyn={}.%FromJSON(##class(User.Util).sXlate(t001,"GRAF",,ipref,"d"))
+  if '$isobject(dyn) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST003#No GRAF config found")
+    q $$$OK
+  }
+  ; 17.02.25 ln; pristup podle IP adres a uzivatele
+  s access=$zstrip(##class(User.Util).sXlate(t001,"ACCESS",,ipref,"110b"),">W")
+  s:access'="" isAccess=0
+  s categs=##class(i2.access).scanLoginChecks(ictx,env("ip"),0,.psErr,0)
+  ;s cm.access=access, cm.ourIP=env("ip"), cm.categs=categs
+  if $f(access,"INTRANET") {
+    s:$f(categs,"_COSMO")||$f(categs,"_SSC-A")||$f(categs,"_EXTRA")&&'$f(categs,"_EXTRA")||$f(categs,"_"_$zcvt(ustav,"U")) isAccess=1
+  }
+  if $f(access,"LOGIN") {
+    s workgrps=##class(util.sec.security).securityGet(userName,"e")
+    ;s cm.user=userName, cm.workgrps=workgrps
+    s:$f(workgrps,"KNAVK")||$f(workgrps,"SSCA")||$f(workgrps,$zcvt($tr(ustav,"-"),"U")) isAccess=1
+  }
+  if 'isAccess {
+    s %response.Status=..#HTTP401UNAUTHORIZED
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_AUTH009#access restricted by IP adress")
+    q $$$OK
+  }
+  
+  s mutace=$g(%request.Data("mutace",1))
+  s:mutace="" mutace=json.mutace
+  s:(mutace'="cs")&&(mutace'="en") mutace="cs"
+  s:$isobject(json.oddeleni) json.oddeleni=json.oddeleni."0"
+  
+  s cm.rows=0
+  s cm.conf=conf
+  s cm.mutace=mutace
+  s cm.ustav=ustav
+  d ..variAutor(cm,json.autor)
+  s cm.class="CavUnEpca"
+  s cm.osaX=dyn.osaX
+  s:dyn.cisX'="" cm.cisX=dyn.cisX
+  s cm.osaY=dyn.osaY
+  s:dyn.cisY'="" cm.cisY=$replace(dyn.cisY,"@AKTUALNI_USTAV",$zcvt(ustav,"U"))
+  s:dyn.proj'="" cm.proj=dyn.proj
+  s:dyn.order'="" cm.order=dyn.order
+  s:dyn.filter'="" cm.filter=dyn.filter
+  
+  s lang=$case(mutace,"cs":2,"en":3,:2)
+  s arl="arl"
+  s:##class(User.Util).onTestNamespace() arl="test"
+  s linkBase="https://asep.lib.cas.cz/"_arl_"-cav/"_mutace_"/vysledky/?qt=analytika&src=cav_un_epca-1ana&field=USTAV&term="_ustav_"&kvant=exact"
+  s fldX=##class(User.Util).sXlate("ANALYTIKA_"_cm.conf,cm.osaX,,ipref,"100d")
+  ;s:(json.percentily="QAIS")&&(fldX="DATE") fldX="ZQAIS"
+  ;s:(json.percentily)&&(json.percentily.%Get(0)="QAIS")&&(fldX="DATE") fldX="ZQAIS" ; TODO
+  if $e(cm.osaY)="%" { ; TODO
+    s fldY=$zcvt($e(cm.osaY,5,*),"U")
+  } else {
+    s fldY=##class(User.Util).sXlate("ANALYTIKA_"_cm.conf,cm.osaY,,ipref,"100d")
+    s:$e(fldY)="%" fldY=json.%Get(cm.osaY).%Get(0)
+  }
+  
+  ;s ql="SELECT * FROM (SELECT util_sql.index(Class,Arlid,'zpz') as zpdruhDokumentu, sum(util_sql.index(Class,Arlid,'ye',' 2023')) as ye2023, sum(util_sql.index(Class,Arlid,'ye',' 2022')) as ye2022 FROM %NOTOPOPT (SELECT T001, Class, Arlid, util_sql.isinindex(Class,Arlid,'ye',' 2024~ 2023','=') AS rokVydani, util_sql.isinindex(Class,Arlid,'zpz',' j~ ji~ b~ m~ c~ k','=') AS druhDokumentu FROM base.arlsql WHERE Class = 'CavUnEpca' AND Index = 'pra' AND Value = ' bfu-r') WHERE rokVydani = '1' AND druhDokumentu = '1') GROUP BY zpdruhDokumentu"
+  if (cm.filter="list") && (cm.osaY="druhDokumentu") && (json.druhDokumentu."0"="J") {
+    d json.druhDokumentu.%Remove("0")
+    s sql=$p(..sql(cm,json),"FROM (",2,*)
+    s json.druhDokumentu=["J"]
+    s sqlJ=$p(..sql(cm,json),") GROUP BY")
+    s sql=sqlJ_" UNION "_sql
+  }
+  elseif cm.filter'="multi" {
+    s sql=..sql(cm,json)
+  } else {
+    d ##class(User.MARC).readX(.hy,"CavUnTablesd",cm.cisY)
+    s all=##class(User.MARC).getTagX(.hy,"200",-1)
+    s sql=""
+    for i=1:1:$l(all,$c(10)) {
+      s one=$p(all,$c(10),i)
+      s val=##class(User.MARC).getSubTagStr(one,"a")
+      d json.%Set(cm.osaY,val)
+      s sql=sql_" UNION "_..sql(cm,json)
+    }
+    s sql=cm.start_" FROM %PARALLEL ("_$e(sql,8,*)_") GROUP BY "_cm.osaY
+    d cm.%Remove("start")
+  }
+  s:$f(categs,"_COSMO")||$f(categs,"_EXTRA") cm.sql=sql
+  s xlen=json.xlen
+  s lim=json.lim
+  s bX=(cm.conf="KONFIG_STRANA_US08") || (cm.conf="KONFIG_STRANA_OS03")
+  s:bX cm.filter="W"
+  
+  
+  s tStatement = ##class(%SQL.Statement).%New()
+  s sc=tStatement.%Prepare(sql)
+  if $$$ISERR(sc) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST003#sql error "_$System.Status.GetErrorText(sc))
+    w err
+  }
+  #dim rset As %SQL.IResultSet
+  s rset=tStatement.%Execute()    
+  s colsCount=tStatement.%Metadata.columnCount
+  s columns=tStatement.%Metadata.columns
+  
+  s arr=[], seq=0, limpost="", array=""
+  while rset.%Next(.sc) {    
+    s line=[]
+    s val=$zstrip(rset.%GetData(1),"<W"), orig=val, from=2
+    s:bX val=$zstrip(rset.%GetData(2),"<W")
+    ;s:fldX="ZQAIS" limpost=";"_val
+    
+    if (cm.filter="cisY") || ($e(cm.filter)=";") {
+      s val=##class(User.Util).sXlate(cm.cisY,$zcvt(val,"U"),"N",ipref,,lang)
+      continue:val=""
+    } else {
+      s:cm.cisY'="" val=##class(User.Util).sXlate(cm.cisY,$zcvt(val,"U"),,ipref,,lang)
+      s:$l(cm.filter)=1 val=$zcvt(val,cm.filter)
+    }
+    
+    s lino={ "value":(val) }, array(0)="x"
+    s:bX lino.t001=rset.%GetData(1)
+    d line.%Push(lino)
+    s:cm.proj'="" orig=$zstrip(rset.%GetData(2),"<W"), from=3
+    if bX {
+     s what=rset.%GetData(1)
+     s:json.oddeleni'="" what=";"_json.oddeleni_";"_what
+     s where=rset.%GetData(3)
+     s to=$f(where,what)-1
+     s fr=$f(where,", ",to-30)
+     s:fr>to fr=1
+     s orig=$e(where,fr,to)
+     s from=4
+    }
+        
+    continue:(cm.proj'="")&&(orig="") ; TODO ? vzdy
+    s link=linkBase_lim_"&limv_"_fldY_"="_##class(i2.html.base).encode(orig)
+    ;s:fldX'="ZQAIS" link=link_"&limv_"_fldY_"="_##class(i2.html.base).encode(orig)
+    s seqcols=1
+    for i=from:1:colsCount {
+      s array(seqcols)=$g(array(seqcols))+rset.%GetData(i), seqcols=seqcols+1
+      d line.%Push({ "value":(rset.%GetData(i)), "link": (link_"&limv_"_fldX_"="_$e(columns.GetAt(i).colName,xlen,*)_limpost) })
+    }
+    d arr.%Push(line)
+    s seq=seq+1
+  }
+  
+  ; 28.02.25 ln; fitrace sloupcu grafu jen s nulami
+  s itr1=arr.%GetIterator()  
+  while itr1.%GetNext(.key1,.val1) {    
+    s itr2=val1.%GetIterator()  
+    s strip=[]
+    while itr2.%GetNext(.key2,.val2) { 
+      d:array(key2)'=0 strip.%Push(val2)
+    }
+    d arr.%Set(key1,strip)
+  }
+  
+  s cols=[], from=2
+  ;d cols.%Push($e(columns.GetAt(1).colName,ylen,*))
+  if bX {
+    d cols.%Push(columns.GetAt(2).colName)
+    s from=4
+  } else {
+    d cols.%Push(columns.GetAt(1).colName)
+    s:cm.proj'="" from=3
+  }
+  for i=from:1:colsCount {
+    continue:$g(array(i-from+1))=0 ; 28.02.25 ln; fitrace sloupcu grafu jen s nulami
+    s name=$e(columns.GetAt(i).colName,xlen,*)
+    s:dyn.cisX'="" name=##class(User.Util).sXlate(dyn.cisX,$zcvt(name,"U"),,ipref,,lang)
+    d cols.%Push(name)
+  }
+  
+  s cm.rows=seq  ;rset.%ROWCOUNT
+  s cm.columns=cols
+  s cm.table=arr
+    
+  d cm.%ToJSON()
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="ida">
+<Description><![CDATA[
+<pre> Pro autora vrati objekt s jeho autorskymi identifikatory
+
+w ##class(User.MARC).readX(.handle,"CavUnAuth","0406888")
+s o=##class(util.rest.cust.v1.cav).ida(.handle)
+s o=##class(util.rest.cust.v1.cav).ida("cav_un_auth*0406888")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ReturnType>%DynamicObject</ReturnType>
+<Implementation><![CDATA[
+  s ret={}  
+  if $f(handle,"*") {
+    s idx=handle
+    k handle
+    q:'##class(User.MARC).readLX(.handle,idx) ret
+  }  
+  
+  ;s id=##class(User.MARC).recordIdX(.handle)
+  s id=$g(handle("id"))
+  q:id="" ret
+  
+  s node=""
+  for { s node=$o(^$$$MarcIndexG("CavUnAuth",id,"ida",node)) q:node=""
+    d:$l(node," ")=3 ret.%Set($p(node," ",2),$p(node," ",3))
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="pqf">
+<Description>
+s dyn={"ustav":"bfu-r","rokVydani":["2023","2022","2021","2020"],"druhDokumentu":["J","JI","B","M","C","K"],"export":"","navaznosti":"'infh","conf":"KONFIG_STRANA_UT02","mutace":"cs"}
+s dyn={"ustav":"arub-q","trideni":"DKI_AUP_TITLE","zf":"CAV_BIBCIT_INI","rokVydani":["2022"],"druhDokumentu":["J"],"export":[],"navaznosti":"'infh","conf":"KONFIG_STRANA_UT02","mutace":"cs","site":"1"}
+s dyn={"auth":"1","conf":"KONFIG_STRANA_PO05","mutace":"cs","ustav":"arub-q","programy":"AV ČR"}
+s dyn={"auth":"1","conf":"KONFIG_STRANA_PO02","mutace":"cs","ustav":"arub-q","poskytovatel":"GA MK","projekty":"projvy","zacatek":"2013"}
+s dyn={"ustav":"bc-a","rokVydani":["2022","2021","2020","2019"],"oddeleni":"","oborWos":"","KOLABORACE":"","percentily":["QAIS"],"conf":"KONFIG_STRANA_US05","mutace":"cs","site":"1"}
+s dyn={"ustav":"uivt-o","trideni":"DKI_AUP_TITLE","zf":"CAV_BIBCIT_INI","rokVydani":["2025","2024","2023","2022","2021"],"infrastruktury":["infh","infd"],"druhDokumentu":["J","JI","B","M","C","K"],"export":"","conf":"KONFIG_STRANA_PO06","mutace":"cs","site":1}
+w ##class(util.rest.cust.v1.cav).pqf(dyn,"ANALYTIKA_KONFIG_STRANA_PO06","Cav")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>dyn:%DynamicObject,stable:%String,ipref:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=""
+  s itr=dyn.%GetIterator()
+  
+  while itr.%GetNext(.key,.val) {
+    ;w !,key_" : "_val_" | "_dyn.%GetTypeOf(key)_" | "_$isobject(val)
+    continue:val=""
+    
+    s attr=##class(User.Util).sXlate(stable,key,,ipref,"100d")
+    continue:attr=""
+    s:'attr attr=$p(##class(User.Util).sXlate("IPAC2_FLD",attr,,ipref,"c",1),",")
+    continue:attr=""    
+    s k=##class(User.Util).sXlate(stable,key,,ipref,"100k")
+    s:k'="" attr=attr_" @attr "_k  ; TODO poradne
+    
+    if $e(val)="'" { ; TODO
+      s ret="@not "_ret_" @attr 1="_attr_" '"_$e(val,2,*)_"'"
+      continue
+    }    
+    
+    if $isobject(val) {
+      s itr2=val.%GetIterator(), val=""
+
+      while itr2.%GetNext(.key2,.val2) {
+        ;w !,"  ",key2_" : "_val2
+        s:val'="" val="@or "_val_" "
+        s val=val_"'"_val2_"'"
+      }
+    } 
+    continue:val=""
+        
+    if $e(val)="@" {
+      s:ret'="" ret="@and "_ret_" "
+      s ret=ret_"@attr 1="_attr_" "_val
+    }
+    elseif $e(val)'="'" {
+      s:ret'="" ret="@and "_ret_" "
+      s ret=ret_"@attr 1="_attr_" "_"'"_val_"'"
+    } else {
+      s ret="@and "_ret_" @attr 1="_attr_" "_val
+    }
+  }
+  
+  s:'dyn.auth&&(dyn.conf'="KONFIG_STRANA_UT03") ret="@and "_ret_" @attr 1=2000 'A'" ; TODO export (exp)
+  s:(dyn.projekty="projoth")||(dyn.projekty="projcz") ret=$replace(ret,"@attr 1=2015","@attr 6=1 @attr 1=2447")
+  s:dyn.percentily&&(dyn.percentily.%Get(0)="QAIS") ret="@and "_ret_" @attr 1=2082 @attr 2=105 '_'"
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="search">
+<Description><![CDATA[
+<pre> Vyhledani zaznamu + zf nebo fazety pro pageGET
+
+d ##class(i2.common).sessionSetup("LN","cav",2)
+s cm={"hits":0,"page":1,"pageSize":2,"first":1,"mutace":"en","class":"CavUnEpca","zf":"TF_SF_ANAL_SHORT","trideni":"DKI_AUP_TITLE","pqf":"@not @and @and @attr 1=2462 'bfu-r' @attr 1=31 @or @or @or '2023' '2022' '2021' '2020' @attr 1=2024 @or @or @or @or @or 'J' 'JI' 'B' 'M' 'C' 'K' @attr 1=2071 'infh'"}
+s cm={"hits":0,"page":1,"pageSize":2,"first":1,"mutace":"en","class":"CavUnEpca","zf":"CSV","trideni":"DKI_AUP_TITLE","pqf":"@not @and @and @attr 1=2462 'bfu-r' @attr 1=31 @or @or @or '2023' '2022' '2021' '2020' @attr 1=2024 @or @or @or @or @or 'J' 'JI' 'B' 'M' 'C' 'K' @attr 1=2071 'infh'"}
+s cm={"hits":0,"page":1,"pageSize":1,"first":1,"mutace":"cs","class":"CavUnEpca","zf":"CSV","trideni":"DKI_AUP_TITLE","pqf":"@attr 1=2426 '0557018'"}
+w ##class(util.rest.cust.v1.cav).search(cm)
+
+26.09.24 ln; generovani tokenu pro export (wkhtmltopdf)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>cm:%DynamicObject,facets:%Boolean=0,export:%String=""</FormalSpec>
+<PublicList>ret,handle</PublicList>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s class=cm.class
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s src=##class(User.Util).objectName2lname(class)
+  s type=$e(##class(User.Util).getBaseType(class))
+  s lang=$case(cm.mutace,"cs":2,"en":3,:2)
+  s cm.lang=lang
+  
+  s zf=cm.zf
+  s sort=##class(User.Util).sXlate("IPAC2_SORT",cm.trideni,,ipref,"c")
+  s cm.sort=##class(i2.solr).parseSort(sort,class)
+  
+  s q=##class(i2.solr).parsePqf(cm.pqf,class,.err)
+  q:err'="" 0
+  ;s cm.q=q
+  ;s cm.src=src
+  ;s cm.type=type
+  
+  s srctail="-analytika"
+  s:facets=2 srctail="-analygraph"
+  s count=cm.pageSize
+  s hits=##class(i2.solr).get(.R,"",q,cm.sort,cm.first,count,type,.facets,,src_srctail)
+  if +hits'=hits {
+    s cm.err=hits
+    q 0
+  }
+  s cm.hits=+hits
+  s pagesCount=(hits\count)
+  s:hits#count pagesCount=pagesCount+1
+  s cm.pageLast=pagesCount
+  
+  if export'="" {
+    ; 26.09.24 ln; generovani tokenu pro export (wkhtmltopdf)
+    s tmp=$zcvt($zdt($h,3,7,3)_"|"_export.%ToJSON(),"O","UTF8")
+    s cm.token=$tr($system.Encryption.Base64Encode($system.Encryption.AESCBCEncrypt(tmp,"1234567890abcdef","fedcba1234567890")),$c(10,13))
+    q 1
+  }
+  elseif $isobject(facets) {
+     s itr=facets.%GetIterator()
+     while itr.%GetNext(.key,.obj) {
+       s obj.name=##class(User.Util).sXlate("ANALYTIKA_CIS_INDEX2NAME",obj.index,,ipref)
+     }
+    s cm.facets=facets
+    d cm.%Remove("zf")
+    d cm.%Remove("trideni")
+    d cm.%Remove("sort")
+    q 1
+  }
+  
+  s defRec=##class(User.Util).sXlate("IPAC2_EXPORT",zf,"N",ipref,"e")
+  s zfOptions=##class(User.Util).sXlate("IPAC2_EXPORT",zf,"N",ipref,"i",0)
+  s zfOptions=zfOptions_"#ictx-Cav#language-"_lang
+  s arl="arl", cspsuff=""
+  s:##class(User.Util).onTestNamespace() arl="test", cspsuff="t"
+  s url="https://asep.lib.cas.cz/"_arl_"-cav/"_cm.mutace_"/"
+  s basepure="https://asep.lib.cas.cz/i2"_cspsuff_"/"
+  
+  s res=[], lsErr=""
+  s callBack=##class(User.Util).sXlate("IPAC2_EXPORT",zf,"N",ipref,"c",0)
+  s expType=##class(User.Util).sXlate("IPAC2_EXPORT",zf,"N",ipref,"d")
+  ;d:expType="csv" ##class(User.CavUnEpca).exportCSVSoupis(,1,1)
+  if expType="csv" {
+    ;s sExec=callBack_"(,1,1)"
+    s sExec="ret="_callBack_"(,1,5)"
+    s @sExec
+    d res.%Push(ret)
+  }
+  
+  s i="", seqno="", aux=[], aktualniRok=$e($zd($h,3),1,4)
+  f N=1:1 {
+    s i=$o(R(i)) q:i=""
+    s id=$o(R(i,""),1,sSortVal)
+    
+    continue:'##class(User.MARC).getDATAX(.handle,id,"T")
+    s idx="cav_un_epca-1*"_handle("t001")
+    s:class="CavUnAuth" idx="cav_un_auht*"_handle("t001")
+    d ##class(i2.dblink).recordSetVar(.handle,"idx",idx)
+    s handle("tmp","basepure")=basepure
+   
+    k result
+    if expType="csv" {
+      d ##class(rep.zf.tf).setupIctxEnvironment(.handle,lang)
+      ;d ##class(User.CavUnEpca).exportCSVSoupis(.handle,2,1)
+      ;s sExec=callBack_"(.handle,2,1)"
+      s sExec="ret="_callBack_"(.handle,2,5)"
+      s @sExec
+      s result(1)=ret
+    } else {
+      d ##class(rep.zf.tf).formatX(.result,.handle,defRec,zfOptions,.lsErr)   
+    }
+    ;q:expType="csv"
+    s text=""
+    s:lsErr'="" text=": "_lsErr
+    
+    s node=""
+    for { s node=$o(result(node),1,val) q:node=""
+      s:(class="CavUnAuth") val=$p(val," : ")_": "_$p(val," : ",2,*)_"<br>"
+      s:$e(val,1,6)="%empty" val=$p(val,": ",2,*)
+      s text=text_" "_##class(User.Util).HTMLfixup(val,0,0)
+    }
+    
+    if (class="CavUnAuth") {
+      d res.%Push(text)
+    }
+    elseif expType="csv" {
+      d res.%Push(text)
+    } else {
+      s text=$replace(text,":<br>","<br>")
+      s text=$replace(text,": %newline :","<br>")
+      s text=$replace(text,"%newline :","<br>")
+      s text=$replace(text,"&nbsp;%newline","")
+      s text=$p(text,$c(10))
+      s:$e(text,*-2,*)=" : " text=$e(text,1,*-3)
+      
+      d res.%Push($p(text,": ",2,*))
+    }
+    
+    s doi=##class(User.MARC).getTagX(.handle,"017a")
+    s:doi'="" doi="https://doi.org/"_doi  ; getDOIlink
+    
+    if class="CavUnEpca" { d aux.%Push({ 
+      "type": (##class(User.Util).sXlate("TF_ZPZ",$zcvt(##class(User.MARC).getTagX(.handle,"970b"),"L"),"N",ipref,,lang)),
+      "ipac": (url_"detail-"_$tr(idx,"-*",".-")_"-/"),
+        ;##class(User.CavUnEpca).fmtHANDLELink(.handle,"1")
+      "lock": ($case(##class(User.MARC).getTagX(.handle,"C52b"),"O":"open","A":"none","":"none",:"closed")),
+      "others": ($d(^$$$MarcIndexG(class,id,"exp"," rostatni"))),
+      "handle.net": ($replace(##class(User.MARC).getTagX(.handle,"C60a"),"http://","https://")),
+      "SCOPUS": (##class(User.CavUnEpca).getSCOPUSlink(.handle,"url")),
+      "WOS": (##class(User.CavUnEpca).getWOSlink(.handle,"url")),
+      "PUBMED": (##class(User.CavUnEpca).getPUBMEDlink(.handle,"url")),
+      "DOI": (doi),
+      "RIV": (##class(User.CavUnEpca).getRIVlink(.handle,"url"))      
+     })
+    } 
+    elseif class="CavUnAuth" {
+      s grant=##class(User.MARC).getTagX(.handle,"230h")
+      d aux.%Push({
+        "t001": (handle("t001")),
+        "agentura": (##class(User.MARC).getTagX(.handle,"C28a")),
+        "projekt": (grant),
+        "cordis": (##class(User.MARC).getTagX(.handle,"230r")),
+        "finished": (##class(User.MARC).getTagX(.handle,"C29b")<aktualniRok),
+        "katalog": (url_"result/?qt=analytika&src=cav_un_epca-3&field=AUTHOR&limv_PRA="_cm.ustav_"&limv_GRANT="_grant)
+      })
+    }
+  }
+  
+  s cm.records=res
+  s cm.auxiliary=aux
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="sql">
+<Description><![CDATA[
+<pre> Seskladani SQL pro grafy
+
+s cm={"conf": "KONFIG_STRANA_US02","class": "CavUnEpca","osaX": "rokVydani","osaY": "druhDokumentu","filter":"list"}
+s dyn={"ustav":"bfu-r","rokVydani":["2023","2022","2021","2020"],"druhDokumentu":["J","JI","B","M","C","K"],"export":"","navaznosti":"'infh","conf":"KONFIG_STRANA_UT02","mutace":"cs"}
+
+s cm={"conf": "KONFIG_STRANA_US03","class": "CavUnEpca","zobrazeni":"GRAF","typ":"prehled_oddeleni","osaX":"druhDokumentu","cisX":"IPAC2_FLDDATA_SZ","osaY":"oddel","cisY":"ANALYTIKA_ODDEL_@AKTUALNI_USTAV","filter":"multi"}
+s dyn={"ustav":"arub-q","rokVydani":["2025","2024"],"druhDokumentu":["J","JI","B","M","C","K"],"export":"","navaznosti":"'infh","oddel":[],"conf":"KONFIG_STRANA_US03","mutace":"cs","site":"1","oddel":"64755"}
+
+s cm={"conf": "KONFIG_STRANA_US04","class": "CavUnEpca","zobrazeni":"GRAF","typ":"PREHLED_PERIODIK","osaX":"rokVydani","osaY":"issn","proj":"util_sql.field(Arlid,'463/200a')||' '||'(ISSN '||issnorig||')'","order":"asc"}
+s dyn={"ustav":"bc-a","rokVydani":["2024","2023","2022","2021","2020","2019"],"oddeleni":"","druhDokumentu":["J","JI","B","M","C","K","O"],"indikatory":[],"issn":[],"conf":"KONFIG_STRANA_US04","mutace":"cs","site":"1"}
+
+s cm={"conf": "KONFIG_STRANA_US05","class": "CavUnEpca","zobrazeni":"GRAF","typ":"INDIKATORY_PERIODIK","osaX":"rokVydani","osaY":"percentily","cisY":""}
+s cm={"conf": "KONFIG_STRANA_US05","class": "CavUnEpca","zobrazeni":"GRAF","typ":"INDIKATORY_PERIODIK","osaX":"rokVydani","osaY":"percentily","cisY":"ANALYTIKA_KONFIG_CIS_DECKVART","proj":"$piece(util_sql.index(Class,Arlid,'zmaqais'),';',2)","filter":"cisY"}
+s dyn={"ustav":"bc-a","rokVydani":["2022","2021","2020","2019"],"oddeleni":"","oborWos":"","KOLABORACE":"","percentily":"QAIS","conf":"KONFIG_STRANA_US05","mutace":"cs","site":"1"}
+
+s cm={"conf": "KONFIG_STRANA_US06","class": "CavUnEpca","zobrazeni":"GRAF","typ":"INDIKATORY_CITACNI","osaX":"rokVydani","osaY":"%zmaqtc"}
+s dyn={"ustav":"bc-a","rokVydani":["2022","2021","2020","2019"],"oddeleni":"64774","oborWos":[],"KOLABORACE":"","conf":"KONFIG_STRANA_US06","mutace":"cs","site":"1"}
+
+s cm={"conf": "KONFIG_STRANA_US07","class": "CavUnEpca","zobrazeni":"GRAF","typ":"INDIKATORY_USTAV","tisk":"STRANA","osaX":"rokVydani","osaY":"percentily"}
+s dyn={"ustav":"bc-a","rokVydani":["2022","2021","2020","2019"],"oddeleni":[],"KOLABORACE":"","OBOROVE_CLENENI":[],"ZOBRAZENI":["TABULKA"],"conf":"KONFIG_STRANA_US07","mutace":"cs","site":"1","percentily":["QAIS"]}
+
+s cm={"conf": "KONFIG_STRANA_US08","class": "CavUnEpca","zobrazeni":"GRAF","typ":"PRINOS_AUTORU","tisk":"STRANA","tisk":"PDF","osaX":"druhDokumentu","cisX":"IPAC2_FLDDATA_SZ","osaY":"zauoa","proj":"util_sql.indext('CavUnAuth',$piece(zauoaorig,';',3),'aup2')","order":"asc"}
+s cm={"conf": "KONFIG_STRANA_US08","class": "CavUnEpca","zobrazeni":"GRAF","typ":"PRINOS_AUTORU","tisk":"STRANA","tisk":"PDF","osaX":"druhDokumentu","cisX":"IPAC2_FLDDATA_SZ","osaY":"zauoa","proj":"T001a, util_sql.indext('CavUnAuth',T001a,'aup2')","filter":"all","order":"asc"}
+s dyn={"ustav":"arub-q","rokVydani":["2024","2023","2022","2021","2020","2019"],"oddeleni":[],"druhDokumentu":["J","JI","B","M","C","K","O"],"EXPORT":[],"conf":"KONFIG_STRANA_US08","mutace":"cs","site":"1"}
+s dyn={"ustav":"mbu-m","rokVydani":["2025","2024","2023","2022","2021","2020"],"oddeleni":"","druhDokumentu":["J","JI","B","M","C","K","E","G","H","P","P1","R","T","U","V","VS","VU","A","L","LA","LB","L1","L2","L3","L3A","L3B","L3C","L4","L5","L6","Z","ZA","ZB","ZC","ZD","D","N","I","O"],"export":"","autor":[],"zauoa":[],"conf":"KONFIG_STRANA_US08","mutace":"cs","site":1}
+s dyn={"ustav":"fzu-d","rokVydani":["2025","2024","2023","2022","2021","2020"],"oddeleni":"","druhDokumentu":["J","JI","B","M","C","K","E","G","H","P","P1","R","T","U","V","VS","VU","A","L","LA","LB","L1","L2","L3","L3A","L3B","L3C","L4","L5","L6","Z","ZA","ZB","ZC","ZD","D","N","I","O"],"export":"","autor":[],"zauoa":[],"conf":"KONFIG_STRANA_US08","mutace":"cs","site":1}
+
+s cm={"conf": "KONFIG_STRANA_OS03","class": "CavUnEpca","zobrazeni":"GRAF","typ":"PRINOS_AUTORU","tisk":"STRANA","tisk":"PDF","osaX":"druhDokumentu","cisX":"IPAC2_FLDDATA_SZ","osaY":"zauoa","proj":"T001a, util_sql.indext('CavUnAuth',T001a,'aup2')","filter":"all","order":"asc"}
+s dyn={"ustav":"arub-q","rokVydani":["2024","2023","2022","2021","2020","2019"],"oddeleni":"64753","druhDokumentu":["J","JI","B","M","C","K","O"],"EXPORT":[],"conf":"KONFIG_STRANA_OS03","mutace":"cs","site":"1"}
+
+w ##class(util.rest.cust.v1.cav).sql(cm,dyn)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>cm:%DynamicObject,dyn:%DynamicObject</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s class=cm.class
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s stable="ANALYTIKA_"_cm.conf
+  s proj=" FROM %NOTOPOPT (SELECT T001, Class, Arlid"
+  s ret=" FROM base.arlsql WHERE Class = '"_class_"' AND Index = "
+  s lim=""
+  s limX=##class(User.Util).sXlate(stable,cm.osaX,,ipref,"100d")
+  s limY=##class(User.Util).sXlate(stable,cm.osaY,,ipref,"100d")
+  ;s isJ=0
+  ;s:(cm.osaY="druhDokumentu")&&(dyn.druhDokumentu."0"="J") isJ=1 ; TODO
+  s bX=(cm.conf="KONFIG_STRANA_US08") || (cm.conf="KONFIG_STRANA_OS03")
+  s filter=cm.filter
+  s:bX proj=proj_", util_sql.indexall(Class,Arlid,'zauoa') as zauoaorig"
+  
+  s itr=dyn.%GetIterator(), first=1  
+  while itr.%GetNext(.key,.val) {
+    ;w !,key_" : "_val_" | "_dyn.%GetTypeOf(key)_" | "_$isobject(val)
+    continue:val=""
+    
+    s attr=##class(User.Util).sXlate(stable,key,,ipref,"100d"), fld=attr
+    continue:attr=""
+    continue:$e(attr)="%"
+    s:'attr attr=$p(##class(User.Util).sXlate("IPAC2_FLD",attr,,ipref,"c",1),",")
+    continue:attr=""
+    s index=##class(User.UtilQS).getIndexName4Attrib(class,attr,2)
+    continue:index=""
+    
+    if first {
+      s ret=ret_"'"_index_"' AND Value = ' "_$zcvt(val,"L")_"') WHERE ", first=0
+    } 
+    elseif $isobject(val) {
+      continue:'val.%Size()
+      s itr2=val.%GetIterator(), values=""
+      while itr2.%GetNext(.key2,.val2) {
+        s values=values_"~ "_$zcvt(val2,"L")
+        s:(fld'=limX)&&(fld'=limY) lim=lim_"&limv_"_fld_"="_val2
+      }
+      s ret=ret_key_" = '1' AND "
+      ;s:isJ values=$replace(values," j~","")
+      s proj=proj_", util_sql.isinindex(Class,Arlid,'"_index_"','"_$e(values,2,*)_"','=') AS "_key
+    } else {            
+      if $e(val)'="'" {
+        s ret=ret_key_" = 1 AND "
+        s proj=proj_", util_sql.index(Class,Arlid,'"_index_"',' "_$zcvt(val,"L")_"') AS "_key
+        s:(fld'=limX)&&(fld'=limY) lim=lim_"&limv_"_fld_"="_val
+      } else {
+        s ret=ret_key_" = 0 AND "
+        s proj=proj_", util_sql.index(Class,Arlid,'"_index_"',' "_$zcvt($e(val,2,*),"L")_"') AS "_key
+      }      
+    }
+  }
+  s proj=proj_", util_sql.index(Class,Arlid,'exp',' a') AS base"
+  if filter'="multi" {
+    s ret=proj_ret_"base = 1) GROUP BY "
+  } else {
+    s ret=proj_ret_"base = 1 AND "_cm.osaY_" = 1"
+  }
+  
+  s valuesX=dyn.%Get(cm.osaX)
+  ;s:'$isobject(years)||'years.%Size() years=[2024,2023,2022,2021,2020]
+  
+  s attr=##class(User.Util).sXlate(stable,cm.osaX,,ipref,"100d")
+  s:'attr attr=$p(##class(User.Util).sXlate("IPAC2_FLD",attr,,ipref,"c",1),",")
+  s xindex=##class(User.UtilQS).getIndexName4Attrib(class,attr,2)
+  s xproj=xindex   ;$e(xindex,1,2)
+  
+  s attr=##class(User.Util).sXlate(stable,cm.osaY,,ipref,"100d")
+  s:$zcvt(attr,"L")'=attr attr=$tr(attr,"%")
+  if $e(cm.osaY)="%" {
+    s yindex=$e(cm.osaY,2,*)
+  } 
+  elseif $e(attr)="%" {
+    s yindex=$e(attr,2,*)
+  } else {
+    s:'attr attr=$p(##class(User.Util).sXlate("IPAC2_FLD",attr,,ipref,"c",1),",")
+    s yindex=##class(User.UtilQS).getIndexName4Attrib(class,attr,2)
+  }
+  s yproj=$tr(cm.osaY,"%")    ;yindex_$tr(cm.osaY,"%")    ;$e(yindex,1,2)_cm.osaY  
+  ;s start="SELECT "_$s(cm.proj'="":"Arlid, ",1:"")_yproj
+  s:cm.proj'="" yproj=yproj_"orig"
+  s start="SELECT "_$s(cm.proj'="":cm.proj_" as "_cm.osaY_", ",1:"")_yproj
+  if $e(attr)="%" {
+    s piece=$case(dyn.%Get(cm.osaY).%Get(0),"QTC":3,"QAIS":6,"QSJR":10,:1)
+    s part=" FROM (SELECT Arlid, $piece(util_sql.index(Class,Arlid,'"_yindex_"'),';',"_piece_") as "_yproj
+  }
+  elseif $e(filter)=";" {
+    s part=" FROM (SELECT Arlid, $PIECE(util_sql.index(Class,Arlid,'"_yindex_"'),';',"_$e(filter,2,*)_") as "_yproj
+  }
+  elseif filter="list" {
+    s part=" FROM (SELECT Arlid, util_sql.indexlist(Class,Arlid,'"_yindex_"','"_values_"~') as "_yproj
+  }
+  elseif filter="all" {
+    s part=" FROM %PARALLEL (SELECT Arlid, "_$s(bX:"T001a, ",1:"")_"util_sql.indexall(Class,Arlid,'"_yindex_"') as "_yproj
+  }
+  elseif filter="multi" {
+    s part="SELECT Arlid, '"_dyn.%Get(cm.osaY)_"' as "_yproj
+  } else {
+    s part=" FROM %PARALLEL (SELECT Arlid, Class, T001, util_sql.index(Class,Arlid,'"_yindex_"') as "_yproj
+  }
+  
+  s itr=valuesX.%GetIterator(), part2=""
+  while itr.%GetNext(.key,.val) {
+    ;s start=start_", sum("_xindex_val_$s(bX:" %AFTERHAVING",1:"")_") AS "_xindex_val
+    s start=start_", sum("_xindex_val_") AS "_xindex_val
+    s part=part_", util_sql.index(Class,Arlid,'"_xindex_"',' "_$zcvt(val,"L")_"') as "_xproj_val
+    s part2=part2_", "_xproj_val
+  }
+  
+  s dyn.xlen=$l(xindex)+1
+  s dyn.lim=lim
+  
+  if filter="multi" {
+    s cm.start=start
+    q part_ret
+  }
+  if bX {
+    s what="T001a"
+    s:dyn.oddeleni'="" what="{fn CONCAT(';"_dyn.oddeleni_";',T001a)}"
+    s ret=$replace(ret,"GROUP BY","WHERE zauoaorig [ "_what_") GROUP BY")
+    ;s ret=$replace(ret,"GROUP BY","ON zauoaorig [ "_what_") GROUP BY")
+    ;s ret=ret_"T001a HAVING $find(zauoaorig,"_what_") > 0 ORDER BY zauoa"
+    s ret=ret_"T001a ORDER BY zauoa"
+    s what=dyn.ustav
+    s:dyn.oddeleni'="" what=what_";"_dyn.oddeleni_";"
+    ; 12.03.25 ln; optimalizace CROSS JOIN na INNER JOIN
+    s middle=" FROM (SELECT $PIECE(Value,';',3) as T001a FROM base.arlsql WHERE Class = 'CavUnAuth' AND Index = 'zaall' AND Value %STARTSWITH ' "_what_"'"
+    ; 07.04.25 ln; optimalizace pomoci indexu zaura
+    if $isObject(dyn.rokVydani) && dyn.rokVydani.%Size() { 
+      s middle=middle_" AND ("
+      s itr=dyn.rokVydani.%GetIterator()
+      while itr.%GetNext(.key,.val) {
+        s middle=middle_"util_sql.isIndexValue('CavUnEpca','zaura',' "_dyn.ustav_";"_val_";'||$PIECE(Value,';',3)) > 0 OR "
+      }
+      s middle=$e(middle,1,*-4)_")"
+    }
+    s middle=middle_"), (SELECT Arlid, Class, zauoaorig"
+    ;s middle=middle_") INNER JOIN (SELECT Arlid, Class, zauoaorig"
+    q start_part_middle_ret
+  }  
+  s ret=start_part_ret_yproj  
+  s:cm.proj'="" yproj=cm.osaY
+  s:cm.order'="" ret=ret_" ORDER BY "_yproj_" "_cm.order
+    
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="variAutor">
+<Description><![CDATA[
+<pre> ziskani dat autora
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>cm:%DynamicObject,autor:%String</FormalSpec>
+<Implementation><![CDATA[
+  q:autor=""
+  q:$isobject(autor)
+  q:'##class(User.MARC).readX(.ahandle,"CavUnAuth",$p(autor,"*",2)) ; TODO jen t001
+
+  s cm.autor=autor
+  s line=##class(User.MARC).getTagX(.ahandle,"200")
+  s jmeno=##class(User.MARC).getSubTagStr(line,"a")
+  s prijmeni=##class(User.MARC).getSubTagStr(line,"b")
+  s cm.authorName=jmeno_", "_prijmeni
+  
+  s variall=##class(User.MARC).getTagX(.ahandle,"400",-1)
+  if variall'="" {  
+    s authorVariants=[]
+    for i=1:1:$l(variall,$c(10)) {
+      s variline=$p(variall,$c(10),i)
+      s varijm=##class(User.MARC).getSubTagStr(variline,"a")
+      s varipr=##class(User.MARC).getSubTagStr(variline,"b")
+      d authorVariants.%Push(varijm_", "_varipr)
+    }
+    s cm.authorVariants=authorVariants
+  }
+  s cm.ida=..ida(autor)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2024-01-11 17:56:40">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-04-16 10:55:25">
 <Class name="User.CavUnAuth">
 <Description><![CDATA[
 <pre>
+16.04.25 ln; v zaact jen aktivni autori
+04.04.25 ln; odkaz na nova analytika
+26.02.25 ln; zatpr dodelavky pro analytika projeky
+21.02.25 ln; index zmain - link na aktualni verzi jmena
+19.12.24 jk; zalozeno expFairWizardAP a expFairWizardAA
+12.07.24 ln; operace ipref
+18.06.24 tt; indexy pri analytika - oddeleni  a indexace autoru
+12.04.24 tt; pridana indexace typu autoru - bude jeste rozsireno casove - podle praci
+09.04.24 tt; upraveno indexace kvuli analytikam - pridan index zatpr
+15.03.24 tt; upravena indexace, pridan virtualni poskytovatel cs123064 
+             upaveny symboliky gegsymbX
 11.01.24 tt; TfAutor: zalozeno
-11.01.24 tt; na upozorneni Karla, nahrazeno data-target=""_blank"" za target=""_blank""
+11.01.24 tt; na upozorneni Karla, nahrazeno target=""_blank"" za target=""_blank""
 02.01.24 tt; pridana databaze pro kontrolu navazanosti CavUnOhlCat
 18.01.23 tt; pridana indexaci i bez * - kvuli problemum s vyhledavanim
 09.11.22 tt; provedana drobna zmena indexovani iown
@@ -100,7 +111,7 @@
 <IncludeCode>Common</IncludeCode>
 <ProcedureBlock>1</ProcedureBlock>
 <Super>User.DataTable</Super>
-<TimeChanged>66850,64581.687639812</TimeChanged>
+<TimeChanged>67311,39308.116864798</TimeChanged>
 <TimeCreated>59575,83515.931262</TimeCreated>
 
 <Parameter name="INDEXPARAMS">
@@ -134,6 +145,7 @@ Navrat:
 <FormalSpec><![CDATA[&handle:%Binary]]></FormalSpec>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
   s ret=""
   s sU99a=$$$getTagX(.handle,"U99a")
   s sC99d=$$$getTagX(.handle,"C99d")
@@ -221,13 +233,13 @@ Navrat:
       s sSTi=$$$getSubTagStr(lsLine,"i")  ; oddeleni
       if ((sSTi'="")&&(sSTd'=""))
       { ; vyplnene data mame 
-        if ##class(User.MARC).readX(.handleXXO,"CavUnTablesd","EPCA_ODDEL_"_sSTd)
+        if ##class(User.MARC).readX(.handleXXO,ipref_"UnTablesd","EPCA_ODDEL_"_sSTd)
         { ; v ciselniku jsou data s oddelovaci, takze pro jistotu musime udelat nahrazeni
           ; 14.04.20 tt; zakomentovany validace oddeleni - zpusobovalo problemy - odblokuje v pristim tydnu
-          /*s sbTestC06i=##class(User.Util).sXlate("EPCA_ODDEL_"_sSTd,$tr(sSTi,", ",";_"),"N","Cav","b")
+          /*s sbTestC06i=##class(User.Util).sXlate("EPCA_ODDEL_"_sSTd,$tr(sSTi,", ",";_"),"N",ipref,"b")
           if (sbTestC06i="")
           { ; pokud nemame preklat v existujicim ciselniku, vypiseme chybu
-            s ret=ret_"|ERR999#allowSaveEx - V záznamu CavUnAuth*"_$$$HandleT001(handle)_" neví vyplněno oddělení C06$i podle pracoviště C06$d! Číselník:"_"EPCA_ODDEL_"_sSTd_"."            
+            s ret=ret_"|ERR999#allowSaveEx - V záznamu "_ipref_"UnAuth*"_$$$HandleT001(handle)_" neví vyplněno oddělení C06$i podle pracoviště C06$d! Číselník:"_"EPCA_ODDEL_"_sSTd_"."
           }*/
         }
         s lsLine=$$$setSubTagStr(lsLine,$c(31)_"i"_$tr(sSTi,";_",", "))
@@ -240,7 +252,7 @@ Navrat:
   q:(ret'="") ret  
   
   ; 09.03.20 tt; pridano o
-  s bUserIsAdmin=##class(User.CavUnEpca).userIsAdmin() 
+  s bUserIsAdmin=..userIsAdmin()
   s:'bUserIsAdmin ret=..allowSaveExRZ(.handle)
   
   ; 24.03.20 tt; upravena logika na testovani zmeny projektu. Pokud ma projekt zaznamy v RIVU,
@@ -301,6 +313,9 @@ Navrat:
   s sC28a=$$$getTagX(.handle,"C28a")
 
   s sT001=$$$HandleT001(handle),class=$$$HandleClass(handle)
+  s ipref=$$$Class2Ipref(class)      ; Ipref (instalacni prefix)
+  s ictx=$zcvt(ipref,"L")
+  
   ; precitame verziu zaznamu aktualne ulozenu v DB
   if (##class(MARC).readX(.handlee,class,sT001)&&(sC28a'=""))
   {  ; kontrola na zmenu dotahovanych udaju   
@@ -321,7 +336,7 @@ Navrat:
     s id=""
     for  
     { ; cyklus pres vsechny navazane zaznamy - budeme opravovat data projektu
-      s id=$o(^$$$MarcIndexG("CavUnEpca","auk"," cav_un_auth*"_sT001,id))
+      s id=$o(^$$$MarcIndexG(ipref_"UnEpca","auk"," "_ictx_"_un_auth*"_sT001,id))
       q:(id="")   
     
       if ##class(User.MARC).getDATAX(.handleCAT,id)
@@ -341,7 +356,7 @@ Navrat:
           s sTag=$e(lsLine,1,3)
           if (sTag="C12")
           { ; pokud narazim na tag, ktery mam kontrolovat, zkontroluji a prepisu bibliografickou citaci, pokud se zmenila
-            s sL3=$$$getSubTagStr(lsLine,"3"),sT001rec="cav_un_auth*"_sT001
+            s sL3=$$$getSubTagStr(lsLine,"3"),sT001rec=ictx_"_un_auth*"_sT001
             if (sL3=sT001rec)
             { ; pokud mame v x link na tento zaznam z CavUnOhlCat
             
@@ -716,6 +731,10 @@ TU1 - skrateny ZF do EPCA formularov
 <Description><![CDATA[
 <pre>Indexy
 
+16.04.25 ln; v zaact jen aktivni autori
+26.02.25 ln; zatpr dodelavky pro analytika projeky
+21.02.25 ln; index zmain - link na aktualni verzi jmena
+13.03.24 tt; upravena indexace, pridan virtualni poskytovatel cs123064 
 05.08.16 tt; pridan index ida pro indexaci ID autora
 10.03.16 tt; doplnena podminka pro navazanot na RIV na vyplneni C28a, aby se nepletly projekty EU
 05.02.16 tt; pridan index jen na prijmeni a ustav + jen prijmeni
@@ -749,6 +768,8 @@ TU1 - skrateny ZF do EPCA formularov
  s lsClass=##class(MARC).recordClassX(.handle),lnId=##class(MARC).recordIdX(.handle)
  s sT001=$$$HandleT001(handle)
  s sLName=##class(User.Util).objectName2lname(lsClass)
+ s ictx=$p(sLName,"_"), ipref=$zcvt(ictx,"W")
+ 
 
  ; 17.02.09 rs; zrusenie 400-viek z indexov aupra a prau - problem nastaval pri 
  ;              kontrole ci autorita uz existuje v CavUnEpca.createAuthLinks7xx()
@@ -762,8 +783,37 @@ TU1 - skrateny ZF do EPCA formularov
  ; 
  s tc06=##class(MARC).getTagX(.handle,"c06")
  s sPrac=##class(MARC).getSubTagStr(tc06,"d")
+ s indexPracOddpi = sPrac ; zkopirujeme si oddeleni
  if sPrac="" s sPrac=##class(MARC).getSubTagStr(tc06,"y") ; ak nie je pracovisko, berie sa krajina
  
+ /// 18.06.24 tt; indexy pri analytika - oddeleni  a indexace autoru
+ s oddpi=##class(MARC).getSubTagStr(tc06,"i")
+ // ziskame si kod oddeleni podle ustavu a oddeleni
+ s indexOddpi=##class(User.Util).sXlate("EPCA_ODDEL_GENERATED_INDEX_ZAODD",$zcvt($tr(indexPracOddpi_oddpi," ",""),"L"),"N",ipref)
+ 
+ if (sAu'="") && (indexPracOddpi'="") { ; indexovani
+   s maxDate=$e(##class(MARC).getTagX(.handle,"100a"),1,8)  ; datum zalozeni
+   s maxT001=""
+   s variall=##class(MARC).getTagX(.handle,"400",-1)
+   if variall'="" { ; TODO ? druhy indikator 1
+     for i=1:1:$l(variall,$c(10)) {
+       s variline=$p(variall,$c(10),i)
+       s varilink=##class(User.MARC).getSubTagStr(variline,"3")
+       s tmpT001=$p(varilink,"*",2)
+       s tmpDate=$e(##class(User.MARC).getIdxValLX(varilink,"dfl"),2,*)
+       s:tmpDate>maxDate maxDate=tmpDate,maxT001=tmpT001
+     }
+   }
+   ; 21.02.25 ln; index zmain - link na aktualni verzi jmena
+   d:maxT001'="" $$$addIDX("zmain","cav_un_auth*"_maxT001,"b")
+   
+   d $$$addIDX("zaall",indexPracOddpi_";"_indexOddpi_";"_sT001,"b")
+   ; 16.04.25 ln; v zaact jen aktivni autori
+   if (..isActivAuthor(ipref,sT001))  ; ||($$$getTagX(.handle,"969f")="actv")
+   { ; indexujeme aktivni autory - do budoucna by se nemelo spolehat na actv - tak to chtela pani Dolezelova
+     d $$$addIDX("zaact",indexPracOddpi_";"_indexOddpi_";"_sT001,"b") 
+   }
+ }
  
  s c=$l(sAu,$c(10))
  f i=1:1:c  
@@ -830,16 +880,26 @@ TU1 - skrateny ZF do EPCA formularov
  ; 30.10.06 jj; index prriv (projekty, které mají export do riv)
  ; 26.04.07 rs; pridane zarezanie dlzky terminu v indexe kvoli pouzitiu v $o()
  s sProjNum=##class(SPIndex).ixAddTermFixLength(##class(MARC).getTagX(.handle,"230h"))
+ s bProjIndexAnal=0, bProjIndexAnalVysledek=0
  
  if sProjNum'=""
  {
    d $$$addIDX("proj",sProjNum,"b")
+   d $$$addIDX("zatpr","projall","b")  ; vsechny projeky
+   
   ; 29.10.15 tt; u projektu eu do indexu sloucen prefix a cislo
   s sTC28e=$$$getTagX(.handle,"c28e")
   if (sTC28e'="") 
   { 
     s sProjNum=$$$getTagX(.handle,"230b")_sProjNum
     d $$$addIDX("proj",sProjNum,"b")
+    
+    /// 13.03.24 tt; upravena indexace, pridan virtualni poskytovatel
+    /// cs123064  2. Přejmenovat poskytovatele EC – European Commission na EU - European Union
+    /// 3. Pod poskytovatele EU zahrnout i poskytovatele WT – Wellcome Trust
+    /// 4. Pod poskytovatele EU zahrnout i poskytovatele FCT – Foundation for Science and Technology
+    d $$$addIDX("prpos",sTC28e,"b")
+    d $$$addIDX("prpos","posk eu","b")
   }
    ; 10.03.16 tt; doplnena podminka pro navazanot na RIV na vyplneni C28a, aby se nepletly projekty EU
    s sTC28a=$$$getTagX(.handle,"c28a")
@@ -847,7 +907,7 @@ TU1 - skrateny ZF do EPCA formularov
    ; 26.04.07 rs; oprava if/else v indexe "prriv"
    if (sTC28a'="")
    {
-     if $d(^ooDataTableI("CavUnEpca","rivkod"," "_$zcvt(sProjNum,"L")))
+     if $d(^$$$MarcIndexG(ipref_"UnEpca","rivkod"," "_$zcvt(sProjNum,"L")))
      { d $$$addIDX("prriv","r","b")}
      else  
      { d $$$addIDX("prriv","nr","b")}
@@ -859,16 +919,52 @@ TU1 - skrateny ZF do EPCA formularov
      
    ; s sRiv=##class(MARC).getIdxVal(sClassCat, "exp", "0")
    ; if (+sRiv>0) d $$$addIDX("prriv",sProjNum,"b")
+   s sTC29a=$$$getTagX(.handle,"c29a")   ; zacatek projektu
+   s sTC29b=$$$getTagX(.handle,"c29b")   ; konec projektu
+   s AktualniRok=$e($zd($h,3),1,4)       ; mame aktualni rok
    
-   if $d(^ooDataTableI("CavUnEpca","auk"," cav_un_auth*"_$zcvt(sT001,"L")))
+   if $d(^$$$MarcIndexG(ipref_"UnEpca","auk"," "_ictx_"_un_auth*"_$zcvt(sT001,"L")))
    { ; 07.03.11 tt; pridany index pro projekty s vysledkem
      d $$$addIDX("projv","v","b")
+     d $$$addIDX("zatpr","projvy","b")
+     s bProjIndexAnalVysledek=1
    }
    else
    { ; nema vysledek
      d $$$addIDX("projv","n","b")
+     d:(sTC29b<AktualniRok) $$$addIDX("zatpr","projbv","b")
    }
    
+   ; 26.02.25 ln; zatpr dodelavky pro analytika projeky
+   d:sTC29b>=AktualniRok $$$addIDX("zatpr","projakt","b")   ; projekt pred vyprsenim
+   
+   if ($$$getTagX(.handle,"c28a")'="")
+   {
+     s bProjIndexAnal=1
+     if ((sTC29b>=AktualniRok)&&((bProjIndexAnalVysledek=1)))   
+     {  ; Řešené projekty CEP  C28a vyplněno       C29b>=kalendářní rok        rok ukončení projektu >=2024 
+       d $$$addIDX("zatpr","projres","b") 
+     }
+     elseif ((sTC29b<AktualniRok)&&((bProjIndexAnalVysledek=0)))  ; projekt bez vysledku
+     {  ; Projekty CEP bez výsledku C28a vyplněno       C29b<kalendářní rok-1   není navázán žádný záznam   rok ukončení projektu <=2023
+        d $$$addIDX("zatpr","projresbv","b")
+     }
+     
+     if (sTC29a>="2013")
+     { ; Projekty CEP od r. 2013  C28a vyplněno   C29a>=2013          rok zahájení projektu>=2013
+       d $$$addIDX("zatpr","proj2013","b")  ; indexace hodnot projektu od 2013
+       ; Ukončené projekty CEP od r. 2013 C28a vyplněno       C29b<kalendářní rok-1       rok ukončení projektu<2023
+       d:(sTC29b<AktualniRok) $$$addIDX("zatpr","projkon","b")  ; indexace hodnot projektu od 2013       
+     }
+   }   
+ }
+ 
+ ; 12.04.24 tt; pridana indexace typu autoru - bude jeste rozsireno casove - podle praci
+ s s969f=##class(MARC).getTagX(.handle,"969f")
+ d $$$addIDX("zakau","all","b")
+ if s969f="actv" 
+ { ; bude jeste omezeno casove - musi publikovat do 5 let
+   d $$$addIDX("zakau",s969f,"b")
  }
  
  
@@ -961,13 +1057,28 @@ TU1 - skrateny ZF do EPCA formularov
    if (sTc28'="")
    { ; pokud mame vyplnene data, muzeme provadet akce 
      s sTc28a=$$$getSubTagStr(sTc28,"a")
-     s sTc28c=$$$getSubTagStr(sTc28,"c")      
+     s sTc28b=$$$getSubTagStr(sTc28,"b")
+     s sTc28c=$$$getSubTagStr(sTc28,"c")  
+     s sTc28e=$$$getSubTagStr(sTc28,"e")     
      if (sTc28a="")
-     {
-       ;v poli C28 v podpoli $$c hodnotu "CZ" a zároveň C28 v podpoli $$a nemají vyplněné nic (toto jsou tuzemské projekty, které nejsou CEP)
-       d:(sTc28c="cz") $$$addIDX("proth","cz","b")
-       ; v poli C28 v podpoli $$c není hodnota "CZ" a zároveň C28 podpole $$a není vyplněné (toto jsou zahraniční projekty, které nejsou CEP)
-       d:((sTc28c'="cz")&&(sTc28c'="")) $$$addIDX("proth","oth","b")
+     {      
+       if (sTc28c="cz") 
+       { ;v poli C28 v podpoli $$c hodnotu "CZ" a zároveň C28 v podpoli $$a nemají vyplněné nic (toto jsou tuzemské projekty, které nejsou CEP)
+         d $$$addIDX("proth","cz","b")
+         ; 26.02.25 ln; zatpr dodelavky pro analytika projeky
+         d:sTc28b'="av čr" $$$addIDX("zatpr","projcz","b") ; ostatni tuzemske projekty   
+       }       
+       if ((sTc28c'="cz")&&(sTc28c'="")) 
+       { ; v poli C28 v podpoli $$c není hodnota "CZ" a zároveň C28 podpole $$a není vyplněné (toto jsou zahraniční projekty, které nejsou CEP)
+         d $$$addIDX("proth","oth","b")
+         ; 26.02.25 ln; zatpr dodelavky pro analytika projeky
+         d $$$addIDX("zatpr","projoth","b") ; zahranicni projekty
+       }
+     }
+     if (bProjIndexAnal=1) 
+     { ; souvisi s predchazejicimi, ale nove pravidla o pani Dolezelove 
+       d:(sTc28e'="") $$$addIDX("zatpr","projzemeoth","b") ; indexace zahranicni projekty
+       d:((sTc28b'="")&&($$$getTagX(.handle,"230b")="")) $$$addIDX("zatpr","projzemecz","b")  ; indexace ostatni tuzemske projekty
      }
    }
  } while (c'=0)
@@ -991,11 +1102,11 @@ TU1 - skrateny ZF do EPCA formularov
    s sIdCat=""
    f  
    { ; cyklus pres vsechny navazane zaznamy
-     s sIdCat=##class(User.MARC).getIDByIndex("CavUnEpca","auk"," "_sLName_"*"_sT001,sIdCat)
+     s sIdCat=##class(User.MARC).getIDByIndex(ipref_"UnEpca","auk"," "_sLName_"*"_sT001,sIdCat)
      q:((sIdCat=0)||(sIdCat=""))
    
      /*s sCatT001=##class(User.MARC).getT001(sIdCat)
-     if ##class(User.MARC).readLX(.handleC,"cav_un_epca*"_sCatT001) 
+     if ##class(User.MARC).readLX(.handleC,ictx_"_un_epca*"_sCatT001) 
      { 
         s sCC26d=$$$getTagX(.handleC,"C26d")
         d:(sCC26d'="") $$$addIDX("zcye",sCC26d,"b")
@@ -1003,7 +1114,7 @@ TU1 - skrateny ZF do EPCA formularov
      s sPomYE1=""
      for  
      { ; nacteni informaci z indexu ye
-       set sPomYE1=$o(^$$$MarcIndexG("CavUnEpca",sIdCat,"ye",sPomYE1)) 
+       set sPomYE1=$o(^$$$MarcIndexG(ipref_"UnEpca",sIdCat,"ye",sPomYE1)) 
        q:sPomYE1="" 
        d:(sPomYE1'="") $$$addIDX("zcye",sPomYE1,"b") 
      }   
@@ -1031,6 +1142,45 @@ TU1 - skrateny ZF do EPCA formularov
 ]]></Implementation>
 </Method>
 
+<Method name="isActivAuthor">
+<Description>
+Metoda, ktera vraci 1 - aktivni autor/0 - neaktivni autor
+parametry: kod autora
+           pocet roku zpet - default 5 let
+
+18.06.24 tt; založena metoda</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref,pAutT001,pRoky=5</FormalSpec>
+<Implementation><![CDATA[
+  s ret=0, ictx=$zcvt(ipref,"L")
+  s sActYear = $e(##class(User.Util).date(),1,4)
+
+  s sIdCat=""
+  f  
+  { ; cyklus pres vsechny navazane zaznamy
+    s sIdCat=##class(User.MARC).getIDByIndex(ipref_"UnEpca","auk"," "_ictx_"_un_auth*"_pAutT001,sIdCat)
+    q:((sIdCat=0)||(sIdCat=""))
+   
+    s sCatT001=##class(User.MARC).getT001(sIdCat)
+    if ##class(User.MARC).readLX(.handleC,ictx_"_un_epca*"_sCatT001) 
+    { 
+       s sCC26d=$$$getTagX(.handleC,"C26d")
+       s:((sCC26d+pRoky) >= sActYear) ret=1
+    }  
+    
+    /*s sPomYE1=""
+    for  
+    { ; nacteni informaci z indexu ye
+      set sPomYE1=$o(^$$$MarcIndexG(ipref_"UnEpca",sIdCat,"ye",sPomYE1)) 
+      q:sPomYE1="" 
+      d:(sPomYE1'="") $$$addIDX("zcye",sPomYE1,"b") 
+    }  */ 
+ }
+
+ q ret
+]]></Implementation>
+</Method>
+
 <Method name="indexNenavazane">
 <Description><![CDATA[
 <pre> Indexacni metoda pro nenavazane zaznamy + uzivatelskeho vlastnika
@@ -1044,11 +1194,12 @@ TU1 - skrateny ZF do EPCA formularov
 
  s lsClass=$$$HandleClass(handle),lnId=##class(MARC).recordIdX(.handle), sT001=$$$HandleT001(handle)
  s sLName=##class(User.Util).objectName2lname(lsClass)
+ s ictx=$p(sLName,"_"), ipref=$zcvt(ictx,"W")
   
  s idNal="",bFing=0 
  f
  { ; jestli ja autorita navazana, mela by byt v auk
-   s idNal=##class(User.MARC).getIDByIndex("CavUnAuth","auk"," "_sLName_"*"_sT001,idNal)
+   s idNal=##class(User.MARC).getIDByIndex(ipref_"UnAuth","auk"," "_sLName_"*"_sT001,idNal)
    q:((idNal=0)||(bFing=1))
    s bFing=1
  }
@@ -1056,7 +1207,7 @@ TU1 - skrateny ZF do EPCA formularov
  s idNal=""
  f
  {
-   s idNal=##class(User.MARC).getIDByIndex("CavUnEpca","auk"," "_sLName_"*"_sT001,idNal)
+   s idNal=##class(User.MARC).getIDByIndex(ipref_"UnEpca","auk"," "_sLName_"*"_sT001,idNal)
    q:((idNal=0)||(bFing=1))
    s bFing=1
  }
@@ -1064,7 +1215,7 @@ TU1 - skrateny ZF do EPCA formularov
  s idNal=""
  f
  { ; 02.01.24 tt; pridana databaze pro kontrolu navazanosti CavUnOhlCat
-   s idNal=##class(User.MARC).getIDByIndex("CavUnOhlCat","auk"," "_sLName_"*"_sT001,idNal)
+   s idNal=##class(User.MARC).getIDByIndex(ipref_"UnOhlCat","auk"," "_sLName_"*"_sT001,idNal)
    q:((idNal=0)||(bFing=1))
    s bFing=1
  }
@@ -1193,7 +1344,7 @@ TU1 - skrateny ZF do EPCA formularov
  . . s ProjNum=$p(li,";",3)
  . . if ProjNum="" d  q
  . . s ProjNum=$zcvt(ProjNum,"L")
- . . if $d(^ooDataTableI(trida,"proj"," "_ProjNum)) d  q
+ . . if $d(^$$$MarcIndexG(trida,"proj"," "_ProjNum)) d  q
  . . ; zapis do zaznamu
  . . d ##class(MARC).newX(.handlea,trida,"new")
  . . d ##class(MARC).setTagX(.handlea,"000    00240nx   22001213  450")
@@ -1275,7 +1426,10 @@ jednorazovy symbolik
 <FormalSpec><![CDATA[&handle]]></FormalSpec>
 <Implementation><![CDATA[
     s s=##class(MARC).getTagX(.handle,"C31",-1),sO=s q:s=""
-    s sT001=$$$HandleT001(handle)
+    
+    s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+    s ictx=$zcvt(ipref,"L"), sT001=$$$HandleT001(handle)
+    
     f i=1:1:$l(s,$c(10))
     {
         s s1=$p(s,$c(10),i)
@@ -1286,10 +1440,10 @@ jednorazovy symbolik
         s sd=$$$trim(##class(MARC).getSubTagStr(s1,"d"))
         if s3="",sd'=""
         {
-            s idp=$o(^ooDataTableI("CavUnAuth","ico"," "_sd,""))
+            s idp=$o(^$$$MarcIndexG(ipref_"UnAuth","ico"," "_sd,""))
             if idp
             {
-                s s3="cav_un_auth*"_##class(MARC).getT001(idp)
+                s s3=ictx_"_un_auth*"_##class(MARC).getT001(idp)
                 w !,sT001_": found idp="_idp_" by $d="_sd_" $3 becomes "_s3
             } else
             {
@@ -1306,7 +1460,7 @@ jednorazovy symbolik
             continue
             
             s T=$zcvt($p(sa,",",1),"L")
-            s T2=$o(^ooDataTableI("CavUnAuth","aucr"," "_T))
+            s T2=$o(^$$$MarcIndexG(ipref_"UnAuth","aucr"," "_T))
             s T2x=$$$trim(T2)
             
             w !,sT001_": $3 blank, $d="_sd_" $a='"_T_"' GOT T2:'"_T2_"'"
@@ -1314,11 +1468,11 @@ jednorazovy symbolik
             if $e(T2x,1,$l(T))=T 
             {
                 w !,sT001_": JOIN: "_T_" => "_T2
-                s idp=$o(^ooDataTableI("CavUnAuth","aucr",T2,""))
+                s idp=$o(^$$$MarcIndexG(ipref_"UnAuth","aucr",T2,""))
             
                 if idp
                 {
-                    s s3="cav_un_epca*"_##class(MARC).getT001(idp)
+                    s s3=ictx_"_un_epca*"_##class(MARC).getT001(idp)
                     b
                 }
             }
@@ -1486,7 +1640,9 @@ Navratova hodnota:
   
   ; pokud nemame zaznam z CavUnAuth, konec
   s sClass=$$$HandleClass(handle)
-  q:sClass'="CavUnAuth" 0
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
+  
+  q:sClass'=(ipref_"UnAuth") 0
   //s ^mtemp("TT",$zh,"2")="jsem zde" 
   ; ustavy prihlaseneho, format "ustav1"_$c10_"ustav2"
   s s200e=##class(util.sec.security).securityGet(sUser,$$$secWorkgroup)
@@ -1510,7 +1666,7 @@ Navratova hodnota:
   ; pokud je ustav prihlaseneho "KNAVK" (knihovna), nefiltruje se
   ///if ($f($c(10)_s200e_$c(10),$c(10)_"KNAVK"_$c(10))) { q 0 }
   ; 27.01.16 tt; pridana vyjimak pro admin uzivatele
-  q:(##class(User.CavUnEpca).userIsAdmin()) 0
+  q:(..userIsAdmin()) 0
   
   ; ustavy ze zaznamu, format "ustav1"_$c10_"ustav2"
   s sC06=##class(User.MARC).getTagX(.handle,"C06")
@@ -1610,7 +1766,9 @@ Return:
 
   ; pokud nemame zaznam z CavUnAuth, konec
   s sClass=$$$HandleClass(handle)
-  q:sClass'="CavUnAuth" "#db="_sClass_" ocekava se CavUnAuth"  ; kontrola neprosla
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
+  
+  q:sClass'=(ipref_"UnAuth") "#db="_sClass_" ocekava se "_ipref_"UnAuth"  ; kontrola neprosla
   
   s num=$d(changes("C06,1,e,1"))   ; tag C06 i subtag $$e jsou neopakovatelne
   q:num=0 ""                         ; RC nebylo zmeneno 
@@ -1634,7 +1792,7 @@ Return:
   ; 26.11.15 tt; zrusena vyjimka pro KNAV-K pro skryvani rodnych cisel
   //q:($f($c(10)_s200e_$c(10),$c(10)_"KNAVK"_$c(10))) ""
   ; 27.01.16 tt; pridana vyjimak pro admin uzivatele
-  q:(##class(User.CavUnEpca).userIsAdmin()) 0
+  q:(..userIsAdmin()) 0
 
   ; ustavy ze zaznamu, format "ustav1"_$c10_"ustav2"
   s sC06=##class(User.MARC).getTagX(.handle,"C06")
@@ -1694,19 +1852,21 @@ Parametry: result    - vysledny retezec
  s sT001=$$$HandleT001(handle)       ; ziskani t001
  s sClass=$$$HandleClass(handle)     ; ziskani tridy
  s sLName=##class(Util).objectName2lname(sClass) ; prenedeni na Lname tridy
+ s ictx=$p(sLName,"_"), ipref=$zcvt(ictx,"W")
+ 
  zt:sLName="" "Z1"   
  s nNal=" "_sLName_"*"_sT001,id=""
   
  f
  { ; pocitani id zaznamu
-   s id=##class(MARC).getIDByIndex("CavIsUser","aut",nNal,id) q:(id="0")
+   s id=##class(MARC).getIDByIndex(ipref_"IsUser","aut",nNal,id) q:(id="0")
    s t001=##class(MARC).getT001(id)         ; ziskame t001
    if (t001'="")
    { ; pokud mame nejakou hodnotu
-     if ##class(MARC).readX(.handleU,"CavIsUser",t001)   
+     if ##class(MARC).readX(.handleU,ipref_"IsUser",t001)   
      { ; pokud se podarilo otevit uzivatele, vypiseme informaci
        s sT100a=$$$getTagX(.handleU,"100a")    ; nactu si jmeno
-       s sRes=sRes_"\qT001*cav_is_user*1 "_t001_"\q "_sT100a_"<BR>"  ; seskladame linky
+       s sRes=sRes_"\qT001*"_ictx_"_is_user*1 "_t001_"\q "_sT100a_"<br>"  ; seskladame linky
      }
    }
  }        
@@ -1739,11 +1899,14 @@ Parametry
 <PublicList>sRetMsg</PublicList>
 <ReturnType>%Library.String</ReturnType>
 <Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s ictx=$zcvt(ipref,"L")
+ 
  s sPar=""
  d ##class(rep.html.base).repPar(.sPar,.pEnvironment,pPar)          ; nacteni parametru 
  d ##class(rep.html.base).repSoubOC(.sRetMsg,sPar("Path"),.OFN,1)   ; otevreni souboru
  ; 08.04.15 jk; vystup do utf8
- d OFN.WriteLine("<html><head><meta http-equiv=""content-type"" content=""text/html; charset=utf-8""><title>Výstup pro výmaz nenavázaných autorit</title></head><body>")
+ d OFN.WriteLine("<!DOCTYPE html><html><head><meta charset=""UTF-8""><title>Výstup pro výmaz nenavázaných autorit</title></head><body>")
  d OFN.WriteLine("<center><h2>Výstup pro výmaz nenavázaných autorit</h2></center><br>")
  
  ; udelame cyklus pres vsechny ty 4 druhy
@@ -1753,25 +1916,25 @@ Parametry
   
    if (i=1) 
    { ; vybirame autoritu
-     d ##class(User.Util).XselIndex("CavUnAuth tag = 200")                            ; selekt podle typu
-     d OFN.WriteLine("<br /><h3>Autority autorů bez návaznosti - cav_un_auth</h3><br /><br />")     ; popis do souboru
+     d ##class(User.Util).XselIndex(ipref_"UnAuth tag = 200")                            ; selekt podle typu
+     d OFN.WriteLine("<br><h3>Autority autorů bez návaznosti - "_ictx_"_un_auth</h3><br><br>")     ; popis do souboru
    }   
    if (i=2) 
    { ; vybirame akci
-     d ##class(User.Util).XselIndex("CavUnAuth tag = 210")
-     d ##class(User.Util).Xselect("&&CavUnAuth 210 ] 210 1")
-     d OFN.WriteLine("<br /><h3>Autority konferencí bez návaznosti - cav_un_auth</h3><br /><br />")
+     d ##class(User.Util).XselIndex(ipref_"UnAuth tag = 210")
+     d ##class(User.Util).Xselect("&&"_ipref_"UnAuth 210 ] 210 1")
+     d OFN.WriteLine("<br><h3>Autority konferencí bez návaznosti - "_ictx_"_un_auth</h3><br><br>")
    }   
    if (i=3) 
    { ; projekty
-     d ##class(User.Util).XselIndex("CavUnAuth tag = 230")
-     d OFN.WriteLine("<br /><h3>Projekty bez názvu - cav_un_auth</h3><br /><br />")
+     d ##class(User.Util).XselIndex(ipref_"UnAuth tag = 230")
+     d OFN.WriteLine("<br><h3>Projekty bez názvu - cav_un_auth</h3><br><br>")
 
    }
    if (i=4)
    { ; Autority sborníků – pokud není navázán záznam
-     d ##class(User.Util).XselIndex("CavUnEpca dk = bxxs")
-     d OFN.WriteLine("<br /><h3>Autority sborníků bez návaznosti - cav_un_epca</h3><br /><br />")
+     d ##class(User.Util).XselIndex(ipref_"UnEpca dk = bxxs")
+     d OFN.WriteLine("<br><h3>Autority sborníků bez návaznosti - "_ictx_"_un_epca</h3><br><br>")
    }
    
    s idx="",id="",sPar("R")="",sPar("RN")=0
@@ -1836,7 +1999,7 @@ Parametry
   
   if ((pPar("RN")#10)=0)
   { ; pokud mam presne 10 zaznamu vypisu
-    d OFN.WriteLine("&nbsp;&nbsp;&nbsp;&nbsp;"_pPar("R")_"<br />")
+    d OFN.WriteLine("&nbsp;&nbsp;&nbsp;&nbsp;"_pPar("R")_"<br>")
     s pPar("R")="",pPar("RN")=0
   }
 ]]></Implementation>
@@ -1860,6 +2023,9 @@ symboliky pre select/list/..
 <Implementation><![CDATA[
   if $e(psSymName)'="@" ztrap "ERRS"
   
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s ictx=$zcvt(ipref,"L")
+  
   s pnHandled=1
   ; typ zaznamu ak je tam zbornik
   if (psSymName="@VIZ_TEZ")
@@ -1873,7 +2039,7 @@ symboliky pre select/list/..
         s sT400a=$$$getSubTagStr(sT400,"a")
         s sT400b=$$$getSubTagStr(sT400,"b")
         s sT4003=$$$getSubTagStr(sT400,"3")
-        s sT4003=$$$strswap(sT4003,"cav_un_auth*","")
+        s sT4003=$$$strswap(sT4003,ictx_"_un_auth*","")
         s:((sT4003'="")&&(sT400a'="")) sT400a=", "_sT400a
         s:((sT400a'="")&&(sT400b'="")) sT400b=", "_sT400b
         s:(ret'="") ret=ret_"|"_sT4003_sT400a_sT400b
@@ -1947,9 +2113,18 @@ symboliky pre select/list/..
   }
   elseif (psSymName="@PREKLADNAZVUE")
   { ; preklad - bud 230q nebo 430a
-    s preklad=##class(MARC).getTagX(.handle,"230q")
-    s:(preklad="") preklad=##class(MARC).getTagX(.handle,"430a")
+    //s preklad=##class(MARC).getTagX(.handle,"230q")
+    s preklad=##class(MARC).getTagX(.handle,"430a")
     q preklad
+  }
+   elseif (psSymName="@DETAILED_FORD")
+  { ; Hlavní vědní obor OECD (úroveň Detailed FORD)
+    s tc26z=$$$getTagX(.handle,"C26z") ; EPCA_OECDALL_3
+    if (tc26z'="") { 
+      //d ##class(rep.zf.ub).ubCis(.tc26z,.handle,"","EPCA_OECDALL_3")  
+      s tc26z=tc26z_" "_##class(User.Util).sXlate("EPCA_OECDALL_3",tc26z,"N",ipref,"b")
+    }
+    q tc26z
   }
   ; 26.10.21 tt; vyselektujeme ustav podle selekcniho kriteria
   elseif (psSymName="@USTAVPR")
@@ -1989,6 +2164,52 @@ symboliky pre select/list/..
     } while (c'=0)
     q sVyslUstav
   }
+  ; 26.10.21 tt; vyselektujeme ustav podle selekcniho kriteria
+  elseif (psSymName="@USTAVPRZKR")
+  { ; 14.03.24 tt; pridan export zkratky
+    s sPomUstav="",sVyslUstav=""
+    for i=1:1  
+    { ; toto je cyklus pro cteni selekcnich parametru 
+      s sPomPar=$p(sSelectCrit,cDelimCrit,i) q:sPomPar=""
+      s sPomPar=$$$strswap(sPomPar,"!","")
+      s sPomPar=$$$strswap(sPomPar,cDelimVals,"~")
+      s sPomPar=$$$strswap(sPomPar,cDelimSpace," ")
+      s sPomPP1=$p(sPomPar," ",1),sPomPP2=$p(sPomPar," ",2)
+    
+      s:(sPomPP1="posk") sPomUstav=$p(sPomPar," ",3)
+    }
+    
+    s c=0
+    d {
+      s sTC31=$$$getTagXC(.handle,"C31",.c) ; vsetky citacie
+      continue:((sTC31="")&&(c'=0))
+      if ((sTC31'="")&&(sPomUstav'=""))
+      { ; pokud mame vyplnene data, muzeme provadet akce 
+        s sTC31a=$$$getSubTagStr(sTC31,"a")
+        s sTC313=$$$getSubTagStr(sTC31,"3")
+        if ##class(User.MARC).readLX(.hproj,sTC313)
+        {
+          if $f(##class(MARC).getTagX(.hproj,"410",-1),($c(31)_"a"_sPomUstav))
+          {
+            s sVyslUstav=sPomUstav
+          }
+        }
+      }
+      elseif (sTC31'="")
+      { ; pokud nemame selekcni kriterium, vlepime prvni
+        s sTC313=$$$getSubTagStr(sTC31,"3")
+        if ##class(User.MARC).readLX(.hproj,sTC313)
+        {
+          if $f(##class(MARC).getTagX(.hproj,"410",-1),($c(31)_"a"_sPomUstav))
+          {
+            s sVyslUstav=##class(MARC).getTagX(.hproj,"410a")
+          }
+        }       
+      }
+      q:(sVyslUstav'="")
+    } while (c'=0)
+    q sVyslUstav
+  }
   ; 26.10.21 tt; vyselektujeme ustav podle selekcniho kriteria + spoluprace 
   elseif (psSymName="@USTAVSPOLPR")
   {
@@ -2024,7 +2245,7 @@ symboliky pre select/list/..
       { ; pokud mame vyplnene data, muzeme provadet akce 
         s sTT04a=$$$getSubTagStr(sTT04,"a")
         s sTT04b=$$$getSubTagStr(sTT04,"b")
-        if sTT04a="cav_un_epca"
+        if sTT04a=(ictx_"_un_epca")
         {
           s sPocPr=sPocPr+sTT04b
         }
@@ -2066,6 +2287,8 @@ Parametry: result    - vysledny retezec
                        1. prefix
 
 nahrazeno puvodni 200    $$ab_xxx-200-a,b,c,f-| | | -391-| | | --AUP-
+
+04.04.25 ln; odkaz na nova analytika
 11.01.24 tt; zalozeno
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
@@ -2073,7 +2296,8 @@ nahrazeno puvodni 200    $$ab_xxx-200-a,b,c,f-| | | -391-| | | --AUP-
 <ProcedureBlock>1</ProcedureBlock>
 <Implementation><![CDATA[
  s pPar1=$p(param,"##",1)               ; prefix
- s pPref=##class(rep.zf.tf).prefix(.handle,pPar1)_" : "       ; prefix 
+ s pPref=##class(rep.zf.tf).prefix(.handle,pPar1)_" : "       ; prefix
+ s lang=##class(rep.zf.tf).getMod(.handle,"language")
 
  s nLBlock=$o(result(""),-1)+1         ; zjisti posledni blok
  s c=0,sRes="",sOddel=""
@@ -2090,13 +2314,379 @@ nahrazeno puvodni 200    $$ab_xxx-200-a,b,c,f-| | | -391-| | | --AUP-
  s:(s200c'="") sRes=sRes_sOddel_s200c,sOddel=", " 
  s:(s200f'="") sRes=sRes_sOddel_s200f 
 
- s:(sC06d'="") sRes="<a href=""https://asep-analytika.lib.cas.cz/bibliografie/asep/"_$zcvt(sC06d,"L")_"/"_$$$HandleT001(handle)_""" target=""_blank"" title="""_sRes_""">"_sRes_"</a>"
+ ;s:(sC06d'="") sRes="<a href=""https://asep-analytika.lib.cas.cz/bibliografie/asep/"_$zcvt(sC06d,"L")_"/"_$$$HandleT001(handle)_""" target=""_blank"" title="""_sRes_""">"_sRes_"</a>"
+ ;s:(sC06d'="") sRes="<a href=""https://sp-test.library.sk/cav-vyvoj7/zvolit-ustav/"_$zcvt(sC06d,"L")_"/autor/#"_$$$HandleT001(handle)_""" target=""_blank"" title="""_sRes_""">"_sRes_"</a>"
+ ; 04.04.25 ln; odkaz na nova analytika
+ s:(sC06d'="") sRes="<a href=""https://asep-analytika.lib.cas.cz/"_$s(lang=3:"en/choose-institute",1:"zvolit-ustav")_"/"_$zcvt(sC06d,"L")_"/aut"_$s(lang=3:"h",1:"")_"or/#"_$$$HandleT001(handle)_""" target=""_blank"" title="""_sRes_""">"_sRes_"</a>"
   
  if (sRes'="")
  { ; zaverecne ulozeni   
    s result(nLBlock)=pPref_sRes, sRes=""      ; zapsani vysledku to resultu    
    s nLBlock=nLBlock+1 ; zvyseni pocitadla bloku     
  }
+]]></Implementation>
+</Method>
+
+<Method name="userIsAdmin">
+<Description><![CDATA[
+<pre> 
+trampolina pro dedeni (User.CavUnEpca).userIsAdmin(
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>1</ProcedureBlock>
+<PublicList>sUser</PublicList>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[  q $classmethod($$$DbClassIpref_"UnEpca","userIsAdmin")
+]]></Implementation>
+</Method>
+
+<Method name="expFairWizardAP">
+<Description><![CDATA[
+<pre>
+Export autorit pojektu do CSV pro FAIR Wizard
+https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2024#FAIR_Wizard_-_cs125347
+d ##class(User.CavUnAuth).expFairWizardAP()
+
+19.12.24 jk; zalozeno
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s t1=$$$ZLTimeSt
+  w !,"Cav projects export to CSV FAIR Wizard"
+  w !,"--- CavUnAuth.expFairWizardAP() start at ",$zdt($h,3)
+
+  w !!
+  s class="CavUnAuth"
+  s untablesd=##class(User.Util).getClassPrefixParam(class)_"UnTablesd"
+  s year=$p($zd($h,3),"-")
+  d:##class(User.Util).XcheckActiveList(0) ##class(User.Util).X("cl")
+  
+  d ##class(User.Util).X("txx 0")
+  ; vsechny projekty s vyplnenym zacatkem projektu C29a s koncem projektu C29b letos nebo pozdeji
+  d ##class(User.Util).X("s CavUnAuth przac")              ; zacatek projektu C29a
+  d ##class(User.Util).X("s &&CavUnAuth !prkon >= "_year)  ; konec projekt C29b
+  s sl=""
+  if ##class(User.Util).XcheckActiveList(0) { 
+    s sl="expFairWizardAP"_$j_$random(100)
+    d ##class(User.Util).X("sl "_sl) 
+  }
+  ; vsechny projekty s vyplnenym zacatkem projektu C29a a bez konce projektu C92b
+  d ##class(User.Util).X("s CavUnAuth przac")             ; zacatek projektu C29a
+  d ##class(User.Util).X("s &&CavUnAuth '!prkon")         ; bez konce projekt C29b
+  if ##class(User.Util).XcheckActiveList(0) { 
+    d:sl'="" ##class(User.Util).X("gl ||"_sl) 
+  }
+  
+  //d ##class(User.Util).X("s CavUnAuth T001 = 0000053")
+
+  if '##class(User.Util).XcheckActiveList(0) {
+    w !,"no projects to export" 
+    w !!,"--- CavUnAuth.expFairWizardAP() finished at ",$zdt($h,3)_", time: "_##class(User.Util).timeDiffF(t1,$$$ZLTimeSt)
+    q
+  }
+  w !!
+  
+  s cnt=##class(User.Util).XlistCount($$$ListsActiveSel,$j)
+  w !,cnt_" projects to export"
+  
+  ; pr. /home/cosmo/fairwizard/expFairWizardAP_202412191814560.csv
+  s fn="expFairWizardAP_"_$replace(##class(User.Util).date005(),".","")_".csv"
+  s fld=##class(util.common).getArlDir("FAIRWIZARD","Cav")
+  if ##class(%File).Exists(fld_$$$PathSepp_fn) { s fn=$e(fn,1,*-4)_"_"_$random(100)_".csp" } 
+  s file=##class(%FileCharacterStream).%New()
+  s file.Filename=fld_$$$PathSepp_fn
+  d file.TranslateTableSet("UTF8")
+  w !,"export to "_fld_$$$PathSepp_fn,!
+  
+  ; nelze vyuzit util.ie.csv.exportCSV() ten neumi vlozit vice opakovani do jednoho sloupce a uvnitr oddelit oddelovacem 
+  ; CSV hlavicka
+  d file.WriteLine("SysNo,UstavPrijemceZkr,CisloProjektu,NazevProjektu,PrekladProjektu,Zacatek,Konec,Program,PoskytovatelCEP,PoskytovatelOstatni,PoskytovatelEU,AkronymProjektu_EU,Poznamka,Resitel")
+  
+  s ustavyZkr="" ; v cyklu je postupne ziskavame z odkaz. zaznamu a zapisujeme sem
+  s id=""
+  for i=1:1:cnt {
+    s id=$o(^$$$ListsG($$$ListsActiveSel,$j,id))
+    q:id=""
+  
+    s t001=##class(User.MARC).getT001(id)
+    continue:'##class(User.MARC).readX(.handle,class,t001)
+    
+    ; pro ustavy zkusime ziskat zkratky z odkazovanych zaznamu, pokud se to nepovede nechame nazev z C31a
+    s sC31All=##class(User.MARC).getTagX(.handle,"C31",-1)
+    s zkrAll=""
+    for j=1:1:$l(sC31All,$c(10)) {
+      s sC31=$p(sC31All,$c(10),j)
+      continue:sC31=""
+      
+      s sC313=##class(User.MARC).getSubTagStr(sC31,"3")      ; idx ustavu
+      s zkr=""
+      if sC313="" {
+        s zkr=##class(User.MARC).getSubTagStr(sC31,"a")      ; neni odkaz, vezmeme alespon cely nazev
+      }
+      elseif $d(ustavyZkr(sC313)) { 
+        s zkr=ustavyZkr(sC313)                               ; uz mame zpracovano z predchoziho behu
+      }
+      else {
+        if ##class(User.MARC).readLX(.handleU,sC313,"T") {
+          s sU02a=##class(User.MARC).getTagX(.handleU,"U02a")
+          if sU02a'=""{
+            s ustavyZkr(sC313)=sU02a
+            s zkr=sU02a
+          }
+        }
+      }
+      
+      if zkr="" { s zkr=##class(User.MARC).getSubTagStr(sC31,"a") } ; nemame zkratku, dame alespon nazev
+      s:zkrAll'="" zkrAll=zkrAll_";"
+      s zkrAll=zkrAll_zkr  
+    }    
+    
+    s s230h=##class(User.MARC).getTagX(.handle,"230h")       ; cislo projektu
+    s s230a=##class(User.MARC).getTagX(.handle,"230a")       ; nazev projektu
+    s s430a=##class(User.MARC).getTagX(.handle,"430a")       ; preklad projektu
+    s sC29a=##class(User.MARC).getTagX(.handle,"C29a")       ; zacatek projektu
+    s sC29b=##class(User.MARC).getTagX(.handle,"C29b")       ; konec projektu
+    s s230b=##class(User.MARC).getTagX(.handle,"230b")       ; program
+    s sC28a=##class(User.MARC).getTagX(.handle,"C28a")       ; poskytovatel
+    s sC28b=##class(User.MARC).getTagX(.handle,"C28b")       ; poskytovatel ostatni
+    s sC28e=##class(User.MARC).getTagX(.handle,"C28e")       ; poskytovatel EU
+    s s230q=##class(User.MARC).getTagX(.handle,"230q")       ; akronym projektu EU
+    s s300a=##class(User.MARC).getTagX(.handle,"300a")       ; poznamka
+    s s300a=$replace(s300a,"""","""""")                      ; - zdvojeni pripadnych uvozovek snad bude pro fair wizard ok
+    
+    s resitel=""
+    s sC35All=##class(User.MARC).getTagX(.handle,"C35",-1)   ; resitele
+    for j=1:1:$l(sC35All,$c(10)) {
+      s sC35=$p(sC35All,$c(10),j)
+      continue:sC35=""
+      
+      s sC35b=##class(User.MARC).getSubTagStr(sC35,"b")      ; jmeno
+      s sC35a=##class(User.MARC).getSubTagStr(sC35,"a")      ; prijmeni
+      if (sC35b'="") || (sC35b'="") {
+        s:resitel'="" resitel=resitel_"; "
+        if (sC35b'="") && (sC35a'="") { s resitel=resitel_sC35b_", "_sC35a }
+        elseif (sC35a'="") { s resitel=resitel_sC35a }
+        elseif (sC35b'="") { s resitel=resitel_sC35b }
+      }
+    }
+    
+    
+    s line=""""_t001_""","""_zkrAll_""","""_s230h_""","""_s230a_""","""_s430a_""","""_sC29a_""","""_sC29b_""","""_s230b_""","""_sC28a_""","""_sC28b_""","""_sC28e_""","""_s230q_""","""_s300a_""","""_resitel_""""
+    d file.WriteLine(line)
+  }
+  
+  s sc=file.SaveStream()
+  if $$$ISERR(sc) {
+    s sErr="ERROR writing file (/SaveStream): "_##class(User.Util).status2str(sc)
+    w !,sErr
+  }
+  d file.%Close()
+
+  w !!,"--- CavUnAuth.expFairWizardAP() finished at ",$zdt($h,3)_", time: "_##class(User.Util).timeDiffF(t1,$$$ZLTimeSt)
+]]></Implementation>
+</Method>
+
+<Method name="expFairWizardAA">
+<Description><![CDATA[
+<pre>
+Export autorit autoru do CSV pro FAIR Wizard
+https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2024#FAIR_Wizard_-_cs125347
+d ##class(User.CavUnAuth).expFairWizardAA()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s t1=$$$ZLTimeSt
+  w !,"Cav authorities export to CSV FAIR Wizard"
+  w !,"--- CavUnAuth.expFairWizardAA() start at ",$zdt($h,3)
+
+  w !!
+  s ipref=$$$DbClassIpref
+  s classA="CavUnAuth"
+  s lnameA="cav_un_auth"
+  s classE="CavUnEpca"
+  s untablesd="CavUnTablesd"
+  s year=$p($zd($h,3),"-")
+  d:##class(User.Util).XcheckActiveList(0) ##class(User.Util).X("cl")
+  
+  
+  ; Autory, kteri publikovali v posledních 4 letech (tj. k jejichz autoritam je navazany zaznam s rokem vydani v posledních 4 letech)
+  s ye=year-5
+  //test only: d ##class(User.Util).X("s "_classE_" ye >= 2025")
+  d ##class(User.Util).X("s "_classE_" ye >= "_ye)    ; rok vydani
+  if ##class(User.Util).XcheckActiveList(0) { 
+    ; prevod savelistu na autori 
+    d ##class(User.Util).X("l2 7003,7013-"_classE_"-"_classA)         ; velmi pomale !
+    d ##class(User.Util).X("s &&"_classA_" C06d")                     ; jen zamestnanci AV CR, soucasni i minuli, pred vypsanim do CSV se jeste kontroluje podle CAV_PRA
+    d ##class(User.Util).X("s &&"_classA_" C99d = DFLT_UN_AUTH_200")  ; jen osobni autority, podle typu formulare
+  }
+  s sl=""
+  if ##class(User.Util).XcheckActiveList(0) { 
+    s sl="expFairWizardAA"_$j_$random(100)
+    d ##class(User.Util).X("sl "_sl) 
+  }
+    
+    
+  ; Pridame autory, kteri nemaji navazanou zadnou publikaci, jejichz autorita byla vytvorena v soucasnem nebo minulem kalendarnim roce (informace z pole 100a)
+  s lastyear=year-1
+  d ##class(User.Util).X("s "_classA_" dfl ] "_year_"~"_lastyear)     ; do indexu dfl jde 100a  
+  d ##class(User.Util).X("s &&"_classA_" C06d")                       ; jen zamestnanci AV CR, soucasni i minuli, pred vypsanim do CSV se jeste kontroluje podle CAV_PRA
+  d ##class(User.Util).X("s &&"_classA_" C99d = DFLT_UN_AUTH_200")    ; jen osobni autority, podle typu formulare
+  s slx=""
+  if ##class(User.Util).XcheckActiveList(0) {
+    ; vybrat jen ty co nejsou v CavUnEpca v indexu auk (nemaji navazanou zadnou publikaci), udelame rucne pres pomocny savelist
+    s slx="expFairWizardAAx"_$j_$random(100)         ; nazev ulozeneho savelitu
+    k ^$$$ListsG($$$ListsLists,slx)                  ; radeji procistit, na metadata kaslem                
+    s id=""
+    for i=1:1 {
+      s id=$o(^$$$ListsG($$$ListsActiveSel,$j,id))
+      q:id=""
+      s idx=lnameA_"*"_##class(User.MARC).getT001(id)
+      continue:##class(User.MARC).getIDByIndex(classE,"auk"," "_idx)
+      s ^$$$ListsG($$$ListsLists,slx,id)=""
+    }
+    d ##class(User.Util).X("cl")
+  }
+  
+  d:sl'="" ##class(User.Util).X("gl "_sl)
+  d:slx'="" ##class(User.Util).X("gl ||"_slx)
+  
+  if '##class(User.Util).XcheckActiveList(0) {
+    w !,"no athorities to export" 
+    w !!,"--- CavUnAuth.expFairWizardAA() finished at ",$zdt($h,3)_", time: "_##class(User.Util).timeDiffF(t1,$$$ZLTimeSt)
+    q
+  }
+  w !!
+
+  s cnt=##class(User.Util).XlistCount($$$ListsActiveSel,$j)  
+  
+  ; pr. /home/cosmo/fairwizard/expFairWizardAA_202412191814560.csv
+  s fn="expFairWizardAA_"_$replace(##class(User.Util).date005(),".","")_".csv"
+  s fld=##class(util.common).getArlDir("FAIRWIZARD","Cav")
+  if ##class(%File).Exists(fld_$$$PathSepp_fn) { s fn=$e(fn,1,*-4)_"_"_$random(100)_".csp" } 
+  s file=##class(%FileCharacterStream).%New()
+  s file.Filename=fld_$$$PathSepp_fn
+  d file.TranslateTableSet("UTF8")
+  w !,"export to "_fld_$$$PathSepp_fn,!
+
+  ; nelze vyuzit util.ie.csv.exportCSV() nelze spojovat, podminkovat napr. ORCID
+  ; CSV hlavicka
+  d file.WriteLine("SysNo,Jmeno,Prijmeni,VizTez,VizTeZSysno,ORCID,Email,Oddeleni_CZ,Oddeleni_ENG,Ustav,ROR,Datum")
+  
+  s cntExported=0
+  for i=1:1:cnt {
+    s id=$o(^$$$ListsG($$$ListsActiveSel,$j,id))
+    q:id=""
+  
+    s t001=##class(User.MARC).getT001(id)
+    continue:'##class(User.MARC).readX(.handle,classA,t001)
+    
+    ; kontrola ustavu zamestance podle ciselniku
+    s sC06d=##class(User.MARC).getTagX(.handle,"C06d")       ; zkraka ustavu
+    continue:sC06d="TS-N"                                                               ; ne zamestnance Technologické centrum AV ČR
+    if ##class(User.Util).sXlate("CAV_PRA",sC06d,"E",ipref)="@noexist@" { continue }    ; ustav musi byt v ciselniku
+    
+    s s200a=##class(User.MARC).getTagX(.handle,"200a")       ; prijmeni
+    s s200b=##class(User.MARC).getTagX(.handle,"200b")       ; jmeno
+    
+    ; variantni autority
+    s va="", vaSysno=""
+    s c=0
+    do {
+      s s400=##class(User.MARC).getTagX(.handle,"400",.c)
+      continue:s400=""
+      
+      s s400a=##class(User.MARC).getSubTagStr(s400,"a")     ; prijmeni
+      s s400b=##class(User.MARC).getSubTagStr(s400,"b")     ; jmeno
+      s s4003=##class(User.MARC).getSubTagStr(s400,"3")     ; idx
+      
+      s vaut=""
+      if (s400a'="") && (s400b'="") { s vaut=s400a_" "_s400b }
+      elseif (s400a'="") { s vaut=s400a }
+      elseif (s400b'="") { s vaut=s400b }
+      continue:vaut=""
+      
+      s:va'="" va=va_";"
+      s va=va_vaut
+    
+      ; vkladat i prazdne aby se dodrzelo stejne poradi v VizTez a VizTeZSysno
+      s vautT001=$p(s4003,"*",2)
+      s:vaSysno'="" vaSysno=vaSysno_";"
+      s vaSysno=vaSysno_vautT001
+    
+    } while c'=0
+    
+    s orcid=""
+    s s035All=##class(User.MARC).getTagX(.handle,"035",-1)
+    for j=1:1:$l(s035All,$c(10)) {
+      s s035=$p(s035All,$c(10),j)
+      continue:s035=""
+      s s0352=##class(User.MARC).getSubTagStr(s035,"2")
+      if s0352="ORCID" {
+        s orcid=##class(User.MARC).getSubTagStr(s035,"a")
+        q
+      }
+    }
+    s sC01f=##class(User.MARC).getTagX(.handle,"C01f")            ; email
+    s sC06i=##class(User.MARC).getTagX(.handle,"C06i")            ; oddeleni CZ
+    s sC06j=##class(User.MARC).getTagX(.handle,"C06j")            ; oddeleni ENG
+    s sC06d=##class(User.MARC).getTagX(.handle,"C06d")            ; zkraka ustavu
+    s datum=$e(##class(User.MARC).getTagX(.handle,"100a"),1,8)    ; datum zalozeni autority
+    
+    ; najdeme ustav autora
+    s idPrc=""
+    s val=" "_$zcvt(sC06d,"L")
+    s aucrVal=$o(^$$$MarcIndexG(classA,"aucr",val),1,idPrc)  ; napr. pro "aru-g" se dohleda pres "aru-g (o)"
+    if $e(aucrVal,1,$l(val))=val { 
+      s idPrc=$o(^$$$MarcIndexG(classA,"aucr",aucrVal,""))
+    }
+    ; nazev a ROR ustavu
+    s ustavEN="",ustavROR=""
+    if idPrc'="" {
+      s t001Prc=##class(User.MARC).getT001(idPrc)
+      d ##class(User.MARC).readX(.handleP,classA,t001Prc)
+      ; hledame anglickou verzi nazvu ustavu
+      s sPrc410All=##class(User.MARC).getTagX(.handleP,"410",-1)
+      for m=1:1:$l(sPrc410All,$c(10)) {
+        s sPrc410=$p(sPrc410All,$c(10),m)
+        continue:sPrc410=""
+        s sPrc4108=##class(User.MARC).getSubTagStr(sPrc410,"8")
+        if sPrc4108="eng" {
+          s ustavEN=##class(User.MARC).getSubTagStr(sPrc410,"a")
+          q
+        }
+      }
+      ; hledame ROR ustavu
+      s sPrc035All=##class(User.MARC).getTagX(.handleP,"035",-1)
+      for n=1:1:$l(sPrc035All,$c(10)) {
+        s sPrc035=$p(sPrc035All,$c(10),n)
+        continue:sPrc035=""
+        s sPrc0352=##class(User.MARC).getSubTagStr(sPrc035,"2")
+        if sPrc0352="PIDROR" {
+          s ustavROR=##class(User.MARC).getSubTagStr(sPrc035,"a")
+          q
+        }
+      }
+    }
+    else {
+      w !," ERROR - For author's record T001="_t001_" no find auth record of pracoviste by index 'aucr' and value C06d='"_sC06d_"'"
+    }
+            
+    
+    s line=""""_t001_""","""_s200b_""","""_s200a_""","""_va_""","""_vaSysno_""","""_orcid_""","""_sC01f_""","""_sC06i_""","""_sC06j_""","""_ustavEN_""","""_ustavROR_""","""_datum_""""
+    d file.WriteLine(line)
+    s cntExported=cntExported+1
+  }
+  
+  w !,"authorities exported: "_cntExported
+
+  s sc=file.SaveStream()
+  if $$$ISERR(sc) {
+    s sErr="ERROR writing file (/SaveStream): "_##class(User.Util).status2str(sc)
+    w !,sErr
+  }
+  d file.%Close()
+  
+  w !!,"--- CavUnAuth.expFairWizardAA() finished at ",$zdt($h,3)_", time: "_##class(User.Util).timeDiffF(t1,$$$ZLTimeSt)
 ]]></Implementation>
 </Method>
 </Class>

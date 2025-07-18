@@ -1,0 +1,61 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<div>
+
+<div id="toolbar"></div>
+
+<table
+id="#(data("PAGEID"))#-table"
+class="table table-sm jstable"
+data-advanced-search="true"
+data-cache="false"
+data-cookie="true"
+data-cookie-id-table="#(data("PAGEID"))#-table"
+data-export-types="['json', 'xml', 'csv', 'txt', 'doc', 'excel']"
+data-check-on-init="true"
+data-id-table="#(data("PAGEID"))#-t"
+data-minimum-count-columns="2"
+data-mobile-responsive="true"
+data-page-list="[all]"
+data-pagination="true"
+data-search="true"
+data-search-text="#($$$GETREQVAR("q"))#"
+data-show-columns="true"
+data-show-columns-toggle-all="true"
+data-show-export="true"
+data-show-fullscreen="true"
+data-show-pagination-switch="true"
+data-show-print="true"
+>
+<thead>
+<tr>
+<th scope="col" data-field="surname" data-sortable="true"><ipac:tx param="SURNAME"/></th>
+<th scope="col" data-field="name" data-sortable="true"><ipac:tx param="NAME"/></th>
+<th scope="col" data-field="email" data-sortable="true"><ipac:tx param="EMAIL"/></th>
+<th scope="col" data-field="category" data-sortable="true"><ipac:tx param="CATEGORY"/></th>
+<th scope="col" data-field="admin" data-sortable="false"><ipac:tx param="ADMIN"/></th>
+</tr>
+</thead>
+<tbody>
+<ipac:loop param="USERS">
+<tr>
+<td class="surname">#(..v("surname"))#</td>
+<td class="name">#(..v("name"))#</td>
+<td class="email">
+<a href="mailto:#(..v("email"))#">#(..v("email"))#</a>
+</td>
+<td class="category">#($s(..v("category")=1:..tx("REGISTERED"),1:..tx("UNREGISTERED")))#</td>
+<td class="admin">
+    <ipac:sso title="#(..tx("EDIT_EPCA_TITLE"))# #(..v("surname"))# #(..v("name"))#" rel="external" class="external btn btn-primary" target="_blank" app="epca/index.csp" param="&recid=cav_is_user*#(..v("id"))#&formtype=u&language=#($$$GETSESSVAR("language"))#&client_info=aRL i3 web client 1.0">
+    <i class="icon-edit" aria-hidden="true"></i>&nbsp;
+    <ipac:tx param="EDIT"/></ipac:sso>
+    &nbsp;
+    <ipac:a op="#(data("PAGEID"))#" param="delete=#(..v("id"))#" class="btn btn-light modal-show" data-modal-body="#(..tx("DELETE_REALLY"))# #(..v("surname"))# #(..v("name"))#?" data-modal-linkform="#(..tx("DELETE_YES"))#" data-modal-linkicon="icon-remove" data-modal-name="#(..tx("DELETE_TITLE"))#" modal-centered="1" data-modal-size="modal-sm" title="#(..tx("DELETE_TITLE"))# #(..v("surname"))# #(..v("name"))#">
+    <i class="icon-remove" aria-hidden="true"></i>&nbsp;
+    <ipac:tx param="DELETE"/></ipac:a>
+</td>
+</tr>
+</ipac:loop>
+</tbody>
+</table>
+</div>

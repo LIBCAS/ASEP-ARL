@@ -5,4 +5,4 @@ if (typeof i3 === 'undefined') {
 }
 // 11.10.22 on; kvuli optimalizaci gruntem (kod v cache pak neprecte verzi)
 i3.version = '';
-i3.version = 'i3-epcadesigner-1.0.111a-11.10.2023';
+i3.version = 'i3-epcadesigner-1.0.116c-03.03.2025';

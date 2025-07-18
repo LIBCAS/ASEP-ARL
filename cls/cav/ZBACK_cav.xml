@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2024-01-15 21:50:50">
-<Routine name="ZBACK" type="MAC" languagemode="0" timestamp="66854,78639.857409445"><![CDATA[
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-06-04 19:49:14">
+<Routine name="ZBACK" type="MAC" languagemode="0" timestamp="67360,71293.318245504"><![CDATA[
     ;;;;; CAV
     ;;;;;
+    ;;;;; 04.06.25 jk; export autoru a projektu do CSV pro Fair Wizard
+    ;;;;; 13.03.25 jk; pridano genDoiDataCite
+    ;;;;; 10.03.25 dk; e-mail 'kopcanska@cosmotron.cz' přidán do DFLTMAILCC
+    ;;;;; 28.02.25 jk; zruseno CreateHandleNet, pouziva se DUI
+    ;;;;; 08.01.25 mk; planovana uloha uvolnenie embarga C52b na A
+    ;;;;; 19.09.24 jk; import projektu z Vavai CEP do autorit
+    ;;;;; 20.03.24 tt; pridana vynucena reindexace solr pro databaze
     ;;;;; 15.01.24 tt; pridan email asep_repozitar@lib.cas.cz do vystupu V7
     ;;;;; 17.10.23 ln; upraveny cesty zaloh pro asep-primary-node
     ;;;;; 15.08.23 tt; sitemap: provedena zmena popisu 
@@ -27,9 +34,9 @@
     ;;;;; 10.10.16 tt; zalozeno
     ;;;;; ---
     ;;;;;
-    #define BACKUPDIR "/srv/lv1_asep_repository/backup" 
+    #define BACKUPDIR "/srv/lv1_asep_repository/backup"
     #define ROUTINEN "ZBACK"
-    #define DFLTMAILCC "arl@lib.cas.cz,arl-server@lib.cas.cz,teplik@cosmotron.cz,klimes@cosmotron.cz,backupinfo@cosmotron.cz"
+    #define DFLTMAILCC "arl@lib.cas.cz,arl-server@lib.cas.cz,klimes@cosmotron.cz,kopcanska@cosmotron.cz,backupinfo@cosmotron.cz"
     #include Common     
         
     ;------------------------------------------------------------   
@@ -64,13 +71,23 @@ task1
     d ##class(UtilBackup).taskMain("runRepV10Cav^ZBACK()","Cav - vystup V10",$$$DFLTMAILCC,,"Cav")
     d ##class(UtilBackup).taskMain("runRepV11Cav^ZBACK()","Cav - vystup V11",$$$DFLTMAILCC,,"Cav")
   
-    ; Cav - doplneni C60a s handle linkem do zaznamu
-    d ##class(UtilBackup).taskMain("##class(User.CavS).GenC60Handle()","Cav - doplneni C60a s handle linkem do zaznamu",$$$DFLTMAILCC,,"Cav")
+    ; Cav - generovani identifikatoru handle.net pres DUI frontu
+    d ##class(UtilBackup).taskMain("##class(User.CavS).GenC60Handle()","Cav - C60a vytvoreni identifikatoru handle.netu",$$$DFLTMAILCC,,"Cav")
+    
+    ; Cav - generovani DOI DataCite pres DUI frontu
+    ; - volat az po uloze GenC60Handle aby byl uz v zaznamu identitikator handle.net
+    // zatim ponechat zakomentovane
+    //d ##class(UtilBackup).taskMain("##class(User.CavS).genDoiDataCite()","Cav - generovani DOI DataCite",$$$DFLTMAILCC,,"Cav")
+
+    ; mk uvolnenie embarga po vyprsani C91b v C52b z E na A
+    d ##class(UtilBackup).taskMain("##class(User.CavS).EmbargoC52b()","Cav - uvolneni embarga",$$$DFLTMAILCC_",kocian@cosmotron.cz",,"Cav")
 
     ; Cav - repozitar - kontrola vyprsenych souhlasu
     d ##class(UtilBackup).taskMain("##class(i2.cust.cav.approvalAuthor).sendMailBatch()","Cav - repozitar - kontrola vyprsenych souhlasu",$$$DFLTMAILCC,,"Cav")
+    
+    ; 28.02.25 jk; zruseno CreateHandleNet, pouziva se DUI
     ; Cav - doplneni handle linku na server
-    d ##class(UtilBackup).taskMain("##class(User.CavS).CreateHandleNet()","Cav - doplneni handle linku na server",$$$DFLTMAILCC_",tichy@lib.cas.cz",,"Cav")
+    ; d ##class(UtilBackup).taskMain("##class(User.CavS).CreateHandleNet()","Cav - doplneni handle linku na server",$$$DFLTMAILCC_",tichy@lib.cas.cz",,"Cav")
     
     ; denni export CavUnTablesd
     d ##class(UtilBackup).taskMain("##class(UtilBackup).batchExportX(""CavUnTablesd"",""ui-1 sort-1 compress-7za+a#7z"")","denni export nastaveni CavUnTablesd",$$$DFLTMAILCC,,"Cav")
@@ -137,7 +154,9 @@ idx1
     d ##class(Util).msg("idx1 day="_Day_" start at "_$$$ShowDTime)  
     
     n s       
-    s s="##class(Util).X(""uiseq CavUnEpca,CavUnOhlCat,CavUnAuth"")"
+    //s s="##class(Util).X(""uiseq CavUnEpca,CavUnOhlCat,CavUnAuth"")"
+    // 20.03.24 tt; pridana vynucena reindexace solr pro databaze
+    s s="##class(Util).X(""s CavUnEpca""),##class(Util).X(""ui solr""),##class(Util).X(""s CavUnOhlCat""),##class(Util).X(""ui solr""),##class(Util).X(""s CavUnAuth""),##class(Util).X(""ui solr"")"
       
     try {
       d ##class(UtilBackup).taskMain(s,"aktualizace aRL indexu vsech databaz",$$$DFLTMAILCC,,"Cav") 
@@ -243,6 +262,24 @@ sitemap() public {
      ;15.08.23 tt; provedena zmena popisu 
      ;14.07.09 lu; pridana rutina sitemap
      d ##class(UtilBackup).taskMain("##class(i2.sitemap2).createSitemap()","CAV - generovani sitemap",$$$DFLTMAILCC)
+}
+
+
+impCep() public {
+     ; 19.09.24 jk; import projektu z Vavai CEP do autorit
+     ; zapojeno v CRONTAB
+     ; https://cosmo2/wiki/index.php?title=CAV_API_CEP
+     
+     s year=$p($zd($h),"/",3)
+     d ##class(UtilBackup).taskMain("##class(util.ie.vavai).importCavCep(""CavUnAuth"","""_year_""")","CAV - import Vavai CEP do autorit",$$$DFLTMAILCC)
+}
+
+expFairWizardCSV() public {
+     ; https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2024#FAIR_Wizard_-_cs125347
+     ; 04.06.25 jk; export autoru a projektu do CSV pro Fair Wizard
+     ; spousteno z CRONTAB kazdy 10ty den v mesici
+     d ##class(UtilBackup).taskMain("##class(User.CavUnAuth).expFairWizardAA()","CAV - CSV export autorit pro Fair Wizard",$$$DFLTMAILCC)
+     d ##class(UtilBackup).taskMain("##class(User.CavUnAuth).expFairWizardAP()","CAV - CSV export projektů pro Fair Wizard",$$$DFLTMAILCC)
 }
 
  

@@ -26,6 +26,9 @@
 002           z dovodu pouzitia pre IPAC1 (epca formulare)
 002    -
 002    Historia zmien:
+002    12.03.24 tt; zkraceno Technologická agentura České republiky na Technologická agentura ČR
+002    04.03.24 tt; UN_EPCA_PUBLIST_STATS: pridan kvartil AIS
+002    27.02.24 tt; UN_TC34G: upravy ciselniku
 002    07.12.23 tt; EPC_UN_TC11T: zavedeni teritorialni patentova ochrany
 002    13.01.23 tt; pridane ciselniky EPCA_REP_STAT_PV, EPCA_REP_STAT_PR, EPCA_REP_STAT_ON, EPCA_REP_STAT_KVARTIL - jsou to sablony pro statistiky
 002    13.01.23 tt; UN_EPCA_PUBLIST_STATS: upraven ciselnik UN_EPCA_PUBLIST_STATS - pridany nove statistiky
@@ -2323,6 +2326,7 @@
 # @id UN_TABLES UN_EPCA_PUBLIST_STATS
 002    -POZOR: ciselnik je sucastou C:\vcs\bin\un_tables_epca.txt, pouziva sa na klientovi aj na serveri (via XxxUnTablesd)  (editacie LEN cez VCS!)
 002    -
+002    04.03.24 tt; pridan kvartil AIS
 002    13.01.23 tt; upraven ciselnik UN_EPCA_PUBLIST_STATS - pridany nove statistiky
 002    22.02.14 tt; pridana statistika k - kriteria pro kvalifikacni postup
 100    astatistiky pre zoznam publikačnej čisnnosti#w.24.03.99 doplnene statiskiky podla metodiky ProSientia#w.01.04.99 doplnene tabulky podla metodiky ProScientia#29.11.05 jj; odebrání "/ AK", čeština, odebrání "I"
@@ -2339,7 +2343,7 @@
 200    aKWbKvartil JCR#Kvartil JCR#Quartile JCR
 200    aKCbKvartil JCI#Kvartil JCI#Quartile JCI 
 200    aKSbKvartil SJR#Kvartil SJR#Quartile SJR
-
+200    aKAbKvartil AIS#Kvartil AIS#Quartile AIS
 ###
 # @id UN_TABLES UN_EPCA_REGTYPE
 002    22.09.21 tt; provedeny změny dle standardního nastavení
@@ -2619,7 +2623,7 @@
 200    aGA MZVbMinisterstvo zahraničních věcícMZV
 200    aGA NBÚbNárodní bezpečnostní úřadcNBU
 200    aGA SÚJBbStátní úřad pro jadernou bezpečnost ČRcSUJ
-200    aGA TA ČRbTechnologická agentura České republikycTA0
+200    aGA TA ČRbTechnologická agentura ČRcTA0
 200    aGA ÚVbÚřad vlády ČRcURV
 200    aGA ÚSCbÚzemně samosprávné celky (nerozlišeno)cUSC 
 ###
@@ -2652,7 +2656,7 @@
 200    aMZVbMinisterstvo zahraničních věcí
 200    aNBUbNárodní bezpečnostní úřad
 200    aSUJbStátní úřad pro jadernou bezpečnost ČR
-200    aTA0bTechnologická agentura České republiky
+200    aTA0bTechnologická agentura ČR
 200    aURVbÚřad vlády ČR
 200    aUSCbÚzemně samosprávné celky (nerozlišeno)
 ###
@@ -3055,6 +3059,8 @@
 200    aAbpre využitie výsledku iným subjektom je vždy nutné získanie licencie#Pro využití výsl. jiným subj. nutné nabytí licencecvzdy
 200    aNbvyužitie výsledku iným subjektom je možné bez získania licencie#Využití výsl. jiným subj. možné bez nabytí licencecne
 200    aPbvyužitie výsledku iným subjektom je v niektorých prípadoch možné bez získania licencie#Využití výsl. jiným subj. v nekt. případech možné bez nabytí licencecnekdy
+200    aVbvyužitie výsledku vlastníkom#Výsledek je využíván vlastníkemcnevyuzito
+200    aObzatial žiadne využitie#Doposud nevyužívaný výsledekcvlastnik
 ###
 # @id UN_TABLES UN_TC34L
 002    -POZOR: ciselnik je sucastou C:\vcs\bin\un_tables_epca.txt, pouziva sa na klientovi aj na serveri (via XxxUnTablesd)  (editacie LEN cez VCS!)

@@ -12,7 +12,7 @@
 <div class="fileinput fileinput-new input-group" data-provides="fileinput">
 <div data-trigger="fileinput"><i class="icon-file fileinput-exists"></i><span class="fileinput-filename"></span></div>
 <span class="btn btn-success btn-file"><span class="fileinput-new"><i class="icon-plus" aria-hidden="true"></i>&nbsp;<ipac:txg param="FILESELECT"/></span><span class="fileinput-exists"><i class="icon-plus" aria-hidden="true"></i>&nbsp;<ipac:txg param="FILECHANGE"/></span>
-<input type="file" data-fv-not-empty___message="#(..tx("ERRFILE"))#" aria-describedby="file-desc" class="form-control" id="file" name="FileStream"/>
+<input type="file" data-fv-not-empty___message="#(..tx("ERRFILE"))#" aria-describedby="file-desc" class="form-control" id="file" name="FileStream">
 </span>
 <button type="button" class="btn btn-warning fileinput-exists" data-dismiss="fileinput"><i class="icon-ban" aria-hidden="true"></i>&nbsp;<ipac:txg param="FILEDELETE"/></button>
 </div>
@@ -31,10 +31,10 @@
 
 <div class="submit">
 <button type="submit" class="btn btn-primary" value="#(..tx("SAVE"))#"><ipac:tx param="SAVE"/></button>
-<input type="hidden" name="op" value="#(data("PAGEID"))#"/>
-<input type="hidden" name="idx" value="#(data("IDX"))#"/>
-<input type="hidden" name="repository" value="#(data("REPO"))#"/>
-<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"/></csp:if>
+<input type="hidden" name="op" value="#(data("PAGEID"))#">
+<input type="hidden" name="idx" value="#(data("IDX"))#">
+<input type="hidden" name="repository" value="#(data("REPO"))#">
+<csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
 
 <ipac:dtx param="FORM_DOWN"/>

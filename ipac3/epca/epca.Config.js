@@ -1,5 +1,6 @@
 /**
  *
+ * 02.05.24 on; podpora pro editaci ctenaru
  * 23.09.16 on; rozsirena funkce getDbFormat
  * 20.05.16 on; doplnena metoda getDbFormat
  */
@@ -37,6 +38,9 @@ epca.Config = {
                 return epca.Config.User.LinkDbCat;
             case epca.Config.User.dbAuth:
                 return epca.Config.User.LinkDbAuth;
+                // 02.05.24 on; podpora pro ctenare
+            case epca.Config.User.dbUser:
+                return i3.ictx.toLowerCase() + '_is_user';
             default:
                 return undefined;
         }
@@ -53,6 +57,9 @@ epca.Config = {
                 return epca.Config.User.dbCat;
             case epca.Config.User.DbNameEpca:
                 return epca.Config.User.dbEpca;
+                // 02.05.24 on; podpora pro ctenare
+            case 'IS_USER':
+                return epca.Config.User.dbUser;
             default:
                 return undefined;
         }
@@ -63,6 +70,9 @@ epca.Config = {
                 return 'B';
             case epca.Config.User.dbAuth:
                 return 'A';
+                // 02.05.24 on; podpora pro ctenare
+            case epca.Config.User.dbUser:
+                return 'U';
             default:
                 return undefined;
         }
@@ -77,6 +87,9 @@ epca.Config = {
                 return epca.Config.User.dbAuthFmt;
             case epca.Config.User.dbEpca:
                 return epca.Config.User.dbEpcaFmt;
+                // 02.05.24 on; podpora pro ctenare
+            case epca.Config.User.dbUser:
+                return 'ISU';
         }
         // 22.09.16 on; pokud nic nenajde, zkusi jeste projit pole epca.Config.User.otherDbList
         if (epca.Config.User.otherDbList) {

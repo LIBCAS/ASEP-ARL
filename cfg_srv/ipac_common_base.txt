@@ -1,4 +1,24 @@
 # @id UN_TABLES BASE_A_IPAC_COMMON_TXT
+002    27.06.25 jk; indikator i1=2 u anotace tagu 520 v BASE_IPAC2_XMLPARSE_FLEXIBOOKS_M21 a BASE_IPAC2_XMLPARSE_EREADING_M21
+002	   12.05.25 dp; do BASE_IPAC2_TX_CONTLIST pridano ERRTAB, do BASE_IPAC2_TX_MYDOC pridano MYLOANS
+002    06.05.25 ln; do BASE_IPAC2_TX_EPSN pridano SAFE a SAFEOK
+002    29.04.25 dp; do BASE_IPAC2_TX_RESERSE doplneny texty pro souhlas nebo nesouhlas v modal okne
+002    02.04.25 jk; do BASE_IPAC2_XMLPARSE_OAI_CREPC_CIT_M21 pridan tag JK3
+002    29.01.25 jk; zruseny stare BASE_IPAC2_XMLPARSE... a upraveny Clarivate a Elsevier
+002    16.12.24 jk; do BASE_IPAC2_XMLPARSE_KUBO a BASE_IPAC2_XMLPARSE_KUBO_M21 doplneno 035
+002    25.11.24 jk; do  BASE_IPAC2_XMLPARSE_KUBO pridano 000
+002    07.11.24 jk; pridano BASE_IPAC2_XMLPARSE_KUBO a BASE_IPAC2_XMLPARSE_KUBO_M21
+002    16.10.24 jk; do BASE_IPAC2_XMLPARSE_OAI_CREPC_CIT_M21 pridano 856u DOI
+002    15.10.24 jk; v jazykovych verzich opraveno SK Vyberte -> Vyberťe
+002    03.09.24 jk; zruseno IPAC2_XMLPARSE_OAI_CREPC_CIT, pouziva se jen M21 verze
+002    24.06.24 jk; uprava a smazani duplicitniho BASE_IPAC2_XMLPARSE_CLWOS_M21
+002    10.05.24 lp; odstraneni duplicitniho obsahu, do BASE_IPAC2_TX_DASHBOARD doplneny text REQUESTS_NEXT1
+002    29.04.24 mj; opravy texty pro predregistraci ditete
+002    08.04.24 mj; texty pro predregistraci ditete
+002    03.04.24 jk; uprava 014 BASE_IPAC2_XMLPARSE_CLWOS a 024 BASE_IPAC2_XMLPARSE_CLWOS_M21
+002    19.03.24 ln; pridany avif,png,webp,webm do BASE_CONTENT_MIME
+002    23.02.24 jk; upraveno 773_1 v BASE_IPAC2_XMLPARSE_OAI_CREPC_CIT_M21
+002    22.02.24 ln; podpora stranky off
 002    12.12.23 rt; uprava EREADING_DOWNLOAD_URL_TXT a EREADING_DOWNLOAD_URL
 002    01.12.23 jk; pridano BASE_IPAC2_XMLPARSE_OAI_CREPC_CIT
 002    16.10.23 jk; uprava BASE_IPAC2_XMLPARSE_OAI_CREPC_CIT_M21
@@ -804,6 +824,7 @@
 200    aicon-vvibRada pro výzkum, vývoj a inovacet,logo,vvi,id,c0xE8b6sCosmotron
 200    aicon-warningbVarováníxcolor:#FF7000;t,varování,warning,c0xE826
 200    aicon-wosbWeb of Science (WoS)xcolor:#FC9E3C;t,logo,wos,c0xE81dsCosmotron
+
 ###
 # @id UN_TABLES BASE_IPAC2_ICONS
 200    aicon-adirectorybAdresář kontaktůt,dk,adresář,kontakty,contacts,c0xE865pssearch,result,detail,basket,eventssTypiconsdDigitální kronika
@@ -888,6 +909,7 @@
 200    aicon-gmapbMapa světat,gmap,mapa,odkaz,map,c0xE83cpsGlyphicons HalflingsdOdkaz na mapu světa - google mapy nebo mapy.cz
 200    aicon-googlebGooglexcolor:#3780ff;t,logo,google,ID,c0xF1a0pbookmarksFontAwesomedVyhledání na Google
 200    aicon-googlebooksbGoogle Bookst,googlebooks,logo,google,book,kniha,c0xE804pbookmarksCosmotrondVyhledat na Google knihách
+200    aicon-google-search-consolebGoogle Search consolet,google,konzole,console,search,c0xE878
 200    aicon-hidebSkrýtt,eye,hide,skrýt,form,skryťc0xE817plogin,preregsGlyphicons HalflingsdSkrýt heslo
 200    aicon-homebhomet,home,c0xE812sFontAwesomedARL home page, homepage
 200    aicon-chain-brokenbZrušit odkazt,link,odkaz,c0xF111padminsSummernotedPro WYSIWYG editor v administraci
@@ -902,6 +924,7 @@
 200    aicon-issuubIssuuxcolor:white;background:#F04D3C;t,issuu,logo,ebook,e-kniha,c0xE807sCosmotron
 200    aicon-italicbKurzívat,italic,kurzíva,zvýraznit,text,zvýrazniťc0xF11bpadminsSummernotedPro WYSIWYG editor v administraci
 200    aicon-keybKlíčt,klíč,key,heslo,kľúčc0xE851psGlyphicons Halflings
+200    aicon-kubobKobot,Kubo,logo,c0xE8c3
 200    aicon-lastbPoslednít,arrow,right,šipka,šípka,last,poslední,poslednýc0xE843presult,detailsGlyphicons HalflingsdStránkování záznamů
 200    aicon-leftbŠipka dolevat,arrow,doleva,left,šipka,šípka,c0xE871padmin,contser,events,dds,esearch,history,mail,oai,pay,rdds,uploader,rmvs,tagging,result,reserse,sFontAwesomedKalendář
 200    aicon-librarythingbLibraryThingxcolor:black;t,logo,librarything,socnet,c0xE823pbookmarksCosmotrondVyhledání v LibraryThing
@@ -927,6 +950,7 @@
 200    aicon-minusbMínust,mínus,minus,odebrat,odobraťc0xF11fpssearch,esearch,tsearch,adminsGlyphicons HalflingsdOdebrání něčeho. Pro WYSIWYG editor v administraci - vodorovná čára.
 200    aicon-mobibSoubor mobixcolor:white;background:black;t,mobi,file,soubor,súbor,ebook,e-kniha,c0xE825sCosmotron
 200    aicon-mobilebMobilní telefont,mobile,phone,telefon,c0xE86e
+200    aicon-mojeidbMojeIDt,MojeID,logo,c0xE8c5plogindPřihlášení
 200    aicon-monumentbpamětihodnostt,monument,památka,pamětihodnost,c0xE8BCsFlaticondDigiální kronika
 200    aicon-moveitemsbPřesunoutt,moveitems,přesunout,presunúťc0xE841psGlyphicons Halflings
 200    aicon-municipalnewsbObecní zpravodajt,dk,zpravodaj,obecní,rapporteur,c0xF1eapssearch,result,detail,basket,eventsdDigitální kronika
@@ -979,9 +1003,11 @@
 200    aicon-sdtocbOdběr obsahůt,sdtoc,odběr,odberc0xE83dpsGlyphicons Halflings
 200    aicon-searchbVyhledatt,search,lupa,vyhledat,lupička,hledat,vyhľadaťc0xE80bpresult,detail,basketsGlyphicons HalflingsdV zobrazovacích formátech jak odkaz
 200    aicon-settingbNastavenít,setting,cog,nastavení,nastaveniec0xE811padminsGlyphicons HalflingsdV administraci stránek - menu
+200    aicon-seznamczbSeznam.czxcolor:#D50911;t,login,přihlášení,seznam.cz,c0xE8c6plogindPřihlášení
 200    aicon-sharebSdílett,share,sdilet,zdieľať,bookmark,c0xE801sEntypo
 200    aicon-showbZobrazitt,eye,show,display,zobrazit,zobraziťc0xE816plogin,prereg,basketsGlyphicons HalflingsdZobrazit heslo, Nabídka zobrazovacích formátů
 200    aicon-signalbSignalt,contact,signal,c0xE8e8pcontactdcontact
+200    aicon-sitemapbSitemapt,Mapawebu,c0xF0e8
 200    aicon-skypebSykpet,Skype,logo,c0xF17EpcontactsFont AwesomedKontakt na Skype
 200    aicon-sortbTříděnít,sort,třídění,triedeniec0xE83fpresult,basket,iconssGlyphicons HalflingsdTřídění výsledků vyhledávání
 200    aicon-sort-name-downbTřídit dle abecedy Z-At,sort,třídění,triedenie,abecední,c0xF15epesearchsFontAwesomedTřídění limit
@@ -1160,9 +1186,11 @@
 200    aPG_EBOOK_TEXTbPožičať si e-dokument#Půjčit si e-dokument#Borrow e-document
 200    aPG_EBOOK_TEXT_BbPožičať si e-knihu#Půjčit si e-knihu#Borrow e-book
 200    aPG_EBOOK_TEXT_AbPožičať si audioknihu#Půjčit si audioknihu#Borrow audiobook
+200    aPG_EBOOK_TEXT_KbPožičať e-knihu#Půjčit si e-knihu#Borrow e-book
 200    aPG_EBOOK_TITLEbFormulár pre dokončenie výpožičky e-dokumentu#Formulář pro dokončení výpůjčky e-dokumentu#The form for completing an e-document loan
 200    aPG_EBOOK_TITLE_BbFormulár pre dokončenie výpožičky e-knihy#Formulář pro dokončení výpůjčky e-knihy#The form for completing an e-book loan
 200    aPG_EBOOK_TITLE_AbFormulár pre dokončenie výpožičky audioknihy#Formulář pro dokončení výpůjčky audioknihy#The form for completing an audiobook loan
+200    aPG_EBOOK_TITLE_KbPožičať e-knihu od KUBO MEDIA#Půjčit si e-knihu od KUBO MEDIA#Borrow e-book from KUBO MEDIA
 200    aPG_EMSRC_TEXTbMoje zdroje#Mé zdroje#My resources
 200    aPG_EMSRC_TITLEbSpráva skupín zdrojov na vyhľadávanie v online katalógu#Správa skupin zdrojů pro vyhledávání v online katalogu#Resources groups for online catalogue search administration
 200    aPG_EPCASTATCHARTPRAC_TEXTbŠtatistiky za pracovisko#Statistiky za pracoviště#Statistics by the workplace
@@ -1264,8 +1292,12 @@
 200    aPG_PDATA_TITLEbRegistračné a osobné údaje používateľa#Registrační a osobní údaje uživatele#Registration and personal user data
 200    aPG_PREREG_TEXTbPredregistrácia#Předregistrace#Pre-registration
 200    aPG_PREREG_TITLEbFormulár na predregistráciu používateľa do knižnice#Formulář na předregistraci uživatele do knihovny#User pre-registration form page
+200    aPG_PREREGCHILD_TEXTbPredregistrácia (dieťaťa)#Předregistrace (dětí)#Pre-registration (child)
+200    aPG_PREREGCHILD_TITLEbFormulár na predregistráciu užívateľa do knižnice (dieťaťa)#Formulář na předregistraci uživatele do knihovny (dítěte)#User pre-registration form page (child)
 200    aPG_PRINT_TEXTbVytlačiť#Vytisknout#Print
 200    aPG_PRINT_TITLEbZobraziť náhľad pred tlačou a vytlačiť#Zobrazit náhled před tiskem a vytisknout#Show preview and print
+200    aPG_PRINTPAY_TEXTbPlatobný doklad#Platební doklad#The Payment Document
+200    aPG_PRINTPAY_TITLEbZobraziť náhľad pred tlačou a vytlačiť platobný doklad#Zobrazit náhled před tiskem a vytisknout platební doklad#Show preview and print the payment document
 200    aPG_PROJECT_TEXTbO projekte#O projektu#About
 200    aPG_PROJECT_TITLEbO projekte#O projektu#About
 200    aPG_RATING_TEXTbHodnotenie záznamov#Hodnocení záznamů#Records rating
@@ -1305,11 +1337,13 @@
 200    aPG_TAGGING_TEXTbŠtítky#Štítky#Tags
 200    aPG_TAGGING_TITLEbŠtítky#Štítky#Tags
 200    aPG_TRANSACTION_TEXTbVýpožičky, rezervácie, …#Výpůjčky, rezervace, …#Loans, reservations, …
-200    aPG_TRANSACTION_TITLEbPrehľad aktuálnych výpožičiek, upomienok, rezervácií a žiadaniek používateľa#Přehled aktuálních výpůjček, upomínek, rezervací a žádanek uživatele#Overview of the current user's loans, overdue notices, reservation and requests
+200    aPG_TRANSACTION_TITLEbPrehľad aktuálnych výpožičiek, e-výpožičiek, upomienok, rezervácií a žiadaniek používateľa#Přehled aktuálních výpůjček, e-výpůjček, upomínek, rezervací, žádanek uživatele#Overview of the current user's loans, ebook loans, overdue notices, reservation and requests
 200    aPG_TSEARCH_TEXTbPredmetové vyhľadávanie#Předmětové vyhledávání#Subject search
 200    aPG_TSEARCH_TITLEbVyhľadávanie podľa predmetových kategórií#Vyhledávání podle předmětových kategorií#Search by subject catetories
 200    aPG_UPLOADER_TEXTbNahrať prílohu#Nahrát přílohu#Upload attachement
 200    aPG_UPLOADER_TITLEbNahrať prílohu k záznamu#Nahrát přílohu k záznamu#Upload attachement to record
+200    aPG_USERSADMIN_TEXTbZjednodušená správa užívateľov#Zjednodušená správa uživatelů#User administration simplified
+200    aPG_USERSADMIN_TITLEbZjednodušená správa užívateľov#Zjednodušená správa uživatelů#User administration simplified
 200    aPG_WEBMANIFEST_TITLEbPWA
 200    aPG_WEBMANIFEST_TEXTbPWA
 200    aPG_ZFSET_TEXTbKonfigurace zobrazovacího formátu
@@ -1364,6 +1398,7 @@
 200    aDEBUG_INSERTDATAbVložiť dáta#Vložit data#Insert data
 200    aDEBUG_LICENSEbLicencia#Licence#License
 200    aDEBUG_MAINNAMEbLaděnka#Laděnka#Debugger
+200    aDEBUG_METADATAbMetadáta#Metadata#Metadata
 200    aDEBUG_NAMESPACEbMenný priestor#Jmenný prostor#Namespace
 200    aDEBUG_OPENWEBADMINbOtvoriť v aplikácii Web admin#Otevřít v aplikaci Web admin#Open the Web admin
 200    aDEBUG_PAGEbPremenné stránky#Proměnné stránky#Page variables
@@ -1452,6 +1487,7 @@
 200    aCOSMOTRON_COPYRIGHTb©
 200    aCOSMOTRON_EMAILbfirma@cosmotron.sk#firma@cosmotron.cz#firma@cosmotron.cz
 200    aCOSMOTRON_NAMEbCosmotron Slovakia, s.r.o.#Cosmotron Bohemia, s.r.o.#Cosmotron Slovakia, s.r.o.
+200    aCOSMOTRON_WEB_TITLEbWeb spoločnosti#Web společnosti#Company website
 200    aCOSMOTRON_URLbhttps://www.cosmotron.sk#https://www.cosmotron.cz#https://www.cosmotron.sk
 200    aCOSMOTRON_WWWbwww.cosmotron.sk#www.cosmotron.cz#www.cosmotron.sk
 200    aFORM_CAPTCHA_ANTISPAMbOchrana proti spamu#Ochrana proti spamu#Anti Spam
@@ -1506,7 +1542,7 @@
 200    aGOPAGEbPrejsť#Přejít#Go
 200    aGOTOLINKbPrejsť na stránku#Přejít na stránku#Go to this page
 200    aCHECKBOX_CHECKbOznačiť všetko#Označit vše#Select all
-200    aCHECKBOX_SELECTONEbVyberte aspoň jednu položku#Vyberte aspoň jednu položku#Choose at least one option
+200    aCHECKBOX_SELECTONEbVyberťe aspoň jednu položku#Vyberte aspoň jednu položku#Choose at least one option
 200    aCHECKBOX_UNCHECKbOdznačiť všetko#Odznačit vše#Untick the all selected
 200    aCHECKBOXbZaškrtávacie políčko#Zatrhávací políčko#Checkbox
 200    aINFObInfo#Info#Info
@@ -1520,6 +1556,7 @@
 200    aPACKUPbZbaliť#Sbalit#Pack up
 200    aPINEPAGEbPrichytiť panel zobrazenie výsledkov hore#Přichytit panel zobrazení výsledků nahoře#Pin the results display panel at the top
 200    aPINEPAGE2bOdopnúť panel zobrazenia výsledkov#Odepnout panel zobrazení výsledků#Detach the results display panel
+200    aCITATION_SELECTbVyber#Vyber#Choice
 200    aPW_CAPSLOCKbJe zapnutý Caps Lock#Je zapnutý Caps Lock#Caps Lock is on
 200    aPW_HIDEbSkryť heslo#Skrýt heslo#Hide password
 200    aPW_MEDIUMbStredne silné heslo#Středně silné heslo#Medium password
@@ -1631,7 +1668,7 @@
 002    -- linky ze ZF na stranku Kontakty
 200    aCONTACT_BRANCHLINKTITLEbKontaktné informácie pre lokáciu:#Kontaktní informace pro lokaci:#Contact information for location:
 200    aCONTACT_PLACELINKTITLEbInformácie o umiestnení pre dislokáciu:#Informáce o umístnění pro dislokaci:#Information for sublocation:
-200    aNOT_SELECTbNeboli nájdené záznamy, najprv vyberte záznamy v košíku alebo vo výsledkoch vyhľadávania.#Nenalezeny žádné záznamy, nejdříve vyberte záznamy v košíku, nebo ve výsledcích vyhledávání.#No records found. Choose some records from the basket or search results.
+200    aNOT_SELECTbNeboli nájdené záznamy, najprv vyberťe záznamy v košíku alebo vo výsledkoch vyhľadávania.#Nenalezeny žádné záznamy, nejdříve vyberte záznamy v košíku, nebo ve výsledcích vyhledávání.#No records found. Choose some records from the basket or search results.
 002    -- thomson linky
 200    aTHOMSON1bhttp://gateway.isiknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcAuth=Alerting&SrcApp=Alerting&DestApp=$DB_UPEXT&DestLinkType=FullRecord&UT=$T001
 200    aTHOMSON1_WOSCITbhttp://gateway.isiknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcAuth=Alerting&SrcApp=Alerting&DestApp=WOS&DestLinkType=FullRecord&UT=$T001
@@ -1843,6 +1880,7 @@
 200    aADDRATINGTITLEbKliknutím pridať nové hodnotenie#Kliknutím přidat nové hodnocení#Add new rating
 200    aCOMMENTEDALLREADYbTento titul bol už Vami hodnotený.#Tento titul už byl Vámi hodnocen.#You had commented this title allready.
 200    aCOMMENTEDbkomentované#komentováno#commented
+200    aCOMMENTSIGNINbAk chcete prispieť Vašim hodnotením prosím prihláste sa k svojmu účtu.#Pokud chcete přispět Vašim hodnocením prosím přihlaste se ke svému účtu.#You must sign if you want to create new comments.
 200    aNORATINGSCOREbNehodnotené#Nehodnoceno#Not rated
 200    aRATEDbhodnotené#hodnoceno#rated
 200    aRATING_BADbPodpriemerné#Podprůmerné#Bad
@@ -1868,6 +1906,7 @@
 200    aAD_DAYSbDňa#Ve dnech#From
 200    aAD_ISbmá#má#is
 200    aAD_LIBRARYbknižnica#knihovna#library
+200    aAD_LIBRARY2bknižnice#knihovny#library
 200    aAD_RESTRICTEDbobmedzenú prevádzkovú dobu#omezenu pracovní dobu#restricted opening hours
 200    aAD_TObaž#až#to
 002    ----------------------------------------------------------------------
@@ -2193,8 +2232,8 @@
 200    aSKATALOG_TITLEbVyhľadať v súbornom katalógu#Vyhledat v souborném katalogu#Search the Union Catalogue
 200    aSKATALOGbSúborný katalóg#Souborný katalog#Union Catalogue
 200    aTITLEbUložiť do Mojich dokumentov záznam#Uložit do Mých dokumentů záznam#Save to My documents record
-200    aTWITTER_TITLEbZdieľať na Twitter.com#Sdílet na Twitter.com#Share on Twitter.com
-200    aTWITTERbTwitter.com#Twitter.com#Twitter.com
+200    aTWITTER_TITLEbZdieľať na X.com#Sdílet na X.com#Share on X.com
+200    aTWITTERbX.com#X.com#X.com
 200    aWIKIPEDIA_TITLEbVyhľadať vo Wikipedii#Vyhledat na Wikipedii#Search Wikipedia
 200    aWIKIPEDIAbWikipedia.org#Wikipedia.org#Wikipedia.org
 ###
@@ -2213,6 +2252,7 @@
 ###
 # @id UN_TABLES BASE_IPAC2_TX_CONTACT
 200    aADDRESSbAdresa#Adresa#Address
+200    aALERT_MAP_COOKIESbPre zobrazenie mapy je mutné povoliť analytické súbory cookie pre mapy.cz#Pro zobrazení mapy je mutné povolit analytické soubory cookie pro mapy.cz#To display the map, it is necessary to enable analytical cookies for mapy.cz
 200    aBRANCHESbPobočky#Pobočky#Branches
 200    aCLOSEDbZatvorené#Zavřeno#Closed
 200    aCONTACTbKontakt#Kontakt#Contact
@@ -2237,6 +2277,7 @@
 200    aFOURSQUAREbFoursquare#Foursquare#Foursquare
 200    aFQ_TITLEbZobraziť na Foursquare#Zobrazit na Foursquare#Show on Foursquare
 200    aGOOGLEMAPSbMapy.cz#Mapy.cz#Maps Mapy.cz
+200    aMAPYCZbMapy.cz#Mapy.cz#Maps Mapy.cz
 200    aHOURSbOtváracie hodiny#Otevírací hodiny#Opening Hours
 200    aKEYWORDSbkontakt,Otváracie hodiny,mapa#kontakt,Otevírací hodiny,mapa#contact,Opening Hours,maps
 200    aLOCATIONbUmiestnenie dokumentov#Umístění dokumentů#Location of documents
@@ -2366,6 +2407,7 @@
 200    aRATING_TITLEbHistória výpožičiek s dokumentmi na hodnotenie#Historie výpůjček s dokumenty k hodnocení#History of loans with documents for evaluation
 200    aREQUESTS_DATEbDátum platnosti žiadanky#Datum platnosti žádanky#Request validity date
 200    aREQUESTS_NEXTbďalšie pripravené na vyzdvihnutie#další připravené k vyzvednutí#other ready for pickup
+200    aREQUESTS_NEXT1bďalšia pripravená na vyzdvihnutie#další připravená k vyzvednutí#other ready for pickup
 200    aREQUESTS_NRbPripravené na vyzdvihnutie:#Připraveno k vyzvednutí:#Ready for pickup:
 200    aREQUESTS_TEXTbPripravené na vyzdvihnutie#Připraveno k vyzvednutí#Ready for pickup
 200    aRESERVATION_DATEbDátum platnosti rezervácie#Datum platnosti rezervace#Reservation validity date
@@ -2387,6 +2429,25 @@
 200    aYEARSbrokov#roků#years
 ###
 # @id UN_TABLES BASE_IPAC2_TX_DETAIL
+200    aACCESSIBILITYbDostupnosť#Dostupnost#Accessibility
+200    aAVAILABLEbNa vypožičanie#K vypůjčení#To borrow
+200    aBARCODEbČiarový kód#Čárový kód#Barcode
+200    aBRANCHbPobočka#Pobočka#Branch
+200    aCALLNUMBERbSignatura#Signatura#Signature
+200    aTRACKNUMBERbPrírastkové číslo#Přírůstkové číslo#Incremental number
+200    aDAYSbdni#dny#days
+200    aHTMLLANGbsk-SK#cs-CZ#en-GB
+200    aDISLOCATIONbID dislokácie#ID dislokace#Dislocation ID
+200    aDISLOCATION_IDbDislokácia#Dislokace#Dislocation
+200    aIN_LIBRARY_USE_ONLYbIba prezenčne#Pouze prezenčně#In-Library Use Only
+200    aLOAN_PERIODbDoba výpožičky#Doba výpůjčky#Loan period
+200    aLOCATIONbLokácia#Lokace#Location
+200    aLOCATION_IDbID lokácie#ID lokace#Location ID
+200    aNOT_AVAILABLEbNedostupné#Nedostupné#Unavailable
+200    aRECORDbZáznam#Záznam#Record
+200    aRECORD_NAMEbNázov záznamu#Název záznamu#
+200    aUNKNOWN_AVAILABILITYbNeznáma dostupnosť#Neznámá dostupnost#Unknown availability
+200    aXMLINFO_TITLEbXML info
 200    aBOOK1bKnihu#Knihu#Book
 200    aCOMMENTADDCOMMENTbPridajte komentár a podeľte sa o svoje zážitky#Přidejte komentář a podělte se o své zážitky#Add comment and share your impression
 200    aCOMMENTADDFIRST_COMMENTbTento záznam ešte nikto nekomentoval. Buďte prvý a podeľte sa o svoje zážitky.#Tento záznam ještě nikdo nekomentoval. Buďte první a podělte se o své zážitky.#This record is not commented. Add first comment and share your impression.
@@ -2400,7 +2461,8 @@
 200    aCOMMENTTITLEbHodnotenie záznamu#Hodnocení záznamu#Comments of
 200    aCOMMENTYOURIMPRESSIONbVáš celkový dojem#Váš celkový dojem#Your impression
 200    aFINDINbnájdete v knižnici#najdete v knihovně#find in a library
-200    aGOOGLEMAPSbMapy.cz#Mapy.cz#Maps Mapy.cz
+200    aGOOGLEMAPSbMapy Google#Mapy Google#Google Maps
+200    aMAPYCZbMapy.cz#Mapy.cz#Maps Mapy.cz
 200    aHEAD_DESCRIPTIONbDetail záznamu#Detail záznamu#Record detail
 200    aKEYWORDSbdetail#detail#detail
 200    aMAPbMapa#Mapa#Map
@@ -2417,6 +2479,7 @@
 200    aSHOWONMAPbZobraziť na Mapy.cz#Zobrazit na Mapy.cz#Show on map Mapy.cz
 200    aTAGGINGTITLEbŠtítky#Štítky#Tags
 200    aVIEW_FORMATSbZobrazovacie formáty#Zobrazovací formáty#Display formats
+200    aBOOKOFFERbKniha dostupná na vypožičanie v#Kniha dostupná k vypůjčení v#The book is available for loan
 ###
 # @id UN_TABLES BASE_IPAC2_TX_DDS
 200    aADDITIONAL_INFObDoplňujúce informácie k žiadanke#Doplňující informace k žádance#Added information about the request
@@ -2426,20 +2489,20 @@
 200    aCISLObČíslo#Číslo#Number
 200    aDESCRIPTIONbFormulár na vyžiadanie kópie dokumentu.#Formulář pro vyžádání kopie dokumentu.#Form for the document copy request.
 200    aDISAGREEbNesúhlasím#Nesouhlasím#Disagree
-200    aERR_DELIVERY_METHODbVyberte spôsob doručenia#Vyberte způsob doručení#Choose a delivery method
+200    aERR_DELIVERY_METHODbVyberťe spôsob doručenia#Vyberte způsob doručení#Choose a delivery method
 200    aERR_DOUBLESAVEbNie je možné odoslať dvakrát#Nelze odeslat dvakrát#It is not possible to send request twice
-200    aERR_FORMAT_COPYbVyberte formát kópie#Vyberte formát kopie#Choose a copy format
+200    aERR_FORMAT_COPYbVyberťe formát kópie#Vyberte formát kopie#Choose a copy format
 200    aERR_OPEN_RECORDbNebolo možné otvoriť požadovaný záznam. Prosím opakujte výber#Nebylo možné otevřít požadovaný záznam. Prosím opakujte výběr#It was not possible to open the required record. Please try to choose again
 200    aERROR_SAVEbChyba pri zápise:#Chyba pri zápisu:#Error in saving:
 200    aFORM_DATE_FORMATb(Zadajte dátum vo formáte DD.MM.RRRR)#(Zadejte datum ve formátu DD.MM.RRRR)#(Enter the date in format DD.MM.YYYY)
 200    aFORMATKOPIEbFormát kópie#Formát kopie#Copy format
-200    aCHOOSEbVyberte#Vyberte#Choose
+200    aCHOOSEbVyberťe#Vyberte#Choose
 200    aISBNbČíslo ISBN#Číslo ISBN#ISBN
 200    aISSNbČíslo ISSN#Číslo ISSN#ISSN
 200    aNAMEPbNázov periodika#Název periodika#Periodical title
 200    aNAZEVbNázov#Název#Title
 200    aNEPRIHLASENbNeprihlásený používateľ nemôže žiadať o kópie#Nepřihlášený uživatel nemůže žádat o kopie#Unregistered users cannot ask for copies
-200    aNORECORDbNebol vybraný žiadny záznam. Vyberte záznam a zopakujte činnosť#Nebyl vybrán žádný záznam. Vyberte záznam a zopakujte činnost#No record was chosen. Choose record and repeat the operation
+200    aNORECORDbNebol vybraný žiadny záznam. Vyberťe záznam a zopakujte činnosť#Nebyl vybrán žádný záznam. Vyberte záznam a zopakujte činnost#No record was chosen. Choose record and repeat the operation
 200    aNOTAPPROVALbChýba súhlas z podmienkami DDS#Chybí souhlas s podmínkami DDS#Agreement with DDS conditions
 200    aNOXSZPbPre súborný záznam nie je možné vytvoriť žiadanku. Vyhľadajte dané číslo časopisu.#Pro souborný záznam nelze vytvořit žádanku. Vyhledejte dané číslo časopisu.#It is not possible to make a request for collective periodical record. Find the particular issue (number) of the periodical.
 200    aNUMBER_FORMATbZadajte číslo periodika#Zadejte číslo periodika#Enter the periodical number
@@ -2544,8 +2607,8 @@
 200    aEREADING_DOWNLOAD_URL_TXTbPalmKnihy.cz.#PalmKnihy.cz.#PalmKnihy.cz.
 200    aEREADING_DOWNLOAD_URLb Prečítajte si <a href="https://www.palmknihy.cz/napoveda" target="_blank" rel="external" hreflang="cs">Ako na eVýpôžičky</a>. Prehľad Vašich vypožičaných e-dokumentov nájdete po prihlásení do svojho účtu v zložke eVýpožičky na # Přečtěte si <a href="https://www.palmknihy.cz/napoveda" target="_blank" rel="external" hreflang="cs">Jak na eVýpůjčky</a>. Přehled Vašich vypůjčených e-dokumentů najdete po přihlášení do svého účtu ve složce eVýpůjčky na # Read more about <a href="https://www.palmknihy.cz/napoveda" target="_blank" rel="external" hreflang="cs">How to eLoans</a>. You can find an overview of your borrowed e-documents after logging into your account in the e-Loans folder at #
 200    aEREADING_ERR_SENDMAILbChyba pri posielaní emailu#Chyba při odesílání e-mailu#Error in sending email
-200    aEREADING_FORM_UP_Ab#<p>Naše knihovna ve spolupráci s <a href="https://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">PalmKnihy.cz</a> umožnila svým čtenářům půjčování audioknih. Vypůjčené audioknihy lze poslouchat na čtečkách eReading START 2/3, eReading 4 Touch Light a v aplikacích pro chytré telefony a tablety s operačním <a href="https://itunes.apple.com/cy/app/ereading.cz/id692702134?mt=8" target="_blank" rel="external">systémem iOS</a> a <a href="https://play.google.com/store/apps/details?id=cz.ereading.android" target="_blank" rel="external">systémem Android</a>. <br> Podmínky uskutečnění e-výpůjčky:</p><ul><li>v kontě čtenáře knihovny musí být vyplněna platná emailová adresa,</li><li>čtenář musí být <a href="https://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">zaregistrován na stránkach PalmKnihy.cz</a> pod shodnou e-mailovou adresou,</li><li>čtenář souhlasí s <a href="https://www.palmknihy.cz/obchodni-podminky" target="_blank" rel="external" hreflang="cs">všeobecnými obchodními podmínkami PalmKnihy.cz</a>.</li></ul> <p> Délka výpůjčky je <strong>21 dní</strong>. Čtenář může mít zároveň vypůjčeny maximálně <strong>2 tituly</strong>.<br> Služba je registrovaným čtenářům poskytována zdarma. </p>#<p>Our library in cooperation with <a href="http://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">PalmKnihy.cz</a> enabled its readers listen to audiobooks. Borrowed audiobook can be read on readers eReading START 2/3 eReading 4 Touch Light and applications for smartphones and tablets running on <a href="https://itunes.apple.com/cy/app/ereading.cz/id692702134?mt=8" target="_blank" rel="external">operating system iOS</a> and <a href="https://play.google.com/store/apps/details?id=cz.ereading.android" target="_blank" rel="external">Android operating system</a>.<br>Terms of realization of e-borrowing:</p><ul><li>a valid e-mail address must be filled in the library user account,</li><li>the reader must be <a href="https://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">registered on the site PalmKnihy.cz </a> under the same e-mail address,</li><li> the reader agrees with <a href="https://www.palmknihy.cz/obchodni-podminky" target="_blank" rel="external" hreflang="cs">general terms and conditions of PalmKnihy.cz</a>.</li></ul> <p> The length of the borrowing is <strong> 21 days </strong>. The reader may have simultaneously borrowed up to <strong> 2 titles</strong>.<br>The service is free of charge for registered library users.</p>
-200    aEREADING_FORM_UPb#<p>Naše knihovna ve spolupráci s <a href="https://www.palmknihy.cz/" data-target="_blank">Palmknihy.cz</a> umožnila svým čtenářům půjčování e-knih. Vypůjčené e-knihy lze číst na čtečkách e-knih, chytrých telefonech a tabletech s operačním <a data-role="button" data-theme="c" data-inline="true" data-ajax="false" href="https://apps.apple.com/cz/app/palmknihy/id1468124335" data-target="_blank">systémem iOS</a> a <a data-role="button" data-theme="c" data-inline="true" data-ajax="false" href="https://play.google.com/store/apps/details?id=cz.albatrosmedia.palmknihy" data-target="_blank">systémem Android</a>. <br> Podmínky uskutečnění e-výpůjčky:</p><ul><li>v kontě čtenáře knihovny musí být vyplněna platná emailová adresa,</li><li>čtenář musí být <a data-role="button" data-theme="c" data-inline="true" data-ajax="false" href="https://www.palmknihy.cz/" data-target="_blank">zaregistrován na stránkach Palmknihy.cz</a> pod shodnou e-mailovou adresou,</li><li>čtenář souhlasí s <a data-role="button" data-theme="c" data-inline="true" data-ajax="false" href="https://www.palmknihy.cz/obchodni-podminky" data-target="_blank">všeobecnými obchodními podmínkami Palmknihy.cz</a>.</li></ul> <p> Délka výpůjčky je <strong>21 dní</strong>. Čtenář může mít zároveň vypůjčeny maximálně <strong>2 e-knihy</strong>.<br> Služba je registrovaným čtenářům poskytována zdarma. </p>
+200    aEREADING_FORM_UP_Ab#<p>Naše knihovna ve spolupráci s <a href="https://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">PalmKnihy.cz</a> umožnila svým čtenářům půjčování audioknih. Vypůjčené audioknihy lze poslouchat na čtečkách eReading START 2/3, eReading 4 Touch Light a v aplikacích pro chytré telefony a tablety s operačním <a href="https://itunes.apple.com/cy/app/ereading.cz/id692702134?mt=8" target="_blank" rel="external">systémem iOS</a> a <a href="https://play.google.com/store/apps/details?id=cz.ereading.android" target="_blank" rel="external">systémem Android</a>. <br> Podmínky uskutečnění e-výpůjčky:</p><ul><li>v kontě čtenáře knihovny musí být vyplněna platná emailová adresa,</li><li>čtenář musí být <a href="https://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">zaregistrován na stránkach PalmKnihy.cz</a> pod shodnou e-mailovou adresou,</li><li>čtenář souhlasí s <a href="https://www.palmknihy.cz/obchodni-podminky" target="_blank" rel="external" hreflang="cs">všeobecnými obchodními podmínkami PalmKnihy.cz</a>.</li></ul> <p> Délka výpůjčky je <strong>21 dní</strong>. Čtenář může mít zároveň vypůjčeny maximálně <strong>2 audioknihy</strong>.</p>#<p>Our library in cooperation with <a href="http://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">PalmKnihy.cz</a> enabled its readers listen to audiobooks. Borrowed audiobook can be read on readers eReading START 2/3 eReading 4 Touch Light and applications for smartphones and tablets running on <a href="https://itunes.apple.com/cy/app/ereading.cz/id692702134?mt=8" target="_blank" rel="external">operating system iOS</a> and <a href="https://play.google.com/store/apps/details?id=cz.ereading.android" target="_blank" rel="external">Android operating system</a>.<br>Terms of realization of e-borrowing:</p><ul><li>a valid e-mail address must be filled in the library user account,</li><li>the reader must be <a href="https://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">registered on the site PalmKnihy.cz </a> under the same e-mail address,</li><li> the reader agrees with <a href="https://www.palmknihy.cz/obchodni-podminky" target="_blank" rel="external" hreflang="cs">general terms and conditions of PalmKnihy.cz</a>.</li></ul> <p> The length of the borrowing is <strong> 21 days </strong>. The reader may have simultaneously borrowed up to <strong> 2 titles</strong></p>
+200    aEREADING_FORM_UPb#<p>Naše knihovna ve spolupráci s <a href="https://www.palmknihy.cz/" data-target="_blank">Palmknihy.cz</a> umožnila svým čtenářům půjčování e-knih. Vypůjčené e-knihy lze číst na čtečkách e-knih, chytrých telefonech a tabletech s operačním <a data-role="button" data-theme="c" data-inline="true" data-ajax="false" href="https://apps.apple.com/cz/app/palmknihy/id1468124335" data-target="_blank">systémem iOS</a> a <a data-role="button" data-theme="c" data-inline="true" data-ajax="false" href="https://play.google.com/store/apps/details?id=cz.albatrosmedia.palmknihy" data-target="_blank">systémem Android</a>. <br> Podmínky uskutečnění e-výpůjčky:</p><ul><li>v kontě čtenáře knihovny musí být vyplněna platná emailová adresa,</li><li>čtenář musí být <a data-role="button" data-theme="c" data-inline="true" data-ajax="false" href="https://www.palmknihy.cz/" data-target="_blank">zaregistrován na stránkach Palmknihy.cz</a> pod shodnou e-mailovou adresou,</li><li>čtenář souhlasí s <a data-role="button" data-theme="c" data-inline="true" data-ajax="false" href="https://www.palmknihy.cz/obchodni-podminky" data-target="_blank">všeobecnými obchodními podmínkami Palmknihy.cz</a>.</li></ul> <p> Délka výpůjčky je <strong>21 dní</strong>. Čtenář může mít zároveň vypůjčeny maximálně <strong>2 e-knihy</strong>.</p>#<p>Our library in cooperation with <a href="http://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">PalmKnihy.cz</a> enabled its readers borrowing of e-books. Borrowed e-books can be read using on readers eReading START 2/3 eReading 4 Touch Light and applications for smartphones and tablets running on <a href="https://itunes.apple.com/cy/app/ereading.cz/id692702134?mt=8" target="_blank" rel="external">operating system iOS</a> and <a href="https://play.google.com/store/apps/details?id=cz.ereading.android" target="_blank" rel="external">Android operating system</a>.<br>Terms of realization of e-borrowing:</p><ul><li>a valid e-mail address must be filled in the library user account,</li><li>the reader must be <a href="https://www.palmknihy.cz/" target="_blank" rel="external" hreflang="cs">registered on the site PalmKnihy.cz </a> under the same e-mail address,</li><li> the reader agrees with <a href="https://www.palmknihy.cz/obchodni-podminky" target="_blank" rel="external" hreflang="cs">general terms and conditions of PalmKnihy.cz</a>.</li></ul> <p> The length of the borrowing is <strong> 21 days </strong>. The reader may have simultaneously borrowed up to <strong> 2 titles</strong></p>
 200    aEREADING_LOAN_TIME_INFO_AbVýpožička audioknihy je zaevidovaná a jej platnosť skončí #Výpůjčka audioknihy je zaevidována a její platnost vyprší dne #Audiobook loan is registered and will expire on
 200    aEREADING_LOAN_TIME_INFObVýpožička e-knihy je zaevidovaná a jej platnosť skončí #Výpůjčka e-knihy je zaevidována a její platnost vyprší dne #e-Book loan is registered and will expire on
 200    aEREADING_SENDEMAIL_INFObInformačný e-mail bude poslaný na adresu#Informační e-mail s detailem výpůjčky a návodem bude zaslán na adresu#Information email will be sent to
@@ -2558,8 +2621,17 @@
 200    aERR_SAVE_TRXbChyba pri tvorbe transakcie#Chyba při tvorbě transakce#Error in creating transaction
 200    aEXPIRATION_AbVýpožička audioknihy je zaevidovaná a jej platnosť skončí dňa#Výpůjčka audioknihy je zaevidována a její platnost vyprší dne#Audiobooks borrowing is registered and will expire on
 200    aEXPIRATIONbVýpožička e-knihy je zaevidovaná a jej platnosť skončí dňa#Výpůjčka e-knihy je zaevidována a její platnost vyprší dne#E-books borrowing is registered and will expire on
-200    aFLEXIBOOKS_FORM_UPb#<p>Knihovna ve spolupráci s e-shopem <a href="https://flexibooks.cz/" target="_blank" rel="external">Flexibooks</a> umožnila svým čtenářům půjčování e-knih. Vypůjčené e-knihy lze číst v <a href="https://flexibooks.cz/jak-cist/" target="_blank" rel="external">čtečce Flexibooks</a> pro PC, chytré telefony a tablety s operačními systémy iOS, Android a Windows.<br>Podmínky uskutečnění e-výpůjčky:</p><p><ul><li>v kontě čtenáře knihovny musí být vyplněna platná emailová adresa,</li><li>čtenář se musí zaregistrovat na e-shopu Flexibooks,</li><li>čtenář souhlasí s všeobecnými obchodními podmínkami Flexibooks.</p><p>Délka výpůjčky je <strong>31 dní</strong>. Čtenář může mít současně vypůjčeny maximálně <strong>3 tituly.</strong> <br>Služba je registrovaným čtenářům knihovny poskytována zdarma.<br>Bude Vám zaslán e-mail s informací o realizované výpůjčce.</p>#<p>The library in cooperation with e-shop <a href="https://flexibooks.cz/" target="_blank" rel="external"> Flexibooks </a> enabled its readers borrowing of e-books. Borrowed e-books can be read using <a href="https://flexibooks.cz/jak-cist/" target="_blank" rel="external"> reader Flexibooks</a> for PCs, smartphones and tablets with iOS, Android and Windows.<br>E-loans terms of realization: </p><p><ul><li>the library user account must contain valid email address,</li><li>the reader must registered with e-shop Flexibooks,</li><li>the reader agrees with the general terms and conditions of Flexibooks.</p><p>The length of the loan is <strong>31 days</ strong>. The reader may have simultaneously borrowed up to <strong>3 titles.</strong><br> The service is free of charge for registered library users.<br>You will be sent an e-mail with information about the realized borrowing.
+200    aFLEXIBOOKS_FORM_UPb#<p>Knihovna ve spolupráci s e-shopem <a href="https://flexibooks.cz/" target="_blank" rel="external">Flexibooks</a> umožnila svým čtenářům půjčování e-knih. Vypůjčené e-knihy lze číst <a href="http://Flexibooks.cz/jak-cist/" data-target="_blank">online na stránce Flexibooks</a> pro PC, chytré telefony a tablety s operačními systémy iOS, Android a Windows.<br>Podmínky uskutečnění e-výpůjčky:</p><p><ul><li>v kontě čtenáře knihovny musí být vyplněna platná emailová adresa,</li><li>čtenář se musí zaregistrovat na e-shopu Flexibooks,</li><li>čtenář souhlasí s všeobecnými obchodními podmínkami Flexibooks.</p><p>Délka výpůjčky je <strong>31 dní</strong>. Čtenář může mít současně vypůjčeny maximálně <strong>3 tituly.</strong> <br>Služba je registrovaným čtenářům knihovny poskytována zdarma.<br>Bude Vám zaslán e-mail s informací o realizované výpůjčce.</p>#<p>The library in cooperation with e-shop <a href="https://flexibooks.cz/" target="_blank" rel="external"> Flexibooks </a> enabled its readers borrowing of e-books. Borrowed e-books can be read using <a href="https://flexibooks.cz/jak-cist/" target="_blank" rel="external"> online Flexibooks</a> for PCs, smartphones and tablets with iOS, Android and Windows.<br>E-loans terms of realization: </p><p><ul><li>the library user account must contain valid email address,</li><li>the reader must registered with e-shop Flexibooks,</li><li>the reader agrees with the general terms and conditions of Flexibooks.</p><p>The length of the loan is <strong>31 days</ strong>. The reader may have simultaneously borrowed up to <strong>3 titles.</strong><br> The service is free of charge for registered library users.<br>You will be sent an e-mail with information about the realized borrowing.
 200    aFLEXIBOOKS_RESULTb#Na Vaši emailovou adresu byla z e-shopu <a href="https://flexibooks.cz/" target="_blank" rel="external">Flexibooks</a> odeslána zpráva s informacemi k dokončení výpůjčky. Další informace získáte na stránkách Flexibooks v sekci <a href="https://flexibooks.cz/jak-cist/" target="_blank" rel="external">Jak číst</a>.#From the e-shop <a href="https://flexibooks.cz/" target="_blank" rel="external">Flexibooks</a> was sent a message to your e-mail address with the information how to complete the borrowing. For more information, please visit Flexibooks in <a href="https://flexibooks.cz/jak-cist/" target="_blank" rel="external">How to read</a>.
+200    aFORM_UP_PAY_NOb#<p>Služba je registrovaným čtenářům poskytována zdarma.</p>#<p>The service is free of charge for registered library users.</p>
+200    aFORM_UP_PAY_NOTEb#<p>Služba je registrovaným čtenářům poskytována následovně: <ul><li>Zdarma jsou poskytovány nejvýše 3 e-výpůjčky probíhající současně, další jsou zpoplatněny.</li><li>Nárok na další e-výpůjčku zdarma vznikne, až nejstarší ze 3 současně probíhajících bude ukončena.</li><li>Probíhající zpoplatněné e-výpůjčky nemají vliv na nabídku e-výpůjček zdarma.</li></ul></p>#<p>The service is provided to registered readers as follows:: <ul><li>A maximum of 3 simultaneous e-loans are provided free of charge, others are charged.</li><li>The next free of charge e-loan will be available, when the oldest of the 3 currently running loans is completed.</li><li>Ongoing paid e-loans do not affect the offer of free e-loans.</li></ul></p>
+200    aFORM_UP_PAY_NOTE_ALLb#<p>Služba je zpoplatněna.</p>#<p>The service is charged.</p>
+200    aFORM_UP_PAY_PRICEb#Tato e-výpůjčka je zpoplatněna#The service is charged.
+200    aFORM_UP_PAY_NOPRICEb#<p>Tato e-výpůjčka nebude zpoplatněna.</p>#<p>The service is free of charge.</p>
+200    aPRICEb#Cena:#Price:
+200    aDATE_PAYFREEb#Další e-výpůjčka zdarma bude dostupná od:#The service will be available free of charge from:
+200    aACTLOAN_FREEb#Počet aktivních e-výpůjček zdarma:#Number of active free of charge e-loans:
+200    aACTLOAN_FREEREMAINb#Zdarma lze ještě vypůjčit:#Number of free e-loans available:
 200    aHTTP_EREADING_401bChyba prihlásenia #Chyba přihlášení#Login error
 200    aHTTP_EREADING_403bNedostatočná práva #Nedostatečná práva#Insufficient rights
 200    aHTTP_EREADING_404bPožadovaný objekt nebol nájdený #Požadovaný objekt nebyl nalezen#The requested object was not found
@@ -2622,6 +2694,8 @@
 200    aSETTINGSbNastavenie#Nastavení#Settings
 ###
 # @id UN_TABLES BASE_IPAC2_TX_ESEARCH
+200    aCHECKBOX_CHECKbOznačiť všetko#Označit vše#Check all
+200    aCHECKBOX_UNCHECKbOdznačiť všetko#Odznačit vše#Uncheck all
 200    aALLbvšetky slová#všechna slova#all words
 200    aANDba súčasne#a současně#and
 200    aANYbaspoň jedno zo slov#alespoň jedno ze slov#at least one of the words
@@ -2636,7 +2710,7 @@
 200    aDISTINGUISHbrozlišovať#rozlišovat#distinguish
 200    aFINDbHľadať#Hledat#Search
 200    aCHANGEbZmeniť#Změnit#Change
-200    aCHOOSEbVyberte#Vyberte#Choose
+200    aCHOOSEbVyberťe#Vyberte#Choose
 200    aKEYWORDSbrozšírené vyhľadávanie,limity#rozšířené vyhledávání,limity#advanced search,limits
 200    aKVANTbPoužiť termín ako#Použít termín jako#Use the term as
 200    aLIMITS_TITLEbLimity umožňujú obmedziť vyhľadávanie pomocou nižšie uvedených parametrov.#Limity umožňují omezit vyhledávání pomocí níže uvedených parametrů.#Limits help to narrow the search using parameters below
@@ -2829,6 +2903,8 @@
 200    aRECOMMENDbOdporúčaná literatúra#Doporučená literatura#Recommended
 200    aREPORTSbOsobné údaje boli úspešne uložené.#Osobní údaje byly úspěšně uloženy.#Personal data have been successfully saved.
 200    aREQUESTbVyžiadať#Vyžádat#Request
+200    aSAFEbPovoliť prihlásenie cez sociálnu identitu#Povolit přihlášení přes sociální identitu#Enable social login
+200    aSAFEOKbPovolené prihlásenie cez sociálnu identitu#Povoleno přihlášení přes sociální identitu#Social login allowed
 200    aSAVEKEYbChyba pri ukladaní záznamu používateľa#Chyba při ukládání záznamu uživatele#Error while saving user's record
 200    aSHOWbZobraziť#Zobrazit#Display
 200    aSTATUTORYAGENTADRbAdresa zákonného zástupcu#Adresa zákoného zástupce#Legal representative address
@@ -2840,6 +2916,7 @@
 # @id UN_TABLES BASE_IPAC2_TX_EPREF
 200    aBACKGROUNDbPozadie stránky#Pozadí stránky#Page background
 200    aBLUESKINbKontrastný#Kontrastní#Contrast
+200    aDEFAULTLANGUAGEbPredvolené nastavenie jazyka po prihlásení#Výchozí nastavení jazyka po přihlášení#Default language after login
 200    aDEFAULTRATINGbPredvolené zobrazenie komentárov#Výchozí zobrazení komentářů#Default comments behaviour
 200    aDEFAULTSEARCHbPredvolené vyhľadávanie#Výchozí vyhledávání#Default search
 200    aDESCRIPTIONbNastavenie východiskových vlastností online katalógu.#Nastavení výchozích vlastností online katalogu.#Default properties of online catalogue settings.
@@ -3109,7 +3186,7 @@
 200    aBORROWbVypršanie výpožičky#Vypršení výpůjčky#Vypršení výpůjčky
 200    aBTN_SAVEbUložiť#Uložit#Save
 200    aDESCRIPTIONb
-200    aERROR_SETTINGSbVyberte aspoň jednu možnosť#Vyberte alespoň jednu možnost#Please select at least one option
+200    aERROR_SETTINGSbVyberťe aspoň jednu možnosť#Vyberte alespoň jednu možnost#Please select at least one option
 200    aERRSAVESETTINGbChyba pri ukladaní zmien:#Chyba při ukádání změn:#Error saving changes, detail:
 200    aEXPIREDCARDbVypršanie čitateľskej karty#Vypršení čtenářské karty#Reader card expiration
 200    aOKSAVESETTINGbZmeny boli úspešne uložené#Změny byly úspěšně uloženy#Changes saved successfully
@@ -3189,7 +3266,7 @@
 200    aTAB_FORMbFormulár#Formulář#Form
 200    aTAB_GALLERYbGaléria#Galerie
 200    aTAB_ICONSbIkony#Ikony#Icons
-200    aTAB_TPLbŠablóna CSS#Šablona CSS
+200    aTAB_TPLbŠablóna SASS#Šablona SASS
 200    aTAGS_NOTEbTagy oddeľujte čiarkou#Tagy oddělujte čárkou
 200    aTAGSbTagy#Tagy#Tags
 200    aUSEbPoužitie#Použití#Use
@@ -3237,7 +3314,7 @@
 200    aNOTFINDTRXSbneobsahujú zatiaľ žiadne informácie o transakciách#neobsahují zatím žádné informace o transakcích#have not contained information about transactions yet
 200    aNOTLOGINbNeprihlásený používateľ#Uživatel nepřihlášen#User not logged in
 200    aNOTSAVEDATAbNepodarilo sa uložiť zmeny, popis: #Nepodařilo se uložit změny, popis: #Fail to save changes, description:
-200    aOTHERbostatné#Ostatní#Other
+200    aOTHERbOstatné#Ostatní#Other
 200    aRATINGbHodnotiť#Hodnotit#Rate
 200    aREQUESTSbŽiadanky#Žádanky#Requests
 200    aRESERVATIONbRezervácie#Rezervace#Reservation
@@ -3280,6 +3357,7 @@
 200    aCOL_ARLPAYTYPEFINbPlatba - typ operácie#Platba – typ operace#Payment - the type of transaction
 200    aCOL_BRANCH_TITLEbPobočka na ktorej prebehla platba#Pobočka na které proběhla platba#Payment branch
 200    aCOL_BRANCHbPobočka#Pobočka#Branch
+200    aCOL_PRINTbTlač#Tisk#Print
 200    aCOL_DATE_TITLEbDátum založenia platby#Datum založení platby#the create date of the payment
 200    aCOL_DATEbDátum#Datum#Date
 200    aCOL_INSTRUMENTbPlatobná metóda#Platební metoda#Payment method
@@ -3381,9 +3459,11 @@
 200    aDESCRIPTIONbPrihlásenie používateľa do online katalógu.#Přihlášení uživatele do online katalogu.#Login to online catalogue.
 200    aERR_PWbZadajte prihlasovacie heslo#Zadejte přihlašovací heslo#Enter password
 200    aERR_USER_LOGINbVložte e-mailovú adresu alebo číslo preukazu#Zadej e-mailovou adresu nebo číslo průkazu#Enter e-mail address or library card
-200    aFARGOT_TITLEbZaslanie zabudnutého hesla#Zaslání zapomenutého hesla#Send the forgotten password
 200    aFARGOTbZabudol (zabudla) som heslo#Zapomněl(a) jsem heslo#I have forgotten my password
+200    aFARGOT_TITLEbZaslanie zabudnutého hesla#Zaslání zapomenutého hesla#Send the forgotten password
 200    aKEYWORDSbPrihlásenie#Přihlášení#Login
+200    aLOGIN_TO_CATALOGbPrihlásenie užívateľa do online katalógu cez#Přihlášení uživatele do online katalogu přes#User login to the online catalog via
+200    aLOGIN_VIAbPrihlásenie cez#Přihlášení přes#Login via
 200    aLOGINIPAC_TEXTbŠtandardné prihlásenie#Standardni přihlášení#Standard login
 200    aLOGINIPAC_TITLEbŠtandardné prihlásenie do IPACu#Standardni přihlášení do IPACu#Login to IPAC
 200    aLOGINLABELbČíslo preukazu/email#Číslo průkazu nebo e-mail#User card ID/e-mail
@@ -3457,6 +3537,7 @@
 200    aINSERTEDbVložené do skupiny#Vloženo do skupiny#Inserted in group
 200    aLENTbPožičané#Půjčeno#Borrowed
 200    aLOANEDbNaposledy vypožičané#Naposledy vypůjčeno#Last borrowed
+200    aMYLOANSbMé výpožičky#Moje výpůjčky#My loans
 200    aMAINGROUPCOUNTAINbPoložka už existuje v hlavnej skupine#Položka již existuje v hlavní skupině#The item is already contained in the main group
 200    aMOVE_TITLEbPresunúť do skupiny#Přesunout do skupiny#Move to group
 200    aMOVEbPresunúť#Přesunout#Move
@@ -3467,6 +3548,7 @@
 200    aNEWDELETE_TITLEbOdstrániť skupinu#Odstranit skupinu#Remove the group
 200    aNEWITEMbPridanie záznamu do skupiny#Přidání záznamu do skupiny#Add an entry
 200    aNEWITEMGRbPridanie záznamu#Přidání záznamu#Add an entry to a group
+200    aNOLOGINbJe nutné prihlásenie#Je nutné přihlášení#Login required
 200    aNOTCREATEDEFGROUPbNepodarilo sa vytvoriť defaultnú skupinu, popis: #Nepodařilo se vytvořit defaultní skupinu, popis: #Failed to create the default group, description:
 200    aNOTEbNeverejná poznámka#Neveřejná poznámka#Non-public note
 200    aNOTFINDRECbZáznam nebol nájdený#Nenalezen záznam#The record not found
@@ -3509,13 +3591,13 @@
 200    aEMAIL_TITLEbOdosielanie záznamov na email#Odesílání záznamů na e-mail#Send records to an e-mail
 200    aEMAIL_UNSUBSCRIBEbTáto správa bola zaslaná z online katalógu knižničného systému ARL.#Tato zpráva byla zaslána z online katalogu knihovního systému ARL.#This notice was send from online catalogue of library management system ARL.
 200    aEMAILLABELbPríjemca/ovia#Příjemce/i#Recipient/s
-200    aEMAILNEEDbZadajte emailové adresy príjemcov alebo ich vyberte zo zoznamu.#Zadejte e-mailové adresy příjemců, nebo je vyberte ze seznamu.#Enter recipients' addresses or choose from the list.
+200    aEMAILNEEDbZadajte emailové adresy príjemcov alebo ich vyberťe zo zoznamu.#Zadejte e-mailové adresy příjemců, nebo je vyberte ze seznamu.#Enter recipients' addresses or choose from the list.
 200    aFAVOURITENOTEbPripojiť moje poznámky zo stránky Moje dokumenty#Připojit moje poznámky ze stránky Moje dokumenty#Add my notes from page My documents
 200    aFORMATLABELbZobrazovací formát záznamu#Zobrazovací formát záznamu#Display format of the record
 200    aKEYWORDSbemail#e-mail#e-mail
 200    aLINKbZobraziť záznam#Zobrazit záznam#Show record
 200    aMESSAGELABELbSpráva#Zpráva#Message
-200    aNOTFINDRECbNeboli nájdené záznamy na odoslanie, najprv vyberte záznamy v košíku alebo vo výsledkoch vyhľadávania.#Nenalezeny žádné záznamy k odeslání, nejdříve vyberte záznamy v košíku, nebo ve výsledcích vyhledávání.#No records to send. Choose some records from the basket or search results.
+200    aNOTFINDRECbNeboli nájdené záznamy na odoslanie, najprv vyberťe záznamy v košíku alebo vo výsledkoch vyhľadávania.#Nenalezeny žádné záznamy k odeslání, nejdříve vyberte záznamy v košíku, nebo ve výsledcích vyhledávání.#No records to send. Choose some records from the basket or search results.
 200    aNOTFINDUSERRECbNebol nájdený záznam používateľa#Nenalezen záznam uživatele#User's record not found
 200    aNUMERATELABELbČíslovať záznamy#Číslovat záznamy#Number the records
 200    aOPTIONSbMožnosti#Možnosti#Options
@@ -3638,6 +3720,17 @@
 200    aATTRIBUTIONbVyhľadávanie v IPAC od firmy#Vyhledávání v IPAC od firmy#Search IPAC by
 200    aDESCRIPTIONbVyhľadávanie v IPAC#Vyhledávání v IPAC#Search IPAC
 200    aTAGSbIPAC#IPAC#IPAC
+200    aINFO_MODULbInformácie o vyhľadávacom module#Informace o vyhledávacím modulu#Information about the search engine
+200    aSHORTNAMEbKrátky názov#Krátký název#Short Name
+200    aLONGNAMEbDlhý názov#Dlouhý název#Long Name
+200    aDESCbPopis#Popis#Description
+200    aCONTACTbKontakt#Kontakt#Contact
+200    aDEVELOPERbVývojár#Vývojář#Developer
+200    aINFO1bToto je vyhľadávací modul OpenSearch určený pre prehliadač Firefox#Toto je vyhledávací modul OpenSearch určený pro prohlížeč Firefox#This is an OpenSearch search engine designed for the Firefox browser
+200    aINFO2bViac informácií o OpenSearch na#Více informací o OpenSearch na#More information about OpenSearch at
+200    aSEARCH_TITLEbVyhľadávanie v IPACu#Vyhledávaní v IPACu#Searching in IPAC
+200    aSEARCH_TERMbHľadaný termín#Hledaný termín#Search term
+200    aSEARCHbHľadať#Hledat#Search
 ###
 # @id UN_TABLES BASE_IPAC2_TX_PAGE404
 200    aDESCRIPTIONbJe nám ľúto, chyba č. 404 - hľadaná stránka tu nie je.#Omlouváme se, vznikla chyba č.404, která znamená, že hledaná stránka zde není.#We are sorry, error 404 - the page you're looking for is not here.
@@ -3686,7 +3779,10 @@
 200    aIK_CONTACTSbKnihovna v .../nUlice č.p./nPSČ/nMěsto/ntel.123 456 789/nemail knihovna@knihovnaNazev.cz/n/n Pokud jste se v knihovně neregistrovali, jedna se o omyl způsobeny chybně zadaným e-mailem. Abychom mohli chybu napravit, potřebujeme se o ni dozvědět. Stači kliknout na 'Odpovědět' a do těla emailu napište NESPRAVNÝ E-MAIL.
 ###
 # @id UN_TABLES BASE_IPAC2_TX_PRINT
-200    aKEYWORDSbTlač#Tisk#Print
+200    aERROR_IDXbChybné ID záznamu#Chybné ID záznamu#Invalid record ID
+###
+# @id UN_TABLES BASE_IPAC2_TX_PRINTPAY
+200    aKEYWORDSbPlatobný doklad#Platební doklad#The Payment Document
 200    aERROR_NOTIDbNebolo odoslané ID záznamu#Nebylo odeslané ID záznamu#Record ID has not been sent
 ###
 # @id UN_TABLES BASE_IPAC2_TX_PRIVACY
@@ -3744,7 +3840,7 @@
 200    aERR_ZIP_VALIDbPSČ nie je správne zadané.#PSČ není správně zadáno.#ZIP code entered incorrectly.
 200    aFUNKCbFunkcia na pracovisku#Funkce na pracovišti#Post
 200    aHESLObPrístupové heslo#Přístupové heslo#Access password
-200    aCHOOSEbVyberte#Vyberte#Select
+200    aCHOOSEbVyberťe#Vyberte#Select
 200    aKANCELARIAbKancelária#Kancelář#Office no.
 200    aKATCITbkategória používateľa#kategorie uživatele#reader category
 200    aKEYWORDSbpredregistrácia#předregistrace#pre-registration
@@ -3888,7 +3984,7 @@
 200    aERRAPPROVALbAby ste mohli odoslať formulár, musíte súhlasiť s podmínkami.#Pro odeslání formuláře musíte souhlasit s podmínkami.#To send the form you must agree with
 200    aFORM_DATE_FORMATb(Vyplňte dátum vo formáte DD.MM.RRRR)#(Vyplňte datum ve formátu DD.MM.RRRR)#(Fill in date in format DD.MM.YYYY)
 200    aFORMATKOPIEbFormát kópie#Formát kopie#Copy format
-200    aCHOOSEbVyberte#Vyberte#Choose
+200    aCHOOSEbVyberťe#Vyberte#Choose
 200    aISBNbČíslo ISBN#Číslo ISBN#ISBN Number
 200    aISSNbČíslo ISSN#Číslo ISSN#ISSN Number
 200    aKEYWORDSbMVS,objednávací formulár#MVS,objednávací formulář#ILL,order form
@@ -3953,7 +4049,7 @@
 200    aERR_YEARbChyba, roky musia byť vyplnené#Chyba,roky musí být vyplněny#Error, years must be filled
 200    aERROR_SAVEbChyba pri uložení záznamu #Chyba při uložení záznamu#Error saving record
 200    aFORMATb#Formát dokumentu#Formát dokumentu#Document format
-200    aCHOOSEbVyberte#Vyberte#Chose
+200    aCHOOSEbVyberťe#Vyberte#Chose
 200    aKEY_DESCbKľúčové slovo (a), heslo (a) musí byť vyplnené# Klíčová slovo(a), heslo(a) musí být vyplněno#Keyword(s), motto must be filled
 200    aKEYbKľúčové slovo, heslo#Klíčová slovo, heslo #Keyword, motto
 200    aKIND_DESCbVybrať daný druh. Ak sa nevyberie nič tak sú všetky#Vybrat daný druh. Pokud se nevybere nic tak jsou všechny#Select the type. If nothing is selected, they are all
@@ -3973,6 +4069,8 @@
 200    aVALIDTObPoslať najneskôr do#Zaslat nejpozději do#Send by
 200    aYEAR_DESCbRozpätie rokov vzor 1960-1969,2000-2010#Rozpětí roků vzor 1960-1969,2000-2010#Span of years pattern 1960-1969,2000-2010
 200    aYEARbRozpätie rokov #Rozpětí roků #Span of years
+200    aAGREEbSúhlasím#Souhlasím#I agree
+200    aDISAGREEbNesúhlasím#Nesouhlasím#I disagree
 002    ------------------------------------------
 200    aREPORT_SAVEDbŽiadosť o rešerši bola uložená ako potvrdenie Vám príde email.#Žádost o rešerši byla uložená jako potvrzení Vám přijde email.#The search request has been saved as a confirmation, you will receive an email. 
 002    ------------------------------------------
@@ -4071,7 +4169,7 @@
 200    aSKCR_TITLEbSúborný katalóg ČR#Souborný katalog ČR#Union Catalogue of the Czech Republic
 200    aSORTBYbTriediť podľa#Třídit podle#Sort by
 200    aSOURCE_TEXTbHľadať v iných zdrojoch.#Hledat v jiných zdrojích.#Search in other resources.
-200    aSOURCES_CHOOSEbVyberte zdroj#Vyberte zdroj#Select a resource
+200    aSOURCES_CHOOSEbVyberťe zdroj#Vyberte zdroj#Select a resource
 200    aSOURCES_TITLEbZobraziť prehľadávané zdroje#Zobrazit prohledáváné zdroje#Display the resources being searched
 200    aSOURCESbZdroje#Zdroje#Resources
 200    aTAGGINGTITLEbŠtítky#Štítky#Tags
@@ -4172,7 +4270,7 @@
 200    aERRAPPROVALbAby ste mohli odoslať formulár, musíte súhlasiť s podmínkami.#Pro odeslání formuláře musíte souhlasit s podmínkami.#To send the form you must agree with
 200    aFORM_DATE_FORMATb(Zadajte dátum vo formáte DD.MM.RRRR)#(Zadejte datum ve formátu DD.MM.RRRR)#(Enter the date in format DD.MM.YYYY)
 200    aFORMATKOPIEbFormát kópie#Formát kopie#Copy format
-200    aCHOOSEbVyberte#Vyberte#Choose
+200    aCHOOSEbVyberťe#Vyberte#Choose
 200    aISBNbČíslo ISBN#Číslo ISBN#ISBN Number
 200    aISSNbČíslo ISSN#Číslo ISSN#ISSN Nubmer#ISSN Numer
 200    aKEYWORDSbMVS,objednávací formulár#MVS,objednávací formulář#ILL,order form
@@ -4304,6 +4402,7 @@
 # @id UN_TABLES BASE_IPAC2_TX_SRC
 200    aACCESSLVL_INFO2bĎalšie zdroje môžu byť k dispozícii po#Další zdroje mohou být k dispozici po#More resources available after
 200    aDESCRIPTIONbPridávanie ďalších zdrojov na vyhľadávanie a odkazy na iné externé zdroje.#Přidání dalších zdrojů k vyhledávání a odkazy na další externí zdroje.#More resources to search and links to external resources.
+200    aERROR_MAXbMaximálny počet vybraných zdrojov bol prekročený.#Maximální počet vybraných zdrojů byl překročen.#The maximum number of selected resources has been exceeded.
 200    aERROR_ONESRCbVyber aspoň jeden zdroj!#Vyber aspoň jeden zdroj!#Choose at least one source!
 200    aEXTERNAL_TEXTbExterné zdroje#Externí zdroje#External resources
 200    aEXTERNAL_TITLEbZobraziť externé zdroje#Zobrazit externí zdroje#View external resources
@@ -4318,8 +4417,8 @@
 200    aSELECTEDbPočet vybraných zdrojov#Počet vybraných zdrojů#Number of selected resources
 200    aSUBMIT_TITLEbUložiť nastavenie#Uložit nastavení#Save settings
 200    aSUBMITbUložiť#Uložit#Save
-200    aTERMS_TITLEb
 200    aTERMS_TEXTb
+200    aTERMS_TITLEb
 ###
 # @id UN_TABLES BASE_IPAC2_TX_TRANSACTION
 200    aABBR_COPYbPožiadavky na kópie#Požadavky na kopie#Requirements for copy
@@ -4539,7 +4638,7 @@
 200    aERRFILEbNeplatný identifikátor súboru#Neplatný identifikátor souboru#Invalid file identifier
 200    aERRTYPEbNepodporovaný typ súboru#Nepodporovaný typ souboru#Unsupported file type
 200    aFULLSCREENbCelá obrazovka#Celá obrazovka#Fullscreen
-200    aCHOOSEbVyberte stránku#Zvolte stránku#Select a page
+200    aCHOOSEbVyberťe stránku#Zvolte stránku#Select a page
 200    aINQUEUEbDokument sa pripravuje#Dokument se připravuje#The document is being prepared
 200    aLIST_TITLEbZobraziť zoznam všetkých strán s náhľadmi#Zobrazit seznam všech stran s náhledy#See a list of all pages with thumbnails
 200    aLISTbZoznam všetkých strán#Seznam všech stran#List of all page
@@ -4558,6 +4657,8 @@
 200    aZOOPLUSbPriblížiť#Přiblížit#Zoom in
 ###
 # @id UN_TABLES BASE_IPAC2_TX_CONTSTAT
+200    aCHECKBOX_CHECKbOznačiť všetko#Označit vše#Check all
+200    aCHECKBOX_UNCHECKbOdznačiť všetko#Odznačit vše#Uncheck all
 200    aCLEARbOdznačiť limity#Odznačit limity#Clear limits
 200    aCOLUMNbStĺpcový#Sloupcový#Column
 200    aCREATECHARTbNastaviť graf#Nastavit graf#Set graph
@@ -4746,6 +4847,7 @@
 ###
 # @id UN_TABLES BASE_IPAC2_TX_CONTLIST
 200    aADMIN_ANNEXESbSpráva príloh#Správa příloh#Administration of annexes
+200    aERRTABbŽiadny stav na zobrazenie#Žádný stav k zobrazení#No status to display
 200    aCOUNT_FILESbPočet súborov#Počet souborů#The number of files
 200    aDESCRIPTIONbSpráva a prehľad stavov súborov.#Správa a přehled stavů souborů.#States of files summary and management.
 ###
@@ -4817,6 +4919,30 @@
 ###
 # @id UN_TABLES BASE_IPAC2_TX_TESTFORM
 200    aDESCRIPTIONbTestovani formulářů
+###
+# @id UN_TABLES BASE_IPAC2_TX_USERSADMIN
+200    aADMINbSpráva#Správa#Administration
+200    aDELETEbZmazať#Smazat#Delete
+200    aDELETE_TITLEbZmazať používateľa#Smazat uživatele#Delete user
+200    aEDITbUpraviť#Upravit#Edit
+200    aEDIT_TITLEbUpraviť používateľa#Upravit uživatele#Edit user
+200    aEMAILbEmail#E-mail#Email
+200    aKEYWORDSbpoužívateľ,správa#uživatel,správa#user,admin
+200    aCATEGORYbKategória#Kategorie#Category
+200    aEDIT_EPCA_TITLEbEditovat v i3 aplikaci EPCA uživatele 
+200    aNAMEbMeno#Jméno#Name
+200    aREGISTEREDbRegistrovaný#Registrovaný#Registered
+200    aUNREGISTEREDbNeregistrovaný#Neregistrovaný#Unregistered
+200    aSURNAMEbMeno#Přijmení#Surname
+200    aDELETE_REALLYbNaozaj chcete zmazať používateľa#Opravdu chcete smazat uživatele#Do you really want to delete user
+200    aDELETE_YESbÁno, zmazať#Ano, smazat#Yes, delete
+200    aRIGHTS_ERRORbNemáte dostatočné práva#Nemáte dostatečné práva#You do not have sufficient rights
+200    aRECORD_ERRORbNebolo možné otvoriť záznam používateľa s id: #Nebylo možné otevřít záznam uživatele s id: #Could not open user record with id:
+200    aUNDELETE_TITLEbObnoviť používateľa#Obnovit uživatele#Restore user
+200    aUNDELETE_REALLYbNaozaj chcete obnoviť používateľa#Opravdu chcete obnovit uživatele#Do you really want to restore user
+200    aUNDELETE_YESbÁno, obnoviť#Ano, obnovit#Yes, restore
+200    aUNDELETEbObnoviť#Obnovit#Restore
+200    aSHOW_DELETED_USERSbZobraziť zmazaných používateľov#Zobrazit smazané uživatele#Show deleted users
 ###
 # @id UN_TABLES BASE_IPAC2_TX_WEBMANIFEST
 200    aYOUOFFLINEbNie ste pripojení k&nbsp;internetu#Nejste připojeni k&nbsp;internetu#You are not connected to the&nbsp;Internet
@@ -4936,6 +5062,7 @@
 200    aCOL_ARLUNPAIDbNezaplatené v aRL#Nezaplaceno v aRL#ARL unpaid
 200    aCOL_BRANCH_TITLEbPobočka na ktorej prebehla platba#Pobočka na které proběhla platba#Payment branch
 200    aCOL_BRANCHbPobočka#Pobočka#Branch
+200    aCOL_PRINTbTlač#Tisk#Print
 200    aCOL_CURRENCYbKód meny#Kód měny#Currency code
 200    aCOL_DATE_TITLEbDátum založenia platby#Datum založení platby#the create date of the payment
 200    aCOL_DATEbDátum#Datum#Date
@@ -5230,6 +5357,10 @@
 200    aVALUEbHodnota#Hodnota#Value
 ###
 # @id UN_TABLES BASE_CONTENT_MIME
+200    aavifbimage/avif
+200    apngbimage/png
+200    awebpbimage/webp
+200    awebmbvideo/webm
 200    aevybapplication/envoy
 200    afifbapplication/fractals
 200    asplbapplication/futuresplash
@@ -5609,6 +5740,7 @@
 002    --
 200    abasket-basket
 200    abookmark-bookmark
+200    ablackhole-blackholentrpur
 200    alogout-logout
 200    aprint-printv3
 200    aexport-exportv3
@@ -5621,6 +5753,7 @@
 200    agwext-gwextnBrána pro externí zdroje a odkazy
 200    aicalgw-icalgw
 200    awebmanifest-webmanifest
+200    aoff-off
 002    --
 ###
 # @id UN_TABLES BASE_IPAC2_PAGES_MOB
@@ -5833,6 +5966,8 @@
 ###
 # @id UnTablesd BASE_IPAC2_XMLGW_MESSAGES
 002    Konfig pre tvorenie requestov na externe zdroje
+002    19.02.25 jk; pro WOS dotazy zapojena db WOS misto WOK, nektere zakaznicke licence maji i dalsi db napr. DIIDW u kterych je odlisna struktura XML
+002    18.03.24 jk; zruseny thomson wos a ccc
 002    04.08.23 jk; doplneno CLWOS_*
 002    02.05.22 jk; uprava SCOPUS_SERVICE a SD_SERVICE
 002    22.08.18 jk; zruseno EBSCO_AUTHIP_BODY
@@ -5851,12 +5986,6 @@
 200    aSD_HEADERbX-ELS-INSTTOKEN:%PPAASSWWDD|X-ELS-APIKey:45bdf2c62f60d8b99d2ae0be473a675f|X-ELS-ResourceVersion:XOCS|Accept:application/xml
 200    aSD_BODYbquery=%QQUUEERRYY&start=%FFIIRRSSTT&count=%RRAANNGGEE&sort=%SSOORRTT&view=COMPLETE
 200    aSD_SERVICEb/content/search/sciencedirect
-200    aWOS_BODYb<wok:search xmlns:wok='http://woksearch.v3.wokmws.thomsonreuters.com'><queryParameters><databaseId>WOS</databaseId><userQuery>%QQUUEERRYY</userQuery><queryLanguage>en</queryLanguage></queryParameters><retrieveParameters><firstRecord>%FFIIRRSSTT</firstRecord><count>%RRAANNGGEE</count></retrieveParameters></wok:search>
-200    aCCC_BODYb<wok:search xmlns:wok='http://woksearch.v3.wokmws.thomsonreuters.com'><queryParameters><databaseId>CCC</databaseId><userQuery>%QQUUEERRYY</userQuery><queryLanguage>en</queryLanguage></queryParameters><retrieveParameters><firstRecord>%FFIIRRSSTT</firstRecord><count>%RRAANNGGEE</count></retrieveParameters></wok:search>
-200    aTHOMSONAUTH_BODYb<auth:authenticate xmlns:auth='http://auth.cxf.wokmws.thomsonreuters.com'/>
-200    aTHOMSONCLOSE_BODYb<auth:closeSession xmlns:auth='http://auth.cxf.wokmws.thomsonreuters.com'/>
-200    aWOSCIT_BODYb<wok:citingArticles xmlns:wok='http://woksearch.v3.wokmws.thomsonreuters.com'><databaseId>WOS</databaseId><uid>%QQUUEERRYY</uid><timeSpan><begin>%TTSSFFRROOMM</begin><end>%TTSSTTOO</end></timeSpan><queryLanguage>en</queryLanguage><retrieveParameters><firstRecord>%FFIIRRSSTT</firstRecord><count>%RRAANNGGEE</count></retrieveParameters></wok:citingArticles>
-200    aWOKID_BODYb<wok:retrieveById xmlns:wok='http://woksearch.v3.wokmws.thomsonreuters.com'><databaseId>WOK</databaseId><uid>%QQUUEERRYY</uid><queryLanguage>en</queryLanguage><retrieveParameters><firstRecord>%FFIIRRSSTT</firstRecord><count>%RRAANNGGEE</count></retrieveParameters></wok:retrieveById>
 200    aEBSCO_AUTHIP_SERVICEb/authservice/rest/ipauth
 200    aEBSCO_AUTHSID_SERVICEb/edsapi/rest/CreateSession
 200    aEBSCO_AUTHSID_HEADERbx-authenticationToken:%AAUUTTHH
@@ -5870,8 +5999,8 @@
 200    aCLWOS_EXPb/api/wos
 200    aCLWOS_CITb/api/wos/citing
 200    aCLWOS_HEADERbX-ApiKey:%SSIIDD|Accept:application/xml
-200    aCLWOS_EXP_SEARCHbdatabaseId=WOK&usrQuery=%QQUUEERRYY&firstRecord=%FFIIRRSSTT&count=%RRAANNGGEE&sortField=%SSOORRTT&links=true
-200    aCLWOS_CIT_SEARCHbdatabaseId=WOK&uniqueId=%QQUUEERRYY&firstRecord=%FFIIRRSSTT&count=%RRAANNGGEE&sortField=%SSOORRTT
+200    aCLWOS_EXP_SEARCHbdatabaseId=WOS&usrQuery=%QQUUEERRYY&firstRecord=%FFIIRRSSTT&count=%RRAANNGGEE&sortField=%SSOORRTT&links=true
+200    aCLWOS_CIT_SEARCHbdatabaseId=WOS&uniqueId=%QQUUEERRYY&firstRecord=%FFIIRRSSTT&count=%RRAANNGGEE&sortField=%SSOORRTT
 200    aCLCCC_SEARCHbdatabaseId=CCC&usrQuery=%QQUUEERRYY&firstRecord=%FFIIRRSSTT&count=%RRAANNGGEE&sortField=%SSOORRTT&links=true
 ###
 # @id UnTablesd BASE_IPAC2_XMLPARSE_SCOPUS
@@ -5900,7 +6029,7 @@
 200    a017b017 70 |a%s|2DOIc/prism:doi
 200    a200b200 1  |a%s|f%sc/dc:titlec/dc:creator
 200    a330b330    |a%sc/dc:description
-200    a463b463  1 |12001 |a%s|vVol. %s, no. %s (%s), pp. %s-%s|1011  |a%sc/prism:publicationNamec/prism:volumec/prism:issueIdentifierc/prism:coverDatec/prism:pageRange:::-:::1c/prism:pageRange:::-:::2c/prism:issn
+200    a463b463  1 |12001 |a%s|vVol. %s, no. %s (%s), pp. %s-%s|1010  |a%s|1011  |a%sc/prism:publicationNamec/prism:volumec/prism:issueIdentifierc/prism:coverDatec/prism:pageRange:::-:::1c/prism:pageRange:::-:::2c/prism:isbnc/prism:issn
 200    a608b608    |a%sc/atom:subtypeDescription
 200    a610b610    |a%s:::610    :::c/atom:authkeywords:::| :::c/atom:authkeywords
 200    a700b700  1 |a%s|b%s|3%s|p%s|X%s:::701  1 :::c/atom:authorc/atom:author[]/atom:surnamec/atom:author[]/atom:given-namec/atom:author[]/atom:authidc/atom:author[]/atom:afidc/atom:affiliation[./atom:afid=../atom:author[]/atom:afid]/atom:affilname
@@ -5908,7 +6037,7 @@
 200    aC46bC46    |a%sc/atom:citedby-count
 200    aC82bC82    |a%sc/atom:article-number
 200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/prism:publicationNamec/prism:issnc/prism:eIssnc/prism:coverDatec/prism:volumec/prism:issueIdentifier
-200    aT34bT34    |aictx_scopus*%s#REF=%s#REFSRCTITLE=%s|bSCOPUS|c%sc/dc:titlec/dc:creatorc/prism:publicationNamec/prism:coverDate:::-:::1
+200    aT34bT34    |aumb_scopus*%s#REF=%s#REFSRCTITLE=%s|bSCOPUS|c%s|e%sc/dc:titlec/dc:creatorc/prism:publicationNamec/prism:coverDate:::-:::1c/prism:aggregationType
 ###
 # @id UnTablesd BASE_IPAC2_XMLPARSE_SCOPUS_M21
 002    31.10.16 jk; doplneno ISBN
@@ -5935,7 +6064,7 @@
 200    aC46bC46    |a%sc/atom:citedby-count
 200    aC82bC82    |a%sc/atom:article-number
 200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/prism:publicationNamec/prism:issnc/prism:eIssnc/prism:coverDatec/prism:volumec/prism:issueIdentifier
-200    aT34bT34    |aictx_scopus*%s#REF=%s#REFSRCTITLE=%s|bSCOPUS|c%sc/dc:titlec/dc:creatorc/prism:publicationNamec/prism:coverDate:::-:::1
+200    aT34bT34    |aumb_scopus*%s#REF=%s#REFSRCTITLE=%s|bSCOPUS|c%s|e%sc/dc:titlec/dc:creatorc/prism:publicationNamec/prism:coverDate:::-:::1c/prism:aggregationType
 ###
 # @id UnTablesd BASE_IPAC2_XMLPARSE_SD
 002    03.05.22 jk; uprava na ScienceDirect API V2
@@ -5960,276 +6089,6 @@
 200    a970b970    |bRBX
 200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/prism:publicationNamec/prism:issnc/prism:eIssnc/prism:coverDatec/prism:volumec/prism:issueIdentifier
 ###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_WOS
-002    23.05.16 jk; pridano eissn do 011e
-002    11.11.15 jk; pridano podpole 4 do poli 700 a 701
-002    21.09.15 js; upravene indikatory v autoroch
-002    11.09.14 jk; prekopirovano z I2_XMLPARSE_WOS
-002    24.07.14 jk; zmena 001
-002    19.02.14 jk; pridano pole U01
-002    08.02.13 js; do 463 doplnene ISSN
-002    08.02.13 js; doplnene medzery do generovania 463
-002    13.07.12 jk; uprava pro thomson WS 3
-002    26.06.08 jt; konfig pre parsovanie udajov z Thomson-Web of Science do UNIMARC
-002    --
-002    Je potreba zapojit i filtr FILTER_THOMSON_WOS do IPAC2_SERVER_THOMSON
-002    --
-100    aconfbsoapenv http://schemas.xmlsoap.org/soap/envelope/,ns2 http://woksearch.v3.wokmws.thomsonreuters.com,def http://scientific.thomsonreuters.com/schema/wok5.4/public/FullRecordc/soap:Envelope/soap:Body/ns2:searchResponse/return/recordsFoundd/soap:Envelope/soap:Body/ns2:searchResponse/return/records/def:records/def:RECe/soap:Envelope/soap:Body/soap:Fault/faultstring
-200    a001b001    %sc/def:UID
-200    a010b010    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="isbn"]/@value
-200    a010_1b010    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eisbn"]/@value
-200    a011b011    |a%s|e%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eissn"]/@value
-200    a014b014    |a%s|2WOSc/def:UID:::%COLON%:::2
-200    a017b017 70 |a%s|2DOIc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="doi"]/@value
-200    a101b101 0  |a%sc/def:static_data/def:fullrecord_metadata/def:languages/def:language[@type="primary"]
-200    a200b200 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="item"]
-200    a210b210    |a%s|b%s|c%s|d%sc/def:static_data/def:summary/def:publishers/def:publisher/def:address_spec/def:cityc/def:static_data/def:summary/def:pub_info/@coverdatec/def:static_data/def:summary/def:publishers/def:publisher/def:names/def:name/def:full_namec/def:static_data/def:summary/def:pub_info/@pubyear
-200    a225b225 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="book_series"]
-200    a463b463  1 |12001 |a%s|vVol. %s, no. %s (%s), pp. %s|1011  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/def:pagec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@value
-200    a608b608    |a%s:::608    :::c/def:static_data/def:summary/def:doctypes/def:doctypec/def:static_data/def:summary/def:doctypes/def:doctype[]
-200    a610b610    |a%s:::610    :::c/def:static_data/def:item/def:keywords_plus/def:keywordc/def:static_data/def:item/def:keywords_plus/def:keyword[]
-200    a610_1b610    |a%s:::610    :::c/def:static_data/def:fullrecord_metadata/def:keywords/def:keywordc/def:static_data/def:fullrecord_metadata/def:keywords/def:keyword[]
-002    -- upraven pomaly XPath, dalsi zpracovani je ve filtru symbolikem wosSymb() 
-200    a700b700  1 |a%s|b%s|4%s|p%s|z%s|C%s:::701  1 :::c/def:static_data/def:summary/def:names/def:namec/def:static_data/def:summary/def:names/def:name[]/def:full_name:::, :::1c/def:static_data/def:summary/def:names/def:name[]/def:full_name:::, :::2c/def:static_data/def:summary/def:names/def:name[]/@rolec/def:static_data/def:summary/def:names/def:name[]/@addr_noc/def:static_data/def:summary/def:names/def:name[]/@reprintc/def:static_data/def:summary/def:names/def:name[]/def:full_name
-200    aJK1bJK1    |a%s|b%s|c%s:::JK1    :::c/def:static_data/def:contributors/def:contributorc/def:static_data/def:contributors/def:contributor[]/def:name/def:display_namec/def:static_data/def:contributors/def:contributor[]/def:name/@orcid_idc/def:static_data/def:contributors/def:contributor[]/def:name/@r_id
-002    --
-200    a970b970    |bRBX
-200    aC12bC12    |n%sc/def:static_data/def:fullrecord_metadata/def:fund_ack/def:fund_text/def:p
-200    aC15bC15    |a%s:::C15    :::c/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract/def:abstract_text/def:pc/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract[]/def:abstract_text/def:p
-200    aC46bC46    |a%sc/item/authors/@count
-200    aC82bC82    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type=" "]/@valuec/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)
-200    aT34bT34    |aictx_woscit*%s|bWOS|c%s|d%sc/def:UID:::%COLON%:::2c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:EWUID/def:edition/@value:::.:::2
-200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/def:static_data/def:fullrecord_metadata/def:addresses/def:address_namec/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/@addr_noc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:full_addressc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:cityc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:country
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_WOS_M21
-002    24.05.16 jk; pridany pole 022e,655
-002    11.11.15 jk; pridano podpole 4 do poli 100 a 700
-002    08.09.15 js; opravene generovanie indikatorov do 700
-002    21.11.14 jk; zalozeno pro M21
-002    --
-002    Je potreba zapojit i filtr FILTER_THOMSON_WOS_M21 do IPAC2_SERVER_THOMSON
-002    --
-100    aconfbsoapenv http://schemas.xmlsoap.org/soap/envelope/,ns2 http://woksearch.v3.wokmws.thomsonreuters.com,def http://scientific.thomsonreuters.com/schema/wok5.4/public/FullRecordc/soap:Envelope/soap:Body/ns2:searchResponse/return/recordsFoundd/soap:Envelope/soap:Body/ns2:searchResponse/return/records/def:records/def:RECe/soap:Envelope/soap:Body/soap:Fault/faultstring
-200    a001b001    %sc/def:UID
-200    a020b020    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="isbn"]/@value
-200    a020_1b020    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eisbn"]/@value
-200    a022b022    |a%s|e%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eissn"]/@value
-200    a024b024    |a%s|2WOSc/def:UID:::%COLON%:::2
-200    a024_1b024 70 |a%s|2DOIc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="doi"]/@value
-200    a041b041 0  |a%sc/def:static_data/def:fullrecord_metadata/def:languages/def:language[@type="primary"]
-200    a245b245 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="item"]
-200    a260b260    |a%s|b%s|c%sc/def:static_data/def:summary/def:publishers/def:publisher/def:address_spec/def:cityc/def:static_data/def:summary/def:publishers/def:publisher/def:names/def:name/def:full_namec/def:static_data/def:summary/def:pub_info/@pubyear
-200    a490b490 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="book_series"]
-200    a653b653    |a%s:::653    :::c/def:static_data/def:item/def:keywords_plus/def:keywordc/def:static_data/def:item/def:keywords_plus/def:keyword[]
-200    a653_1b653    |a%s:::653    :::c/def:static_data/def:fullrecord_metadata/def:keywords/def:keywordc/def:static_data/def:fullrecord_metadata/def:keywords/def:keyword[]
-200    a655b655    |a%sc/def:static_data/def:summary/def:doctypes/def:doctype
-002    -- upraven pomaly XPath, dalsi zpracovani je ve filtru symbolikem wosSymb()
-200    a100b100 1  |a%s|4%s|u%s|z%s|C%s:::700 1  :::c/def:static_data/def:summary/def:names/def:namec/def:static_data/def:summary/def:names/def:name[]/def:full_namec/def:static_data/def:summary/def:names/def:name[]/@rolec/def:static_data/def:summary/def:names/def:name[]/@addr_noc/def:static_data/def:summary/def:names/def:name[]/@reprintc/def:static_data/def:summary/def:names/def:name[]/def:full_name
-200    aJK1bJK1    |a%s|b%s|c%s:::JK1    :::c/def:static_data/def:contributors/def:contributorc/def:static_data/def:contributors/def:contributor[]/def:name/def:display_namec/def:static_data/def:contributors/def:contributor[]/def:name/@orcid_idc/def:static_data/def:contributors/def:contributor[]/def:name/@r_id
-002    --
-200    a773b773 08 |t%s|gVol. %s, no. %s (%s), pp. %s|x%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/def:pagec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@value
-200    a970b970    |bRBX
-200    aC12bC12    |n%sc/def:static_data/def:fullrecord_metadata/def:fund_ack/def:fund_text/def:p
-200    aC15bC15    |a%s:::C15    :::c/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract/def:abstract_text/def:pc/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract[]/def:abstract_text/def:p
-200    aC46bC46    |a%sc/item/authors/@count
-200    aC82bC82    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type=" "]/@valuec/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)
-200    aT34bT34    |aictx_woscit*%s|bWOS|c%s|d%sc/def:UID:::%COLON%:::2c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:EWUID/def:edition/@value:::.:::2
-200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/def:static_data/def:fullrecord_metadata/def:addresses/def:address_namec/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/@addr_noc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:full_addressc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:cityc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:country
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_CCC
-002    23.05.16 jk; pridano eissn do 011e
-002    11.11.15 jk; pridano podpole 4 do poli 700 a 701
-002    21.09.15 js; vytvorene pre CCC
-100    aconfbsoapenv http://schemas.xmlsoap.org/soap/envelope/,ns2 http://woksearch.v3.wokmws.thomsonreuters.com,def http://scientific.thomsonreuters.com/schema/wok5.4/public/FullRecordc/soap:Envelope/soap:Body/ns2:searchResponse/return/recordsFoundd/soap:Envelope/soap:Body/ns2:searchResponse/return/records/def:records/def:RECe/soap:Envelope/soap:Body/soap:Fault/faultstring
-200    a001b001    %sc/def:UID
-200    a010b010    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="isbn"]/@value
-200    a010_1b010    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eisbn"]/@value
-200    a011b011    |a%s|e%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eissn"]/@value
-200    a014b014    |a%s|2CCCc/def:UID:::%COLON%:::2
-200    a017b017 70 |a%s|2DOIc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="doi"]/@value
-200    a101b101 0  |a%sc/def:static_data/def:fullrecord_metadata/def:languages/def:language[@type="primary"]
-200    a200b200 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="item"]
-200    a210b210    |a%s|b%sc/def:static_data/def:summary/def:publishers/def:publisher/def:address_spec/def:cityc/def:static_data/def:summary/def:pub_info/@coverdate
-200    a225b225 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="book_series"]
-200    a463b463  1 |12001 |a%s|vVol. %s, no. %s (%s), pp. %s|1011  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/def:pagec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@value
-200    a608b608    |a%s:::608    :::c/def:static_data/def:summary/def:doctypes/def:doctypec/def:static_data/def:summary/def:doctypes/def:doctype[]
-200    a610b610    |a%s:::610    :::c/def:static_data/def:item/def:keywords_plus/def:keywordc/def:static_data/def:item/def:keywords_plus/def:keyword[]
-200    a610_1b610    |a%s:::610    :::c/def:static_data/def:fullrecord_metadata/def:keywords/def:keywordc/def:static_data/def:fullrecord_metadata/def:keywords/def:keyword[]
-002    -- upraven pomaly XPath, dalsi zpracovani je ve filtru symbolikem wosSymb() 
-200    a700b700  1 |a%s|b%s|4%s|p%s|z%s|C%s:::701  1 :::c/def:static_data/def:summary/def:names/def:namec/def:static_data/def:summary/def:names/def:name[]/def:full_name:::, :::1c/def:static_data/def:summary/def:names/def:name[]/def:full_name:::, :::2c/def:static_data/def:summary/def:names/def:name[]/@rolec/def:static_data/def:summary/def:names/def:name[]/@addr_noc/def:static_data/def:summary/def:names/def:name[]/@reprintc/def:static_data/def:summary/def:names/def:name[]/def:full_name
-200    aJK1bJK1    |a%s|b%s|c%s:::JK1    :::c/def:static_data/def:contributors/def:contributorc/def:static_data/def:contributors/def:contributor[]/def:name/def:display_namec/def:static_data/def:contributors/def:contributor[]/def:name/@orcid_idc/def:static_data/def:contributors/def:contributor[]/def:name/@r_id
-002    --
-200    a970b970    |bRBX
-200    aC82bC82    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="art_no"]/@value::: :::2
-200    aC15bC15    |a%s:::C15    :::c/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract/def:abstract_text/def:pc/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract[]/def:abstract_text/def:p
-200    aC46bC46    |a%sc/item/authors/@count
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type=" "]/@valuec/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)
-200    a330b330    |a%s:::330    :::c/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract/def:abstract_text/def:pc/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract[]/def:abstract_text/def:p
-200    aT34bT34    |asav_woscit*%s|bWOS|c%s|d%sc/def:UID:::%COLON%:::2c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:EWUID/def:edition/@value:::.:::2
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_CCC_M21
-002    24.05.16 jk; pridany pole 022e,655
-002    11.11.15 jk; pridano podpole 4 do poli 100 a 700
-002    21.09.15 js; vytvorene pre CCC
-100    aconfbsoapenv http://schemas.xmlsoap.org/soap/envelope/,ns2 http://woksearch.v3.wokmws.thomsonreuters.com,def http://scientific.thomsonreuters.com/schema/wok5.4/public/FullRecordc/soap:Envelope/soap:Body/ns2:searchResponse/return/recordsFoundd/soap:Envelope/soap:Body/ns2:searchResponse/return/records/def:records/def:RECe/soap:Envelope/soap:Body/soap:Fault/faultstring
-200    a001b001    %sc/def:UID
-200    a020b020    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="isbn"]/@value
-200    a020_1b020    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eisbn"]/@value
-200    a022b022    |a%s|e%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eissn"]/@value
-200    a024b024    |a%s|2CCCc/def:UID:::%COLON%:::2
-200    a024_1b024 70 |a%s|2DOIc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="doi"]/@value
-200    a041b041 0  |a%sc/def:static_data/def:fullrecord_metadata/def:languages/def:language[@type="primary"]
-200    a245b245 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="item"]
-200    a260b260    |a%s|b%s|c%sc/def:static_data/def:summary/def:publishers/def:publisher/def:address_spec/def:cityc/def:static_data/def:summary/def:publishers/def:publisher/def:names/def:name/def:full_namec/def:static_data/def:summary/def:pub_info/@pubyear
-200    a490b490 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="book_series"]
-200    a653b653    |a%s:::653    :::c/def:static_data/def:item/def:keywords_plus/def:keywordc/def:static_data/def:item/def:keywords_plus/def:keyword[]
-200    a653_1b653    |a%s:::653    :::c/def:static_data/def:fullrecord_metadata/def:keywords/def:keywordc/def:static_data/def:fullrecord_metadata/def:keywords/def:keyword[]
-200    a655b655    |a%sc/def:static_data/def:summary/def:doctypes/def:doctype
-200    a773b773 08 |t%s|gVol. %s, no. %s (%s), pp. %s|x%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/def:pagec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@value
-002    -- upraven pomaly XPath, dalsi zpracovani je ve filtru symbolikem wosSymb()
-200    a100b100 1  |a%s|4%s|u%s|z%s|C%s:::700 1  :::c/def:static_data/def:summary/def:names/def:namec/def:static_data/def:summary/def:names/def:name[]/def:full_namec/def:static_data/def:summary/def:names/def:name[]/@rolec/def:static_data/def:summary/def:names/def:name[]/@addr_noc/def:static_data/def:summary/def:names/def:name[]/@reprintc/def:static_data/def:summary/def:names/def:name[]/def:full_name
-200    aJK1bJK1    |a%s|b%s|c%s:::JK1    :::c/def:static_data/def:contributors/def:contributorc/def:static_data/def:contributors/def:contributor[]/def:name/def:display_namec/def:static_data/def:contributors/def:contributor[]/def:name/@orcid_idc/def:static_data/def:contributors/def:contributor[]/def:name/@r_id
-002    --
-200    a970b970    |bRBX
-200    aC82bC82    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type=" "]/@valuec/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)
-200    aT34bT34    |aictx_woscit*%s|bWOS|c%s|d%sc/def:UID:::%COLON%:::2c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:EWUID/def:edition/@value:::.:::2
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_WOSCIT
-002    03.01.17 jk; oprava 100c, 100d
-002    23.05.16 jk; pridano eissn do 011e
-002    11.11.15 jk; pridano podpole 4 do poli 700 a 701
-002    21.09.15 js; upravene indikatory v autoroch
-002    11.09.14 jk; prekopirovano z I2_XMLPARSE_WOSCIT
-002    24.07.14 jk; zmena 001
-002    19.02.14 jk; pridano pole U01
-002    08.02.13 js; do 463 doplnene ISSN
-002    08.02.13 js; doplnene medzery do generovania 463
-002    13.07.12 jk; uprava pro thomson WS 3
-002    18.01.10 jk; konfig pro parsovanie udaju z Thomson-Web of Science do UNIMARC, dotaz na citace
-100    aconfbsoapenv http://schemas.xmlsoap.org/soap/envelope/,ns2 http://woksearch.v3.wokmws.thomsonreuters.com,def http://scientific.thomsonreuters.com/schema/wok5.4/public/FullRecordc/soap:Envelope/soap:Body/ns2:citingArticlesResponse/return/recordsFoundd/soap:Envelope/soap:Body/ns2:citingArticlesResponse/return/records/def:records/def:RECe/soap:Envelope/soap:Body/soap:Fault/faultstring
-200    a001b001    %sc/def:UID
-200    a010b010    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="isbn"]/@value
-200    a010_1b010    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eisbn"]/@value
-200    a011b011    |a%s|e%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eissn"]/@value
-200    a014b014    |a%s|2WOSc/def:UID:::%COLON%:::2
-200    a017b017 70 |a%s|2DOIc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="doi"]/@value
-200    a101b101 0  |a%sc/def:static_data/def:fullrecord_metadata/def:languages/def:language[@type="primary"]
-200    a200b200 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="item"]
-200    a210b210    |a%s|b%s|c%s|d%sc/def:static_data/def:summary/def:publishers/def:publisher/def:address_spec/def:cityc/def:static_data/def:summary/def:pub_info/@coverdatec/def:static_data/def:summary/def:publishers/def:publisher/def:names/def:name/def:full_namec/def:static_data/def:summary/def:pub_info/@pubyear
-200    a225b225 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="book_series"]
-200    a463b463  1 |12001 |a%s|vVol. %s, no. %s (%s), pp. %s|1011  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/def:pagec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@value
-200    a608b608    |a%s:::608    :::c/def:static_data/def:summary/def:doctypes/def:doctypec/def:static_data/def:summary/def:doctypes/def:doctype[]
-200    a610b610    |a%s:::610    :::c/def:static_data/def:item/def:keywords_plus/def:keywordc/def:static_data/def:item/def:keywords_plus/def:keyword[]
-200    a610_1b610    |a%s:::610    :::c/def:static_data/def:fullrecord_metadata/def:keywords/def:keywordc/def:static_data/def:fullrecord_metadata/def:keywords/def:keyword[]
-002    -- upraven pomaly XPath, dalsi zpracovani je ve filtru symbolikem wosSymb() 
-200    a700b700  1 |a%s|b%s|4%s|p%s|z%s|C%s:::701  1 :::c/def:static_data/def:summary/def:names/def:namec/def:static_data/def:summary/def:names/def:name[]/def:full_name:::, :::1c/def:static_data/def:summary/def:names/def:name[]/def:full_name:::, :::2c/def:static_data/def:summary/def:names/def:name[]/@rolec/def:static_data/def:summary/def:names/def:name[]/@addr_noc/def:static_data/def:summary/def:names/def:name[]/@reprintc/def:static_data/def:summary/def:names/def:name[]/def:full_name
-200    aJK1bJK1    |a%s|b%s|c%s:::JK1    :::c/def:static_data/def:contributors/def:contributorc/def:static_data/def:contributors/def:contributor[]/def:name/def:display_namec/def:static_data/def:contributors/def:contributor[]/def:name/@orcid_idc/def:static_data/def:contributors/def:contributor[]/def:name/@r_id
-002    --
-200    a970b970    |bRBX
-200    aC12bC12    |n%sc/def:static_data/def:fullrecord_metadata/def:fund_ack/def:fund_text/def:p
-200    aC15bC15    |a%s:::C15    :::c/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract/def:abstract_text/def:pc/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract[]/def:abstract_text/def:p
-200    aC46bC46    |a%sc/item/authors/@count
-200    aC82bC82    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type=" "]/@valuec/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)
-200    aT34bT34    |aictx_woscit*%s|bWOS|c%s|d%sc/def:UID:::%COLON%:::2c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:EWUID/def:edition/@value:::.:::2
-200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/def:static_data/def:fullrecord_metadata/def:addresses/def:address_namec/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/@addr_noc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:full_addressc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:cityc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:country
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_WOSCIT_M21
-002    24.05.16 jk; pridany pole 022e,655
-002    11.11.15 jk; pridano podpole 4 do poli 100 a 700
-002    08.09.15 js; opravene generovanie indikatorov do 700
-002    21.11.14 jk; zalozeno pro M21
-100    aconfbsoapenv http://schemas.xmlsoap.org/soap/envelope/,ns2 http://woksearch.v3.wokmws.thomsonreuters.com,def http://scientific.thomsonreuters.com/schema/wok5.4/public/FullRecordc/soap:Envelope/soap:Body/ns2:citingArticlesResponse/return/recordsFoundd/soap:Envelope/soap:Body/ns2:citingArticlesResponse/return/records/def:records/def:RECe/soap:Envelope/soap:Body/soap:Fault/faultstring
-200    a001b001    %sc/def:UID
-200    a020b020    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="isbn"]/@value
-200    a020_1b020    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eisbn"]/@value
-200    a022b022    |a%s|e%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eissn"]/@value
-200    a024b024    |a%s|2WOSc/def:UID:::%COLON%:::2
-200    a024_1b024 70 |a%s|2DOIc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="doi"]/@value
-200    a041b041 0  |a%sc/def:static_data/def:fullrecord_metadata/def:languages/def:language[@type="primary"]
-200    a245b245 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="item"]
-200    a260b260    |a%s|b%s|c%sc/def:static_data/def:summary/def:publishers/def:publisher/def:address_spec/def:cityc/def:static_data/def:summary/def:publishers/def:publisher/def:names/def:name/def:full_namec/def:static_data/def:summary/def:pub_info/@pubyear
-200    a490b490 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="book_series"]
-200    a653b653    |a%s:::653    :::c/def:static_data/def:item/def:keywords_plus/def:keywordc/def:static_data/def:item/def:keywords_plus/def:keyword[]
-200    a653_1b653    |a%s:::653    :::c/def:static_data/def:fullrecord_metadata/def:keywords/def:keywordc/def:static_data/def:fullrecord_metadata/def:keywords/def:keyword[]
-200    a655b655    |a%sc/def:static_data/def:summary/def:doctypes/def:doctype
-200    a773b773 08 |t%s|gVol. %s, no. %s (%s), pp. %s|x%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/def:pagec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@value
-002    -- upraven pomaly XPath, dalsi zpracovani je ve filtru symbolikem wosSymb()
-200    a100b100 1  |a%s|4%s|u%s|z%s|C%s:::700 1  :::c/def:static_data/def:summary/def:names/def:namec/def:static_data/def:summary/def:names/def:name[]/def:full_namec/def:static_data/def:summary/def:names/def:name[]/@rolec/def:static_data/def:summary/def:names/def:name[]/@addr_noc/def:static_data/def:summary/def:names/def:name[]/@reprintc/def:static_data/def:summary/def:names/def:name[]/def:full_name
-200    aJK1bJK1    |a%s|b%s|c%s:::JK1    :::c/def:static_data/def:contributors/def:contributorc/def:static_data/def:contributors/def:contributor[]/def:name/def:display_namec/def:static_data/def:contributors/def:contributor[]/def:name/@orcid_idc/def:static_data/def:contributors/def:contributor[]/def:name/@r_id
-002    --
-200    a970b970    |bRBX
-200    aC12bC12    |n%sc/def:static_data/def:fullrecord_metadata/def:fund_ack/def:fund_text/def:p
-200    aC15bC15    |a%s:::C15    :::c/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract/def:abstract_text/def:pc/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract[]/def:abstract_text/def:p
-200    aC46bC46    |a%sc/item/authors/@count
-200    aC82bC82    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type=" "]/@valuec/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)
-200    aT34bT34    |aictx_woscit*%s|bWOS|c%s|d%sc/def:UID:::%COLON%:::2c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:EWUID/def:edition/@value:::.:::2
-200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/def:static_data/def:fullrecord_metadata/def:addresses/def:address_namec/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/@addr_noc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:full_addressc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:cityc/def:static_data/def:fullrecord_metadata/def:addresses/def:address_name[]/def:address_spec/def:country
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_WOKID
-002    23.05.16 jk; pridano eissn do 011e
-002    11.11.15 jk; pridano podpole 4 do poli 700 a 701
-002    21.09.15 js; upravene indikatory v autoroch
-002    11.09.14 jk; prekopirovano z I2_XMLPARSE_WOKID
-002    24.07.14 jk; zalozeno
-100    aconfbsoapenv http://schemas.xmlsoap.org/soap/envelope/,ns2 http://woksearch.v3.wokmws.thomsonreuters.com,def http://scientific.thomsonreuters.com/schema/wok5.4/public/FullRecordc/soap:Envelope/soap:Body/ns2:searchResponse/return/recordsFoundd/soap:Envelope/soap:Body/ns2:searchResponse/return/records/def:records/def:RECe/soap:Envelope/soap:Body/soap:Fault/faultstring
-200    a001b001    %sc/def:UID
-200    a010b010    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="isbn"]/@value
-200    a010_1b010    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eisbn"]/@value
-200    a011b011    |a%s|e%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eissn"]/@value
-200    a014b014    |a%s|2WOSc/def:UID:::%COLON%:::2
-200    a017b017 70 |a%s|2DOIc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="doi"]/@value
-200    a101b101 0  |a%sc/def:static_data/def:fullrecord_metadata/def:languages/def:language[@type="primary"]
-200    a200b200 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="item"]
-200    a210b210    |a%s|b%s|c%s|d%sc/def:static_data/def:summary/def:publishers/def:publisher/def:address_spec/def:cityc/def:static_data/def:summary/def:pub_info/@coverdatec/def:static_data/def:summary/def:publishers/def:publisher/def:names/def:name/def:full_namec/def:static_data/def:summary/def:pub_info/@pubyear
-200    a225b225 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="book_series"]
-200    a463b463  1 |12001 |a%s|vVol. %s, no. %s (%s), pp. %s|1011  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/def:pagec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@value
-200    a608b608    |a%s:::608    :::c/def:static_data/def:summary/def:doctypes/def:doctypec/def:static_data/def:summary/def:doctypes/def:doctype[]
-200    a610b610    |a%s:::610    :::c/def:static_data/def:item/def:keywords_plus/def:keywordc/def:static_data/def:item/def:keywords_plus/def:keyword[]
-200    a610_1b610    |a%s:::610    :::c/def:static_data/def:fullrecord_metadata/def:keywords/def:keywordc/def:static_data/def:fullrecord_metadata/def:keywords/def:keyword[]
-002    -- upraven pomaly XPath, dalsi zpracovani je ve filtru symbolikem wosSymb() 
-200    a700b700  1 |a%s|b%s|4%s|p%s|z%s|C%s:::701  1 :::c/def:static_data/def:summary/def:names/def:namec/def:static_data/def:summary/def:names/def:name[]/def:full_name:::, :::1c/def:static_data/def:summary/def:names/def:name[]/def:full_name:::, :::2c/def:static_data/def:summary/def:names/def:name[]/@rolec/def:static_data/def:summary/def:names/def:name[]/@addr_noc/def:static_data/def:summary/def:names/def:name[]/@reprintc/def:static_data/def:summary/def:names/def:name[]/def:full_name
-200    aJK1bJK1    |a%s|b%s|c%s:::JK1    :::c/def:static_data/def:contributors/def:contributorc/def:static_data/def:contributors/def:contributor[]/def:name/def:display_namec/def:static_data/def:contributors/def:contributor[]/def:name/@orcid_idc/def:static_data/def:contributors/def:contributor[]/def:name/@r_id
-002    --
-200    a970b970    |bRBX
-200    aC82bC82    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="art_no"]/@value::: :::2
-200    aC15bC15    |a%s:::C15    :::c/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract/def:abstract_text/def:pc/def:static_data/def:fullrecord_metadata/def:abstracts/def:abstract[]/def:abstract_text/def:p
-200    aC46bC46    |a%sc/item/authors/@count
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type=" "]/@valuec/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)
-200    aT34bT34    |aictx_woscit*%s|bWOS|c%s|d%sc/def:UID:::%COLON%:::2c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:EWUID/def:edition/@value:::.:::2
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_WOKID_M21
-002    24.05.16 jk; pridany pole 022e,655
-002    11.11.15 jk; pridano podpole 4 do poli 100 a 700
-002    21.11.14 jk; zalozeno pro M21
-100    aconfbsoap http://schemas.xmlsoap.org/soap/envelope/,ns2 http://woksearch.v3.wokmws.thomsonreuters.com,def http://scientific.thomsonreuters.com/schema/wok5.4/public/FullRecordc/soap:Envelope/soap:Body/ns2:retrieveByIdResponse/return/recordsFoundd/soap:Envelope/soap:Body/ns2:retrieveByIdResponse/return/records/def:records/def:RECe/soap:Envelope/soap:Body/soap:Fault/faultstring
-200    a001b001    %sc/def:UID
-200    a020b020    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="isbn"]/@value
-200    a020_1b020    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eisbn"]/@value
-200    a022b022    |a%s|e%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="eissn"]/@value
-200    a024b024    |a%s|2WOSc/def:UID:::%COLON%:::2
-200    a024_1b024 70 |a%s|2DOIc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="doi"]/@value
-200    a041b041 0  |a%sc/def:static_data/def:fullrecord_metadata/def:languages/def:language[@type="primary"]
-200    a245b245 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="item"]
-200    a260b260    |a%s|b%s|c%sc/def:static_data/def:summary/def:publishers/def:publisher/def:address_spec/def:cityc/def:static_data/def:summary/def:publishers/def:publisher/def:names/def:name/def:full_namec/def:static_data/def:summary/def:pub_info/@pubyear
-200    a490b490 1  |a%sc/def:static_data/def:summary/def:titles/def:title[@type="book_series"]
-200    a653b653    |a%s:::653    :::c/def:static_data/def:item/def:keywords_plus/def:keywordc/def:static_data/def:item/def:keywords_plus/def:keyword[]
-200    a653_1b653    |a%s:::653    :::c/def:static_data/def:fullrecord_metadata/def:keywords/def:keywordc/def:static_data/def:fullrecord_metadata/def:keywords/def:keyword[]
-200    a655b655    |a%sc/def:static_data/def:summary/def:doctypes/def:doctype
-200    a773b773 08 |t%s|gVol. %s, no. %s (%s), pp. %s|x%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/def:pagec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@value
-002    -- upraven pomaly XPath, dalsi zpracovani je ve filtru symbolikem wosSymb()
-200    a100b100 1  |a%s|4%s|u%s|z%s|C%s:::700 1  :::c/def:static_data/def:summary/def:names/def:namec/def:static_data/def:summary/def:names/def:name[]/def:full_namec/def:static_data/def:summary/def:names/def:name[]/@rolec/def:static_data/def:summary/def:names/def:name[]/@addr_noc/def:static_data/def:summary/def:names/def:name[]/@reprintc/def:static_data/def:summary/def:names/def:name[]/def:full_name
-200    aJK1bJK1    |a%s|b%s|c%s:::JK1    :::c/def:static_data/def:contributors/def:contributorc/def:static_data/def:contributors/def:contributor[]/def:name/def:display_namec/def:static_data/def:contributors/def:contributor[]/def:name/@orcid_idc/def:static_data/def:contributors/def:contributor[]/def:name/@r_id
-002    --
-200    a970b970    |bRBX
-200    aC82bC82    |a%sc/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/def:static_data/def:summary/def:titles/def:title[@type="source"]c/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type="issn"]/@valuec/def:dynamic_data/def:cluster_related/def:identifiers/def:identifier[@type=" "]/@valuec/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:pub_info/@volc/def:static_data/def:item/def:bib_id:::(:::)
-200    aT34bT34    |aictx_woscit*%s|bWOS|c%s|d%sc/def:UID:::%COLON%:::2c/def:static_data/def:summary/def:pub_info/@pubyearc/def:static_data/def:summary/def:EWUID/def:edition/@value:::.:::2
-###
 # @id UnTablesd BASE_IPAC2_XMLPARSE_CLWOS
 002    20.09.23 jk; Clarivate WoS a CCC Unimarcm, je treba upravit odkaz v T34 ictx_woscit podle insituce napr. cav_woscit
 100    aconfc/response/map/map[@name="QueryResult"]/map/val[@name="RecordsFound"]d/response/map/map[@name="Data"]/val[@name="Records"]/records/RECe/error/code/messagef/UIDg/UID
@@ -6237,13 +6096,13 @@
 200    a010b010    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="isbn"]/@value
 200    a010_1b010    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="eisbn"]/@value
 200    a011b011    |a%s|e%sc/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type="eissn"]/@value
-200    a014b014    |a%s|2WOSc/UID:::%COLON%:::2
+200    a014b014    |a%s|2%sc/UID:::%COLON%:::2c/UID:::%COLON%:::1
 200    a017b017 70 |a%s|2DOIc/dynamic_data/cluster_related/identifiers/identifier[@type="doi"]/@value
 200    a101b101 0  |a%sc/static_data/fullrecord_metadata/languages/language[@type="primary"]
-200    a200b200 1  |a%sc/static_data/summary/titles/title[@type="item"]
+200    a200b200 1  |a%s|e%sc/static_data/summary/titles/title[@type="item"]c/static_data/summary/titles/title[@type="book_subtitle"]
 200    a210b210    |a%s|b%s|c%s|d%sc/static_data/summary/publishers/publisher/address_spec/cityc/static_data/summary/pub_info/@coverdatec/static_data/summary/publishers/publisher/names/name/full_namec/static_data/summary/pub_info/@pubyear
 200    a225b225 1  |a%sc/static_data/summary/titles/title[@type="book_series"]
-200    a463b463  1 |12001 |a%s|vVol. %s, no. %s (%s), pp. %s|1011  |a%sc/static_data/summary/titles/title[@type="source"]c/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)c/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/pagec/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@value
+200    a463b463  1 |12001 |a%s|e%s|e%s|vVol. %s, no. %s (%s), pp. %s|1011  |a%sc/static_data/summary/titles/title[@type="source"]c/static_data/summary/titles/title[@type="book_subtitle"]c/static_data/summary/conferences/conference/conf_titles/conf_titlec/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)c/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/pagec/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@value
 200    a608b608    |a%s:::608    :::c/static_data/summary/doctypes/doctypec/static_data/summary/doctypes/doctype[]
 200    a610b610    |a%s:::610    :::c/static_data/item/keywords_plus/keywordc/static_data/item/keywords_plus/keyword[]
 200    a610_1b610    |a%s:::610    :::c/static_data/fullrecord_metadata/keywords/keywordc/static_data/fullrecord_metadata/keywords/keyword[]
@@ -6253,13 +6112,14 @@
 200    aC15bC15    |a%s:::C15    :::c/static_data/fullrecord_metadata/abstracts/abstractc/static_data/fullrecord_metadata/abstracts/abstract[]/abstract_text/p
 200    aC46bC46    |a%sc/static_data/summary/names/@count
 200    aC82bC82    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/static_data/summary/titles/title[@type="source"]c/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type=" "]/@valuec/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)
-200    aT34bT34    |aictx_clwoscit*%s|bWOS|c%s|d%sc/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2
+200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%s|g%s|h%s|i%s|j%s|k%s|l%sc/static_data/summary/titles/title[@type="source"]c/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type=" "]/@valuec/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)c/static_data/summary/conferences/conference/conf_titles/conf_titlec/static_data/summary/conferences/conference/conf_locations/conf_location/conf_cityc/static_data/summary/conferences/conference/conf_locations/conf_location/conf_statec/static_data/summary/conferences/conference/conf_dates/conf_datec/static_data/summary/conferences/conference/conf_dates/conf_date/@conf_startc/static_data/summary/conferences/conference/conf_dates/conf_date/@conf_end
+200    aT34bT34    |aictx_clwoscit*%s|bWOS|c%s|d%s|e%sc/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2c/static_data/summary/pub_info/@pubtype
 200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/static_data/fullrecord_metadata/addresses/address_namec/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/@addr_noc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/full_addressc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/cityc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/country
 ###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_CLWOS_M21
-002    20.09.23 jk; Clarivate WoS a CCC M21, je treba upravit odkaz v T34 ictx_woscit podle insituce napr. stu_woscit
-100    aconfc/response/map/map[@name="QueryResult"]/map/val[@name="RecordsFound"]d/response/map/map[@name="Data"]/val[@name="Records"]/records/RECe/error/code/messagef/UID
+# @id UN_TABLES BASE_IPAC2_XMLPARSE_CLWOS_M21
+002    10.01.23 jk; zapojeno pro stu
+002    20.09.23 jk; Clarivate WoS a CCC M21, je treba upravit odkaz v T34 ictx_woscit podle insituce napr. cav_woscit
+100    aconfc/response/map/map[@name="QueryResult"]/map/val[@name="RecordsFound"]d/response/map/map[@name="Data"]/val[@name="Records"]/records/RECe/error/code/messagef/UIDg/UID
 200    a001b001    %sc/UID
 200    a020b020    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="isbn"]/@value
 200    a020_1b020    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="eisbn"]/@value
@@ -6280,8 +6140,8 @@
 200    aC15bC15    |a%s:::C15    :::c/static_data/fullrecord_metadata/abstracts/abstractc/static_data/fullrecord_metadata/abstracts/abstract[]/abstract_text/p
 200    aC46bC46    |a%sc/static_data/summary/names/@count
 200    aC82bC82    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/static_data/summary/titles/title[@type="source"]c/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type=" "]/@valuec/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)
-200    aT34bT34    |aictx_clwoscit*%s|bWOS|c%s|d%sc/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2
+200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%s|g%s|h%s|i%s|j%s|k%s|l%sc/static_data/summary/titles/title[@type="source"]c/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type=" "]/@valuec/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)c/static_data/summary/conferences/conference/conf_titles/conf_titlec/static_data/summary/conferences/conference/conf_locations/conf_location/conf_cityc/static_data/summary/conferences/conference/conf_locations/conf_location/conf_statec/static_data/summary/conferences/conference/conf_dates/conf_datec/static_data/summary/conferences/conference/conf_dates/conf_date/@conf_startc/static_data/summary/conferences/conference/conf_dates/conf_date/@conf_end
+200    aT34bT34    |astu_clwoscit*%s|bWOS|c%s|d%s|e%sc/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2c/static_data/summary/pub_info/@pubtype
 200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/static_data/fullrecord_metadata/addresses/address_namec/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/@addr_noc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/full_addressc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/cityc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/country
 ###
 # @id UnTablesd BASE_IPAC2_XMLPARSE_OAI_CREPC_CIT_M21
@@ -6300,107 +6160,36 @@
 200    a041b041 0  |a%s|b%s|h%sc/title[@title_type = "title_proper"]/@langc/cross_lang[@lang_type ="language_of_resume"]/rec_language/@code_unic/cross_lang[@lang_type ="language_of_original_work"]/rec_language/@code_uni
 200    a044b044    |a%sc/cross_biblio_institution[@role_type = "publisher"]/location/rec_country/@alfa2
 200    a100b100 1  |a%s|A%s|d%s-|u%s|T%s|4%s|7%s|9%s:::700 1  :::c/cross_biblio_personc/cross_biblio_person[]/rec_person/lastnamec/cross_biblio_person[]/rec_person/firstnamec/cross_biblio_person[]/rec_person/periods[@birth_death="yes"]/period[@period_type="remain"]/date/year[@period_type="from"]c/cross_biblio_person[]/affiliation/rec_institution[@level = "1" or @level = "2" or @level = "3"]/institution_identifier/local_numbers[num_title = "crepc2"]/numberc/cross_biblio_person[]/affiliation/rec_institution[@level = "1" or @level = "2" or @level = "3"]/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/cross_biblio_person[]/@rolec/cross_biblio_person[]/rec_person/cross_person_database[@id_title = "SPU Nitra"]/@id_valuec/cross_biblio_person[]/@ratio
-200    a110b110 2  |a%sc/cross_biblio_institution/rec_institution/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]
-200    a111b111 2  |a%s|n%s|n%s|c%s|9%s|d%s|D%s|E%s|F%s|G%s|H%sc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/name[@name_type = "proper_name"]c/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/number/latinc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/number/romanc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/location/townc/cross_biblio_person/@ratioc/cross_biblio_meeting/rec_meeting/period/date/year[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/month[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/day[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/year[@period_type="to"]c/cross_biblio_meeting/rec_meeting/period/date/month[@period_type="to"]c/cross_biblio_meeting/rec_meeting/period/date/day[@period_type="to"]
 200    a242b242 00 |a%s|y%sc/title[@title_type = "avant_titre"]c/title[@title_type = "avant_titre"]/@lang
 200    a245b245 10 |a%s|b%s|c%s|h%sc/title[@title_type = "title_proper"]c/title[@title_type = "other_title_information"]c/statement_on_documentc/properties/medium
 200    a246b246 31 |a%s:::246 21 :::c/title[@title_type = "paralel_title_proper"]c/title[@title_type = "paralel_title_proper"]
 200    a246_1b246    |a%s:::246    :::c/title[@title_type = "avant_titre"]c/title[@title_type = "avant_titre"]
 200    a250b250    |a%s|x%sc/properties/rendition_order/number/text_numberc/properties/rendition_order/text
-200    a260b260    |a%s|b%s|c%s:::246    :::c/cross_biblio_institution[@role_type = "publisher"]c/cross_biblio_institution[@role_type = "publisher"][]/location/townc/cross_biblio_institution[@role_type = "publisher"][]/rec_institution/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/cross_biblio_institution[@role_type = "publisher"][]/period[@period_type = "simple"]/date[1]/year[@period_type = "from"]
-200    a300b300    |a%s|b%s|e%s|9%sc/properties/range/pages_count/latinc/properties/range/physical_infoc/properties/range/accompanying_materialc/cross_biblio_biblio/range/authors_sheets
+200    a260b260    |a%s|b%s|c%sc/cross_biblio_institution[@role_type = "publisher"]/location/townc/cross_biblio_institution[@role_type = "publisher"]/rec_institution/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]
+200    a300b300    |X%s|A%s|a%s|b%s|e%s|9%sc/properties/range/@range_typec/properties/range/@pages_abreviationc/properties/range/pages_count/latinc/properties/range/physical_infoc/properties/range/accompanying_materialc/cross_biblio_biblio/range/authors_sheets
 200    a490b490    |a%s|v%s:::490    :::c/cross_biblio_edition[@bond_type = "edition"]c/cross_biblio_edition[@bond_type = "edition"][]/rec_edition/title[@title_type = "proper_name"]c/cross_biblio_edition[@bond_type = "edition"][]/edition_number/number/latin
 200    a500b500    |a%s:::500    :::c/remark[not (@motion) and @state = "private"]c/remark[not (@motion) and @state = "public"][]
 200    a500_1b500    |a%s:::500    :::c/remark[not (@motion) and @state = "private"]c/remark[not (@motion) and @state = "private"][]
 200    a650b650 04 |a%s:::650    :::c/cross_biblio_subjectc/cross_biblio_subject[]/rec_subject [not(@class_type)]/title
+200    a711b711 2  |a%s|n%s|n%s|c%s|d%s|D%s|E%s|F%s|G%s|H%sc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/name[@name_type = "proper_name"]c/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/number/latinc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/number/romanc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/location/townc/cross_biblio_meeting/rec_meeting/period/date/year[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/month[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/day[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/year[@period_type="to"]c/cross_biblio_meeting/rec_meeting/period/date/month[@period_type="to"]c/cross_biblio_meeting/rec_meeting/period/date/day[@period_type="to"]
 200    a856b856 4  |u%s:::856    :::c/wwwc/www[]/www_edit
+200    a856_1b856 40 |uhttps://doi.org/%sc/biblio_identifier/digi_identifier[@di_type="DOI"]/digi_value
 200    a928b928    |a%s|4pbl|7%s:::928    :::c/cross_biblio_institution[@role_type = "publisher"]c/cross_biblio_institution[@role_type = "publisher"][]/rec_institution/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/cross_biblio_institution[@role_type = "publisher"][]/rec_institution/institution_identifier/local_numbers[@number_type = "other_systems_control_numbers"]/number
 200    a970b970    |a%s|q%sc/cross_biblio_activity/rec_activity_crepc/categoryc/coded_information/research_area
 200    a976b976    |a%s|b%s|c%sc/cross_biblio_activity/rec_activity_crepc/categoryc/document_type/document_type_comboc/coded_information/rec_study_branch/@id
 200    a985b985    |r%sc/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]
 200    aC12bC12    |a%s|r%s|t%s|7%s:::C12    :::c/cross_biblio_projectc/cross_biblio_project[]/rec_project/@idc/cross_biblio_project[]/rec_project/numberc/cross_biblio_project[]/rec_project/grant_schemec/cross_biblio_project[]/rec_project/title[@title_type = "proper_name"]
-200    a977b977    |x%s|A%s:::977    :::c/cross_biblio_biblio[@bond_type = "response_to"]c/cross_biblio_biblio[@bond_type = "response_to"][]/rec_biblio/cross_biblio_database/database_idc/cross_biblio_biblio[@bond_type = "response_to"][]/citation_category
+200    a977b977    |x%s|A%s:::977    :::c/cross_biblio_biblio[@bond_type = "response_to"]/rec_biblio/cross_biblio_databasec/cross_biblio_biblio[@bond_type = "response_to"]/rec_biblio/cross_biblio_database[]/database_idc/cross_biblio_biblio[@bond_type = "response_to"]/citation_category
 002    --- monografie
-200    a773b773 0  |b%s|B%s|d%s|D%s|E%s|F%s|gS.%s|G%s|h%s s|t%s|z%s|X%s|Ymonoc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/rendition_order/number/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/rendition_order/textc/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/location/townc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/rec_institution/@idc/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/location/rec_country/country_description[@lang = "slo"]/country_namec/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/range/pages_count/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "isbn"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/@id
+200    a773b773 0  |b%s|B%s|d%s|D%s|E%s|F%s|gS.%s|G%s|h%s s|t%s|z%s|X%s|Ymonoc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/rendition_order/number/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/rendition_order/textc/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/location/townc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/rec_institution/institution_name[@inst_type = "proper_name"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/location/rec_country/country_description[@lang = "slo"]/country_namec/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/range/pages_count/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "isbn"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/@id
 002    --- serial
-200    a773_1b773 0  |g%s|1%s|2%s|3%s|4%s|5%s|6%s|7%s|t%s|x%s|Yserc/cross_biblio_biblio[@source = "source"]/rec_issue/volume/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/volume/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/issue/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/issue/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/date/yearc/cross_biblio_biblio[@source = "source"]/range/@pages_abreviationc/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "issn" and @is_form="print"]/number
+200    a773_1b773 0  |g%s|1%s|2%s|3%s|4%s|5%s|6%s|7%s|t%s|x%s|y%s|Yserc/cross_biblio_biblio[@source = "source"]/rec_issue/volume/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/volume/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/issue/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/issue/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/date/yearc/cross_biblio_biblio[@source = "source"]/range/@pages_abreviationc/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "issn" and @is_form="print"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "issn" and @is_form="electronic"]/number
 002    --- identifikatory se vlozi ve filtru do 773$w
 200    aJK1bJK1    |a%s|X%s:::JK1    :::c/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_databasec/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_database[]/database_idc/cross_biblio_biblio[@source = "source"]/rec_biblio/@id
-002    --- metriky ve filtru se prevedou do 978
-200    aJK3bJK3    |a%s|b%s|c%s:::JK3    :::c/cross_biblio_biblio[@source = "source"]/rec_biblio/bibliometryc/cross_biblio_biblio[@source = "source"]/rec_biblio/bibliometry[]/@typec/cross_biblio_biblio[@source = "source"]/rec_biblio/bibliometry[]/@yearc/cross_biblio_biblio[@source = "source"]/rec_biblio/bibliometry[]
-002    --- kvartily ve filtru se prevedou do 978
-200    aJK4bJK4    |a%s|b%s|c%s|d%s:::JK4    :::c/cross_biblio_biblio[@source = "source"]/rec_biblio/quartilec/cross_biblio_biblio[@source = "source"]/rec_biblio/quartile[]/@typec/cross_biblio_biblio[@source = "source"]/rec_biblio/quartile[]/@yearc/cross_biblio_biblio[@source = "source"]/rec_biblio/quartile[]/@disciplinec/cross_biblio_biblio[@source = "source"]/rec_biblio/quartile[]
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_OAI_CREPC_CIT
-002    https://cosmo2/wiki/index.php?title=CREPC/crepc2_stahov%C3%A1n%C3%AD_ohlas%C5%AF
-002    - UPRAVY A NASTAVENI 
-002      700/701$7 zmenit u kazde instituce @id_title = "UMB B. Bystrica" podle instituce (co se ma zapsat zjistit z crepc OAI dat)
-002    -
-100    aconfd/OAI-PMH/GetRecord/records/metadata/rec_biblio
-200    a010b010    |a%s|b%s|b%z:::010    :::c/biblio_identifier/int_standards[@is_type="isbn"]c/biblio_identifier/int_standards[@is_type = "isbn" and @is_form = "wrong"][]c/biblio_identifier/int_standards[@is_type="isbn"][]/@is_formc/biblio_identifier/int_standards[@is_type = "isbn" and @is_form="wrong"][]/number
-200    a011b011    |a%s|bprint:::011    :::c/biblio_identifier/int_standards[@is_type = "issn" and @is_form = "print"]c/biblio_identifier/int_standards[@is_type = "issn" and @is_form = "print"][]/number
-200    a011_1b011    |a%s|belectronic:::011    :::c/biblio_identifier/int_standards[@is_type = "issn" and @is_form = "electronic"]c/biblio_identifier/int_standards[@is_type = "issn" and @is_form = "electronic"][]/number
-200    a011_2b011    |z%s|y%s:::011    :::c/biblio_identifier/int_standards[@is_type = "issn"]c/biblio_identifier/int_standards[@is_type = "issn" and @is_form = "wrong"][]/numberc/biblio_identifier/int_standards[@is_type = "issn" and @is_form = "old"][]/number
-200    a014b014    |a%s|2%s:::014    :::c/cross_biblio_databasec/cross_biblio_database[]/database_idc/cross_biblio_database[]/rec_database/name[@name_type = "short_name"]
-200    a017b017 70 |a%s|2%s:::017 70 :::c/biblio_identifier/digi_identifierc/biblio_identifier/digi_identifier[]/digi_valuec/biblio_identifier/digi_identifier[]/@di_type
-200    a035b035    |a%s|2CREPC2c/@id
-200    a101b101 0  |a%s|b%sc/cross_lang[@lang_type ="language_of_text"]/rec_language/description[@lang="slo"]c/cross_lang[@lang_type ="language_of_resume"]/rec_language/description[@lang="slo"]
-200    a102b102    |a%sc/cross_biblio_institution[@role_type = "publisher"]/location/rec_country/@alfa2
-200    a200b200 1  |a%s|e%s|z%s|d%s|f%s|g%s|b%sc/title[@title_type = "title_proper"]c/title[@title_type = "other_title_information"]c/title[@title_type = "paralel_title_proper"]/@langc/title[@title_type = "paralel_title_proper"]c/statement_on_documentc/statement_on_documentc/properties/medium
-200    a205b250    |a%s|x%sc/properties/rendition_order/number/text_numberc/properties/rendition_order/text
-200    a210b210    |a%s|c%s|d%s:::210    :::c/cross_biblio_institutionc/cross_biblio_institution[@role_type = "publisher"][]/location/townc/cross_biblio_institution[@role_type = "publisher"][]/rec_institution/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/cross_biblio_institution[@role_type = "publisher"][]/period[@period_type = "simple"]/date[1]/year[@period_type = "from"]
-200    a215b215    |a%s|c%s|e%s|9%sc/properties/range/pages_count/latinc/properties/range/physical_infoc/properties/range/accompanying_materialc/cross_biblio_biblio/range/authors_sheets
-200    a225b225 0  |a%s|d%s|v%s:::225 0  :::c/cross_biblio_edition[@bond_type = "edition"]c/cross_biblio_edition[@bond_type = "edition"][]/rec_edition/title[@title_type = "proper_name"]c/cross_biblio_edition[@bond_type = "edition"][]/rec_edition/title[@title_type = "paralel_title_proper"]c/cross_biblio_edition[@bond_type = "edition"][]/edition_number/number/latin
-200    a300b300    |a%s:::300    :::c/remark[not (@motion) and @state = "private"]c/remark[not (@motion) and @state = "public"][]
-200    a300_1b300    |a%s:::300    :::c/remark[not (@motion) and @state = "private"]c/remark[not (@motion) and @state = "private"][]
-200    a606b606 0  |a%s:::606 0  :::c/cross_biblio_subjectc/cross_biblio_subject[]/rec_subject [not(@class_type)]/title
-200    a700b700  1 |a%s|b%s|f%s-|p%s|T%s|9%s|4%s|3%s:::701  1 :::c/cross_biblio_personc/cross_biblio_person[]/rec_person/lastnamec/cross_biblio_person[]/rec_person/firstnamec/cross_biblio_person[]/rec_person/periods[@birth_death="yes"]/period[@period_type="remain"]/date/year[@period_type="from"]c/cross_biblio_person[]/affiliation/rec_institution[@level = "1" or @level = "2" or @level = "3"]/institution_identifier/local_numbers[contains(num_title,"crepc2")]/numberc/cross_biblio_person[]/affiliation/rec_institution[@level = "1" or @level = "2" or @level = "3"]/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/cross_biblio_person[]/@ratioc/cross_biblio_person[]/@rolec/cross_biblio_person[]/rec_person/cross_person_database[@id_title = "UMB B. Bystrica"]/@id_value
-200    a710b710 11 |a%s|b%s|d%s|d%s|e%s|f%s|F%s|G%s|H%s|I%s|J%sc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/name[@name_type = "proper_name"]c/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/name[@name_type = "additional_name"]c/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/number/latinc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/number/romanc/cross_biblio_meeting/rec_meeting[@meeting_type = "subordinate"]/location/townc/cross_biblio_meeting/rec_meeting/period/date/year[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/month[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/day[@period_type="from"]c/cross_biblio_meeting/rec_meeting/period/date/year[@period_type="to"]c/cross_biblio_meeting/rec_meeting/period/date/month[@period_type="to"]c/cross_biblio_meeting/rec_meeting/period/date/day[@period_type="to"]
-200    a856b856 4  |u%s:::856    :::c/wwwc/www[]/www_edit
-200    a921b921    |a%s|b%s|g%s|G%s|C%s|e%s|E%s|F%s:::921    :::c/biblio_identifier/local_numbers[@number_type="patent"]c/biblio_identifier/local_numbers[@number_type="patent"][]/numberc/biblio_identifier/local_numbers[@number_type="patent_application"]/numberc/biblio_year[@type = "given" and @period_type = "simple"]/date/year[@period_type = "from"]c/biblio_year[@type = "given" and @period_type = "simple"]/date/month[@period_type = "from"]c/biblio_year[@type = "given" and @period_type = "simple"]/date/day[@period_type = "from"]c/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"] c/biblio_year[@type = "published" and @period_type = "simple"]/date/month[@period_type = "from"] c/biblio_year[@type = "published" and @period_type = "simple"]/date/day[@period_type = "from"]
-200    a928b928    |a%s|4pbl|3%s:::928    :::c/cross_biblio_institutionc/cross_biblio_institution[@role_type = "publisher"][]/rec_institution/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/cross_biblio_institution[@role_type = "publisher"][]/rec_institution/institution_identifier/local_numbers[@number_type = "other_systems_control_numbers"]/number
-200    a970b970    |a%s|q%sc/cross_biblio_activity/rec_activity_crepc/categoryc/coded_information/research_area
-200    a976b976    |a%s|b%s|c%sc/cross_biblio_activity/rec_activity_crepc/categoryc/document_type/document_type_comboc/coded_information/rec_study_branch/@id
-200    a977b977    |x%s|A%s:::977    :::c/cross_biblio_biblio[@bond_type = "response_to"]c/cross_biblio_biblio[@bond_type = "response_to"][]/rec_biblio/cross_biblio_database/database_idc/cross_biblio_biblio[@bond_type = "response_to"][]/citation_category
-200    a985b985    |r%sc/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]
-200    aC12bC12    |a%s|r%s|t%s|7%s:::C12    :::c/cross_biblio_projectc/cross_biblio_project[]/rec_project/@idc/cross_biblio_project[]/rec_project/numberc/cross_biblio_project[]/rec_project/grant_schemec/cross_biblio_project[]/rec_project/title[@title_type = "proper_name"]
-002    - monografie sbornik
-200    a463b463  1 |1001  mono|1010  |a%s|1200  |a%s|e%s|vS.%s|V%s|1205  |a%s|A%s|1210  |a%s|c%s|d%s|1215  |a%s sc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "isbn"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "other_title_information"]c/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/rendition_order/number/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/rendition_order/textc/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/location/townc/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/rec_institution/@idc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/range/pages_count/latin
-002    - serial
-200    a463b463  1 |1001  ser|1011  |a%s|1200  |a%s|e%s|v%s|A%s|B%s|C%s|D%s|E%s|F%s|G%s|1210  |a%s|c%sc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "issn" and @is_form="print"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "other_title_information"]c/cross_biblio_biblio[@source = "source"]/rec_issue/volume/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/volume/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/issue/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/issue/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/date/yearc/cross_biblio_biblio[@source = "source"]/range/@pages_abreviationc/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/location/townc/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/rec_institution/@id
-002    --- identifikator instituce se vybere a vlozi do 463 101$1 az ve filtru
-200    aJK1bJK1    |a%s|X%s:::JK1    :::c/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_databasec/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_database[]/database_idc/cross_biblio_biblio[@source = "source"]/rec_biblio/@id
-200    aJK2bJK2    |a%s:::JK2    :::c/cross_biblio_biblio[@source = "source"]/rec_biblio/statement_on_documentc/cross_biblio_biblio[@source = "source"]/rec_biblio/statement_on_document[]
-002    --- metriky ve filtru se prevedou do 978
-200    aJK3bJK3    |a%s|b%s|c%s:::JK3    :::c/cross_biblio_biblio[@source = "source"]/rec_biblio/bibliometryc/cross_biblio_biblio[@source = "source"]/rec_biblio/bibliometry[]/@typec/cross_biblio_biblio[@source = "source"]/rec_biblio/bibliometry[]/@yearc/cross_biblio_biblio[@source = "source"]/rec_biblio/bibliometry[]
-002    --- kvartily ve filtru se prevedou do 978
-200    aJK4bJK4    |a%s|b%s|c%s|d%s:::JK4    :::c/cross_biblio_biblio[@source = "source"]/rec_biblio/quartilec/cross_biblio_biblio[@source = "source"]/rec_biblio/quartile[]/@typec/cross_biblio_biblio[@source = "source"]/rec_biblio/quartile[]/@yearc/cross_biblio_biblio[@source = "source"]/rec_biblio/quartile[]/@disciplinec/cross_biblio_biblio[@source = "source"]/rec_biblio/quartile[]
-###
-# @id UnTablesd BASE_IPAC2_XMLPARSE_CLWOS_M21
-002    04.08.23 jk; zalozeno pro Clarivate WoS
-100    aconfcresponse/map/map[@name="QueryResult"]/val[@name="RecordsFound"]dresponse/map/map[@name="Data"]/val[@name="Records"]/records/RECeerror/code/messagef/UID
-200    a001b001    %sc/UID
-200    a020b020    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="isbn"]/@value
-200    a020_1b020    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="eisbn"]/@value
-200    a022b022    |a%s|e%sc/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type="eissn"]/@value
-200    a024b024    |a%s|2WOSc/UID:::%COLON%:::2
-200    a024_1b024 70 |a%s|2DOIc/dynamic_data/cluster_related/identifiers/identifier[@type="doi"]/@value
-200    a041b041 0  |a%sc/static_data/fullrecord_metadata/languages/language[@type="primary"]
-200    a245b245 1  |a%sc/static_data/summary/titles/title[@type="item"]
-200    a260b260    |a%s|b%s|c%sc/static_data/summary/publishers/publisher/address_spec/cityc/static_data/summary/publishers/publisher/names/name/full_namec/static_data/summary/pub_info/@pubyear
-200    a490b490 1  |a%sc/static_data/summary/titles/title[@type="book_series"]
-200    a653b653    |a%s:::653    :::c/static_data/item/keywords_plus/keywordc/static_data/item/keywords_plus/keyword[]
-200    a653_1b653    |a%s:::653    :::c/static_data/fullrecord_metadata/keywords/keywordc/static_data/fullrecord_metadata/keywords/keyword[]
-200    a655b655    |a%sc/static_data/summary/doctypes/doctype
-200    a100b100 1  |a%s|4%s|u%s|z%s|A%s|B%s:::700 1  :::c/static_data/summary/names/namec/static_data/summary/names/name[]/full_namec/static_data/summary/names/name[]/@rolec/static_data/summary/names/name[]/@seq_noc/static_data/summary/names/name[]/@reprintc/static_data/contributors/contributor/name[full_name=//static_data/summary/names/name[]/full_name]/@r_idc/static_data/contributors/contributor/name[full_name=//static_data/summary/names/name[]/full_name]/@orcid_id
-200    a773b773 08 |t%s|gVol. %s, no. %s (%s), pp. %s|x%sc/static_data/summary/titles/title[@type="source"]c/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)c/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/pagec/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@value
-200    a970b970    |bRBX
-200    aC12bC12    |n%sc/static_data/fullrecord_metadata/fund_ack/fund_text/pXNENALEZENO V XML
-200    aC15bC15    |a%s:::C15    :::c/static_data/fullrecord_metadata/abstracts/abstractc/static_data/fullrecord_metadata/abstracts/abstract[]/abstract_text/p
-200    aC82bC82    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="art_no"]/@value::: :::2
-200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/static_data/summary/titles/title[@type="source"]c/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type=" "]/@valuec/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)
-200    aT34bT34    |aictx_woscit*%s|bWOS|c%s|d%sc/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2
-200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/static_data/fullrecord_metadata/addresses/address_namec/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/@addr_noc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/full_addressc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/cityc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/country
+002     --- identifikator source, nelze vzit z JK1 je tam loop nad cross_biblio_database
+200    aJK2bJK2    |a%sc/cross_biblio_biblio[@source = "source"]/rec_biblio/@id
+002    --- druh formulare
+200    aJK3bJK3    |a%sc/@form_type
 ###
 # @id UN_TABLES BASE_CONTENT_STATS
 100    aKonfigurace statistik contentServeru
@@ -6555,16 +6344,18 @@
 # @id UN_TABLES BASE_IPAC2_XMLPARSE_FLEXIBOOKS_M21
 002    import a aktualizace zaznamu a anotaci z ebook flexibook v M21
 100    aconfd/output/produktpLF,TAB
+200    a000b000    00000nam-a2200445-a 4500
 200    a020b020    |a%sc/isbn
 200    a020xb020    |a%s|qebookc/isbn_ebook
 200    a100b100 1  |a%s, %s:::700 1  :::c/authors:::;:::c/authors::: :::LASTc/authors::: :::FIRST
-200    a245b245 1  |a%sc/name
+200    a245b245    |a%sc/name
 200    a260b260    |b%s|c%sc/publisherc/year
 200    a300b300    |a%sc/pages
-200    a520b520 3  |a%s|cflexibooksc/anotation
+200    a520b520 2  |a%s|cflexibooksc/anotation
 200    a650b650 0  |a%s:::650 0  :::c/keywords:::, :::c/keywords
 200    a653b653    |a%sc/category
 200    a969b969    |fQ
+200    a970b970    |bSE
 200    aC85bC85  1 |hflexibooks|b%s|v%s|d%s|d%s|d%s|d%s|u%s|p%sc/idc/loanc/issuuc/googlec/youtubec/vimeoc/urlc/price_loan
 ###
 # @id UN_TABLES BASE_IPAC2_XMLPARSE_EREADING
@@ -6620,11 +6411,51 @@
 200    aF01bF01    |a%sc/lengthxpomocny tag filter prevede udaj v sec na HH:MM:SS do 300a
 200    a336b336    |atext|btxt|2rdacontent
 200    a338b338    |aonline zdroj|bcr|2rdacarrier
-200    a520b520  2 |a%s|cereadingc/annotation
+200    a520b520 2  |a%s|cereadingc/annotation
 200    a521b521    |a%s|a%sc/ageLimit
 200    a655b655    |a%s:::655    :::c/subjectc/subject[]
 200    a969b969    |fQ
 200    aC85bC85  1 |hereading|b%s|v%s|d%s|d%s|d%s|u%s|t%s|p%sc/@idc/rentsc/format[@type="pdf"]/sampleURLc/format[@type="epub"]/sampleURLc/format[@type="mobi"]/sampleURLc/shopURLc/@typec/price
+###
+# @id UN_TABLES BASE_IPAC2_XMLPARSE_KUBO
+002    import a aktualizace zaznamu Kubo v UN
+002    https://cosmo2.cs.cosmotron.cz/wiki/index.php?title=Integrace_digit%C3%A1ln%C3%AD_d%C4%9Btsk%C3%A9_knihovny_KUBO_do_ARL
+002    --
+100    aconfd/output/produktfFILTER_KUBO
+200    a000b000    00000nam-a22     3i-4500
+200    a010b010    |a%sc/isbn
+200    a011b011    |a%sc/issn
+200    a035b035    |a%s|2KUBO%sc/id
+200    a200b200 1  |a%sc/name
+200    a210b210    |c%s|d%sc/publisherc/year
+200    a215b215    |a%sc/pages
+200    a330b330    |a%s|ckuboc/anotation
+200    a606b606    |a%s:::606    :::c/keywords:::; :::c/keywords
+200    a610b610    |a%sc/category
+200    a700b700 1  |a%s|b%s:::701  1 :::c/authors:::;:::c/authors::: :::LASTc/authors::: :::FIRST
+200    a969b969    |fQ
+200    aC85bC85  1 |hkubo|b%s|v1|u%sc/idc/url
+200    aJK1bJK1    |a%sc/note
+###
+# @id UN_TABLES BASE_IPAC2_XMLPARSE_KUBO_M21
+002    import a aktualizace zaznamu Kubo v M21
+002    https://cosmo2.cs.cosmotron.cz/wiki/index.php?title=Integrace_digit%C3%A1ln%C3%AD_d%C4%9Btsk%C3%A9_knihovny_KUBO_do_ARL
+002    --
+100    aconfd/output/produktfFILTER_KUBO_M21
+200    a000b000    00000nam-a22     3i-4500
+200    a020b020    |a%sc/isbn
+200    a022b022    |a%sc/issn
+200    a035b035    |a%s|2KUBO%sc/id
+200    a100b100 1  |a%s, %s:::700 1  :::c/authors:::;:::c/authors::: :::LASTc/authors::: :::FIRST
+200    a245b245    |a%sc/name
+200    a260b260    |b%s|c%sc/publisherc/year
+200    a300b300    |a%sc/pages
+200    a520b520 3  |a%s|ckuboc/anotation
+200    a650b650 0  |a%s:::650 0  :::c/keywords:::;:::c/keywords
+200    a653b653    |a%sc/category
+200    a969b969    |fQ
+200    aC85bC85  1 |hkubo|b%s|v1|u%sc/idc/url
+200    aJK1bJK1    |a%sc/note
 ###
 # @id UN_TABLES BASE_OKCZ_SERVERS
 200    acache1.obalkyknih.cz
@@ -6710,4 +6541,106 @@
 200    ahours1bCelkom volanie po hodinách#Celkem volání po hodinách#Total calls by hourspioperation,,UT_AUDIT_IPAC_OPERATIONS,checkbox-col4pyear,8,down,checkbox-col4sSELECT {fn HOUR(Stamp)} AS Hodina, sum(Value) AS Soucet FROM i2_audit.storage WHERE Ictx = %ictx% AND Subsystem = 'ipac' AND Ipadress = 'x' AND %param(Item=?)% AND %param(YEAR(Stamp) = ?)% GROUP BY {fn HOUR(Stamp)}
 200    arecordsbRekordy denných volaní#Rekordy denních volání#Daily call recordss(SELECT TOP 1 'Neomezené: '||den AS Obdobi, MAX(soucet) AS Maximum FROM (SELECT $EXTRACT(Stamp,1,10) AS den, sum(Value) AS soucet FROM %NOTOPOPT i2_audit.storage WHERE Ictx = %ictx% AND Subsystem = 'ipac' AND Ipadress = 'x' GROUP BY $EXTRACT(Stamp,1,10)) ORDER BY soucet DESC) UNION ALL (SELECT TOP 1 'Tento rok: '||den AS Obdobi, MAX(soucet) AS Maximum FROM (SELECT $EXTRACT(Stamp,1,10) AS den, sum(Value) AS soucet FROM %NOTOPOPT i2_audit.storage WHERE Ictx = %ictx% AND Subsystem = 'ipac' AND Ipadress = 'x' AND YEAR(Stamp) = YEAR(NOW()) GROUP BY $EXTRACT(Stamp,1,10)) ORDER BY soucet DESC) UNION ALL (SELECT TOP 1 'Tento měsíc: '||den AS Obdobi, MAX(soucet) AS Maximum FROM (SELECT $EXTRACT(Stamp,1,10) AS den, sum(Value) AS soucet FROM %NOTOPOPT i2_audit.storage WHERE Ictx = %ictx% AND Subsystem = 'ipac' AND Ipadress = 'x' AND Stamp %startswith $EXTRACT(NOW(),1,7) GROUP BY $EXTRACT(Stamp,1,10)) ORDER BY soucet DESC) UNION ALL (SELECT TOP 1 'Dnes: '||den AS Obdobi, MAX(soucet) AS Maximum FROM (SELECT $EXTRACT(Stamp,1,10) AS den, sum(Value) AS soucet FROM %NOTOPOPT i2_audit.storage WHERE Ictx = %ictx% AND Subsystem = 'ipac' AND Ipadress = 'x' AND Stamp %startswith $EXTRACT(NOW(),1,10) GROUP BY $EXTRACT(Stamp,1,10)) ORDER BY soucet DESC)
 200    aipacbJednotlivé operácie#Jednotlive operace#Individual operationsdVšetky stránky ipacu aspoň raz zavolané#Všechny stránky ipacu alesnoň jednou zavolané#All ipac sites are called at least oncesselect Item AS Operace, sum(Value) AS Soucet from i2_audit.storage where Ipadress = 'x' and Subsystem = 'ipac' group by Item
+###
+# @id UnTablesd BASE_IPAC2_TX_PREREGCHILD
+002    14.12.18 oi; uprava TMPNAME odstraneni html znacek <strong></strong>
+002    06.07.11 js; upravene mailbodys, required, REQFIELD_PWD, ulicapb, ULICAZAM
+200    aERR_PARENTNAMEbMeno zákonného zástupcu je povinná položka##Jméno zákonného zástupce je povinná položka#The legal representative's name is a required field#
+200    aERR_PARENTTELbTelefónne číslo zákonného zástupcu je povinná položka#Telefonní číslo zákonného zástupce je povinná položka#The legal representative's phone number is a required field
+200    aERR_PARENTULICAbUlica a číslo domu zákonného zástupcu je povinná položka#Ulice a číslo domu zákonného zástupce je povinná položka#The legal representative's street and house number is a required field
+200    aERR_PARENTMESTObMesto zákonného zástupcu je povinná položka#Město zákonného zástupce je povinná položka#The legal representative's city is a required field
+200    aERR_PARENTPSCbPSČ zákonného zástupcu je povinná položka#PSČ zákonného zástupce je povinná položka#The legal representative's postal code is a required field
+200    aAGREEbSúhlasím#Souhlasím#Agree
+200    aAKADTITbAkademické tituly#Akademické tituly#Academic degrees
+200    aBRANCHbPobočka#Pobočka#Branch
+200    aCOMbČíslo OP#Číslo OP#ID card / passport
+200    aCONFIRMbPotvrdenie#Potvrzení#Confirm
+200    aDALSIbĎalšie údaje#Další údaje#Next data
+200    aDESCRIPTIONbFormulár na predregistráciu používateľa do knižnice.#Formulář na předregistraci uživatele do knihovny.#User pre-registration form page.
+200    aDISAGREEbNesúhlasím#Nesouhlasím#Disagree
+200    aDTNARbDátum narodenia#Datum narození#Date of birth#Date of birth
+200    aDTNAR_ERRbChybný dátum, zadajte správny dátum vo formáte DD.MM.RRRR#Chybné datum, zadejte platné datum ve formátu DD.MM.RRRR#Date is invalid, write date in correct form: DD.MM.YYYY
+200    aDTNAR_EXAMPLEbDD.MM.RRRR (napríklad: "07.12.1977")#DD.MM.RRRR (například: "07.12.1977")#DD.MM.YYYY (e.g.: "07.12.1977")
+200    aEMAILbEmail#E-mail#E-mail
+200    aEMAIL_BODY2bVami zadané registračné údaje#Vámi zadané registrační údaje#Your registration data
+200    aEMAIL_BODYbĎakujeme za registráciu. #Děkujeme za registraci. Pro úplné dokončení registrace navštivte do sedmi kalendářních dnů naši knihovnu.#Thank you for your registration.
+200    aEMAIL_BODY3bCez IPAC sa zaregistroval nový používateľ s týmito registračnými údajmi#Přes IPAC se zaregistroval nový uživatel, jeho registrační údaje#A new user registered via IPAC with these registration data
+200    aEMAIL_TITLEbPredregistrácia#Předregistrace#Pre-registration
+200    aEMAIL_UNSUBSCRIBEbTáto správa bola zaslaná z online katalógu knižničného systému ARL.#Tato zpráva byla zaslána z online katalogu knihovního systému ARL.#This notice was send from online catalogue of library management system ARL.
+200    aERR_CITYbNázov mesta je nutné vyplniť#Název města je nutné vyplnit#City name is required
+200    aERR_DOUBLESAVEbZáznam už bol uložený#Záznam byl již uložen#The record was already saved before
+200    aERR_DTNARbZadajte dátum vo formáte DD.MM.RRRR#Zadejte datum ve formátu DD.MM.RRRR#Write date in form: DD.MM.YYYY
+200    aERR_EMAILbEmailovú adresu je nutné vyplniť#E-mailovou adresu je nutné vyplnit#E-mail address is required
+200    aERR_EMAIL_VALIDbZlý formát emailovej adresy#Špatný formát e-mailová adresy#Invalid email address
+200    aERR_MAILbChyba pri odosielaní emailu. Preverte správnosť zadanej emailovej adresy, prípadne informujte správcu systému.#Chyba při odesílání e-mailu. Prověřte správnost zadané e-mailové adresy, případně informujte správce systému.#Error while sending e-mail. Check the entered e-mail address or contact the system administrator.
+200    aERR_NAMEbMeno je nutné vyplniť#Jméno je nutné vyplnit#Name is required
+200    aERR_PHONE_VALIDbNeplatné telefónne číslo pre kontakt, zadajte v medzinárodnom formáte.#Neplatné telefonní číslo pro kontakt, zadejte v mezinárodním formátu.#Invalid phone number for phone contact, enter in international format.
+200    aERR_MOBIL_VALIDbNeplatné telefónne číslo pre zasielanie SMS, zadajte v medzinárodnom formáte s českou alebo slovenskou predvoľbou.#Neplatné telefonní číslo pro zasílání SMS, zadejte v mezinárodním formátu s českou nebo slovenskou předvolbou.#Invalid phone number for sending SMS, enter in international format with Czech or Slovak prefix.
+200    aERR_SAVEbUloženie záznamu zlyhalo:#Uložení záznamu selhalo:#Record saving failed:
+200    aERR_STREETbNázov ulice a popisné číslo je nutné vyplniť#Název ulice a číslo popisné je nutné vyplnit#Street name and building number are required
+200    aERR_SURNAMEbPriezvisko je nutné vyplniť#Příjmení je nutné vyplnit#Last name is required
+200    aERR_TRANSFORMbChyba transformácie:#Chyba transformace:#Transformation error:
+200    aERR_VALIDATIONbKontrola formulára zistila tieto chyby#Kontrola formuláře zjistila tyto chyby#Form check found these errors
+200    aERR_ZIPbPSČ je nutné vyplniť#PSČ je nutné vyplnit#Zip code is required
+200    aERR_ZIP_VALIDbPSČ nie je správne zadané.#PSČ není správně zadáno.#ZIP code entered incorrectly.
+200    aFUNKCbFunkcia na pracovisku#Funkce na pracovišti#Post
+200    aHESLObPrístupové heslo#Přístupové heslo#Access password
+200    aCHOOSEbVyberťe#Vyberte#Select
+200    aKANCELARIAbKancelária#Kancelář#Office no.
+200    aKATCITbkategória používateľa#kategorie uživatele#reader category
+200    aKEYWORDSbpredregistrácia#předregistrace#pre-registration
+200    aKONTAKTNIbKontaktná (prechodná) adresa#Kontaktní (přechodná) adresa#Contact (temporary) address
+200    aMAIL_SENTbEmail bol odoslaný - OK.#E-mail byl odeslán - OK.#E-mail sent - OK.
+200    aMAILBODYbĎakujeme za registráciu. Pre úplné dokončenie registrácie Vás bude kontaktovať pracovník knižnice.<br/><strong>Vami zadané registračné údaje:</strong><br/>#Děkujeme za registraci. <br/><strong>Vámi zadané registrační údaje:</strong><br/>#Thank you for your registration. You will be contacted by the library personell shortly, to complete your registration.<br/><strong>Your registration data:</strong><br/>#Thank you for your registration. You will be contacted by the library personell shortly, to complete your registration.<br/><strong>Your registration data:</strong><br/>
+200    aMENObMeno#Jméno#Name
+200    aMESTObMesto#Město#City/Town
+200    aMESTONARbMiesto narodenia#Místo narození#Place of birth
+200    aODBORbOdbor#Odbor#Branch
+200    aOSOBNIbOsobné údaje#Osobní údaje#Personal data
+200    aPAYKINDbSpôsob platieb#Způsob plateb#Payment method
+200    aPRIEZVISKObPriezvisko#Příjmení#Surname
+200    aPRIVACYbOdoslaním formulára súhlasíte so spracovaním osobných údajov podľa zákona č. 122/2013 Z. z.Zákon o ochrane osobných údajov.#Odesláním údajů souhlasíte se zpracováním Vašich osobních údajů podle zákona č. č. 101/2000 Sb. o ochraně osobních údajů.#By submitting this form you agree with the use of your personal data according to the Law on Personal Data Protection
+200    aPRIVACY2bo ochrane osobných údajov a tiež s ustanoveniami#a také s ustanoveními#and with
+200    aPRIVACY3bknižničného poriadku.#knihovního řádu.#library rules of conduct.
+200    aPRIVACYERRORbAby ste mohli odoslať formulár, musíte súhlasiť s poskytnutím osobných údajov.#Pro odeslání formuláře musíte souhlasit s poskytnutím osobních údajů.#To send the form you must agree with the use of your personal data
+200    aPSCbPSČ#PSČ#Post Code
+200    aPWDbHeslo#Heslo#Password
+200    aPWD_FAILEDbNové heslo a potvrdenie nového hesla nesúhlasí. Zadajte znovu.#Nesouhlasí nové heslo a potvrzení nového hesla. Zadejte znovu.#Passwords do not match, please type passwords again.
+200    aPWD_FORMATbHeslo musí mať minimálne 6 znakov.#Heslo musí mít minimálně 6 znaků.#Password must contain at least 6 characters.
+200    aPWD_CHARSbheslo obsahuje nepovolené znaky#heslo obsahuje nepovolené znaky#password contains invalid characters
+200    aPWD_SHORTbheslo je príliš krátke (použite aspoň 6 znakov)#heslo je příliš krátké (použijte alespoň 6 znaků)#The new password is too short (minimum 6 characters)
+200    aPWD2bHeslo (potvrdenie)#Heslo (potvrzení)#Password (check)
+200    aREPORT_OKbPredregistrácia prebehla úspešne! Na úplné aktivovanie Vášho konta je nutné potvrdenie registrácie pracovníčkou knižnice.#Předregistrace proběhla úspěšně! Pro úplnou aktivaci Vašeho konta je třeba potvrzení registrace pracovníkem knihovny.#Pre-registration successfull! You need to visit the library personally for a complete activation of your account.
+200    aREPORT_SAVEDbZáznam bol úspešne uložený#záznam úspěšně uložen#Record saved
+200    aREQFIELDbNevyplnili ste povinné pole#Nevyplnili jste povinné pole#Please fill in the mandatory field
+200    aREQFIELD_PWDbPole na potvrdenie hesla je povinné!#Pole pro potvrzení hesla je povinné!#Password validation field is mandatory.
+200    aREQUIRED_PWDbChýba heslo!#Chybí heslo!#Missing password!
+200    aSENDbOdoslať#Odeslat#Send
+200    aSETSENDbDoručovanie správ#Doručování zpráv#Message delivery
+200    aSTATbŠtát#Stát#Country
+200    aTELbMobilný telefón#Mobilní telefon#Mobile telephone#Mobil Telefon
+200    aMOBILbKontakt pre SMS#Kontakt pro SMS#SMS Contact
+200    aTEL_FORMATbTelefónne číslo v medzinárodnom formáte.#Telefonní číslo v mezinárodním formátu.#Phone number in international format.
+200    aMOBIL_FORMATbTelefónne číslo pre zasielanie SMS v medzinárodnom formáte s českou alebo slovenskou predvoľbou.#Telefonní číslo pro zasílání SMS v mezinárodním formátu s českou nebo slovenskou předvolbou.#Telephone number for sending SMS in international format with Czech or Slovak prefix.
+200    aTERMS_BTNbSúhlasím s podmienkami#Souhlasím s podmínkami#Agree with the terms and conditions
+200    aTERMS_HTMLb<p>Odesláním údajů souhlasíte se zpracováním vašich osobních údajů v JVK České Budějovice podle zákona 101/2000 Sb. a také s ustanoveními <a href="https://www.cbvk.cz/knihovni_rad.html" target="_blank">knihovního řádu</a>.</p>
+200    aTERMS_TITLEbPodmienky pre predregistraciu#Podmínky pro předregistraci#Conditions for pre-registration
+200    aTMPNAMEbVaše dočasné prihlasovacie meno:#Vaše dočasné číslo průkazu (poznamenejte si):#Your temporary login name:
+200    aTRVALEbTrvalé bydlisko#Trvalé bydliště#Permanent residence
+200    aULICAbUlica, číslo domu#Ulice, číslo domu#Street, No.
+200    aULICAPBbUlica, číslo#Ulice, číslo#Street, No.
+200    aULICAZAMbUlica, číslo - Zamestnávateľ#Ulice, číslo - Zaměstnavatel#Street, No. - Employer
+200    aVEDHODbVedecké hodnosti#Vědecké hodnosti#Academic science degree
+200    aFORM_UPb<h2>Pokyny k vyplnění dětské předregistrace</h2><ul><li><strong>Služba je určena rodičům (předpokládá se že rodič je přihlášený uživatel), kteří chtějí předregistrovat dítě, které dosud není zaregistrováno jako čtenář knihovny, ale potřebují si objednat dokument z fondu knihovny</strong></li><li>Po předregistraci je nutná <b>osobní návštěva v knihovně</b> <strong>do 7 kalendářních dní</strong>, po této lhůtě bude předregistrace automaticky zrušena</li><li>Předvyplněné údaje budou ověřeny při registraci v knihovně na základě vašich dokladů</li><li>Údaje (mimo hesla) vyplňujte s diakritikou</li><li>Diakritika v hesle není povolena, minimální délka hesla je 6 znaků</li><li>Pole označena znakem * jsou povinná</li><li>Mobil a e-mail jsou využívány k odesílání informací z knihovny (blížící se konec výpůjční lhůty, výzva k vyzvednutí rezervovaných dokumentů a pod.)</li></ul>
+200    aFORM_UP_NOTLOGINb<h2>Pokyny k vyplnění dětské předregistrace</h2><ul><li><strong>Služba je určena rodičům, kteří chtějí předregistrovat dítě, které dosud není zaregistrováno jako čtenář knihovny, ale potřebují si objednat dokument z fondu knihovny</strong></li><li>Po předregistraci je nutná <b>osobní návštěva v knihovně</b> <strong>do 7 kalendářních dní</strong>, po této lhůtě bude předregistrace automaticky zrušena</li><li>Předvyplněné údaje budou ověřeny při registraci v knihovně na základě vašich dokladů</li><li>Údaje (mimo hesla) vyplňujte s diakritikou</li><li>Diakritika v hesle není povolena, minimální délka hesla je 6 znaků</li><li>Pole označena znakem * jsou povinná</li><li>Mobil a e-mail jsou využívány k odesílání informací z knihovny (blížící se konec výpůjční lhůty, výzva k vyzvednutí rezervovaných dokumentů a pod.)</li></ul>
+200    aPARENTbInformácie o zákonnom zástupcovi#Informace o zákonném zástupci#Legal representative's information
+200    aPARENTNAMEbMeno a prímenie#Jméno a příjmení#First and last name
+200    aPARENTEMAILbEmail#Email#Email
+200    aPARENTTELbMobilní telefon#Mobilní telefon#Mobile phone
+200    aPARENTULICAbUlica, číslo#Ulice, číslo#Street, number
+200    aPARENTMESTObMesto#Město#City
+200    aPARENTPSCbPSČ#PSČ#PSČ
+200    aPARENTSTATbŠtát#Stát#State
+005    20240403101744.9
+999    a11bCSdarl-20240213#arl-20240402-150064823#arl-20240403-150064830
 ###

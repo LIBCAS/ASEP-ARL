@@ -1,0 +1,999 @@
+openapi: 3.0.1
+info:
+  title: ARL REST API, modul MVS
+  description: ""
+  version: "1.0"
+paths:
+  /v1/{ictx}/mvs/zk/request:
+    post:
+      tags:
+      - MVS
+      summary: Založení žádanky
+      description: |-
+        ## Nová MVS žádanka
+        Založení nové transakce typu ```M``` (MVS žádanka) se subtypem ```RC``` (Request created).
+      operationId: createMvsRequest
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Parametry žádanky
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MvsReqJsonBody'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespCreated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/zk/request/{ticketId}:
+    get:
+      tags:
+      - MVS
+      summary: Vrací žádanku
+      description: |-
+        ## Vrací MVS žádanku
+        Informace z transakce typu ```M``` (MVS žádanka) podle ```ticket id```.
+        
+        Mapování stavů ARL (TRX_T03s) -> Získej:
+        - RC -> created
+        - RS -> queued
+        - ROK -> accepted
+        - RNA -> refused
+        - Z -> prepared
+        - V -> lent
+        - N -> returned
+        - SB -> sent_back
+        - D -> cancelled
+      operationId: getMvsRequest
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/ticketId'
+      responses:
+        "200":
+          description: MVS Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MvsRespZkJsonBody'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+      x-ISC_ServiceMethod: getMvsRequest
+  /v1/{ictx}/mvs/zk/request/{ticketId}/status:
+    put:
+      tags:
+      - MVS
+      summary: Změna stavu žádanky
+      description: |-
+        ## Změna stavu MVS žádanky
+        Změna stavu transakce typu ```M``` (MVS žádanka) na jiný subtyp.
+        
+        Volá se po změně stavu aktivního subticketu, případně ticketu.
+        Parametry ```barcode```, ```rfid```, ```backDate``` se vyplňují pouze u stavu ```prepared```.
+        
+        Mapování stavů Získej -> ARL (TRX_200x):
+        - queued -> RS
+        - accepted -> ROK
+        - refused, cancelled -> RNA
+        - prepared -> Z
+        - sent_back -> SB
+      operationId: setMvsStatus
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/ticketId'
+      requestBody:
+        description: Parametry změny žádanky
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MvsReqZkStatusJsonBody'
+        required: false
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespUpdated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/zk/request/{ticketId}/checkout:
+    post:
+      tags:
+      - MVS
+      summary: Výpůjčka
+      description: |-
+        ## Výpůjčka
+        Zaevidování výpůjčky do transakce typu ```M``` (MVS žádanka).
+        
+        Jako ```místo výpůjčky``` se vezme domovská pobočka přihlášeného uživatele,
+        případně defaultní z nastavení CLIENT_CFG - DefaultMvsBranch
+      operationId: setMvsCheckout
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/ticketId'
+      requestBody:
+        description: Parametry výpůjčky
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dateUntil:
+                  type: string
+                  example: YYYY-MM-DD
+                note: 
+                  type: string
+        required: false
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespUpdated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/zk/request/{ticketId}/checkin:
+    post:
+      tags:
+      - MVS
+      summary: Návrat
+      description: |-
+        ## Návrat 
+        Zaevidování návratu do transakce typu ```M``` (MVS žádanka).
+        
+        Jako ```místo návratu``` se vezme domovská pobočka přihlášeného uživatele,
+        případně defaultní z nastavení CLIENT_CFG - DefaultMvsBranch
+      operationId: setMvsCheckin
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/ticketId'
+      requestBody:
+        description: Poznámka
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note: 
+                  type: string
+        required: false
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespUpdated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/zk/request/{ticketId}/storno:
+    post:
+      tags:
+      - MVS
+      summary: Storno žádanky
+      description: |-
+        ## Storno MVS žádanky
+        Zaevidování storna do transakce typu ```M``` (MVS žádanka).
+      operationId: setMvsStorno
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/ticketId'
+      requestBody:
+        description: Poznámka
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note: 
+                  type: string
+        required: false
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespUpdated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/dk/request:
+    post:
+      tags:
+      - MVS
+      summary: Založení objednávky
+      description: |-
+        ## Založení MVS objednávky
+        Založení nové transakce typu ```W ```(objednávka MVS out) pro kolektivního čtenáře sigla_ZK
+      operationId: createDkRequest
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Parametry objednávky
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MvsReqDkJsonBody'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespCreated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/dk/request/{subticketId}:
+    get:
+      tags:
+      - MVS
+      summary: Vrací objednávku
+      description: |-
+        ## Vrací MVS objednávku
+        Vrací informace z transakce typu ```W```, ```Z```, ```R```, ```H```, nebo ```V``` (objednávka MVS) podle subticket id.
+        
+        Mapování stavů ARL (TRX_T03a) -> Získej:
+        - W -> queued
+        - Z/R/RD -> accepted
+        - H -> refused
+        - V -> sent
+        - N -> closed
+        - D -> cancelled
+      operationId: getDkRequest
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/subticketId'
+      responses:
+        "200":
+          description: MVS order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MvsRespDkJsonBody'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/dk/request/{subticketId}/status:
+    put:
+      tags:
+      - MVS
+      summary: Změna stavu objednávky
+      description: |-
+        ## Změna stavu MVS objednávky
+        Změna stavu transakce typu ```W``` (objednávka MVS out) na typ ```Z```, ```R``` nebo ```H```.
+        
+        Volá se po změně stavu DK subticketu.
+        Parametry barcode, rfid, note jsou nepovinné.
+        Parametr dateUntil je nepovinný, použije se pouze u stavu "reserved".
+        Mapování stavů Získej->ARL (TRX_200a):
+        - accepted -> Z
+        - reserved -> R
+        - refused -> H
+      operationId: setDkStatus
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/subticketId'
+      requestBody:
+        description: Parametry změny objednávky
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MvsReqDkStatusJsonBody'
+        required: false
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespUpdated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/dk/request/{subticketId}/checkout:
+    post:
+      tags:
+      - MVS
+      summary: Výpůjčka
+      description: |-
+        ## Výpůjčka
+        Zaevidování výpůjčky do transakce typu ```Z``` (MVS žádanka out).
+        
+        Jako ```místo výpůjčky``` se vezme domovská pobočka přihlášeného uživatele, případně defaultní z nastavení CLIENT_CFG - DefaultMvsBranch
+      operationId: setDkCheckout
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/subticketId'
+      requestBody:
+        description: Parametry výpůjčky
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                barcode:
+                  type: string
+                  example: 9999999999
+                rfid:
+                  type: string
+                dateUntil:
+                  type: string
+                  example: YYYY-MM-DD
+                note: 
+                  type: string
+        required: false
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespUpdated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/dk/request/{subticketId}/checkin:
+    post:
+      tags:
+      - MVS
+      summary: Návrat
+      description: |-
+        ## Návrat 
+        Zaevidování návratu do transakce typu ```Z``` (MVS žádanka out).
+        
+        Jako ```místo návratu``` se vezme domovská pobočka přihlášeného uživatele, případně defaultní z nastavení CLIENT_CFG - DefaultMvsBranch
+      operationId: setDkCheckin
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/subticketId'
+      requestBody:
+        description: Poznámka
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note: 
+                  type: string
+        required: false
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespUpdated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/dk/request/{subticketId}/storno:
+    post:
+      tags:
+      - MVS
+      summary: Storno žádanky
+      description: |-
+        ## Storno MVS žádanky
+        Zaevidování storna do transakce typu ```W``` (objednávka) nebo ```Z``` (žádanka MVS out).
+      operationId: setDkStorno
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - $ref: '#/components/parameters/subticketId'
+      requestBody:
+        description: Poznámka
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note: 
+                  type: string
+        required: false
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpRespUpdated'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/library/{sigla}:
+    get:
+      tags:
+      - MVS
+      summary: Informace o knihovně
+      description: |-
+        ## Informace o knihovně podle SIGLA
+        Podle sigly knihovny vyhledá lokální záznam kolektivního čtenáře.
+        
+        Pokud ještě neexistuje, najde záznam v adresáři knihoven přes API knihovny.cz,
+        podle názvu vyhledá lokalní záznam kolektivního čtenáře a doplní siglu nebo založí nový záznam.
+      operationId: getMvsLibraryService
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - name: sigla
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Informace o knihovně
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sigla: 
+                    type: string
+                    example: CBG504
+                  userId: 
+                    type: string
+                    example: ictx_is_user*t001
+                  extId: 
+                    type: string
+                    example: library.01133
+                  title: 
+                    type: string
+                  address: 
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+  /v1/{ictx}/mvs/notify:
+    post:
+      tags:
+      - MVS
+      summary: Notify
+      description: |-
+        ## Notifikace
+        Notifikace o změnách v centru Získej a vyžadované reakci.
+      operationId: notify01
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Parametry notifikace
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MvsReqNotifyJsonBody'
+        required: true
+      responses:
+        "200":
+          description: Created
+          content: {}
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    MvsReqJsonBody:
+      type: object
+      properties:
+        ticketId:
+          type: string
+          example: id_ziskej
+        userId:
+          type: string
+          example: ictx.t001
+        titId:
+          type: string
+          example: id_z_CPK
+        record:
+          type: string
+          example: obsah_zaznamu_z_CPK
+        dateUntil:
+          type: string
+          example: YYYY-MM-DD
+        copyRange:
+          type: string
+        copyFormat:
+          type: string
+        copyDeliver:
+          type: string
+        note:
+          type: string
+    MvsReqZkStatusJsonBody:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [queued, accepted, refused, cancelled, prepared, sent_back]
+        siglaDK:
+          type: string
+          example: ABC001
+        barcode:
+          type: string
+          example: 9999999999
+        rfid:
+          type: string
+        backDate:
+          type: string
+          example: YYYY-MM-DD
+        note:
+          type: string
+    MvsReqDkJsonBody:
+      type: object
+      properties:
+        ticketId: 
+          type: string
+          example: id_ziskej
+        subticketId: 
+          type: string
+          example: subid_ziskej
+        siglaZK: 
+          type: string
+          example: siglaZK
+        titId: 
+          type: string
+          example: doc_id z CPK
+        note:
+          type: string
+    MvsReqDkStatusJsonBody:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [accepted, reserved, refused]
+        barcode:
+          type: string
+          example: 9999999999
+        rfid:
+          type: string
+        note:
+          type: string
+        dateUntil:
+          type: string
+          example: YYYY-MM-DD
+    MvsReqNotifyJsonBody:
+      type: object
+      properties:
+        subsystem:
+          type: string
+          example: mvs
+        type:
+          type: string
+          example: reader
+        text:
+          type: string
+          example: string
+        isOpen: 
+          type: boolean
+          example: true
+        ticketId:
+          type: string
+          example: id_ziskej
+        subticketId:
+          type: string
+          example: subid_ziskej
+        sigla:
+          type: string
+          example: SGA001
+        siglaZK:
+          type: string
+          example: ZKA001
+        titId:
+          type: string
+          example: doc_id z CPK
+        reference:
+          type: string
+          example: slovni popis titulu
+        trx:
+          type: string
+          example: ictx_trx*t001
+        status:
+          type: string
+          enum: [queued, accepted, refused, sent, closed, cancelled]
+    MvsRespZkJsonBody:
+      type: object
+      properties:
+        ticketId:
+          type: string
+          example: id_ziskej
+        trxId:
+          type: string
+          example: ictx_trx*t001
+        userId:
+          type: string
+          example: ictx_is_user*t001
+        titId:
+          type: string
+          example: ictx_mvs_cat*t001
+        dateUntil:
+          type: string
+          example: YYYY-MM-DD
+        copyRange:
+          type: string
+        copyFormat:
+          type: string
+        copyDeliver:
+          type: string
+        notes:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                example: 'YYYY-MM-DD hh:mm:ss'
+              text:
+                type: string
+        status:
+          type: string
+          enum: [created, queued, accepted, refused, prepared, lent, returned, sent_back, cancelled]
+    MvsRespDkJsonBody:
+      type: object
+      properties:
+        subticketId:
+          type: string
+          example: subid_ziskej
+        trxId:
+          type: string
+          example: ictx_trx*t001
+        siglaZK:
+          type: string
+          example: sigla_ZK
+        userId:
+          type: string
+          example: ictx_is_user*t001
+        titId:
+          type: string
+          example: ictx_us_cat*t001
+        barcode:
+          type: string
+          example: 9999999999
+        dateUntil:
+          type: string
+          example: YYYY-MM-DD
+        notes:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                example: 'YYYY-MM-DD hh:mm:ss'
+              text:
+                type: string
+        status:
+          type: string
+          enum: [queued, accepted, refused, sent, closed, cancelled]
+  parameters:
+    ticketId:
+      name: ticketId
+      in: path
+      description: id_ziskej
+      required: true
+      schema:
+        type: string
+    subticketId:
+      name: subticketId
+      in: path
+      description: subid_ziskej
+      required: true
+      schema:
+        type: string

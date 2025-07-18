@@ -4,6 +4,7 @@ d ##class(i2.info.i3app).preHTTP()
 d ##class(i2.info.i3app).autoLogout()
 q 1</script><script language="Cache" runat="SERVER">
 /*
+30.04.24 on; vraceno user.css
 05.03.20 on; zmena default skinu
 14.02.20 on; epca.window.F928Form.js
 21.10.19 on; "file;logout.js",
@@ -31,6 +32,7 @@ d i3.data(.data)
 
 // CSS soubory
 s data("CSS")=$LISTBUILD(
+  "../etc/user.css",
   "css/"_data("ICTX")_".css"
 )
 

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-02-24 09:08:14">
+<Class name="i2.cust.cav.usersAdmin">
+<Description>
+31.01.25 dp; spolecne s ln pridani metody pro seznam smazanych uzivatelu (listDeletedUsers) a metodu pro obnoveni smazanych uzivatelu (undeleteUser)
+20.09.24 lp; moznost smazat i registrovane uzivatele
+24.06.24 tt; pridana podminka, ze uzivatel needituje sam sebe
+14.05.24 tt; doplneni i registrovani uzivatele</Description>
+<Super>i2.ui.usersAdmin</Super>
+<TimeChanged>67239,49221.971232885</TimeChanged>
+<TimeCreated>62873,54932.31749</TimeCreated>
+
+<Parameter name="Ictx">
+<Default>cav</Default>
+</Parameter>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("DELETE")=$$$GETREQVAR("delete")
+  s data("UNDELETE")=$$$GETREQVAR("undelete")
+  
+  /// overeni uzivatele
+  s userId=##class(i2.access).getLoginId()  ; ziskame id uzivatele
+  s data("USER_ID")=userId
+  s data("USTAV")=##class(User.CavS).FTgetUstavU(userId)
+  s data("USTAV_Z")=$tr(data("USTAV"),"- ")
+  s data("ZPRAC")="0",data("ZSUPER")=0, data("USERS")=0
+  
+  q:userId="" ""  
+  q:'##class(User.MARC).readX(.handleU,"CavIsUser",userId) "Error reading Isu record for t001="_userId
+  
+  ; 09.12.16 tt; uprava na otestovani specialniho uzivatele metodou
+  if (##class(User.CavUnEpca).userIsSpecZprac(userId,data("USTAV_Z")))
+  { ; 04.02.16 tt; vyjimka pro zpracovatele, kteri maji mit v MyAsep link jen na sve zaznamy za aktualni rok zberu
+     s data("USTAV_ZPRAC_JMENO")="SPEC_ZPRAC"   
+  }  
+  ; nastavime si priznak otevreni
+  ; nacteme si ustav
+  s sUT100k=$$$getTagX(.handleU,"100k")             ; kategorie 
+  s sUT100b=$$$getTagX(.handleU,"100b")             ; anonymni uzivatel
+  s sUT600a=$$$getTagX(.handleU,"600a")             ; link na nadrizenou jednotku
+  s sUT600b=$$$getTagX(.handleU,"600b")             ; ustav uzivatele 
+  s sUT600i=$$$getTagX(.handleU,"600i")             ; login options
+  s sUT620a=$$$getTagX(.handleU,"620a")             ; link na autoritu
+  s sUT610b=$$$getTagX(.handleU,"610b")             ; priznak, ze se muze uzivatel hlasit pres ipac do formularu
+  
+  ; je zpracovatel?
+  if ((sUT600b'="") && (sUT600a="")) {
+    s zprac=1
+  } else {
+    s zprac=0
+  }
+  
+  if (zprac && (sUT100k'="2")) {    
+    s data("ZPRAC")=1 ; zaznamy za pracoviste
+  }
+  elseif (sUT100k="2") {      
+    s data("ZSUPER")=1 ; zaznamy pro superuzivatele
+  }
+  else
+  { ; pokud nemame zpracovatele, ci superuzivatele, nepokracujeme - kvuli bezpecnosti
+    s data("ERRORS")=data("ERRORS")_" "_..tx("RIGHTS_ERROR")
+    q ""
+  }
+  
+  if (data("DELETE")) {
+    d ..deleteUser(.data)
+  }
+  
+  ; obnovit uzivatele (odznacit jako smazany)
+  if (data("UNDELETE")) {
+    d ..undeleteUser(.data)
+  }
+  
+  ; Seznam uživatelů
+  d ..listUsers(.data,$$$HandleT001(handleU))
+  
+  ; Seznam smazaných uživatelů
+  d ..listDeletedUsers(.data)
+  
+  if ($$$GETREQVAR("_test")=1) {
+     d ..testData(.data)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="deleteUser">
+<Description><![CDATA[
+<pre>Smazat uživatele - jako parametr prijde idx zaznamu na smazani
+20.09.24 lp; moznost smazat i registrovane uzivatele
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  q:'##class(User.MARC).readX(.handle,"CavIsUser",data("DELETE"))
+  
+  ; pokud se nepodari nacist, pokracujeme
+  s sT600b=$$$getTagX(.handle,"600b")  // ustav
+  s sT100k=$$$getTagX(.handle,"100k")  // kategorie uzivatele - musi byt 0 nebo 1
+  
+  ; overeni, zda nam porad sedi data s prihlasenym zpracovatelem
+  if sT600b'=$zcvt(data("USTAV"),"U") { 
+    s data("ERRORS")=data("ERRORS")_" "_..tx("RIGHTS_ERROR")
+    q
+  }
+  
+  ; pokud sedi ustav zpracovatele
+  if sT100k=0
+  { ; pokud kategorie je 0 - predregistrovany, tak zaznam smazeme uplne
+    s sc=##class(User.MARC).delete("CavIsUser",$$$HandleT001(handle),0,3)
+    if '$$$ISOK(sc) {
+      s data("ERRORS")=data("ERRORS")_" "_"ERROR#CavIsUser/"_$$$HandleT001(handle)_"#"_##class(User.Util).status2str(sc)
+    }
+  }
+  elseif sT100k=1
+  { ; pokud kategorie je 1 - registrovany, tak zaznam oznacime jako smazany (100x=D)
+    s t100=##class(User.MARC).getTagX(.handle,"100")
+    s t100=##class(User.MARC).setSubTagStr(t100,$c(31)_"xD")
+    d ##class(User.MARC).setTagX(.handle,t100)
+    ; ukoncime platnost prukazu
+    s t400=##class(User.MARC).getTagX(.handle,"400")
+    s t400=##class(User.MARC).setSubTagStr(t400,$c(31)_"c-1")
+    s t400=##class(User.MARC).setSubTagStr(t400,$c(31)_"d"_##class(User.Util).date())
+    d ##class(User.MARC).setTagX(.handle,t400)
+       
+    s sc=##class(User.MARC).writeX(.handle,1,,,3)
+    if '$$$ISOK(sc) {
+      s data("ERRORS")=data("ERRORS")_" "_"ERROR#CavIsUser/"_$$$HandleT001(handle)_"#"_##class(User.Util).status2str(sc)
+    }
+  } else { 
+    s data("ERRORS")=data("ERRORS")_" "_..tx("RIGHTS_ERROR")
+  }
+]]></Implementation>
+</Method>
+
+<Method name="undeleteUser">
+<Description><![CDATA[
+<pre>Obnovit uživatele - jako parametr prijde idx zaznamu na obnoveni
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  q:'##class(User.MARC).readX(.handle,"CavIsUser",data("UNDELETE"))
+  
+  s sT600b=$$$getTagX(.handle,"600b")  // ustav
+  
+  ; overeni, zda nam porad sedi data s prihlasenym zpracovatelem
+  if sT600b'=$zcvt(data("USTAV"),"U") { 
+    s data("ERRORS")=data("ERRORS")_" "_..tx("RIGHTS_ERROR")
+    q
+  }
+    
+  ; pokud sedi ustav zpracovatele
+  s t100=##class(User.MARC).getTagX(.handle,"100")
+  d ##class(User.MARC).getSubTagStr(.t100,"x")
+  d ##class(User.MARC).setTagX(.handle,t100)
+
+  ; vratime platnost prukazu
+  s t400=##class(User.MARC).getTagX(.handle,"400") 
+  s t400=##class(User.MARC).setSubTagStr(t400,$c(31)_"c9999")
+  s t400=##class(User.MARC).setSubTagStr(t400,$c(31)_"d"_##class(User.Util).date())
+  d ##class(User.MARC).setTagX(.handle,t400)
+       
+  s sc=##class(User.MARC).writeX(.handle)
+  if '$$$ISOK(sc) {
+    s data("ERRORS")=data("ERRORS")_" "_"ERROR#CavIsUser/"_$$$HandleT001(handle)_"#"_##class(User.Util).status2str(sc)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="listUsers">
+<Description><![CDATA[
+<pre>Seznam uživatelů - nacteni uzivatelu do listu
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,T001User=""]]></FormalSpec>
+<Implementation><![CDATA[
+  s kod="",brk=0, i=1
+  f    
+  { // nejdříve zobrazíme předregistrované uživatele
+    s kod=$o(^$$$MarcIndexG("CavIsUser","kat"," 0",kod)) 
+    q:((kod="")||(brk=1))              ; podminka pro konec
+    s sUserUstav=$tr($o(^$$$MarcIndexG("CavIsUser",kod,"pra",""))," ","") 
+    continue:((data("ZPRAC")=1)&&(sUserUstav'=$zcvt(data("USTAV"),"L")))
+    if '##class(User.MARC).getDATAX(.handle,kod) 
+    { ; pokud se nepodari nacist, pokracujeme
+      s data("ERRORS")=data("ERRORS")_" "_..tx("RECORD_ERROR")_kod
+      s brk=1 
+      continue
+    }
+    s sT100a=$$$getTagX(.handle,"100a")
+    s sT600b=$$$getTagX(.handle,"600b")
+    s sT600a=$$$getTagX(.handle,"600a")
+    
+    ; nachystani tad pro zobrazeni   
+    s data("USERS",i,"urledit")=""
+    s data("USERS",i,"category")=$$$getTagX(.handle,"100k")
+    s data("USERS",i,"surname")=$p($p(sT100a," - ",2,999),", ",1)
+    s data("USERS",i,"name")=$p($p(sT100a," - ",2,999),", ",2,999)
+    s data("USERS",i,"email")=$$$getTagX(.handle,"100e")
+    s data("USERS",i,"info")=sUserUstav_" "_sT600b_" "_kod
+    s data("USERS",i,"id")=$$$HandleT001(handle)
+    s data("USERS")=i
+    s i=i+1
+  }
+  
+  f    
+  { // pak teprve zobrazíme registrované
+    s kod=$o(^$$$MarcIndexG("CavIsUser","kat"," 1",kod)) 
+    q:((kod="")||(brk=1))              ; podminka pro konec
+    s sUserUstav=$tr($o(^$$$MarcIndexG("CavIsUser",kod,"pra",""))," ","") 
+    continue:((data("ZPRAC")=1)&&(sUserUstav'=$zcvt(data("USTAV"),"L")))
+    if '##class(User.MARC).getDATAX(.handle,kod) 
+    { ; pokud se nepodari nacist, pokracujeme
+      s data("ERRORS")=data("ERRORS")_" "_..tx("RECORD_ERROR")_kod
+      s brk=1 
+      continue
+    }
+    ; 24.06.24 tt; pridana podminka, ze uzivatel needituje sam sebe
+    continue:(T001User=$$$HandleT001(handle))
+    
+    s sT100a=$$$getTagX(.handle,"100a")
+    s sT600b=$$$getTagX(.handle,"600b")
+    s sT600a=$$$getTagX(.handle,"600a")
+    
+    ; nachystani dat pro zobrazeni   
+    s data("USERS",i,"urledit")=""
+    s data("USERS",i,"category")=$$$getTagX(.handle,"100k")
+    s data("USERS",i,"surname")=$p($p(sT100a," - ",2,999),", ",1)
+    s data("USERS",i,"name")=$p($p(sT100a," - ",2,999),", ",2,999)
+    s data("USERS",i,"email")=$$$getTagX(.handle,"100e")
+    s data("USERS",i,"info")=sUserUstav_" "_sT600b_" "_kod
+    s data("USERS",i,"id")=$$$HandleT001(handle)
+    s data("USERS")=i
+    s i=i+1
+  }
+]]></Implementation>
+</Method>
+
+<Method name="listDeletedUsers">
+<Description><![CDATA[
+<pre>Seznam smazaných uživatelů - nacteni uzivatelu do listu
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  k ^$$$ListsG($$$ListsActiveSel,$j)
+  d ##class(User.UtilSel).selectArlsql("CavIsUser pra = "_data("USTAV")_" && tag = 100x",,,0)
+  
+  s id="",seq=1
+  for {
+    s id=$o(^$$$ListsG($$$ListsActiveSel,$j,id)) q:id=""
+    continue:'##class(User.MARC).getDATAX(.handle,id)
+    continue:##class(User.MARC).getTagX(.handle,"100x")'="D"
+    
+    s sT100a=$$$getTagX(.handle,"100a")
+    s sT600b=$$$getTagX(.handle,"600b")
+    s sT600a=$$$getTagX(.handle,"600a")
+    
+    ; nachystani tad pro zobrazeni   
+    s data("DELETEDUSERS",seq,"urledit")=""
+    s data("DELETEDUSERS",seq,"category")=$$$getTagX(.handle,"100k")
+    s data("DELETEDUSERS",seq,"surname")=$p($p(sT100a," - ",2,999),", ",1)
+    s data("DELETEDUSERS",seq,"name")=$p($p(sT100a," - ",2,999),", ",2,999)
+    s data("DELETEDUSERS",seq,"email")=$$$getTagX(.handle,"100e")
+    s data("DELETEDUSERS",seq,"info")=data("USTAV")_" "_sT600b_" "_id
+    s data("DELETEDUSERS",seq,"id")=$$$HandleT001(handle)
+    s seq=seq+1
+  }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

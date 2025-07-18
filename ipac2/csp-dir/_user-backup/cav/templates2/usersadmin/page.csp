@@ -1,0 +1,15 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+<ipac:layout1 report="simple" description="1">
+    <ipac:tpl version="table"/>
+
+    <button class="btn btn-primary" id="btn-modal-open" type="button" data-toggle="collapse" data-target="#collapseDeletedUsersTable" aria-expanded="false" aria-controls="collapseDeletedUsersTable">
+    #(..tx("SHOW_DELETED_USERS"))#
+    </button>
+
+    <div class="collapse" id="collapseDeletedUsersTable">
+       <ipac:tpl version="deleteduserstable"/>
+    </div>
+
+</ipac:layout1>
+
+<ipac:tpl page="parts" version="jstable"/>

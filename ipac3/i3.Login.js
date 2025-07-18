@@ -1,6 +1,8 @@
 /*
 * Login do aplikacie a suvislosti.
 *
+* 09.07.25 on; doplnena moznost vlozit do titulku login dialogu nazev aplikace
+* 10.06.24 on; tlacitko pro prepinani jazyku (pro UMB)
 * 25.08.20 on; moznost vynutit prihlaseni pres plain pw
 * 21.10.19 on; doplneno csFixLocationHrefLogout
 * 26.04.19 on; hesovani arl uctu
@@ -59,7 +61,7 @@
  * @singleton
  *
  * Login dialog s volitelnou moznostou registracie pouzivatela.
- * Zatial experimentalna verzia.<br/>
+ * Zatial experimentalna verzia.<br>
  * Rozne aplikacie mozu pouzit ine required pravo pre login.
  * (aktualne: ine pre "is" a ine pre "admin").
  *
@@ -82,6 +84,9 @@ i3.Login = { //
     txHelp: 'Pomoc#Nápověda#Help###مساعدة'.ls(),
     txForgottenPw: 'Zabudnuté heslo#Zapomenuté heslo#Forgotten Password###نسيت كلمة المرور'.ls(), // 20.01.11 on;
     txLoginBarcodeMail: 'Číslo preukazu/email#Číslo průkazu/e-mail#User card ID/e-mail'.ls(),
+    // 10.06.24 on; texty pro prepinani jazyku UMB
+    txSlovak: 'Slovak',
+    txEnglish: 'English',
     /* Tu pokracuju rozne globalne funkcie tykajuce sa loginu a suvisiacich zalezitosti */
     /**
      * Odhlasenie z aplikacie.
@@ -110,7 +115,7 @@ i3.Login = { //
     },
     /**
      *  Vrati komponentu hlavneho okna.
-     *  Podmienkou je architektura aplikacie taka, ze hlavne riadiace okno ma id rovne 'main'.<br/><br/>
+     *  Podmienkou je architektura aplikacie taka, ze hlavne riadiace okno ma id rovne 'main'.<br><br>
      *
      *  02.04.09 rs
      */
@@ -120,8 +125,8 @@ i3.Login = { //
     /**
      *
      * Zaslanie spravy hlavnemu oknu aplikacie
-     * musi sa dodrzat interna konvencia, ze id hlavneho okna je prave 'main'.<br/>
-     * Umiestenie funkcie do i3.Login asi nie je uplne stastne, este neskor prehodnotit.<br/><br/>
+     * musi sa dodrzat interna konvencia, ze id hlavneho okna je prave 'main'.<br>
+     * Umiestenie funkcie do i3.Login asi nie je uplne stastne, este neskor prehodnotit.<br><br>
      *
      * 23.01.09 rs
      *
@@ -274,6 +279,48 @@ i3.Login.Panel = Ext.extend(Ext.Panel, {
                         click: {
                             fn: function() {
                                 i3.alert(i3.Login.txHelp, config.csHelp);
+                            },
+                            scope: this
+                        }
+                    }
+                });
+            }
+            // 10.06.24 on; tlacitko pro prepinani jazyku (pro UMB)
+            if (config.csLanguageSwitcher) {
+                buttonList.push({
+                    text: (i3.language === '3') ? i3.Login.txSlovak : i3.Login.txEnglish,
+                    iconCls: (i3.language === '3') ? "icon-flag-sk" : "icon-flag-gb",
+                    listeners: {
+                        click: {
+                            fn: function() {
+                                // zmeni jazyk a refreshne stranku
+                                var i,
+                                    sURL,
+                                    fld,
+                                    flds,
+                                    sParams = '',
+                                    bFound = false;
+                                sURL = location.href.piece('?', 1);
+                                flds = location.href.piece('?', 2).split('&');
+                                for (i = 0; i < flds.length; i++) {
+                                    fld = flds[i];
+                                    if (fld.piece('=', 1) === 'language') {
+                                        bFound = true;
+                                        if (i3.language === '3') {
+                                            fld = 'language=1';
+                                        } else {
+                                            fld = 'language=3';
+                                        }
+                                    }
+                                    if (sParams !== '') {
+                                        sParams += '&';
+                                    }
+                                    sParams += fld;
+                                }
+                                if (!bFound) {
+                                    sParams += '&language=3';
+                                }
+                                location.href = sURL + '?' + sParams;
                             },
                             scope: this
                         }
@@ -870,14 +917,25 @@ Ext.extend(Ext.Window, {
                 title: panelCfg.csPanelTitle || ''
             });
         } else {
-            var sLoginTit = config.csPanelTitle || i3.Login.txPleaseLogin;
+            var sLoginTit;
+            // 09.07.25 on; doplnena moznost vlozit do titulku login dialogu nazev aplikace
+            //var sLoginTit = config.csPanelTitle || i3.Login.txPleaseLogin;
+            if (config.csPanelTitle) {
+                sLoginTit = config.csPanelTitle;
+            } else
+            if (config.csAppName) {
+                sLoginTit = i3.Login.txPleaseLogin + ' - ' + config.csAppName;
+            } else {
+                sLoginTit = i3.Login.txPleaseLogin;
+            }
             if (i3.urlParams.show_version > 0) {
                 sLoginTit += ' - ' + i3.version;
             }
             Ext.applyIf(config, {
                 id: 'login_win', // login okno bude single, takze moze mat pevne id
                 layout: 'fit',
-                width: panelCfg.csWidth || 300, // 20.01.11 on; moznost zmenit sirku okna
+                // 09.07.25 on; default zvetsen z 300 na 350
+                width: panelCfg.csWidth || 350, // 20.01.11 on; moznost zmenit sirku okna
                 height: 150,
                 closeAction: 'close',
                 closable: false,

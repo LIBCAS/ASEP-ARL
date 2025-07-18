@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2023-04-21 15:06:59">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-27 15:20:22">
 <Class name="content.human">
 <Description><![CDATA[
 <pre> Pomocne metody pro lidske zobrazeni dat contentServeru
 
+27.03.25 ln; podpora S3
 20.04.23 ln; metoda getRepo
 26.02.19 ln; metoda erase
 03.09.18 ln; podpora pro jazyky
 05.12.17 ln; sizeSI je nove sql procedura
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>66585,54386.9146567</TimeChanged>
+<TimeChanged>67291,55146.323904134</TimeChanged>
 <TimeCreated>62189,31328.82737</TimeCreated>
 
 <Method name="version">
 <ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[  q "4.6.12a  - 02.06.2023"
+<Implementation><![CDATA[  q "4.8.14a - 22.05.2025"
 ]]></Implementation>
 </Method>
 
@@ -84,10 +85,23 @@ Defaultne diskova velikost, binary=1 binarni velikost
 <Method name="getRepo">
 <Description><![CDATA[
 <pre> Ziskani upload repozitare
+
+27.03.25 ln; podpora S3
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
+<FormalSpec>ictx=""</FormalSpec>
 <Implementation><![CDATA[
-  s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")
+  if ictx="" {
+    s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")
+  } else {
+	; 27.03.25 ln; podpora S3
+	; userRepo() nesmi v tomtoo pripade zaviset na inicializaci ipac
+    s callBack=$g(^IpacCallback("c","uploader",ictx))
+    ; 18.09.24 ln; podpora dedeni z cav
+    if (callBack="") && ($g(^arlINHERITipref($zcvt(ictx,"W")_"UnTablesd"))'="") {
+      q ictx_"repo"
+    }
+  }
   q:callBack="" ##class(content.uploader).userRepo()
   q:$f(callBack,".page404") ##class(content.uploader).userRepo()
   

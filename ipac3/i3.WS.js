@@ -1,4 +1,7 @@
 /**
+ * 20.01.25 on; zf obaleny div s id  
+ * 07.06.24 on; muze byt rovno 0
+ * 26.04.24 on; znacka body muze mit i nejake parametry
  * 21.09.23 on; moznost predat zaznam
  * 21.06.23 on; moznost zrusit kontrolu pri ulozeni
  * 01.12.22 on; CLIENT_CFG se sufixem pobocky
@@ -336,14 +339,14 @@ i3.WS = {
     /**
      * Get a record by class & T001. Takze specialna aplikacia metody search.
 
-     * @param {Object} config<br/>
-     *   classn:    trieda v ktorej ideme vyhladavat<br/>
-     *   t001:      identifikacia zaznamu, kt. chceme najst<br/>
-     *   idx:       namiesto 'classn,t001' je mozne zadat identifikaciu do property 'idx'<br/>
-     *              v tvare 'classn*t001' alebo tiez 'tablename*t001'<br/>
-     *              (zatial tu predpokladame lname=tablename)<br/><br/>
+     * @param {Object} config<br>
+     *   classn:    trieda v ktorej ideme vyhladavat<br>
+     *   t001:      identifikacia zaznamu, kt. chceme najst<br>
+     *   idx:       namiesto 'classn,t001' je mozne zadat identifikaciu do property 'idx'<br>
+     *              v tvare 'classn*t001' alebo tiez 'tablename*t001'<br>
+     *              (zatial tu predpokladame lname=tablename)<br><br>
      *
-     *   fmt:       nepovinna specifikacia formatu (viz. metoda search())<br/>
+     *   fmt:       nepovinna specifikacia formatu (viz. metoda search())<br>
      *   success:   function (record)
      *              record:    found record - i3.Marc
      *   failure:   callback pri chybe (definicia viz. search)
@@ -406,21 +409,21 @@ i3.WS = {
     /**
      * WS method search
      *
-     * @param {Object} config<br/>
-     *  callback: nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br/>
-     *   failure: function(errmsg)<br/>
-     *            ak sa neuvedie, vytvorime default<br/>
-     *            errmsg: textova hlaska o probleme - string<br/>
-     *   success: function(records)<br/>
-     *             records: found records - array of i3.Marc<br/>
-     * --<br/>
-     *   classn:  trieda, na ktorej sa bude vyhladavat<br/>
-     *   query:   PQF query<br/>
-     *   scope:   scope for callbacks; nepovinne. Ak nie je uvedene pouzijeme 'this'.<br/>
+     * @param {Object} config<br>
+     *  callback: nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br>
+     *   failure: function(errmsg)<br>
+     *            ak sa neuvedie, vytvorime default<br>
+     *            errmsg: textova hlaska o probleme - string<br>
+     *   success: function(records)<br>
+     *             records: found records - array of i3.Marc<br>
+     * --<br>
+     *   classn:  trieda, na ktorej sa bude vyhladavat<br>
+     *   query:   PQF query<br>
+     *   scope:   scope for callbacks; nepovinne. Ak nie je uvedene pouzijeme 'this'.<br>
      *   from:    poradove cislo prveho zaznamu (prvy zaznam v podari ma cislo 1 (nie 0 ako by bolo zvykom v JS))
-     *            default: 1<br/>
-     *   to:      poradove cislo posledneho zaznamu na vratenie default: 10<br/>
-     *   fmt:     nepovinny parameter urcujuci format (lze zadat pole so zoznamom formatov)<br/>
+     *            default: 1<br>
+     *   to:      poradove cislo posledneho zaznamu na vratenie default: 10<br>
+     *   fmt:     nepovinny parameter urcujuci format (lze zadat pole so zoznamom formatov)<br>
      *
      * 11.03.13 jk; pridan callback
      */
@@ -495,18 +498,18 @@ i3.WS = {
     },
     /**
      * Zapisat zaznam (WS method update)
-     * @param {Object} config<br/>
-     *  callback:         nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br/>
-     * operation:         viz. ucpOperation<br/>
-     *   success:         funkcia, ktora bude volana po uspesnom zapise<br/>
-     *     parametre:<br/>
-     *       rec: i3.Marc<br/>
-     *   failure:         funkcia, kt. bude volana po neuspesnom zapise<br/>
-     *     parametre:<br/>
-     *       msg: text chybovej spravy<br/>
-     *   scope:           scope pre callbacky (success/failure)<br/>
-     *   username:        volba username vo WS<br/>
-     *   auth:            autorizacia<br/>
+     * @param {Object} config<br>
+     *  callback:         nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br>
+     * operation:         viz. ucpOperation<br>
+     *   success:         funkcia, ktora bude volana po uspesnom zapise<br>
+     *     parametre:<br>
+     *       rec: i3.Marc<br>
+     *   failure:         funkcia, kt. bude volana po neuspesnom zapise<br>
+     *     parametre:<br>
+     *       msg: text chybovej spravy<br>
+     *   scope:           scope pre callbacky (success/failure)<br>
+     *   username:        volba username vo WS<br>
+     *   auth:            autorizacia<br>
      *
      * @param {i3.Marc} pRecord: zaznam na zapis (object i3.Marc) - nesie classn/t001 + obsah zaznamu
      *
@@ -605,7 +608,7 @@ i3.WS = {
      * WS operacia display
      *
      * @param {Object} config
-     *  callback:        nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br/>
+     *  callback:        nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br>
      * @param {i3.Marc} pRecord  Zaznam
      * @param {String} pFmt      Display format (later may also be array of many formats)
      *
@@ -681,14 +684,29 @@ i3.WS = {
         if (bHTML) {
             // uprava formatovania do HTML - proste zoberieme cast medzi <body></body>
             s = pRec.data.join('');
-            q = s.indexOf('<body>');
+            // 26.04.24 on; znacka body muze mit i nejake parametry (znacek body tam muze byt i vic, ale zatim to neresim)
+            //q = s.indexOf('<body>');
+            //if (q > 0) {
+            //    s = s.substring(q + 6, 999999);
+            //}
+            q = s.indexOf('<body');
             if (q > 0) {
-                s = s.substring(q + 6, 999999);
+                s = s.substring(q + 5, 999999);
+            }
+            q = s.indexOf('>');
+            // 07.06.24 on; muze byt rovno 0
+            if (q >= 0) {
+                s = s.substring(q + 1, 999999);
             }
             q = s.indexOf('</body>');
             if (q > 0) {
                 s = s.substring(0, q);
             }
+            // 20.01.25 on; div s id
+            s = '<div id="i3-display-format">' + s + '</div>';
+            //if (console) {
+            //   console.log('HTML=' + s);
+            //}
             return s;
         }
         if (pRec.fmt === 'LINEMARC') {
@@ -699,14 +717,14 @@ i3.WS = {
             s = s.strswap('001    ' + pRec.t001, '');
             s = s.strswap('>', '&gt;');
             s = s.strswap('<', '&lt;');
-            s = s.strswap('\n', '<br/>');
-            s = '001    ' + pRec.t001 + '<br/>' + s;
+            s = s.strswap('\n', '<br>');
+            s = '001    ' + pRec.t001 + '<br>' + s;
             // 16.09.09
             s = s.strswap(' ', '&nbsp;');
             s = '<font face="courier">' + s + '</font>';
             // pridat vizualny koniecc zaznamu - neskor sa event.moze zrusit
             // uprava na suvislejsiu ciaru 30.09.09 rs
-            s = s + '<br/><hr/>';
+            s = s + '<br><hr>';
         } else {
             s = pRec.data.join(sDel);
         }
@@ -753,14 +771,14 @@ i3.WS = {
      * viz. tiez metoda command()
      *
      * @param {Object} config
-     * callback: nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br/>   * command: text prikazu<br/>
-     * failure: function(errmsg)<br/>
-     *    ak sa neuvedie, vytvorime default<br/>
-     *    errmsg: textova hlaska o probleme - string<br/>
-     * success: function(result)<br/>
-     * result: text vysledku (string)<br/>
-     * scope:   scope for callbacks; nepovinne. Ak nie je uvedene pouzijeme 'this'.<br/>
-     * classn:  trieda, na ktorej sa bude spustat prikaz<br/>
+     * callback: nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br>   * command: text prikazu<br>
+     * failure: function(errmsg)<br>
+     *    ak sa neuvedie, vytvorime default<br>
+     *    errmsg: textova hlaska o probleme - string<br>
+     * success: function(result)<br>
+     * result: text vysledku (string)<br>
+     * scope:   scope for callbacks; nepovinne. Ak nie je uvedene pouzijeme 'this'.<br>
+     * classn:  trieda, na ktorej sa bude spustat prikaz<br>
      *
      * 11.03.13 jk; pridan callback
      */
@@ -823,22 +841,22 @@ i3.WS = {
      * WS metoda command
      *
      * @param {Object} config
-     * db:       trieda na kt. spustat prikaz<br/>
-     * command:  prikaz<br/>
-     * callback: nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br/>
-     * params:   parametre<br/>
+     * db:       trieda na kt. spustat prikaz<br>
+     * command:  prikaz<br>
+     * callback: nepovinne, vyuziva se pro zavreni hlasky i3.msgOff()<br>
+     * params:   parametre<br>
      * paramsX:  objekt s dalsimi parametrami, tieto budu 1:1 posunute do WS sluzby,
      *           napr. sa takto da poslat "record" alebo pripadne dalsie info,
-     *           ktore by dany command mohol event.potrebovat<br/>
-     * failure:  function(errmsg) - nepovinna, ak sa neuvedie, vygeneruje sa default<br/>
-     * success:  function(pJSON)  - bude volana s dekodovanymi JSON datami vysledku<br/>
+     *           ktore by dany command mohol event.potrebovat<br>
+     * failure:  function(errmsg) - nepovinna, ak sa neuvedie, vygeneruje sa default<br>
+     * success:  function(pJSON)  - bude volana s dekodovanymi JSON datami vysledku<br>
      *           success bude volana aj v pripade, ak command vratil iny ret_code ako 0,
      *           teda aj v pripade "zlyhania"
      * bDontHandleErr:   moznost oserit uzivatelsky i ret_code <> 0
      *
-     * <br/>
+     * <br>
      * 11.03.13 jk; doplnen callback
-     * 18.08.09 rs; dalsie parametre<br/>
+     * 18.08.09 rs; dalsie parametre<br>
      * 21.01.09 rs; oprava obsahu (povodne nebolo funkcne)
      */
     command: function(config) {
@@ -910,13 +928,13 @@ i3.WS = {
     /**
      * Odoslanie requestu na kontrolu prist.prav
      *
-     * @param {Object} config<br/>
-     *   db            - objekt, pre ktore ideme testovat prava<br/>
-     *   right         - testovane pravo, nepovinne default 'w'<br/>
-     *   username,auth - nepovinna autorizacia<br/>
+     * @param {Object} config<br>
+     *   db            - objekt, pre ktore ideme testovat prava<br>
+     *   right         - testovane pravo, nepovinne default 'w'<br>
+     *   username,auth - nepovinna autorizacia<br>
      *   success       - funkcia, kt. bude volana v pripade uspechu (pozor musi este pomocou
      *                   (o.ret_code !== '0') rozlisit, ci bolo pravo OK alebo nie)
-     *                   povinne<br/>
+     *                   povinne<br>
      *   failure       - nepovinna funkcia pre pripad zlyhania na urovni WS
      *
      */
@@ -965,9 +983,9 @@ i3.WS = {
         });
     },
     /**
-     * Ziskat nazov Untablesd triedy.<br/><br/>
+     * Ziskat nazov Untablesd triedy.<br><br>
      *
-     * Da sa pouzit niekolkymi sposobmi:<br/>
+     * Da sa pouzit niekolkymi sposobmi:<br>
      * pokial metodu volame bez parametrov (pICtx===undefined) potom sa vrati nazov defaultnej
      * UnTablesd tabulky - to je XxxUnTablesd (pre globalny kontext Xxx) alebo len 'UnTablesd'
      * ak by globalny kontext i3.ictx nebol nastaveny - nemusi byt pre aplikacie, kt. nemaju kontext
@@ -1097,7 +1115,7 @@ i3.WS = {
      * Zadany zoznam zaznam nacitat do cache zaznam. Nerobi sa reset cache, takze
      * Moze sa volat viac krat s roznym zoznamom. Zaznamy zo zoznamu budu async pridane do cache.
      *
-     * @param {Object} config <br/>
+     * @param {Object} config <br>
      *     t001: pole kodov zaznamov z XxxUnTablesd
      */
     sTablesdCacheInit: function(config) {
@@ -1128,12 +1146,12 @@ i3.WS = {
      * @param {String} pSubTag   Nepovinny param, pole, ktore hladam v stat.tabulke. Default 'b'
      * @param {String} pLanguage Nepovinny param, jazyk v ktorom vratit hodnotu. Default - globalny jazyk. Pro 999 nebude vracet jazykovou verzi, ale vrati cely obsah
      *
-     ***<br/>
+     ***<br>
      * POZOR: aktualne funguje len na Tablesd zaznamy, ktore uz predtym boli nacitane
-     * via sTablesdCacheInit() !!!<br/>
-     * Ak by zaznam nebol nacitany - vrati '';<br/>
+     * via sTablesdCacheInit() !!!<br>
+     * Ak by zaznam nebol nacitany - vrati '';<br>
      ***
-     * <br/>
+     * <br>
      * 25.03.09 rs; doplnenie return value
      */
     sXlate: function(pSTable, pKey, pSubTag, pLanguage) {
@@ -1184,7 +1202,7 @@ i3.WS = {
         return prvGetValue(sLine);
     },
     /**
-     * Vrati true pokud je zadana trida lokalni.<br/><br/>
+     * Vrati true pokud je zadana trida lokalni.<br><br>
      *
      * @param {String} pClass   Nazev tridy.
      */

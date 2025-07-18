@@ -24,7 +24,13 @@
     data-cookie-marketing=#(data("---","CCONFIG","marketing_yes"))#
     data-mainjs="#($s(..isOption("MAINJS")=1:"1",1:""))#"
 >
-<meta name="author" content="#(data("---","MAIN_TITLE"))#">
+
+<ipac:tpl page="parts" version="metaog"/>
+<ipac:tpl page="parts" version="metalink"/>
+<csp:if condition=(..isPage("webmanifest"))>
+	<ipac:tpl page="parts" version="metaapp"/>
+</csp:if>
+<meta name="author" content="#($g(data("---","MAIN_TITLE")))#">
 
     <csp:if condition=(..isPage("mojeid"))>
 <meta http-equiv="X-XRDS-Location" content="#(data("---","MOJEID_XRDS"))#">
@@ -39,6 +45,12 @@
     </csp:if>
 <meta name="description" content="#(data("---","HEAD_DESCRIPTION"))#">
 <meta name="robots" content="#($g(data("---","ROBOTS")))#">
+
+
+    <csp:if condition=(..txgn("GOOGLE_VERIFICATION")'="") note="Ověření pro služby Google">
+<meta name="google-site-verification" content="#(..txg("GOOGLE_VERIFICATION"))#">
+    </csp:if>
+
 <link rel="stylesheet" media="print" href="#(..cb(..style()_"print.css"))#">
 <link rel="stylesheet" href="#(..cb(..style(1)_"bskin1.css"))#">
 
@@ -46,90 +58,12 @@
 <link rel="stylesheet" href="#(..cb($$$BASEPURE_data("---","USERCSS")))#">
     </csp:if>
 
-<csp:if condition=($$$GETREQVAR("_ut")=1)>
-<link rel="stylesheet" href="#(..cb(..style()_"qunit.css"))#">
-<script src="#(..cb(..script()_"lib/qunit/qunit.js"))#"></script>
-<script>QUnit.config.autostart = false;</script>
-</csp:if>
 
-    <csp:if condition=(..isPage("help"))>
-        <csp:if condition=(data("PAGEID")'="help")>
-<ipac:link rel="help" op="help" key="#(data("---","PAGEID"))#" title="#(..txg("MENU_HELP_TEXT"))#">
-        </csp:if>
+    <csp:if condition=(data("---","BPRINT")=1) note="Zobrazení tiskového náhledu">
+<link rel="stylesheet" media="print,handheld,screen" href="#(..cb(..style()_"print.css"))#">
     </csp:if>
 
-<ipac:link rel="home" href="#(data("---","HOMEURL"))#" title="#(..txg("HOME_TITLE"))#">
-
-<csp:if condition=($d(data("---","LANGUAGES")))>
-<csp:if condition=(data("---","LANGUAGES")'=1)>
-<ipac:loop2 param="LANGUAGES" environ>
-            <csp:if condition=(..v2("lang")=1)>
-<ipac:link rel="alternate" href="#(..v2("href"))#" hreflang="sk-SK" title="Slovenská verzia">
-            <csp:elseif condition=(..v2("lang")=2)>
-<ipac:link rel="alternate" href="#(..v2("href"))#" hreflang="cs-CZ" title="Česká verze">
-            <csp:elseif condition=(..v2("lang")=3)>
-<ipac:link rel="alternate" href="#(..v2("href"))#" hreflang="en-GB" title="English version">
-            <csp:elseif condition=(..v2("lang")=4)>
-<ipac:link rel="alternate" href="#(..v2("href"))#" hreflang="de-DE" title="Deutsche version">
-            <csp:elseif condition=(..v2("lang")=5)>
-<ipac:link rel="alternate" href="#(..v2("href"))#" hreflang="hu-HU" title="Magyar változat">
-            <csp:else>
-<ipac:link rel="alternate" href="#(..v2("href"))#" hreflang="ar-AE" title="النسخة العربية">
-            </csp:if>
-        	<csp:if condition=(..v2("install")="1")>
-<ipac:link rel="alternate" hreflang="x-default" href="#(..v2("href"))#">
-        	</csp:if>
-        </ipac:loop2>
-</csp:if>
-</csp:if>
-
-<csp:if condition=(..isPage("webmanifest"))>
-<ipac:link rel="manifest" op="webmanifest">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="#(..txg("MAIN_ABBR"))#">
-<meta name="apple-mobile-web-app-status-bar-style" content="#(data("---","THEMECOLOR"))#">
-<meta name="theme-color" content="#(data("---","THEMECOLOR"))#">
-  <ipac:loop param="ICONS">
-        <csp:if condition=($f(..v("for"),"html"))>
-<link #($s(..v("rel")'="":"rel="""_..v("rel")_"""",1:""))# #($s(..v("type")'="":"type="""_..v("type")_"""",1:""))# #($s(..v("sizes")'="":"sizes="""_..v("sizes")_"""",1:""))# href="#(..v("src"))#" #($s(..v("rel")="mask-icon":"color="""_data("---","THEMECOLOR")_"""",1:""))#>
-        </csp:if>
-    </ipac:loop>
-<csp:else>
-    <link rel="shortcut icon" href="#(..cb($$$BASEPURE_data("---","ICONPATH")_"img/favicon.ico"))#">
-</csp:if>
-
-    <csp:if condition=(..isPage("privacy"))>
-<ipac:link rel="license" op="about" param="#ipac-copyright" title="#(..txg("MENU_COPYRIGHT_TEXT"))#">
-    </csp:if>
-
-    <csp:if condition=(..isPage("smap"))>
-<ipac:link rel="contents" op="smap" title="#(..txg("MENU_SITEMAP_TEXT"))#">
-    </csp:if>
-
-    <csp:if condition=(data("---","BOPENSEARCH")) note="Open Search">
-<link rel="search" id="opensearch" type="application/opensearchdescription+xml" href="#(data("---","OPENSEARCHURL"))#" title="IPAC #(..txg("MAIN_ABBR"))#" data-query="#(..txg("OPENSEARCH_QUERY"))#">
-    </csp:if>
-
-    <csp:if condition=(..txgn("GOOGLE_VERIFICATION")'="") note="Ověření pro služby Google">
-<meta name="google-site-verification" content="#(..txg("GOOGLE_VERIFICATION"))#">
-    </csp:if>
-
-    <csp:if condition=(..txgn("FB_PAGE_NAME")'="") note="Název stránky">
-<meta property="og:site_name" content="#(..txg("FB_PAGE_NAME"))#">
-    </csp:if>
-
-    <csp:if condition=(..txgn("FB_PAGE_ID")'="") note="ID stránky knihovny na Facebooku">
-<meta property="fb:page_id" content="#(..txg("FB_PAGE_ID"))#">
-    </csp:if>
-
-    <csp:if condition=(..txgn("FB_ADMINS")'="") note="ID správce stránky na Facebooku">
-<meta property="fb:admins" content="#(..txg("FB_ADMINS"))#">
-    </csp:if>
-
-    <csp:if condition=(..txgn("FB_APP_ID")'="") note="ID aplikace na Facebooku">
-<meta property="fb:app_id" content="#(..txg("FB_APP_ID"))#">
-    </csp:if>
+#(data("---","USERHTML"))#
 
     <csp:if condition=((..txgn("MAIN_GOOGLEANALYTICS")'="")&&(data("---","CCONFIG","analytical_yes")="1")) note="Zapojení Google Analytics">
 <script src="#(..cb(..script(1)_"ga.js"))#"></script>
@@ -137,10 +71,4 @@
 
     <csp:if condition=((..txgn("MAIN_MSCLARITY")'="")&&(data("---","CCONFIG","analytical_yes")="1")) note="Zapojení MS Clarity">
 <script src="#(..cb(..script(1)_"clarity.js"))#"></script>
-    </csp:if>
-
-#(data("---","USERHTML"))#
-
-    <csp:if condition=(data("---","BPRINT")=1) note="Zobrazení tiskového náhledu">
-<link rel="stylesheet" media="print,handheld,screen" href="#(..cb(..style()_"print.css"))#">
     </csp:if>

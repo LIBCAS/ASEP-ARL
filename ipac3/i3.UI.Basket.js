@@ -1,6 +1,7 @@
 /*
  * Kosik.
  *
+ * 23.02.24 on; kontroly a skryti poli
  * 08.04.20 on; vyrazeni exemplaru
  * 21.01.19 on; mozna kontrola lokace
  * 07.01.19 on; vymaz zaznamu
@@ -179,7 +180,9 @@ i3.ui.Basket.Grid = Ext.extend(Ext.grid.GridPanel, {
                 }, {
                     xtype: 'tbseparator',
                     hidden: !i3.csBasketPreliminaryDisposeList
-                }, {
+                },
+                // predbezny vyrazovaci seznam
+                {
                     xtype: 'tbbutton',
                     //tooltip: i3.ui.Basket.tx.txRemove,
                     text: i3.ui.Basket.tx.txPreliminaryDisposeList,
@@ -199,7 +202,7 @@ i3.ui.Basket.Grid = Ext.extend(Ext.grid.GridPanel, {
                     hidden: !i3.csBasketJoinRecords
                 },
                 /**
-                 * Vyrazeni exemplaru
+                 * Spojovani zaznamu
                  *
                  * 08.04.20 on;
                  */
@@ -611,7 +614,8 @@ i3.ui.Basket.Panel = Ext.extend(i3.ui.ColPanel, {
             oRec,
             grid = this.getCmp('gridpnl'),
             sIdxList = '',
-            sDb = '';
+            sDb = '',
+            sDf;
         // sezznam vybranych zaznamu
         var pRecs = grid.getSelectionModel().getSelections();
         if ((!pRecs) || (pRecs.length <= 0)) {
@@ -622,6 +626,21 @@ i3.ui.Basket.Panel = Ext.extend(i3.ui.ColPanel, {
             oRec = pRecs[i];
             if (sDb === '') {
                 sDb = oRec.data.idx.piece('*', 1);
+            }
+            // 23.02.24 on; doplneny kontroly
+            // pouze holdingy
+            if (i3.csGetDbFormat(oRec.data.idx.piece('*', 1)) !== 'H') {
+                sDf = oRec.data.df;
+                if (i3.isEmptyString(sDf)) {
+                    sDf = oRec.data.idx;
+                }
+                i3.alert(i3.fillInParams(i3.ui.Basket.tx.txNoHoldingRecord, [sDf]));
+                return;
+            }
+            // musi jit o zaznamy ze stejne db
+            if (sDb !== oRec.data.idx.piece('*', 1)) {
+                i3.alert(i3.ui.Basket.tx.txJoinMoreDb);
+                return;
             }
             sIdxList += ',' + oRec.data.idx.piece('*', 2);
         }
@@ -1117,7 +1136,8 @@ i3.ui.Basket.Panel = Ext.extend(i3.ui.ColPanel, {
             oRec,
             grid = this.getCmp('gridpnl'),
             aIdArr = [],
-            sDb = '';
+            sDb = '',
+            sDf;
         // seznam vybranych zaznamu
         var pRecs = grid.getSelectionModel().getSelections();
         if ((!pRecs) || (pRecs.length <= 0)) {
@@ -1131,7 +1151,11 @@ i3.ui.Basket.Panel = Ext.extend(i3.ui.ColPanel, {
             }
             // pouze holdingy
             if (i3.csGetDbFormat(oRec.data.idx.piece('*', 1)) !== 'H') {
-                i3.alert(i3.fillInParams(i3.ui.Basket.tx.txNoHoldingRecord, [oRec.data.idx]));
+                sDf = oRec.data.df;
+                if (i3.isEmptyString(sDf)) {
+                    sDf = oRec.data.idx;
+                }
+                i3.alert(i3.fillInParams(i3.ui.Basket.tx.txNoHoldingRecord, [sDf]));
                 return;
             }
             // musi jit o zaznamy ze stejne db
@@ -1565,7 +1589,7 @@ i3.ui.Basket.H2BForm = Ext.extend(i3.ui.ColPanel, {
         }
     },
     /**
-     * Makro pre skladanie limit casti PQF query<br/>
+     * Makro pre skladanie limit casti PQF query<br>
      *
      * @param {Object} pLim
      * @param {Object} pPQF
@@ -1593,6 +1617,9 @@ i3.ui.Basket.H2BForm = Ext.extend(i3.ui.ColPanel, {
  */
 i3.ui.Basket.DisposeListForm = Ext.extend(i3.ui.ColPanel, {
     constructor: function(config) {
+        var sHiddenFields;
+        // 23.02.on; moznost skryt vybrana pole
+        sHiddenFields = i3.csBasketPreliminaryDisposeListHiddenFields || '';
         config = config || {};
         Ext.apply(config, {
             //layout: 'form',
@@ -1601,6 +1628,7 @@ i3.ui.Basket.DisposeListForm = Ext.extend(i3.ui.ColPanel, {
                 xtype: 'panel',
                 width: '50%',
                 layout: 'form',
+                hidden: (sHiddenFields.indexOf('100a') >= 0),
                 items: [{
                     xtype: 'textfield',
                     fieldLabel: i3.ui.Basket.tx.txDbName,
@@ -1617,6 +1645,7 @@ i3.ui.Basket.DisposeListForm = Ext.extend(i3.ui.ColPanel, {
                 xtype: 'panel',
                 width: '50%',
                 layout: 'form',
+                hidden: (sHiddenFields.indexOf('100b') >= 0),
                 items: [{
                     xtype: 'combo',
                     fieldLabel: i3.ui.Basket.tx.txDisposeListName,
@@ -1659,6 +1688,7 @@ i3.ui.Basket.DisposeListForm = Ext.extend(i3.ui.ColPanel, {
                 width: '50%',
                 layout: 'form',
                 labelAlign: 'top',
+                hidden: (sHiddenFields.indexOf('100c') >= 0),
                 items: [{
                     xtype: 'cs_combo_st',
                     fieldLabel: i3.ui.Basket.tx.txReason,
@@ -1673,6 +1703,7 @@ i3.ui.Basket.DisposeListForm = Ext.extend(i3.ui.ColPanel, {
                 width: '50%',
                 layout: 'form',
                 labelAlign: 'top',
+                hidden: (sHiddenFields.indexOf('100d') >= 0),
                 items: [{
                     xtype: 'cs_combo_st',
                     fieldLabel: i3.ui.Basket.tx.txDocumentCondition,
@@ -1687,6 +1718,7 @@ i3.ui.Basket.DisposeListForm = Ext.extend(i3.ui.ColPanel, {
                 width: '50%',
                 layout: 'form',
                 labelAlign: 'top',
+                hidden: (sHiddenFields.indexOf('100e') >= 0),
                 items: [{
                     xtype: 'cs_combo_st',
                     fieldLabel: i3.ui.Basket.tx.txBlock,
@@ -1701,6 +1733,7 @@ i3.ui.Basket.DisposeListForm = Ext.extend(i3.ui.ColPanel, {
                 width: '50%',
                 layout: 'form',
                 labelAlign: 'top',
+                hidden: (sHiddenFields.indexOf('100f') >= 0),
                 items: [{
                     xtype: 'cs_combo_st',
                     fieldLabel: i3.ui.Basket.tx.txNextProcTitle + " <img src='../images/icons/help.png' onclick='i3.alert(\"" + i3.ui.Basket.tx.tx969fHelp + "\")' onmouseover='' style='cursor: pointer;' />",
@@ -1715,6 +1748,7 @@ i3.ui.Basket.DisposeListForm = Ext.extend(i3.ui.ColPanel, {
                 width: '50%',
                 layout: 'form',
                 labelAlign: 'top',
+                hidden: (sHiddenFields.indexOf('100g') >= 0),
                 items: [{
                     xtype: 'cs_combo_st',
                     fieldLabel: i3.ui.Basket.tx.txNextProcHolding,

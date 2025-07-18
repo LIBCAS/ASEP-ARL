@@ -22,7 +22,7 @@
 <td class="count"><span title="#(..tx("COUNT_FILES"))#">(#(..li(3))#)</span></td>
 		<csp:if condition=(data("EDIT"))>
 <td class="edit"><ipac:a class="btn btn-light" op="contser" param="idx=#(..li(1))#&status=#(data("STATUS"))#">
-<span class="icon-edit" aria-hidden="true"></span>&nbsp;
+<i class="icon-edit" aria-hidden="true"></i>&nbsp;
 <ipac:tx param="ADMIN_ANNEXES"/></ipac:a></td>
         </csp:if>
 

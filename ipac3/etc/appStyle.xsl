@@ -248,8 +248,8 @@
 							<xsl:text>,&#xA0;</xsl:text>
 							<b>App info</b>,
 							<xsl:text>&#xA0;</xsl:text>
-							<a target="_blank" rel="external" href="http://www.cosmotron.cz/">Cosmotron</a>
-							<xsl:text>,&#xA0;2016</xsl:text>
+							<a target="_blank" rel="external" href="https://www.cosmotron.cz/">Cosmotron</a>
+							<xsl:text>,&#xA0;2024</xsl:text>
 						</p>
 					</footer>
 				</div>

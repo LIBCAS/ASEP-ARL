@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.2.4 (Build 903U)" ts="2016-12-05 09:50:51">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-19 14:49:21">
 <Class name="i2.cust.cav.stats">
-<Description>
+<Description><![CDATA[
+<pre>
+19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
 05.12.16 kp; Pridana podpora pro JSON
 09.03.16 tt; upravena funkcnost trideni u vystupu - PT ústavy ve spolupráci. Oprava chybneho 
                trideni s vkladanim 0
-</Description>
+</pre> ]]></Description>
 <Super>content.stats</Super>
-<TimeChanged>64257,35422.072771</TimeChanged>
+<TimeChanged>67040,53342.568479997</TimeChanged>
 <TimeCreated>63690,58864.633666</TimeCreated>
 
 <Parameter name="Ictx">
@@ -141,7 +143,7 @@ volano na konci ..data() pred ..userData()
     if $f(data("SQL"),"VedniObor = '"_i_"'")
     { ; precteme si vsechny hodnoty ciselniku
       s sObor1=""
-      if ##class(User.MARC).readX(.handle,"CavUnTablesd",sCis) 
+      if ##class(User.MARC).readX(.handle,$$$IPREF_"UnTablesd",sCis) 
       {
         s c=0
         d {

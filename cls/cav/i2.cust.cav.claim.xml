@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 7 for x86-64) 2022.1.2 (Build 574U)" ts="2023-08-02 13:28:17">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-19 14:38:57">
 <Class name="i2.cust.cav.claim">
-<Super>content.claim</Super>
-<TimeChanged>66688,48427.521445361</TimeChanged>
-<TimeCreated>62787,54154.824368</TimeCreated>
-
-<Parameter name="Ictx">
 <Description><![CDATA[
 <pre>
+19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
 02.08.23 ln; zrusena podedeni writeBody 
 01.08.23 tt; proveden změna označení html prvku
 26.06.23 tt; provedena zmena captcha
@@ -24,8 +20,14 @@
 25.05.13 tt; mailBody: pridano textove zobrazeni linku pro vyzadani fulltextu
 30.12.12 tt; drobne zmeny ve tride - priprava na ipac3
 26.11.12 tt; nova trida zapojena contclaim
-</pre>
-ictx instituce]]></Description>
+</pre>]]></Description>
+<Super>content.claim</Super>
+<TimeChanged>67040,52705.918095542</TimeChanged>
+<TimeCreated>62787,54154.824368</TimeCreated>
+
+<Parameter name="Ictx">
+<Description>
+ictx instituce</Description>
 <Default>cav</Default>
 </Parameter>
 
@@ -147,7 +149,7 @@ ictx instituce]]></Description>
       { ; pokus je uzivatel prihlaseny, overime mejly
         s sRet="",sEmailnaOver=""
         s sEmailnaOver=..getEmail(data("IDX"))
-        if ##class(User.MARC).readLX(.handleU,"cav_is_user*"_data("USER_ID"))
+        if ##class(User.MARC).readLX(.handleU,$$$GETICTX_"_is_user*"_data("USER_ID"))
         { ; pokud se poradi nacist uzivatele, pokracuji
           s sRet=$$$getTagX(.handleU,"100e")  ; email
           if (sRet="")
@@ -278,9 +280,9 @@ metoda pro nacteni uzivatelskych dat</Description>
 
   if (ret="") 
   { ; email se dobre odeslal, vypiseme hlasku a vymazeme formulare
-     s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_$p(data("IDX"),"*","2"),..tx("SEND_RECORD"))
+     s sLinkRec=##class(i2.html.tpl).getPermalink2($$$GETICTX_"_un_epca*"_$p(data("IDX"),"*","2"),..tx("SEND_RECORD"))
     s:('$f(data("REPORTS"),..tx("SENDEMAILOK"))) data("REPORTS")=$g(data("REPORTS"),"")_..tx("SENDEMAILOK")
-                      _"<br />"_..tx("SEND_REC_TEXT")_" "_sLinkRec     ; dobre oteslany email
+                      _"<br>"_..tx("SEND_REC_TEXT")_" "_sLinkRec     ; dobre oteslany email
     s data("REPLY")="@"                                                ; vymazeme hodnoty
     s data("SUBJECT")=""
     s data("MESSAGE")=""
@@ -312,7 +314,7 @@ metoda pro nacteni uzivatelskych dat</Description>
   s sBody=""
   
   ; link na zazan
-  s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1"),data("RECTITLE_Z"))
+  s sLinkRec=##class(i2.html.tpl).getPermalink2($$$GETICTX_"_un_epca*"_$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1"),data("RECTITLE_Z"))
   
   ; 28.05.13 tt; zmeny v tele emailu a linku  
   ; uzivatelsky pridane polozky formulare
@@ -326,7 +328,7 @@ metoda pro nacteni uzivatelskych dat</Description>
   s sBody=sBody_##class(i2.email).TableLine(..tx("MESSAGE"),data("MESSAGE"),bHtml) 
   s sBody=sBody_##class(i2.email).TableLine(..tx("ZAZNAM"),$p($p($p(data("IDX"),"*","2"),"*","1"),"#","1")_" - "_sLinkRec,bHtml) ; zaznam
   ; 30.05.13 tt; pridany link na hnadle net   
-  s:($g(data("C60a"))'="") sBody=sBody_##class(i2.email).TableLine(..tx("HANDLE_NET"),"<a href="_data("C60a")_" data-target=""_blank"" title=""Handle link"">"_data("C60a")_"</a>",bHtml) ; jmeno
+  s:($g(data("C60a"))'="") sBody=sBody_##class(i2.email).TableLine(..tx("HANDLE_NET"),"<a href="_data("C60a")_" target=""_blank"" title=""Handle link"">"_data("C60a")_"</a>",bHtml) ; jmeno
   s sBody=sBody_##class(i2.email).TableLine(..tx("SOUBOR"),data("FILE"),bHtml) ; jmeno
   
   
@@ -340,7 +342,7 @@ metoda pro nacteni uzivatelskych dat</Description>
     ; 25.05.13 tt; pridano textove zobrazeni linku pro vyzadani fulltextu
     /* 
     s link  = "<a href="""_sBaseURL_##class(i2.html.tpl).getLinkURL("cavclaimret",urlparams)_""">"_..tx("APPROVAL")_"</a>"
-             _"<br />("_$$$strswap(sBaseURL_##class(i2.html.tpl).getLinkURL("cavclaimret",urlparams),"&amp;","&")_")"
+             _"<br>("_$$$strswap(sBaseURL_##class(i2.html.tpl).getLinkURL("cavclaimret",urlparams),"&amp;","&")_")"
     */
     s link  = $$$strswap(sBaseURL_##class(i2.html.tpl).getLinkURL("cavclaimret",urlparams),"&amp;","&")
     ; 30.05.13 tt; upraveny link
@@ -459,9 +461,9 @@ vejde sem ze stranky linkovane v emailu
 
   if (ret="") 
   { ; email se dobre odeslal, vypiseme hlasku a vymazeme formulare
-     s sLinkRec=##class(i2.html.tpl).getPermalink2("cav_un_epca*"_array("t001"),..tx("SEND_RECORD"))
+     s sLinkRec=##class(i2.html.tpl).getPermalink2($$$GETICTX_"_un_epca*"_array("t001"),..tx("SEND_RECORD"))
     s data("REPORTS")=$g(data("REPORTS"),"")_..tx("SENDEMAILOK")
-                      _"<br />"_..tx("SEND_REC_TEXT")_" "_sLinkRec     ; dobre oteslany email
+                      _"<br>"_..tx("SEND_REC_TEXT")_" "_sLinkRec     ; dobre oteslany email
     s data("REPLY")="@"                                                ; vymazeme hodnoty
     s data("SUBJECT")=""
     s data("MESSAGE")=""

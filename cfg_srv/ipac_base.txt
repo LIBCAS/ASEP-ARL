@@ -2,6 +2,8 @@
 002    Tento subor obsahuje zakladne nastavenia IPAC - spolocne
 002    pre vsetky instalacie.
 002    ---
+002    18.12.24 jk; BASE_IPAC2_FLD pro externi zdroje vyhledavani pres linky ZF a cislo indexu
+002    04.04.24 jk; do BASE_IPAC2_FLD a BASE_IPAC2_SORT zapojen Clarivate MEDLINE
 002    15.08.23 jk; do BASE_IPAC2_SERVER_THOMSON a BASE_IPAC2_SERVER_THOMSON_AUTH pridana autentizace username password, vypnut curl
 002    03.08.23 jk; Clarivate WOS
 002    14.06.23 jk; do BASE_IPAC2_WS_COMMANDS pridan getShibboleth
@@ -159,6 +161,8 @@
 ###
 # @id UnTablesd BASE_IPAC2_SORT
 002    triediace sekvencie - viz IS_SERVER_*
+002    04.04.24 jk; Clarivate MEDLINE
+002    18.03.24 jk; Clarivate WOS a CCC
 002    03.08.23 jk; Clarivate WOS
 002    22.11.18 ln; pridano trideni NEW a SCORE
 002    24.07.14 jk; upravy Elsevier, Ebsco a Thomson
@@ -166,9 +170,9 @@
 002    25.06.08 jt; pridane sort-polia pre Thomson-Web of Science
 002    03.04.08 jt; pridane podpole $e pre nazvy sort-poli vo federativnom vyhladavani + pridane polia pre Elsevier, jednotlive zdroje su oddelene # 
 002                 (zatial Scopus#ScienceDirect)
-200    aDATEbDátum vydania (zostupne)#Datum vydání (sestupně)#Publication Year (descending)c1=30c i>escopus-date,sd-date,wos-Date,clwos-PY+D,clccc-PY+D
+200    aDATEbDátum vydania (zostupne)#Datum vydání (sestupně)#Publication Year (descending)c1=30c i>escopus-date,sd-date,clwos-PY+D,clccc-PY+D,clmedline-PY+D
 200    aTITLEbNázov#Název#Titlec1=4c i<escopus-sourceTitle
-200    aAUTbAutor#Autor#Authorc1=1c i<eclwos-AU+A
+200    aAUTbAutor#Autor#Authorc1=1c i<eclwos-AU+A,clccc-AU+A,clmedline-AU+A
 200    aDK_TITLEbDruh dokumentu, názov#Druh dokumentu, název#Document Type, Titlec1=1031c i< 1=4c i<
 200    aDT1bDátum vytvorenia záznamu#Datum vytvoření záznamu#Entry Datec1=2485c i>
 200    aSRC_TITbNázov zdroj.dokumentu#Název zdroj.dokumentu#Source Titlec1=2464c i< 1=4c i<
@@ -186,9 +190,9 @@
 002     --------------------- ELSEVIER, EBSCO, THOMSON -----------------------
 200    aCOVERDATEb##Cover dateescopus-coverDate,sd-coverDate
 200    aPUBNAMEbNázov publikácie#Název publikace#Publication nameescopus-publicationName,sd-publicationName
-200    aCITEDbPočet citácií#Počet citací#Number of times the article is citedescopus-citedby-count,clwos-TC+A,clccc-TC+A
-200    aRELbRelevancia#Relevance#Relevanceeescopus-relevancy,sd-relevancy,wos-Relevance,ebscosearch-relevance,clwos-RS+D,clccc-RS+D
-200    aDATE2bDátum vydania (vzostupne)#Datum vydání (vzestupně)#Publication Year (ascending)eebscosearch-date2,clwos-PY+D,clccc-PY+D
+200    aCITEDbPočet citácií#Počet citací#Number of times the article is citedescopus-citedby-count,clwos-TC+A,clccc-TC+A,clmedline-TC+A
+200    aRELbRelevancia#Relevance#Relevanceeescopus-relevancy,sd-relevancy,ebscosearch-relevance,clwos-RS+D,clccc-RS+D,clmedline-RS+D
+200    aDATE2bDátum vydania (vzostupne)#Datum vydání (vzestupně)#Publication Year (ascending)eebscosearch-date2,clwos-PY+D,clccc-PY+D,clmedline-PY+D
 002     --------------------- ELSEVIER ------------------------
 210    aSORTSCObDATEbTITLEbCITEDbPUBNAMEbRELbCOVERDATE
 210    aSORTSDIbDATEbPUBNAMEbRELbCOVERDATE
@@ -198,8 +202,8 @@
 002     --------------------- EBSCO ------------------------
 210    aSORTEBSCOSEARCHbDATEbDATE2bREL
 002     --------------------- CLARIVATE WOS ------------------------
-200    aCLWOSCFbNázov konferencie#Název konference#Conference Titleeclwos-CF+A,clccc-CF+A
-200    aCLWOSCYbCitovaní - rok#Citovaní - rok#Cited Yeareclwos-CY+A,clccc-CY+A
+200    aCLWOSCFbNázov konferencie#Název konference#Conference Titleeclwos-CF+A,clccc-CF+A,clmedline-CF+A
+200    aCLWOSCYbCitovaní - rok#Citovaní - rok#Cited Yeareclwos-CY+A,clccc-CY+A,clmedline-CY+A
 210    aSORTCLWOSbDATEbDATE2bAUTbCLWOSCFbCLWOSCYbCITEDbREL
 002     ---
 002    sablony (subsety)
@@ -357,6 +361,9 @@
 200    asumSearchHourbSumární statistika vyhledáváníd50
 ###
 # @id UnTablesd BASE_IPAC2_FLD
+002    18.12.24 jk; pro externi zdroje vyhledavani pres linky ZF a cislo indexu
+002    04.04.24 jk; Clarivate MEDLINE
+002    18.03.24 jk; Clarivate WOS a CCC
 002    03.08.23 jk; Clarivate WOS
 002    18.07.18 jk; pridan index AUKH
 002    08.02.16 jk; uprava a doplneni indexu wos
@@ -378,15 +385,15 @@
 002    26.03.07 rs; nove indexy AUP,AU
 002    16.08.06 rs; TITLE pridane pomocne pole $d (na test - zatial bez 
 002                 zmysluplneho obsahu)
-200    aANYbVšetky polia#Všechna pole#All Fields#c1016escopus-ALL,sd-ALL,wos-TS,ccc-TS,ebscosearch-TX,clwos-ALL,clccc-ALL
-200    aTITLEbNázov#Název#Titlec4escopus-TITLE,sd-TITLE,wos-TI,ccc-TI,ebscosearch-TI,clwos-TI,clccc-TI
+200    aANYbVšetky polia#Všechna pole#All Fields#c1016escopus-ALL,sd-ALL,ebscosearch-TX,clwos-ALL
+200    aTITLEbNázov#Název#Titlec4escopus-TITLE,sd-TITLE,ebscosearch-TI,clwos-TI,clccc-TI,clmedline-TI
 200    aTIc@TITLE
 200    aGc@ANY
 200    aBath.titlec@TITLE
 200    adc.titlec@TITLE
 002    -
 200    aAUbAutor#Autor#Authorc1003nindex "au"
-200    aAUTHORbAutor#Autor#Authorc1003nindex "au" - totozne z "AU" - pozor 30.03.07 zmena z "aup" na "au"escopus-AUTH,sd-AUT,wos-AU,ccc-AU,ebscosearch-AU,clwos-AU,clccc-AU
+200    aAUTHORbAutor#Autor#Authorc1003nindex "au" - totozne z "AU" - pozor 30.03.07 zmena z "aup" na "au"escopus-AUTH,sd-AUT,ebscosearch-AU,clwos-AU,clccc-AU,,clmedline-AU
 200    aAUPbAutor osobné meno#Autor osobní jméno#Author c1
 200    aAUPDbOsobné meno#Osobní jméno#Author c2409
 200    aAUAbAkcia/Konferencia#Akce/Konference#Conferencec3
@@ -395,15 +402,15 @@
 200    aAUK1bAutor-kód záznamu + druh.dok##Author Sysno/Doc.kindc2479
 200    aAUKHbFaktúra, objednávka, predplatné exemplára#Faktura, objednávka, předplatné exempláře#Invoice, order, subscription of holdingc2480
 002    -
-200    aSUBJECTbPredmet (kľúč.slová)#Předmět (klíč.slova)#Subject h. and keywords#Thema(Schlüsselwörter)c21eescopus-KEY,sd-KEYWORDS,wos-TS,ccc-TS,ebscosearch-SU
+200    aSUBJECTbPredmet (kľúč.slová)#Předmět (klíč.slova)#Subject h. and keywords#Thema(Schlüsselwörter)c21eescopus-KEY,sd-KEYWORDS,ebscosearch-SU,clwos-TS,clccc-TS,clmedline-TS
 200    aUDCbMDT#MDT#UDC#UDKc14
 200    aEDITIONbEdícia#Edice#Series#Reihec5
 200    aPLACEPbMiesto vydania#Místo vydání#Publication Place#Verlagsortc59
-200    aPUBLbVydavateľ#Nakladatel#Publisher#Verlegerc1018escopus-PUBLISHER,clwos-PUBL,clccc-PUBL
+200    aPUBLbVydavateľ#Nakladatel#Publisher#Verlegerc1018escopus-PUBLISHER,clwos-PUBL
 200    aISBNbISBNc7escopus-ISBN,ebscosearch-IB
 200    aISSNbISSNc8escopus-ISSN,ebscosearch-IS
-200    aISBNISSNbISBN, ISSN##ISBN, ISSNc2480eclwos-IS,clccc-IS
-200    aSOURCEbZdrojový dokument#Zdrojový dokument#Source Title#Quellendok.(Artikel)c2499ewos-SO,ccc-SO,ebscosearch-SO
+200    aISBNISSNbISBN, ISSN##ISBN, ISSNc2480eclwos-IS,clccc-IS,clmedline-IS
+200    aSOURCEbZdrojový dokument#Zdrojový dokument#Source Title#Quellendok.(Artikel)c2499eebscosearch-SO
 200    aSIGbSignatúry#Signatury#Call numberc2481
 200    aTRbPrírastkové číslo#Přírůskové číslo#Track No.c2482
 002    -
@@ -435,7 +442,7 @@
 200    aKSKbKonspekt - skupina konspektu#Konspekt - skupina konspektu#Conspectus - categoryc2378
 200    aKSPKbKonspekt - predmetová kategória#Konspekt - předmětová kategorie#Conspectus - divisionc2379
 002    -  ~IPVZ
-200    aS606bHeslá MeSH#Hesla MeSH#MeSH Keywordsc2472
+200    aS606bHeslá MeSH#Hesla MeSH#MeSH Keywordsc2472eclmedline-MH
 200    aIFbImpakt faktor##Impact factorc2455,NC#NP
 002     -- exemplare--
 200    aUNH_SI0bSignatura##Call number c2005
@@ -451,7 +458,7 @@
 200    aSECUREbfulltext dokumentu##fulltext of documentc2600
 200    aZNPQbŽáner dokumentu#Žánr dokumentu#Document genrec1031,NC#NP
 200    aDKPQbDruh publikácie#Druh publikácie#Document typec1031,NC#NP
-200    aDATEbRok vydania#Rok vydání#Publication Yearc31,NC#NPescopus-PUBYEAR,sd-PUB-DATE,wos-PY,ccc-PY,clwos-PY,clccc-PY
+200    aDATEbRok vydania#Rok vydání#Publication Yearc31,NC#NPescopus-PUBYEAR,sd-PUB-DATE,clwos-PY,clccc-PY,clmedline-PY
 200    aCOUNTRYbKrajina vydania#Země vydání#Countryc55,NC#NPeclwos-CU,clccc-CU
 200    aCOUNTRY21bKrajina vydania#Země vydání#Countryc55,NC#NP
 200    aLANGUAGEbJazyk dokumentu##Languagec54,NC#NPescopus-LANGUAGE
@@ -506,21 +513,21 @@
 200    aUNA_DTUDbRok udalosti##c2476,NC#NP
 200    aUNA_DKbDruh autorityc1031,NC#NP
 210    aFLDSETA1cANYcTITLE
-200    aA150bKľúčové slová#Klíčová slova#Keywordsc2480eclwos-KP,clccc-KP
+200    aA150bKľúčové slová#Klíčová slova#Keywordsc2480eclwos-KP
 002    ---
 002    ------------------- ELSEVIER A EBSCO-------------------
 002    ---
-200    aABSbAbstrakt#Abstrakt#AbstractcABSescopus-ABS,sd-ABSTRACT,ebscosearch-AB,clwos-AB,clccc-AB
+200    aABSbAbstrakt#Abstrakt#AbstractcABSescopus-ABS,sd-ABSTRACT,ebscosearch-AB,clwos-AB
 200    aDZSCObDruh zdroja#Druh zdroje#Source typec1031escopus-SRCTYPE
 200    aAFFILbAfilácia na mesto, krajinu a organizáciu autora#Afilace na město, zemi a organizaci autora#AffiliationcAFFILescopus-AFFIL,sd-AFFIL
 200    aAFIDbIdentifikátor afilácie názvu organizácie#Identifikátor afilace názvu organizace#Affiliation ID of organizationcAFIDescopus-AF-ID
 200    aAUIDbIdentifikátor autora#Identifikátor autora#Author Identifier NumbercAUIDescopus-AU-ID
-200    aCONFbKonference#Konference#Conference InformationcCONFescopus-CONF,clwos-CF,clccc-CF
-200    aDOIbDigital Object Identifier (DOI)cDOIescopus-DOI,sd-DOI,wos-DO,clwos-DO,clccc-DO
+200    aCONFbKonference#Konference#Conference InformationcCONFescopus-CONF,clwos-CF
+200    aDOIbDigital Object Identifier (DOI)cDOIescopus-DOI,sd-DOI,clwos-DO
 200    aEIDbElectronic Identifier (EID)cEIDescopus-EID,sd-EID
 200    aEISSNbEISSNcEISSNescopus-EISSN
 200    aPIIbPublication Item Identifier (PII)cPIIescopus-PII,sd-PII
-200    aPMIDbPubMed identifikátor#PubMed identifikátor#PubMed IdentifiercPMIDescopus-PMID,clwos-PMID,clccc-PMID
+200    aPMIDbPubMed identifikátor#PubMed identifikátor#PubMed IdentifiercPMIDescopus-PMID,clwos-PMID,clccc-PMID,clmedline-PMID
 200    aSRCTITLEbNázov zdrojového dokumentu#Název zdrojového dokumentu#Source TitlecSRCTITLEescopus-SRCTITLE
 200    aREFbReferencie#Reference#ReferencescREFescopus-REF,sd-REF
 200    aDZSDIbDruh zdroja#Druh zdroje#Source typec1031esd-SRCTYPE
@@ -544,43 +551,43 @@
 200    aEBSCOLIMTIbNázov#Název#TitlecEBSCOTIeebscosearch-TI
 200    aEBSCOLIMFT1bDostupné v Library Collection#Dostupné v Library Collection#Available in Library CollectioncEBSCOFT1eebscosearch-FT1
 200    aEBSCOLIMLA99bJazyk#Jazyk#Languageeebscosearch-LA99
-002    ---
-002    --------------------- THOMSON ------------------
-002    ---
-002    ----------------- WEB OF SCIENCE ---------------
-200    aDDWOSbDruh dokumentu#Druh dokumentu#Document typec1031,NCewos-DT
-200    aLANGWOSbJazyk dokumentu#Jazyk dokumentu#Languagec54,NCewos-LA
-200    aRIDWOSbID výskumníka#ID výzkumníka#Researcher IDcRIDWOSewos-RID
-200    aADWOSbAdresa#Adresa#AddresscADWOSewos-AD,clwos-AD,clccc-AD
-200    aOGWOSbNázov organizácie - rozšírené#Název organizace - rozšířené#Organization - EnhancedcOGWOSewos-OG,clwos-OG,clccc-OG
-200    aOOWOSbNázov organizácie#Název organizace#OrganizationcOOWOSewos-OO,clwos-OO,clccc-OO
-200    aUTWOSbUTWOS(AN)#UTWOS(AN)#UTWOS(Accession Number)cUTWOS#NPewos-UT,woscit-UT,wokid-UT,clwos-UT,clccc-UT
-210    aFLDSETWOScTITLEcAUTHORcSOURCEcGcRIDWOScADWOScOGWOScOOWOScDOIcUTWOS
-220    aFLDSETWOSdDATEdDDWOSdLANGWOS
-210    aFLDSETWOKIDcUTWOS
-002    ---------------- CURRENT CONTENTS --------------
-200    aDDCCCbDruh dokumentu#Druh dokumentu#Document typec1031,NCeccc-DT
-200    aLANGCCCbJazyk dokumentu#Jazyk dokumentu#Languagec54,NCeccc-LA
-210    aFLDSETCCCcTITLEcAUTHORcSUBJECTcSOURCEcG
-220    aFLDSETCCCdDATEdDDCCCdLANGCCC
-002    --------------------- CLARIVATE WOS ------------------
-200    aCLWOSAIbAutor WoS ResearcherID alebo ORCID#Autor WoS ResearcherID nebo ORCID#Author Identifiers (WoS ResearcherID or ORCID)eclwos-AI,clccc-AI
+002    --------------------- CLARIVATE WOS and CCC ------------------
+200    aCLWOSADbAdresa#Adresa#Addresseclwos-AD,clccc-AD,clmedline-AD
+200    aCLWOSAIbAutor WoS ResearcherID alebo ORCID#Autor WoS ResearcherID nebo ORCID#Author Identifiers (WoS ResearcherID or ORCID)eclwos-AI,clccc-AI,clmedline-AI
 200    aCLWOSCIbMesto#Město#Cityeclwos-CI,clccc-CI
-200    aCLWOSDOPbDátum zverejnenia RRRR-MM-DD#Datum zveřejnění RRRR-MM-DD#Date of Publication YYYY-MM-DDeclwos-DOP,clccc-DOP
+200    aCLWOSDISbDisciplineeclccc-DIS
+200    aCLWOSDOPbDátum zverejnenia RRRR-MM-DD#Datum zveřejnění RRRR-MM-DD#Date of Publication YYYY-MM-DDeclwos-DOP,clmedline-PD
 200    aCLWOSEDbMeno editora#Jméno editora#Editor Nameeclwos-ED,clccc-ED
-200    aCLWOSFDbPodrobnosti o financovaní (granty)#Podrobnosti o financování (granty)#Funding Details (grants)eclwos-FD,clccc-FD
+200    aCLWOSFDbPodrobnosti o financovaní (granty)#Podrobnosti o financování (granty)#Funding Details (grants)eclwos-FD,clmedline-GI
+200    aCLWOSFGbČíslo grantu#Číslo grantu#Grant Numbereclwos-FG
 200    aCLWOSGNBČíslo grantu#Číslo grantu#Grant Numbereclwos-GN,clccc-GN
 200    aCLWOSFObFinanční agentura#Finančná agentúra#Funding Agencyeclwos-FO,clccc-FO
 200    aCLWOSFTbFinancovanie - text#Financování - text#Funding Texteclwos-FT,clccc-FT
-200    aCLWOSFPYbFinálny rok vydania#Finální rok vydání#Final publication yeareclwos-FPY,clccc-FPY
-200    aCLWOSGPbAutor - skupina#Autor - skupina#Group Authoreclwos-GP,clccc-GP
+200    aCLWOSFPYbFinálny rok vydania#Finální rok vydání#Final publication yeareclwos-FPY
+200    aCLWOSGPbAutor - skupina#Autor - skupina#Group Authoreclwos-GP,clccc-GP,clmedline-GP
+200    aCLWOSICbIdentifikačné kódy#Identifikační kódy#Identifying Codeseclmedline-IC
+200    aCLWOSMTbMeSH Major Topiceclmedline-MT
+200    aCLWOSNLbNLM IDeclmedline-NL
+200    aCLWOSOGbNázov organizácie - rozšírené#Název organizace - rozšířené#Organization - Enhancedeclwos-OG,clccc-OG
+200    aCLWOSOObNázov organizácie#Název organizace#Organizationeclwos-OO
 200    aCLWOSPSbProvincia / Štát#Provincie / Stát#Province / Stateeclwos-PS,clccc-PS
-200    aCLWOSSObNázov publikácie#Název publikace#Publication Nameeclwos-SO,clccc-SO
-200    aCLWOSSUbVýskumná oblasť#Oblast výzkumu#Research Areaeclwos-SU,clccc-SU
-200    aCLWOSTSbTéma#Téma#Topiceclwos-TS,clccc-TS
-200    aCLWOSWCbKategória WoS#Kategorie WoS#WoS Categoryeclwos-WC,clccc-WC
-210    aFLDSETCLWOScTITLEcABcADWOScANYcCLWOSAIcAUTHORcCONFcCLWOSCIcCOUNTRYcDOIcCLWOSDOPcCLWOSEDcCLWOSFDcCLWOSGNcCLWOSFOcCLWOSFTcCLWOSFPYcCLWOSGPcISBNISSNcA150cOGWOScOOWOScPMIDcCLWOSPScPUBLcDATEcCLWOSSOcCLWOSSUcCLWOSTScUTWOScCLWOSWC
-210    aFLDSETCLWOSCITcUTWOS
+200    aCLWOSRNbCAS Registry Numbereclmedline-RN
+200    aCLWOSRObRecord Ownereclmedline-RO
+200    aCLWOSSAbAutor - adresa ulica#Autor - adresa ulice#Author - Street Addresseclwos-SA,clccc-SA
+200    aCLWOSSGbSuborganizationeclwos-SG,clccc-SG
+200    aCLWOSSObNázov publikácie#Název publikace#Publication Nameeclwos-SO,clccc-SO,clmedline-SO
+200    aCLWOSSUbVýskumná oblasť#Oblast výzkumu#Research Areaeclwos-SU,clccc-SU,clmedline-SU
+200    aCLWOSWCbKategória WoS#Kategorie WoS#WoS Categoryeclwos-WC
+200    aCLWOSUTbUTWOS(AN)#UTWOS(AN)#UTWOS(Accession Number)#NPeclwos-UT,clccc-UT
+002    - pro externi zdroje vyhledavani pres linky ZF a cislo indexu
+200    a1013bAutor#Autor#Authorescopus-AUTH,sd-AUTHORS,ebscosearch-AU,clwos-AU,clccc-AU
+200    a1018bVydavateľ#Nakladatel#Publisher#Verlegerescopus-PUBLISHER,clwos-PUBL
+200    a2475bPredmet (kľúčové slovo)##Subjecteescopus-KEY,sd-KEYWORDS,ebscosearch-SU,clwos-TS,clccc-TS,clmedline-TS
+002    -
+210    aFLDSETCLWOScTITLEcABScCLWOSADcANYcCLWOSAIcCLWOSAKcAUTHORcCONFcCLWOSCIcCOUNTRYcDOIcCLWOSDOPcCLWOSEDcCLWOSFDcCLWOSFGcCLWOSGNcCLWOSFOcCLWOSFTcCLWOSFPYcCLWOSGPcISBNISSNcA150cCLWOSOGcCLWOSOOcPMIDcCLWOSPScPUBLcDATEcCLWOSSAcCLWOSSGcCLWOSSOcCLWOSSUcSUBJECTcCLWOSUTcCLWOSWC
+210    aFLDSETCLWOSCITcCLWOSUT
+210    aFLDSETCLCCCcTITLEcABcCLWOSADcCLWOSAIcAUTHORcCLWOSCIcCOUNTRYcCLWOSDIScCLWOSEDcCLWOSGNcCLWOSFOcCLWOSFTcCLWOSGPcISBNISSNcCLWOSOGcPMIDcCLWOSPScDATEcCLWOSSAcCLWOSSGcCLWOSSOcCLWOSSUcSUBJECTcCLWOSUT
+210    aFLDSETCLMEDLINEcTITLEcAUTHORcSUBJECTcISBNISSNcS606cDATEcPMIDcCLWOSADcCLWOSAIcCLWOSDOPcCLWOSFDcCLWOSGPcCLWOSICcCLWOSMTcCLWOSNLcCLWOSRNcCLWOSROcCLWOSSOcCLWOSSU
 ###
 # @id UnTablesd BASE_IPAC2_FLDDATA_DATE
 002    25.08.16 ln; aktualizace BASE_IPAC2_FLDDATA_DATE
@@ -2615,7 +2622,7 @@
 100    aX2bapi.clarivate.com::GET:httpscClarivatexLICENCED
 200    aclwosbClarivate Web of SciencekSORTCLWOSr1nFLDSETCLWOSmdefault-TF_EXT_X1oH,FS_SERVICE-CLWOS_EXP,FS_MSG1-CLWOS_HEADER,FS_MSG2-CLWOS_EXP_SEARCH,FS_XML2MARC-IPAC2_XMLPARSE_CLWOS,FS_FILTER-FILTER_CLARIVATE_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
 200    aclwoscitbClarivate Web of Science - Citing Articlesr1nFLDSETCLWOSCITmdefault-TF_EXT_X1oH,FS_SERVICE-CLWOS_CIT,FS_MSG1-CLWOS_HEADER,FS_MSG2-CLWOS_CIT_SEARCH,FS_XML2MARC-IPAC2_XMLPARSE_CLWOS,FS_FILTER-FILTER_CLARIVATE_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
-200    aclcccbClarivate Current Contents ConnectkSORTCLWOSr1nFLDSETCLWOSmdefault-TF_EXT_X1oH,FS_SERVICE-CLWOS_EXP,FS_MSG1-CLWOS_HEADER,FS_MSG2-CLCCC_SEARCH,FS_XML2MARC-IPAC2_XMLPARSE_CLWOS,FS_FILTER-FILTER_CLARIVATE_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
+200    aclcccbClarivate Current Contents ConnectkSORTCLWOSr1nFLDSETCLCCCmdefault-TF_EXT_X1oH,FS_SERVICE-CLWOS_EXP,FS_MSG1-CLWOS_HEADER,FS_MSG2-CLCCC_SEARCH,FS_XML2MARC-IPAC2_XMLPARSE_CLWOS,FS_FILTER-FILTER_CLARIVATE_WOS,GEN856-THOMSON1-THOMSON2,EZPROXY
 ###
 # @id UnTablesd BASE_IPAC2_SERVER_ELSEVIER
 002    12.01.16 jk; pridan FS_FILTER

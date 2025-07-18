@@ -1,4 +1,5 @@
 /**
+ * 02.05.24 on; podpora pro editaci ctenaru
  * 30.06.23 on; vetsi font 
  * 14.02.20 on; csIsM21
  * 23.01.20 on; zruseno volani getTagList
@@ -27,6 +28,7 @@ Ext.apply(epca, {
     UnFormat: {
         A: 'A', //Authorities
         B: 'B', //Bibliographic
+        U: 'U', //User  // 02.05.24 on;
         //C: 'C', //Classification - NOT IMPLEMENT
         //H: 'H', //Holdings - NOT IMPLEMENT
         /*values : {
@@ -43,6 +45,8 @@ Ext.apply(epca, {
                     return epca.Config.User.dbAuthFmt + '_';
                 case this.B:
                     return epca.Config.User.dbCatFmt + '_';
+                case this.U:
+                    return 'ISU' + '_';
                 default:
                     // 03.09.15 on; zmena defaultu
                     //return undefined + '_';
@@ -58,6 +62,9 @@ Ext.apply(epca, {
                     return epca.Config.User.dbAuth;
                 case this.B:
                     return epca.Config.User.dbCat;
+                    // 02.05.24 on; 
+                case this.U:
+                    return epca.Config.User.dbUser;
                 default:
                     // 03.09.15 on; zmena defaultu
                     //return undefined;
@@ -73,6 +80,9 @@ Ext.apply(epca, {
                     return epca.Config.User.displayFmtAuth;
                 case epca.Config.User.dbCat:
                     return epca.Config.User.displayFmt;
+                    // 02.05.24 on; 
+                case epca.Config.User.dbUser:
+                    return epca.Config.User.displayFmtUser;
                 default:
                     return epca.Config.User.displayFmt;
             }
@@ -377,7 +387,7 @@ Ext.apply(epca, {
      * @param {Object} icon ikona
      */
     notify: function(message, title, icon) {
-        message = message.replace('\n', "<br /><br />");
+        message = message.replace('\n', "<br><br>");
         new epca.window.Notification({
             iconCls: icon,
             title: title,
