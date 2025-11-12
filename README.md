@@ -9,7 +9,7 @@ Historicky byl ASEP vyvíjený na komerční platformě ARL, poskytované česko
 V roce 2024 přešel datový repozitář ASEP na současný model vývoje, který propojuje původní část systému ARL poskytnutou firmou Cosmotron jako shareware, s otevřeným zdrojovým kódem pod kterým jsou uvolňovány části týkající se pouze datového repozitáře (to je kód v tomto GitHub repozitáři).  
 
 Celý ekosystém je vhodný např. v  těch případech, kdy je zájem provozovatele o užší propojení vědeckých dat a publikačních výsledků a o možnost vykazování v rámci národního systému pro evidenci a hodnocení vědy.  
-Tento Github repozitář obsahuje pouze části vyvinuté v open source režimu. Pokud máte zájem o instanci repozitáře ASEP, [možnosti zprovoznění jsou k dispozici zde] 
+Tento Github repozitář obsahuje pouze části vyvinuté v open source režimu. Pokud máte zájem o instanci repozitáře ASEP, [možnosti zprovoznění jsou k dispozici zde](https://github.com/LIBCAS/ASEP-ARL/wiki/Mo%C5%BEnosti-provozov%C3%A1n%C3%AD-repozit%C3%A1%C5%99e-ASEP) 
 
 ### Vlastnosti systému ASEP/ARL
 
@@ -46,7 +46,7 @@ In 2024, the ASEP data repository transitioned to the current development model 
 
 The ASEP solution is especially useful for cases, when you need to have a deeper connection between scientific publication and the scientific data it was based on, or if you want an easy option for reporting information for the National Evaluation to RIV. 
 
-This Github repository contains only the open source parts of the whole project. For options on how to get your own ASEP instance, see [this page]. 
+This Github repository contains only the open source parts of the whole project. For options on how to get your own ASEP instance, see [this page](https://github.com/LIBCAS/ASEP-ARL/wiki/Mo%C5%BEnosti-provozov%C3%A1n%C3%AD-repozit%C3%A1%C5%99e-ASEP). 
 
 ### Features of the ASEP Repository system
 
