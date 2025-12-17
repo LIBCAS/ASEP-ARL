@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-07-07 12:37:18">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-25 15:32:01">
 <Class name="User.CavUnEpca">
 <Description><![CDATA[
 <pre>
+25.11.25 jk; admin kontext pro dui datacite
+20.11.25 ln; zprovoznena bibliometrie pro analytika
+18.11.25 jk; datacite DOI vraci chybu zpracovani
+13.11.25 mk; TfVazbyDataset ak je rovnaky prefix ako predosly tak ho nepridat
+03.11.25 mk; zalozene fmtC96Link
+31.10.25 jk; handle muze byt prazdny
+30.10.25 mk; BibcitSzfAuthors ak 970b nie je DATA a kod role je 070 tak nzobrazit preklad role
+17.10.25 jk; v Cav formulari je moznost zakazat prideleni DOI
+20.10.25 mk; TfVazbyDataset riesenie prefixov linkov.
+06.10.25 mk; v bloku BibcitSzfAuthors zvyraznenie u roli zrusene
+26.09.25 ln; schvalovani autor->zprac->super
+17.09.25 mk; v blokoch BibcitSzfAuthors a getDisplayFormatShort 70*4 kod autority na popis z UT_RELATOR_CODE_DMP2
+26.08.25 mk; prerobene C95 u preprintu na vyhladanie C95 u postprintu blok getBibcitCAV
+14.08.25 mk; zfDataLinkTab yobrayenie pre DFLT_DATA a DFLT_DATA_U
+14.08.25 ln; vylepsena normalizace pro index zaood
+12.08.25 mk; modifikacia hlavicka ZF druh dokumentu data rozdelenie na xdata1 a xdata2, prehnane cez pomocnu premennu sDruhDokX
+12.08.25 mk; index dk pridane xdata1 a xdata2
+11.08.25 mk; zfDataLink856 uprava pre vsetky formulare zacinajuce DFLT_DATA a prefix U272 
+11.08.25 mk; getDisplayFormatShort pre DATA nezobrazovat Web vysledku
+29.07.25 mk; nesmie sa vymazat ak je C95 link
+27.05.25 jk; url na licenci se ziska z metody pro datacite
 06.06.25 rn; doplnené tri stĺpce
 03.06.25 mk; pridany novy index link na C95 zc95 
 16.05.25 mk; index issnsx pre SZP a bez 969f DIS  issnx011a a 011e
@@ -82,7 +103,7 @@ Publikacna cinnost CAV]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
 <ProcedureBlock>1</ProcedureBlock>
 <Super>User.DataTable</Super>
-<TimeChanged>67393,45160.560411166</TimeChanged>
+<TimeChanged>67534,53025.517240935</TimeChanged>
 <TimeCreated>59575,83515.670797</TimeCreated>
 
 <Parameter name="INDEXPARAMS">
@@ -149,6 +170,7 @@ Toto je zasah do systemu security - nieco ako "na kolene" zbuchane
 rozsirenie security. sice je to natvrdo ale je ale pomerne jednoduche 
 a splnuje ucel. Z terminalu je mozne obist preskocenim allowSave
 
+25.11.25 jk; admin kontext pro dui datacite
 22.01.18 tt; provedena dalsi uprava identifikace superuzivatele
 06.11.17 tt; pridana uzivatelka janderova
 11.05.16 tt; pridana kontrola na superuzivatele userIsAdmin 
@@ -166,6 +188,9 @@ a splnuje ucel. Z terminalu je mozne obist preskocenim allowSave
   ; teda pesimisticky pristup
   ; 11.08.20 tt; pridano defaultni nastaveni bUserIsAdmin
   s bUserIsAdmin=0
+  
+  ; 25.11.25 jk; admin kontext pro dui datacite
+  if $g(sUser)="dui_datacite" { q 1 }
   
   s sUser1=##class(i2.ws).getUserName()
   if (sUser1="") 
@@ -232,6 +257,7 @@ specialnych pripadoch.
 Navrat:
  pri chybe "|ERR..." jinak prazdne nebo nejake info (INF, WARN, text)
 
+17.10.25 jk; v Cav formulari je moznost zakazat prideleni DOI
 13.03.25 jk; datacite DOI
 27.02.25 jk; zpracovani handlenet pres DUI
 11.02.25 mk; zapnuta kontrola na duplicitu ISSN v AllowSaveEx 
@@ -748,14 +774,23 @@ Navrat:
     }
   }
   
-  ; 13.03.25 jk; datacite DOI
-  s sC76u=$$$getTagX(.handle,"C76u") ; navazane soubory
-  if (sDruhDok="DATA")&&(s969fUP'="D")&&(s969fUP'="N")&&(sC76u'="")&&(sT001'="new") {
-    ; TODO zbyva doresit zmena draf -> published
+  ; 18.11.25 jk; datacite DOI vraci chybu zpracovani
+  ; 17.10.25 jk; v Cav formulari je moznost zakazat prideleni DOI
+  ; podminky prideleni DOI
+  ; - použil se formulář DFLT_DATA
+  ; - druh dokumentu je DATA (dataset)
+  ; - 969f je prazdne (je odeslano do IPACu)
+  ; - neni prideleno DOI pres jineho poskytovatele (C76 prazdne)
+  ; - ve formulari neni zakazano prideleni DOI (017$0'=1)
+  s sC76=$$$getTagX(.handle,"C76")
+  s s0170=$$$getTagX(.handle,"0170")
+  if (sTC99d="DFLT_DATA")&&(sDruhDok="DATA")&&(s969fUP="")&&(sC76="")&&(s0170'="1") {
     ; datacite doi se nikdy nemaze, URL link muze vest na zaznam nebo na stranku smazanych zaznamu
-    s doi=##class(util.ie.datacite).getDoiFromHandle(ipref,.handle,.bDataCiteDoi) 
-    if doi="" { d ##class(util.ie.datacite).process(.handle,"create","publish") }                                 ; generujeme nove DOI
-    elseif bDataCiteDoi && bIsRestored { d ##class(util.ie.datacite).process(.handle,"updateUrl","persistent") }  ; obnoveni zaznamu z chronologie
+    s retDOI=""
+    s doi=##class(util.ie.datacite).getDoiFromHandle(ipref,.handle,.bDataCiteDoi)
+    if doi="" { s retDOI=##class(util.ie.datacite).process(.handle,"create","publish") }                                    ; generujeme nove DOI
+    elseif bDataCiteDoi && bIsRestored { s retDOI=##class(util.ie.datacite).process(.handle,"updateUrl","","persistent") }  ; obnoveni zaznamu z chronologie
+    q:retDOI'="" "|"_retDOI
   }
   
   ; 12.11.13 tt; pridano odescapovani 856 pri uklozeni zaznamu - problem s escapovanim z ipac1
@@ -2766,7 +2801,8 @@ C63    $$3cav_un_auth*0291603$$aAMU$$bAkademie múzických umění v Praze$$eSK$
 <Description><![CDATA[
 <pre> Parametry: pPar - parametry oddelene ,. Hodnoty:
                      AEditor - nezkracuji se jmena u editoru
-  
+
+31.10.25 jk; handle muze byt prazdny  
 27.03.25 ln; odkazy na nova analytika
 02.12.21 tt; pridany parametry do metody, aby se zobrazil link na parametr AutorLink 
 09.10.20 tt; pridane prijmeni jako velka pismena, jde to znastavenim zrusit
@@ -2798,6 +2834,18 @@ C63    $$3cav_un_auth*0291603$$aAMU$$bAkademie múzických umění v Praze$$eSK$
   s:($f(","_pPar_",",","_"AutCarka"_",")) sOdd=", "
   ; 09.10.20 tt; pridane prijmeni jako velka pismena, jde to znastavenim zrusit
   s:('$f(","_pPar_",",","_"AutMaleP"_",")) sVelP="U"
+  
+  ; 17.09.25 mk 
+  s sClass=$$$HandleClass(handle)     ; ziskani tridy
+  s ipref=$$$Class2Ipref(sClass)      ; Ipref (instalacni prefix)
+
+  ; 31.10.25 jk; handle muze byt prazdny
+  ; 30.10.25 mk
+  s sDruhDok=""
+  if $d(handle)>=10 {
+    s sDruhDok=##class(MARC).getTagX(.handle,"970b")
+    s sDruhDok=$e(sDruhDok,1,4)
+  }
 
   s nPocetAuth=0
   s lang=1 
@@ -2844,7 +2892,11 @@ C63    $$3cav_un_auth*0291603$$aAMU$$bAkademie múzických umění v Praze$$eSK$
     s sRes=sRes_..BibcitSzfCheckLastAut(sRes700b,.nLast,", ")
       
     ; 11.10.07 mk
-    if ((sRes7004="340") && (sRes'="")) s sRes=sRes_" (ed.)" ; 11.10.07 mk
+    ; 17.09.25 mk
+    if nStyle=""
+    {
+      if ((sRes7004="340") && (sRes'="")) s sRes=sRes_" (ed.)" ; 11.10.07 mk
+    }
    
     if (($f(","_pPar_",",","_"AutorLink"_","))&&(sRes700p'="")&&(sRes7003'=""))
     {      /// 02.12.21 tt; pridany parametry do metody, aby se zobrazil link na parametr AutorLink
@@ -2855,6 +2907,19 @@ C63    $$3cav_un_auth*0291603$$aAMU$$bAkademie múzických umění v Praze$$eSK$
 
     ; 27.01.11 tt; zvyrazneni a potrzeni domacich autoru + pridani "G"
     d:(nStyle) ..BibcitSzfAuthorsG(.sRes,.bPouzG,bExG,sRes700z,sRes700p)
+    
+    ; 17.09.25 mk
+    if nStyle="2"
+    {
+      if (sDruhDok="DATA")
+      {
+      } 
+      else 
+      {  
+        if (sRes7004="070") s sRes7004="" ; 30.10.25 mk
+      }
+      if ((sRes7004'="") && (sRes'="")) s sRes=sRes_" ./b.("_##class(User.Util).sXlate("UT_RELATOR_CODE_DMP",sRes7004,"N",ipref,,$g(handle("tmp","modif_TF","language"),"-1"))_").b."
+    }
       
     //if ((sRes700p'="") && (nStyle)) {s sRes=sRes_..BibcitSzfCheckLast(sRes700b,.nLast,", ",2)}
     //else {s sRes=sRes_..BibcitSzfCheckLast(sRes700b,.nLast,", ")}      
@@ -2907,7 +2972,12 @@ C63    $$3cav_un_auth*0291603$$aAMU$$bAkademie múzických umění v Praze$$eSK$
     s sRes7014=$$$getSubTagStr(sRes701Part,"4")
     s sRes7013=$$$getSubTagStr(sRes701Part,"3")
 
-    if ((sRes7014="340") && (sResXX'="")) s sResXX=sResXX_" (ed.)" ; 11.10.07 mk
+    ; 17.09.25 mk
+    if nStyle=""
+    {
+      if ((sRes7014="340") && (sResXX'="")) s sResXX=sResXX_" (ed.)" ; 11.10.07 mk
+    }
+    
     /// 02.12.21 tt; pridany parametry do metody, aby se zobrazil link na parametr AutorLink
     if (($f(","_pPar_",",","_"AutorLink"_","))&&(sRes701p'="")&&(sRes7013'=""))
     {
@@ -2920,6 +2990,20 @@ C63    $$3cav_un_auth*0291603$$aAMU$$bAkademie múzických umění v Praze$$eSK$
     ; 27.01.11 tt; zvyrazneni a potrzeni domacich autoru + pridani "G"
     d:(nStyle) ..BibcitSzfAuthorsG(.sResXX,.bPouzG,bExG,sRes701z,sRes701p,pPar)
     
+    ; 17.09.25 mk
+    if nStyle="2"
+    {
+      ;if (sDruhDok'="DATA") && (sRes7014="070") s sRes7014="" ; 30.10.25 mk
+      if (sDruhDok="DATA")
+      {
+      } 
+      else 
+      {  
+        if (sRes7014="070") s sRes7014="" ; 30.10.25 mk
+      }
+
+      if ((sRes7014'="") && (sResXX'="")) s sResXX=sResXX_" ./b.("_##class(User.Util).sXlate("UT_RELATOR_CODE_DMP",sRes7014,"N",ipref,,$g(handle("tmp","modif_TF","language"),"-1"))_").b."
+    }
      
     s nLast=1
     if (sResX'="")
@@ -2971,7 +3055,25 @@ C63    $$3cav_un_auth*0291603$$aAMU$$bAkademie múzických umění v Praze$$eSK$
       //              brat prijmeni + 1. pismeno z jmena
       if ((sRes702b'="")&&($f(","_pPar_",",","_"AEditor"_","))) { s sResE=sResE_", "_sRes702b_"."}
       elseif(sRes702b'="") {s sResE=sResE_", "_$e(sRes702b,1,1)_"."}
-      s:(sRes7024="340") sResE=sResE_" (ed.)"
+      ; 17.09.25 mk
+      if nStyle="2"
+      {
+        ;if (sDruhDok'="DATA") && (sRes7024="070") s sRes7024="" ; 30.10.25 mk
+        if (sDruhDok="DATA")
+        {
+        } 
+        else 
+        {  
+          if (sRes7024="070") s sRes7024="" ; 30.10.25 mk
+        }
+      
+        
+        if ((sRes7024'="") && (sResE'="")) s sResE=sResE_" ./b.("_##class(User.Util).sXlate("UT_RELATOR_CODE_DMP",sRes7024,"N",ipref,,$g(handle("tmp","modif_TF","language"),"-1"))_").b."
+      }
+      if nStyle=""
+      {
+        s:(sRes7024="340") sResE=sResE_" (ed.)"
+      }
     }
     
     // editori
@@ -3026,7 +3128,28 @@ C63    $$3cav_un_auth*0291603$$aAMU$$bAkademie múzických umění v Praze$$eSK$
    
       s sT7024=$$$getSubTagStr(sT702Part,"4") 
       ;if ((sT7024="340") && (sT702a'="")) s sT702=sT702_" (ed.)"
-      if ((sT7024="340") && (sT702a'="")) s sT702Partnew=sT702Partnew_" (ed.)" ; 11.10.07 mk
+      ; 17.09.25 mk
+      if nStyle=""
+      {
+        if ((sT7024="340") && (sT702a'="")) s sT702Partnew=sT702Partnew_" (ed.)" ; 11.10.07 mk
+      }
+      if nStyle="2"
+      {
+        ;if (sDruhDok'="DATA") && (sT7024="070") s sT7024="" ; 30.10.25 mk
+        
+        if (sDruhDok="DATA")
+        {
+        } 
+        else 
+        {  
+          if (sT7024="070") s sT7024="" ; 30.10.25 mk
+        }
+  
+        
+        if ((sT7024'="") && (sT702Partnew'="")) s sT702Partnew=sT702Partnew_" ./b.("_##class(User.Util).sXlate("UT_RELATOR_CODE_DMP",sT7024,"N",ipref,,$g(handle("tmp","modif_TF","language"),"-1"))_").b."
+      }
+      
+      
       
       s sT702z=$$$getSubTagStr(sT702Part,"z")   
       ;if sT702p'=""  s sT702Partnew=".u."_sT702Partnew_"./u."  ; pridanie podciarknutia
@@ -3762,6 +3885,11 @@ Parametry:
 <FormalSpec>handle:%Library.Binary,nLink:%Library.Integer=1,pZkrac=0,pPar=""</FormalSpec>
 <Implementation><![CDATA[
   s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  ;    s sRes70x=..BibcitSzfAuthors(.handle,"",2,(",AutMaleP,"_pPar))    //70x zakladne formaty
+
+  
+  
    ; 10.01.25 ln; nespoustet formatXinit pro rest sluzby
    ; 13.01.09 jk; metoda se vola i mimo IPAC2 (v IPAC1), kde neexistuje prostredi IPAC2
    if '##class(rep.zf.tf).bTfBlockRunningFromIpac(.handle) && ($g($$$GETICTX)'="")
@@ -3779,6 +3907,9 @@ Parametry:
    
    s sDruhDok=..getBibcitCAVDD(.handle)
    s nLast=0
+
+
+   ;s sRes70x=..BibcitSzfAuthors(.handle,"",2,(",AutMaleP,"_pPar))    //70x
 
    s sRes=..BibcitSzfAuthors(.handle,,,pPar)           // 70x
    s:(pZkrac'=1) sRes=..BibcitSzfAuthors(.handle,,,"AEditor,"_pPar)           // 70x
@@ -4075,10 +4206,22 @@ Parametry:
       ;s sResC60=..BibcitSzfTagFormat(.handle,"C60","a",", ")
       ;s sRes=sRes_..BibcitSzfCheckLast(sResC60,.nLast)
       
+      ; mk 26.08.25 prerobene C95 u preprintu na vzhladanie C95 u postprintu 
       s sTC95=$$$getTagX(.handle,"C95")
-      if sTC95'="" ; ak je postprint
+      s term=" "_"cav_un_epca*"_sT001,id="",sTC953=""
+      s id=$o(^$$$MarcIndexG(ipref_"UnEpca","zc95",term,id))
+      if id'=""
       {
-      s sTC953=$$$getSubTagStr(sTC95,"3")  
+        if ##class(User.MARC).getDATAX(.ver,id)
+        {
+          s sTC953="cav_un_epca*"_##class(User.MARC).getT001(id) 
+        }
+      }
+      ;;;;;
+      
+      if sTC953'="" ; ak je postprint
+      {
+        ;s sTC953=$$$getSubTagStr(sTC95,"3")  
         if ##class(User.MARC).readLX(.handlepp,sTC953)
         {
           ; ak je DOI zobrazit 017 ak nie tak C60 
@@ -4108,8 +4251,7 @@ Parametry:
       }
    }   
    
-   
-   
+    
    /*
    if (sDruhDok="E")
    { s sRes215c=$$$getTagX(.handle,"215c") 
@@ -4795,7 +4937,12 @@ parametre:
    // druh dokumentu
    if (sDruhDok'="") 
    {  ; 10.04.12 tt; upraveno zobrazeni druhu
-      s sDruhDokT=##class(User.Util).sXlate("TF_ZPZ",$zcvt(sDruhDok,"L"),"N",ipref,,$g(handle("tmp","modif_TF","language"),"-1"))
+      ; 12.08.25 mk; modifikacia hlavicka ZF druh dokumentu data rozdelenie na xdata1 a xdata2, prehnane cez pomocnu premennu sDruhDokX
+      s sDruhDokX=sDruhDok
+      s:($$$getTagX(.handle,"C99d")="DFLT_DATA") sDruhDokX="XDATA1"
+      s:($$$getTagX(.handle,"C99d")="DFLT_DATA_U") sDruhDokX="XDATA2"
+      s sDruhDokT=##class(User.Util).sXlate("TF_ZPZ",$zcvt(sDruhDokX,"L"),"N",ipref,,$g(handle("tmp","modif_TF","language"),"-1"))
+      ;;;
       s:($$$getTagX(.handle,"C99d")="DFLT_CZ_EPCA_A3") sDruhDokT=$$$strswap(sDruhDokT,"A : Abstrakt",..prekladPrefixuIpac(.handle,"U235",0) )
       ; 03.12.22 tt; upraven zf pro data - verze, vypsana hlavicka a informace o verzich
       ///s:(sDruhDok="DATA") sDruhDokT="<strong>"_$tr(sDruhDokT,":","")_"</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"_..versionZfGetData(.handle,"U244-U245-")
@@ -4828,12 +4975,13 @@ parametre:
    s sRes70x=..BibcitSzfAuthors(.handle,"",2,(",AutMaleP,"_pPar))    //70x
    
    ; 07,07.2025 mk rola prveho autora 
-   if (($$$getTagX(.handle,"C99d")="DFLT_DATA") || ($$$getTagX(.handle,"C99d")="DFLT_CZ_EPCA_DMP"))
-   {
-     s sT70X4=$$$getTagX(.handle,"70*4")
-     s sT70X4=##class(User.Util).sXlate("UT_RELATOR_CODE_DMP",sT70X4,"N",ipref,,$g(handle("tmp","modif_TF","language"),"-1"))
-     if sT70X4'="" s sRes70x=sRes70x_" ("_sT70X4_")"
-   }
+   ; 17.09.25
+   ;if (($$$getTagX(.handle,"C99d")="DFLT_DATA") || ($$$getTagX(.handle,"C99d")="DFLT_CZ_EPCA_DMP"))
+   ;{
+   ;  s sT70X4=$$$getTagX(.handle,"70*4")
+   ;  s sT70X4=##class(User.Util).sXlate("UT_RELATOR_CODE_DMP",sT70X4,"N",ipref,,$g(handle("tmp","modif_TF","language"),"-1"))
+   ;  if sT70X4'="" s sRes70x=sRes70x_" ("_sT70X4_")"
+   ;}
    
    
    if (pTyp="BZNC") 
@@ -5727,10 +5875,13 @@ parametre:
      ; 24.11.06 mk pridany prefix web vysledku
      s sPrekPrefixURL=..prekladPrefixuIpac(.handle,"U266",1)  
      if sResURL1'="" { 
-       if ($g($$$GETICTX)="") { ; vyjimka pro analytika
+       if sDruhDok'="DATA" ; mk 11.08.25 pre DATA nezobrazovat
+       {
+         if ($g($$$GETICTX)="") { ; vyjimka pro analytika
          s sResLink2=sResLink2_"\%newline : "_sPrekPrefixURL_": "_sResURL1
-       } else {
-         s sResLink2=sResLink2_"\n"_sPrekPrefixURL_":"_"\n"_sResURL1
+         } else {
+          s sResLink2=sResLink2_"\n"_sPrekPrefixURL_":"_"\n"_sResURL1
+         }
        }
      }
     
@@ -5841,7 +5992,9 @@ Paremetry: handle - aktulani zpracovavany handle
 <Implementation><![CDATA[
   s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
    ; . prochazeni zaznamu podle .c
-   s sTC99d=$$$getTagX(.handle,"C99d")  
+   s sTC99d=$$$getTagX(.handle,"C99d")
+   s sTC99d=$e(sTC99d,1,9)
+     
    q:(sTC99d'="DFLT_DATA") ""
 
    s idx=##class(i2.dblink).recordIdX(.handle)
@@ -5905,7 +6058,8 @@ Paremetry: handle - aktulani zpracovavany handle
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
    ; . prochazeni zaznamu podle .c
-   s sTC99d=$$$getTagX(.handle,"C99d")  
+   s sTC99d=$$$getTagX(.handle,"C99d")
+   s sTC99d=$e(sTC99d,1,9)
    q:(sTC99d'="DFLT_DATA") ""
 
    s idx=##class(i2.dblink).recordIdX(.handle)
@@ -6030,7 +6184,7 @@ blok do ZF - vytvořeno pro I3 aplikaci
    ; . prochazeni zaznamu podle .c
    s c=0,n856u=1,sRes=""
    s sTC99d=$$$getTagX(.handle,"C99d")  
-   if (sTC99d="DFLT_DATA")
+   if ($e(sTC99d,1,9)="DFLT_DATA")
    {
      d { ; 856u
        s sT856=$$$getTagXC(.handle,"856",.c) ; vsetky citacie
@@ -6046,7 +6200,7 @@ blok do ZF - vytvořeno pro I3 aplikaci
            s sLink=".u.<a href="""_sT856u_""" target=""_blank"" title=""data"_n856u_""">"_"data"_n856u_"</a>./u."
            if (n856u=1)
            {
-             s sPrekPrefix=..prekladPrefixuIpac(.handle,"U164")
+             s sPrekPrefix=..prekladPrefixuIpac(.handle,"U272","1")
              s sRes=sRes_sPrekPrefix_" "_sLink
            }
            else
@@ -6067,6 +6221,7 @@ blok do ZF - vytvořeno pro I3 aplikaci
 <Description>
 blok do ZF - vytvořeno pro I3 aplikaci - licence
 
+27.05.25 jk; url na licenci se ziska z metody pro datacite
 11.09.24 mk; v zfLicence tobraziť vždy keď má licenciu v C81b bez ohľadu na to či má objekty v CS
 24.09.02 mk; pre ZF zakladni + anotace varianta parametra XXX pridanz prefix so strong U166B blok zfLicence
 06.11.17 tt; pridana jazykova verze pro zobrazeni licence
@@ -6077,55 +6232,44 @@ blok do ZF - vytvořeno pro I3 aplikaci - licence
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
   q:$g($$$GETICTX)="" ""
-  
   s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
-   ; . prochazeni zaznamu podle .c
-   s c=0,sRes="",tC81btext=""
-   
-   s SeznamFullT=..getNameFT(.handle)
-   ; 11.09.24 mk v zfLicence tobraziť vždy keď má licenciu v C81b bez ohľadu na to či má objekty v CS
-   ;q:(SeznamFullT="") ""
-   
-   s lang=$$$GETLANGUAGE
-   s tC81b=$$$getTagX(.handle,"C81b")
-   s tC81c=$$$getTagX(.handle,"C81c")
-   //BY-NC-SA (eng)  https://creativecommons.org/licenses/by-nc-sa/4.0/
-   //BY-NC-SA (cze)   https://creativecommons.org/licenses/by-nc-sa/4.0/deed.cs
-   s nameLicence="licenses"
-   s sLinkCz="",tC81btext11=""
-   s:(lang'="3") sLinkCz="deed.cs"
-   if (tC81b'="")
-   {
-     s slc=$replace($zcvt(tC81b,"L")," ","")
-     s slc=$replace(slc,"cc","")
-     s slc=$replace(slc,"-nc4","-nc-sa/4")
-     s slc=$replace(slc,"by4","by-nc-sa/4")
-     s slc=$replace(slc,"by-nc-nd4","by-nc-nd/4")
-     s slc=$replace(slc,"by-nc-sa4","by-nc-sa/4")
-     s slc=$replace(slc,"01.0","zero/1.0")
-     s:$f(slc,"zero/1.0") nameLicence="publicdomain"          
-     
-     s ret="<a href=""https://creativecommons.org/"_nameLicence_"/"_slc_"/"_sLinkCz_""" rel=""external"" target=""_blank"" title="""_tC81b_""">"_tC81b_"</a>"
+  s lang=$$$GETLANGUAGE
+  s sRes=""
+  d ##class(util.ie.datacite).getLicense(.handle,.obj)
+  
+  s tC81btext=""
+  s lang=$$$GETLANGUAGE
+  s tC81b=$$$getTagX(.handle,"C81b")
+  s tC81c=$$$getTagX(.handle,"C81c")
+  s sC76=$$$getTagX(.handle,"C76")  ; DOI
+  s page="/deed.cs"
+  s:lang=3 page="/deed.en"
+ 
+  if (tC81b'="") {
+    s tC81btext11=""
+    s url=obj.rightsUri
+    s url=$replace(url,"/legalcode",page)     
+    s link="<a href="""_url_""" rel=""external"" target=""_blank"" title="""_tC81b_""">"_tC81b_"</a>"
           
-     s tC81btext11=" - "_##class(User.Util).sXlate("UT_ASEP_LICENCECC",tC81b,"N",ipref,,lang)
-     s:($tr(tC81btext11," -","")="") tC81btext11=""
-     s tC81btext=ret_tC81btext11
+    s tC81btext11=" - "_##class(User.Util).sXlate("UT_ASEP_LICENCECC",tC81b,"N",ipref,,lang)
+    s:($tr(tC81btext11," -","")="") tC81btext11=""
+    s tC81btext=link_tC81btext11
      
-   }
-   s:(tC81b="JINA") tC81btext=..prekladPrefixuIpac(.handle,"U165")
-   s sC76=$$$getTagX(.handle,"C76")
-   s:($f(tC81c,"http")||$f(tC81c,"www")) tC81c="<a href="""_tC81c_""" rel=""external"" target=""_blank"" title="""_tC81c_""">"_tC81c_"</a>"
-   s:((sC76="")&&(tC81c'="")&&(tC81b="")) tC81btext=tC81c
-   s sPrekPrefix=..prekladPrefixuIpac(.handle,"U166")
-   ; 24.09.02 mk pre ZF zakladni + anotace varianta parametra XXX pridanz prefix so strong U166B 
-   s sPrekPrefixB=..prekladPrefixuIpac(.handle,"U166B")
-   s:((tC81btext'="")&&('$f("-"_params_"-","-ODSAZ-"))) sRes=sRes_sPrekPrefix_":"_tC81btext
-   s:((tC81btext'="")&&($f("-"_params_"-","-ODSAZ-"))) sRes=sRes_"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>"_sPrekPrefix_":</strong> "_tC81btext
-   s:((tC81btext'="")&&($f("-"_params_"-","-XXX-"))) sRes=":"_sPrekPrefixB_""_tC81btext
+  }
+  
+  s:(tC81b="JINA") tC81btext=..prekladPrefixuIpac(.handle,"U165")
+  s:($f(tC81c,"http")||$f(tC81c,"www")) tC81c="<a href="""_tC81c_""" rel=""external"" target=""_blank"" title="""_tC81c_""">"_tC81c_"</a>"
+  s:((sC76="")&&(tC81c'="")&&(tC81b="")) tC81btext=tC81c
+  s sPrekPrefix=..prekladPrefixuIpac(.handle,"U166")
+  ; 24.09.02 mk pre ZF zakladni + anotace varianta parametra XXX pridanz prefix so strong U166B 
+  s sPrekPrefixB=..prekladPrefixuIpac(.handle,"U166B")
+  s:((tC81btext'="")&&('$f("-"_params_"-","-ODSAZ-"))) sRes=sRes_sPrekPrefix_":"_tC81btext
+  s:((tC81btext'="")&&($f("-"_params_"-","-ODSAZ-"))) sRes=sRes_"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>"_sPrekPrefix_":</strong> "_tC81btext
+  s:((tC81btext'="")&&($f("-"_params_"-","-XXX-"))) sRes=":"_sPrekPrefixB_""_tC81btext
    
-   s:(($f("-"_params_"-","-PRAZDNNYPREF-"))&&(sRes'="")) sRes=" : "_sRes
+  s:(($f("-"_params_"-","-PRAZDNNYPREF-"))&&(sRes'="")) sRes=" : "_sRes
 
-   q sRes
+  q sRes
 ]]></Implementation>
 </Method>
 
@@ -6265,6 +6409,26 @@ params - oddelovac "-"
   }
   
   q t017_prazdPref_sPrefix_tC60a
+]]></Implementation>
+</Method>
+
+<Method name="fmtC96Link">
+<Description>
+03.11.25 mk; zalozene fmtC96Link</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary]]></FormalSpec>
+<PublicList>gnDEBUG</PublicList>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s tC96u=$$$getTagX(.handle,"C96u")
+  q:(tC96u="") ""
+  s sPrefix=##class(rep.zf.tf).prefix(.handle,"U275")_": "
+  s sPrefix="<strong>"_sPrefix_"</strong>"
+  
+  s tC96u=" : \n"_sPrefix_"<a href="""_tC96u_""" target=""_blank"" title=""Handle link"">"_tC96u_"<span></span></a>" 
+  
+  
+  q tC96u
 ]]></Implementation>
 </Method>
 
@@ -7505,6 +7669,8 @@ Tdi - skrateny ZF do EPCA formularov
 <Method name="ixIndexValuesEx">
 <Description><![CDATA[
 <pre>
+26.09.25 ln; schvalovani autor->zprac->super
+12.08.25 mk; index dk pridane xdata1 a xdata2
 22.09.16 tt; ixIndexValuesEx: pridana indexace bez diakritiky
 26.03.16 tt; pridana promenna pro indexaci poskytovatelu, kteri jsou pouziti ve vymazavani 
              RIV C51 a indexace
@@ -7579,6 +7745,14 @@ Tdi - skrateny ZF do EPCA formularov
  s ipref=$$$Class2Ipref(lsClass)      ; Ipref (instalacni prefix)
  s ictx=$zcvt(ipref,"L")
  
+ ; 12.08.25 mk index dk pridane xdata1 a xdata2
+ s tC99d=$$$getTagX(.handle,"c99d")
+ if tC99d="dflt_data" d $$$addIDX("dk","xdata1","b")
+ if tC99d="dflt_data" d $$$addIDX("zpz","xdata1","b")
+ if tC99d="dflt_data_u" d $$$addIDX("dk","xdata2","b")
+ if tC99d="dflt_data_u" d $$$addIDX("zpz","xdata2","b")
+ 
+ 
  s tC51=$$$getTagX(.handle,"c51")
  s tC83=$$$getTagX(.handle,"c83")
  s isDEZ=$g(handle($$$MarcTmpNode,"isDEZ"))
@@ -7643,23 +7817,38 @@ Tdi - skrateny ZF do EPCA formularov
     ; 10.06.19 tt; zmdt - upraven index aby indexoval i navazane soubory
     d $$$addIDX("zmdt","mdnnavz","b")  ; priznak, ze je to metadatovy zaznam
 
-    if (isIpac&&isIpacNotNew) { d $$$addIDX("zmds","mdv","b") } ; vystaveny metadatovy zaznam
+    if (isIpac&&isIpacNotNew) 
+    { ; vystaveny metadatovy zaznam
+      d $$$addIDX("zmds","mdv","b") 
+    }
     else 
     { ; pokud je zaznam nevystaveny, je potreba se jeste zaridit podle toho, jestli uzivatel souhlasil se spravnosti dat a vystavenim
       d $$$addIDX("zmds","mdz","b") 
-      s sU95a=##class(MARC).getTagX(.handle,"u95a")
-      if (sU95a="1")
-      { ; 13.03.17 tt; pridano rozliseni stavu u datovych zaznamu jestli uzivatel souhlasil s vystavnim, nebo ne
-        d $$$addIDX("zmds","mdzsouh","b") 
-        ; 10.11.21 tt; pokud je 969f n, ulozime si ustav + souhlas k tomu, aby jsme jednoduse mohli nabidnout link v MyAsep
-        d $$$addIDX("zchlink",$tr(sC26e," -","")_"mdzsouh","b") 
-                    
+      s sU95=##class(MARC).getTagX(.handle,"u95")
+      s sU95a=##class(MARC).getSubTagStr(sU95,"a")
+      s sU95c=##class(MARC).getSubTagStr(sU95,"c")
+      s sU96a=##class(MARC).getTagX(.handle,"u96a")
+      ; 10.11.21 tt; pokud je 969f n, ulozime si ustav + souhlas k tomu, aby jsme jednoduse mohli nabidnout link v MyAsep
+      d:sU95a="1" $$$addIDX("zchlink",$tr(sC26e," -","")_"mdzsouh","b") 
+      if sU96a="" 
+      { ; 26.09.25 ln; schvalovani autor->zprac->super
+        if (sU95c="1")
+        { ; 13.03.17 tt; pridano rozliseni stavu u datovych zaznamu jestli uzivatel souhlasil s vystavnim, nebo ne
+          d $$$addIDX("zmds","mdzsouh","b") 
+        } elseif (sU95c="2") {
+          d $$$addIDX("zmds","mdknav","b") 
+        } else {
+          d $$$addIDX("zmds","mdznesouh","b") 
+        }
+      } else {
+      if (sU95c="1")
+        { ; 13.03.17 tt; pridano rozliseni stavu u datovych zaznamu jestli uzivatel souhlasil s vystavnim, nebo ne
+          d $$$addIDX("zmds","mdkback","b") 
+        } elseif (sU95c="0") {
+          d $$$addIDX("zmds","mdzback","b") 
+        }
       }
-      else
-      {
-        d $$$addIDX("zmds","mdznesouh","b") 
-      }
-    }  ; rozpracovany metadatovy zaznam
+    } ; rozpracovany metadatovy zaznam
     
     /// 01.12.23 tt; na zaklade pozadavku drobne upravy zakazky 2022 (29.11.23) upraveno - upraveno indexovani na ye na U95b
     d $$$addIDX("ye",$e($$$getTagX(.handle,"u95b"),1,4),"b") 
@@ -7946,18 +8135,29 @@ Tdi - skrateny ZF do EPCA formularov
        d $$$addIDX("tias23",t200a,"bx")
    //}
  }
- 
+ ; 22.07.25 dk; úprava indexu 'tipr'
  ; 11.03.25 dk; indexy pro vyhledávání provázaných záznamů preprint a postprint
  ;index pro vyhledávání názvů záznamů 'X' - preprint
- if ($zcvt(t970b,"U")="X") 
-   { 
-     d $$$addIDX("tipr",t200a,"bx") }
  
+ s tC99d=$$$getTagX(.handle,"c99d")
+ s t200a=$$$getTagX(.handle,"200a")
+ s t969f=$$$getTagX(.handle,"969f")
+ if ($zcvt(tC99d,"U")="DFLT_CZ_EPCA_X")
+ {
+   if (($zcvt(t969f,"U")'="N")&&(($zcvt(t969f,"U"))'="D")){      
+ d $$$addIDX("tipr",t200a,"bx")
+ }
+   }
+ ; 07.08.25 dk; úprava podmínek - pouze odeslané záznamy
  ; 18.03.25 dk; upraveny podmínky pro vyhledávání
  ; index pro vyhledávání názvů bibl. záznamů postprintu
  set result = $zcvt(t970b, "U")
  if ((result="B") || (result="C") || (result="J") || (result="K") || (result="M"))
- {  d $$$addIDX("tipo", t200a, "bx") }
+ {
+   if (($zcvt(t969f,"U")'="N")&&(($zcvt(t969f,"U"))'="D")){
+   d $$$addIDX("tipo", t200a, "bx")
+   }
+ }
  
  ; 20.09.12 tt; zaindexovani nazvoveho indexu tie pro vyhledavani a naseptavat ipacu
  if (($zcvt(t970b,"U")'="BCA") && (($zcvt(t970b,"U"))'="BXX"))
@@ -9284,6 +9484,7 @@ C86b-Qtc_N.A.
 C86c-Qtc_DT
 C86d-Qtc_Obor
 
+20.11.25 ln; zprovoznena bibliometrie pro analytika
 13.02.25 ln; wos kategorie se indexuji primo bez prekladu pres ciselnik
 04.06.24 tt; zavedeny nové indexy pro metriky
 30.04.24 tt; pridana indexace metrik
@@ -9303,7 +9504,16 @@ C86d-Qtc_Obor
  if (sLX463001'="")
  { ; pokud ma clanek zdrojovy dokument
    if ##class(User.MARC).readLX(.handle4,sLX463001)
-    { ; nacteme 
+    { ; nacteme
+      s c93all=##class(User.MARC).getTagX(.handle4,"C93",-1)
+      for i=1:1:$l(c93all,$c(10))
+      {
+        s c93=$p(c93all,$c(10),i)
+        s key=##class(User.MARC).getSubTagStr(c93,"a")
+        continue:key=""        
+        s arrc93(key)=c93
+      }
+      
       s nCi=##class(User.MARC).recordLineCountX(.handle4) ; ziskani poctu radku v zaznamu 
       f iii=1:1:nCi 
       { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
@@ -9315,11 +9525,26 @@ C86d-Qtc_Obor
           continue:(sa="")
           s sAIS=$$$getSubTagStr(lsLine,"j")     ; AIS
           s sQAIS=$$$getSubTagStr(lsLine,"D")     ; QAIS  Quartil Article Influence Score
+          s:sQAIS="" sQAIS=$$$getSubTagStr(lsLine,"U") ; od 2024
           s sQTC=$$$getSubTagStr(lsLine,"F")     ; QTC   Quartil Clarivate Analytics
           s sSJR=$$$getSubTagStr(lsLine,"s")     ; SJR
           s sQSJR=$$$getSubTagStr(lsLine,"E")     ; QSJR  Quartil Scientific Journal Rankings
           s sJCI=$$$getSubTagStr(lsLine,"M")     ; JCI (Journal Citation Indicator)$$cO$$d0$$nWOS
           s sQJCI=$$$getSubTagStr(lsLine,"N")     ; JCI kvartil$$cO$$d0$$nWOS
+          
+          s aisdec=""
+          s jifdec=$$$getSubTagStr(lsLine,"9")
+          s c93=$g(arrc93(sa))
+          if c93'=""
+          { ; TODO do 978
+            s zn1=$f(c93,$c(31)_"barticleInfluence")
+            s zn2=$f(c93,$c(31)_"f",zn1)
+            s zn3=$f(c93,$c(31),zn2)
+            s c93f=$e(c93,zn2,zn3-2)
+            s c93f2=$p(c93f,"/",2)
+            s:+c93f2 aisdec=$normalize($p(c93f,"/")*10/c93f2,-1)+1
+          }
+          
           if (sT16r=sa)
           { ; jen pro index zmet
             s index=$$$getSubTagStr(lsLine,"c")_";"_$$$getSubTagStr(lsLine,"f")_";"_sQTC
@@ -9330,12 +9555,15 @@ C86d-Qtc_Obor
             d $$$addIDX("zmet",index,"b")
             if sQAIS="Q1*" {
               d $$$addIDX("zmaqais","q0","b")
-              s sQAIS="Q1"
+              ;s sQAIS="Q1"
             }
-            d:(sQAIS'="") $$$addIDX("zmaqais",sQAIS,"b")  ; QAIS  Quartil Article Influence Score
+            elseif aisdec=1 {
+              d $$$addIDX("zmaqais","q0","b")
+            }
+            d:(sQAIS'="") $$$addIDX("zmaqais",$tr(sQAIS,"*"),"b")  ; QAIS  Quartil Article Influence Score
             if sQSJR="Q1*" {
               d $$$addIDX("zmaqsjr","q0","b")
-              s sQSJR="Q1"
+              ;s sQSJR="Q1"
             }
             d:(sQSJR'="") $$$addIDX("zmaqsjr",sQSJR,"b")     ; QSJR  Quartil Scientific Journal Rankings
             if sQTC="Q1*" {
@@ -9344,15 +9572,37 @@ C86d-Qtc_Obor
             }
             d:(sQTC'="") $$$addIDX("zmaqtc",sQTC,"b")     ; QTC   Quartil Clarivate Analytics
           }
-          else
+          
+          ; zmamet
+          s:sAIS'="" sAIS=$fnumber(sAIS,"",3)
+          s jif=$$$getSubTagStr(lsLine,"c")
+          s:jif'="" jif=$fnumber(jif,"",1)
+          s:sSJR'="" sSJR=$fnumber(sSJR,"",3)
+          
+          s:aisdec=1 sQAIS="Q1*"
+          s qjif=$$$getSubTagStr(lsLine,"7")
+          s:jifdec=1 qjif="Q1*"
+          s obory=$$$getSubTagStr(lsLine,"e")
+          s qvartily=$$$getSubTagStr(lsLine,"8")
+          s oboryAIS=""
+          if (obory'="") && (qvartily'="")
           {
-            s index=sa _";"_$$$getSubTagStr(lsLine,"c")_";"_$$$getSubTagStr(lsLine,"f")_";"_sQTC
-                _";"_$$$getSubTagStr(lsLine,"C")_";"_sAIS_";"_sQAIS
+            for i=1:1:$l(obory,"|") {
+              s oboryAIS=oboryAIS_$p(qvartily,"|",i)_"–"_$p(obory,"|",i)_"|"
+            }
+            s oboryAIS=$e(oboryAIS,1,*-1)
+          }
+            
+          s index=sa _";"_$$$getSubTagStr(lsLine,"c")_";"_$$$getSubTagStr(lsLine,"f")_";"_sQTC
+                _";"_$$$getSubTagStr(lsLine,"C")_";"_sAIS_";"_sQAIS ; 5 ; 6 ; 7
                 _";"_$$$getSubTagStr(lsLine,"B")_";"_$$$getSubTagStr(lsLine,"A")_";"_sSJR
-                _";"_sQSJR_";"_sJCI_";"_sQJCI         
-            ; zavedeno indexovani 
-            d $$$addIDX("zmamet",index,"b")
-          }         
+                _";"_sQSJR_";"_sJCI_";"_sQJCI     ; 11 ; 12 ; 13
+                _";"_jif_";"_qjif_";"_jifdec_";"_$$$getSubTagStr(lsLine,"4")_";"_oboryAIS ; 14;15;16;17;18
+          ; zavedeno indexovani 
+          ;d $$$addIDX("zmamet",index,"b")
+          s index=##class(SPIndex).ixAddTermFixLength(index,170,200)
+          d ##class(SPIndex).ixAddTermXone(lsClass,lnId,0,.handle,"zmamet",index)
+          
           ;d:(sAIS'="") $$$addIDX("zmaais",sa _";"_sAIS,"b")     ; AIS
           ;d:(sQAIS'="") $$$addIDX("zmaqais",sa _";"_sQAIS,"b")  ; QAIS  Quartil Article Influence Score 
           ;d:(sQTC'="") $$$addIDX("zmaqtc",sa _";"_sQTC,"b")     ; QTC   Quartil Clarivate Analytics
@@ -9420,6 +9670,7 @@ C86d-Qtc_Obor
 parametry: handle - aktualni zpracovavany handle
            sLine  - aktualni zpracovavany radek autoru
 
+14.08.25 ln; vylepsena normalizace pro index zaood
 07.04.25 ln; indexace pro analytika - ustav rok autor
 21.02.25 ln; zauoa jen pro nejnovejsi variantu jmena autora
 14.09.19 tt; zalozena indexacni metoda kvuli velkemu poctu udaju oddeleni
@@ -9461,8 +9712,9 @@ parametry: handle - aktualni zpracovavany handle
    /*d $$$addIDX("zoddc",oddpi,"b")           ; pridat do indexu
    d:(sUstavPref'="") $$$addIDX("zoddc",(sUstavPref_"-"_oddpi),"b") */    
    
-   // 24.05.24 tt; přidán index zaodd
-   s indexOddpi=##class(User.Util).sXlate("EPCA_ODDEL_GENERATED_INDEX_ZAODD",$zcvt($tr(sUstav_oddpi," ",""),"L"),"N",ipref)
+   ; 14.08.25 ln; vylepsena normalizace pro index zaood
+   ; 24.05.24 tt; přidán index zaodd
+   s indexOddpi=##class(User.Util).sXlate("EPCA_ODDEL_GENERATED_INDEX_ZAODD",$zcvt($tr(sUstav_oddpi," ,"_$c(160),""),"L"),"N",ipref)
    d:(indexOddpi'="") $$$addIDX("zaodd",indexOddpi,"b")            ; pridat do indexu   
  }
  
@@ -12647,9 +12899,27 @@ CSV supis ako export do IPAC
     s:(sPlnyText="") sPlnyText=sPlnyT
   } 
   ; Název_datového_repozitáře
-  s sNazDatRep=$$$getTagXC(.handle,"C76z",-1) s sNazDatRep=$replace(sNazDatRep,$c(10),"-")
+  s sNazDatRep=$$$getTagXC(.handle,"C76z",-1)
+  for x=1:1:$l(sNazDatRep,$c(10))
+  {
+    s xsNazDatRep=$p(sNazDatRep,$c(10),x)
+    continue:(xsNazDatRep="")
+    s sNazDatRepX(xsNazDatRep)=""
+  }
+  s x="", sNazDatRep=""
+  if $d(sNazDatRepX)'=0
+  {
+    for
+    {
+      s x=$o(sNazDatRepX(x))
+      q:(x="")
+      s sNazDatRep=sNazDatRep_"-"_x
+    }
+  }
   ; Data_v_ASEP
   s sDataVASEP=$$$getTagXC(.handle,"U88h",-1) if sZpZverejneni="DATA" s sDataVASEP=""
+  if sDataVASEP'="" s sNazDatRep=sNazDatRep_"-ASEP"
+  s sNazDatRep=$e(sNazDatRep,2,*)
   s sDataVASEP=$replace(sDataVASEP,$c(10),"-")
   ; Int.kod - C34$a
   s sIntKod=$$$getTagX(.handle,"C34a")
@@ -13184,6 +13454,8 @@ na opakovania tagu C13 s jednym opakovanim podpola $a
 <Description>
 blokacia vymazu zaznamov s urcitou podmienkou s vynimkou pre admina
 
+18.11.25 jk; datacite DOI vraci chybu zpracovani
+29.07.25 mk; nesmie sa vymazat ak je C95 link
 13.03.25 jk; datacite DOI
 27.02.25 jk; zpracovani handlenet pres DUI
 04.12.22 tt; pridana kontrola na odmazavani verzi
@@ -13248,10 +13520,23 @@ blokacia vymazu zaznamov s urcitou podmienkou s vynimkou pre admina
       d ##class(util.handleNet).process(.handle,7,"modify")
     }
     
-    ; 13.03.25 jk; datacite DOI
+    ; 18.11.25 jk; datacite DOI vraci chybu zpracovani
     s doi=##class(util.ie.datacite).getDoiFromHandle(ipref,.handle,.bDataCiteDoi)
     ; zmeni se URL v metadatech datacite vymazaneho zaznamu na spolecnou stranku ipacu
-    if bDataCiteDoi { d ##class(util.ie.datacite).process(.handle,"updateUrl","deleted") }
+    if bDataCiteDoi { 
+      s retDOI=##class(util.ie.datacite).process(.handle,"updateUrl","","deleted") 
+      q:retDOI'="" "|"_retDOI
+    }
+    
+    ; 29.07.25 mk nesmie sa vymazat ak je C95 link
+    s sTC95=##class(MARC).getTagX(.handle,"C95")
+    if (sTC95'="")
+    { 
+      q "|ERRUSR_CAV07#Smazání záznamu není povoleno. Záznam Obsahuje tág C95 link na Preprint."
+    }
+
+    
+    
     
     q ""
 ]]></Implementation>
@@ -15163,26 +15448,37 @@ Parametry: result    - vysledny retezec
  s pPar3=$p(param,"##",3)              ; prefix
  s pPar4=$p(param,"##",4)              ; dat za text jeste odradkovani
 
- s:(pPar1="") pPar1="U186"             ; nastaveni defaultnich hodnot   
+ s:(pPar1="") pPar1="U274"             ; nastaveni defaultnich hodnot   
  s:(pPar2="") pPar2="U187"
+ 
+ s pParX="U273"
  s bUserIsAdmin=..userIsAdmin()        ; zjisteni, jestli je aktualni uzivatel admin
  
  
  s sT970b=$$$getTagX(.handle,"970b")
  s sT969f=$$$getTagX(.handle,"969f")
  
- 
+ s pPref=""
  q:(('((sUserR=2)||(sUserR=6)||(sUserR=5)))&&(sT969f="N"))    ; rozpracovane zaznamy ukazovat jen adminum
- if (sT970b="DATA") { s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,pPar1)_"</strong>: "   }    ; prefix 
- else { s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,pPar2)_"</strong>: "    }   ; prefix 
- s:(pPar3="1") pPref=" : "_pPref_"\n"
+ ;s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,pPar1)_"</strong>: " ; publikace
+ ;if (sT970b="DATA") { s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,pPar2)_"</strong>: "   }    ; data 
+ ;if (sT970b="DMP") { s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,pParX)_"</strong>: "   }    ; DMP 
+
  
  s term=" "_lname_"*"_sT001,id=""
  
  s sPomAllU888=..getAllU883(.handle) ; nacteni vsech kodu pro kontrolu, zda vazba opravdu existuje
  
- for  
+ ; zistit u naviazaneho zaznamu 970b a podla neho rozlisenie
+ 
+ ; 13.11.25 mk rozdelenie na 3 skupiny podla druhu dokumentu
+ s sStaryPrefix=""
+
+ 
+ s pPrefX="",sRT969f=""
+ for  ; nacitanie vazieb na tento zaznam bey U88
  {
+   ;if k=1 s sRes=pPref_sRes
    s id=$o(^$$$MarcIndexG(ipref_"UnEpca","zmdl",term,id))
    q:id=""
    
@@ -15193,6 +15489,8 @@ Parametry: result    - vysledny retezec
    continue:('##class(User.MARC).getDATAX(.h,id,"T"))
    s sRT970b=$$$getTagX(.h,"970b")
    s sRT969f=$$$getTagX(.h,"969f")
+   ; tu ak bude k = 1 u prveho zaznamu tak urcit podla 970b prefix 
+   
    continue:(('((sUserR=2)||(sUserR=6)||(sUserR=5)))&&(sRT969f="N")) 
    continue:(sRT970b=sT970b)
    continue:($f(sRes,sRT001))
@@ -15201,29 +15499,82 @@ Parametry: result    - vysledny retezec
    s sPomAllVazU888=..getAllU883(.h) ; nacteni vsech kodu pro kontrolu, zda vazba opravdu existuje
    continue:(('$f((sPomAllVazU888_";"_sPomAllU888),sRT001))&&('$f((sPomAllVazU888_";"_sPomAllU888),sT001)))
    
+   if (sRT970b'="DATA") && (sRT970b'="DMP") s pPrefX="<strong>"_##class(rep.zf.tf).prefix(.handle,pPar1)_"</strong>: " ; publikace
+   if (sRT970b="DATA") { s pPrefX="<strong>"_##class(rep.zf.tf).prefix(.handle,pPar2)_"</strong>: "   }    ; data 
+   if (sRT970b="DMP") { s pPrefX="<strong>"_##class(rep.zf.tf).prefix(.handle,pParX)_"</strong>: "   }    ; DMP 
+   
    s sRT200a=$$$getTagX(.h,"200a")
    s link="\qT001*"_sRLName_"*1 "_sRT001_"\q"_" "_sRT200a
-   s:(sRes'="") sRes=sRes_"\n"_link
-   s:(sRes="") sRes=link
+   
+   ;s:(sRes'="") sRes=sRes_"\n"_pPrefX_"\n"_link
+   ;s:(sRes="") sRes=" :"_pPrefX_"\n "_link
+   if sStaryPrefix=pPrefX  ; 13.11.25 mk ak je rovnaky prefix ako predosly tak ho nepridat
+   {
+     s:(sRes'="") sRes=sRes_"\n"_link
+     s:(sRes="") sRes=" :"_"\n "_link
+   }
+   else ; pridat prefix
+   {
+     s:(sRes'="") sRes=sRes_"\n"_pPrefX_"\n"_link
+     s:(sRes="") sRes=" :"_pPrefX_"\n "_link
+   }
+   
+   ; 13.10.25 mk ulozenie stareho prefixu
+   s sStaryPrefix=pPrefX
+
  }
  
- s c=0
+ s c=0 ; prejst vsetky U88 u tohto zaznamu pref zobrat zo zaciatku tie s U88
+ s pPrefX2=""
  d {
    s sTU88=$$$getTagXC(.handle,"U88",.c) ; vsetky citacie
    continue:((sTU88="")&&(c'=0))
    if (sTU88'="")
    { ; pokud mame vyplnene data, muzeme provadet akce 
+
      s sTU883=$$$getSubTagStr(sTU88,"3")
      s sTU88a=$$$getSubTagStr(sTU88,"a")
+
      s link=""
      if sTU883'="" 
      {
+       
+       s sXT970b=""
+       if ##class(User.MARC).readLX(.handleX,sTU883)
+       {
+         s sXT970b=$$$getTagX(.handleX,"970b")
+       }
+       
+       if (sXT970b'="DATA") && (sXT970b'="DMP") s pPrefX2="<strong>"_##class(rep.zf.tf).prefix(.handle,pPar1)_"</strong>: " ; publikace
+       if (sXT970b="DATA") { s pPrefX2="<strong>"_##class(rep.zf.tf).prefix(.handle,pPar2)_"</strong>: "   }    ; data 
+       if (sXT970b="DMP") { s pPrefX2="<strong>"_##class(rep.zf.tf).prefix(.handle,pParX)_"</strong>: "   }    ; DMP 
+     
        s sTU883=##class(User.Util).strswap(sTU883,"*","*1 ")  
        continue:($f(sRes,sTU883))
-       s link="\qT001*"_sTU883_"\q"
+       ;s link="\qT001*"_sTU883_"\q"
+       s link="\qT001*"_sTU883_"\q"_" "_sTU88a
+            
+       ;s:(sRes'="") sRes=sRes_"\n"_pPrefX2_"\n"_link
+       ;s:(sRes="") sRes=" :"_pPrefX2_"\n "_link
+       
+       if sStaryPrefix=pPrefX2  ; 13.11.25 mk ak je rovnaky prefix ako predosly tak ho nepridat
+       {
+         s:(sRes'="") sRes=sRes_"\n"_link
+         s:(sRes="") sRes=" :"_"\n "_link
+       }
+       else
+       {
+         s:(sRes'="") sRes=sRes_"\n"_pPrefX2_"\n"_link
+         s:(sRes="") sRes=" :"_pPrefX2_"\n "_link
+       }
+       
+       ; 13.10.25 mk ulozenie stareho prefixu
+       s sStaryPrefix=pPrefX2
+
+ 
+       
      }
-     s:(sRes'="") sRes=sRes_"\n"_link_" "_sTU88a
-     s:(sRes="") sRes=link_" "_sTU88a     
+    
    }
  } while (c'=0)
   
@@ -15234,8 +15585,8 @@ Parametry: result    - vysledny retezec
  
  ; 19.10.21 tt; oprava mozne vlozene mezery 
  if ($tr(sRes,"\n ","")'="")
- { ; zaverecne ulozeni   
-   s result(nLBlock)=pPref_sRes, sRes=""      ; zapsani vysledku to resultu    
+ { ; zaverecne ulozeni
+   s result(nLBlock)=sRes, sRes=""      ; zapsani vysledku to resultu    
    s nLBlock=nLBlock+1 ; zvyseni pocitadla bloku     
  }
 ]]></Implementation>
@@ -15274,7 +15625,7 @@ Parametry: result    - vysledny retezec
      s:(sRes="") sRes=link_" "_sTC95a     
    }
  
- s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,"U268")_"</strong>: "
+ s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,"U269")_"</strong>: "  ; preprint
  s pPref=" : "_pPref_"\n"
  
  if sRes'="" s sRes=pPref_sRes
@@ -15315,7 +15666,7 @@ Parametry: result    - vysledny retezec
      s:(sRes="") sRes=link_" "_sTC95a     
    }
  
- s pPref=##class(rep.zf.tf).prefix(.handle,"U268")
+ s pPref=##class(rep.zf.tf).prefix(.handle,"U269")
  if sRes'="" s sRes=pPref_" : "_sRes
  q sRes
 ]]></Implementation>
@@ -15354,7 +15705,7 @@ Parametry: result    - vysledny retezec
      s:(sRes="") sRes=link_" "_sTC94a     
    }
  
- s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,"U269")_"</strong>: "
+ s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,"U268")_"</strong>: "
  s pPref=" : "_pPref_"\n"
  
  if sRes'="" s sRes=pPref_sRes
@@ -15396,7 +15747,7 @@ Parametry: result    - vysledny retezec
      s:(sRes="") sRes=link_" "_sTC94a     
    }
  
- s pPref=##class(rep.zf.tf).prefix(.handle,"U269")
+ s pPref=##class(rep.zf.tf).prefix(.handle,"U268")
  
 
  if sRes'="" s sRes=pPref_" : "_sRes
@@ -17682,7 +18033,7 @@ Parametry:  handle - aktualni zpracovavany handle
    }
  }
  
- s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,"U269")_"</strong>: "
+ s pPref="<strong>"_##class(rep.zf.tf).prefix(.handle,"U268")_"</strong>: " ; preprint
  s pPref=" : "_pPref_"\n"
  
  if sRes'="" s sRes=pPref_sRes
@@ -17728,7 +18079,7 @@ Parametry:  handle - aktualni zpracovavany handle
    }
  }
  
- s pPref=##class(rep.zf.tf).prefix(.handle,"U269")
+ s pPref=##class(rep.zf.tf).prefix(.handle,"U268")
  if sRes'="" s sRes=pPref_" : "_sRes
 
  

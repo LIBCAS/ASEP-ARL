@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.3 (Build 517U)" ts="2025-01-16 13:19:45">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-10-24 14:43:59">
 <Class name="content.uploader">
 <Description><![CDATA[
 <pre> uploader souboru pro contentServer
 
+24.10.25 ln; restore pro taby
 15.01.25 ln; metoda success
 09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
 20.04.23 ln; metoda userRepo
@@ -34,7 +35,7 @@
 01.11.11 tt; zmena v linku napovedy
 </pre>]]></Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>67221,47976.0680349</TimeChanged>
+<TimeChanged>67502,52977.245943636</TimeChanged>
 <TimeCreated>62186,26198.687005</TimeCreated>
 
 <Parameter name="PageID">
@@ -703,8 +704,9 @@ vraci 1 pokud je jiz soubor cely, jinak 0
 
 <Method name="getSubSite">
 <Description><![CDATA[
-<pre>
-Zalozky 
+<pre> Zalozky 
+
+24.10.25 ln; restore pro taby
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&data:%Binary]]></FormalSpec>
@@ -714,9 +716,9 @@ Zalozky
   s i = 0
   
   s i = i + 1
-  s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,"idx="_idx)
+  s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,data("RESTORE"))
   s data("SUBMENU",i,"pageid")=..#PageID
-  s data("SUBMENU",i,"param")="idx="_idx
+  s data("SUBMENU",i,"param")=data("RESTORE")
   s data("SUBMENU",i,"title")=""
   s data("SUBMENU",i,"text")=..tx("SIMPLEUPLOAD")
   s data("SUBMENU",i,"active")=$s(data("MULTI")="":"1",1:"")
@@ -725,7 +727,7 @@ Zalozky
   
   s i = i + 1
   s data("SUBMENU",i,"pageid")=..#PageID
-  s data("SUBMENU",i,"param")="multi=1&idx="_idx
+  s data("SUBMENU",i,"param")="multi=1&"_data("RESTORE")
   s data("SUBMENU",i,"href")=$$$BASEURL_##class(i2.html.tpl).getLinkURL(..#PageID,data("SUBMENU",i,"param"))
   s data("SUBMENU",i,"title")=""
   s data("SUBMENU",i,"text")=..tx("MULTIUPLOAD")

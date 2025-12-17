@@ -1,0 +1,630 @@
+openapi: 3.0.1
+info:
+  title: ARL REST API S3
+  description: ""
+  version: "1.0"
+paths:
+  /v1/{ictx}/s3/title/{t001}:
+    get:
+      tags:
+      - S3
+      summary: info o záznamu
+      description: |-
+        ## Získání informací o záznamu ke kterému se nahrává soubor
+      operationId: s3TitleGET
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - name: t001
+        in: path
+        description: Identifikátor záznamu
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  class:
+                    type: string
+                    example: CavUnEpca
+                  t001:
+                    type: string
+                    example: 'x0637538'
+                  title:
+                    type: string
+                    description: Titulek záznamu
+                  files:
+                    type: string
+                    description: Přehled již nahraných souborů
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+
+  /v1/{ictx}/s3/download/{repo}/{key}:
+    get:
+      tags:
+      - S3
+      summary: download url
+      description: |-
+        ## Získání downloud url pro soubor
+      operationId: s3DownloadUrlGET
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      - name: repo
+        in: path
+        description: repozitář/bucket
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        description: klíč/id souboru
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  method:
+                    type: string
+                    example: PUT
+                  url:
+                    type: string
+                    example: https://s3.cl4.du.cesnet.cz/...
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+
+  /v1/{ictx}/s3/upload:
+    post:
+      tags:
+      - S3
+      summary: generate_presigned_url
+      description: |-
+        ## Získání upload url, voláno např z uppy uploaderu pro malé soubory
+      operationId: s3UploadUrlPOST
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Nahrávaný soubor + arl objekt (minimálně class a T001 záznamu, volitelně další metadata souboru)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/uploadJson'
+        required: true
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  method:
+                    type: string
+                    example: PUT
+                  url:
+                    type: string
+                    example: https://s3.cl4.du.cesnet.cz/...
+                  repo:
+                    type: string
+                    example: crepo1
+                  key:
+                    type: string
+                    example: 70880839277k
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+
+  /v1/{ictx}/s3/multipart:
+    post:
+      tags:
+      - S3
+      summary: create_multipart_upload
+      description: |-
+        ## Získání uploadId pro multipart upload do S3 pro velké soubory
+      operationId: s3MultipartPOST
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Nahrávaný soubor + arl objekt (minimálně class a T001 záznamu, volitelně další metadata souboru)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/multiJson'
+        required: true
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadId:
+                    type: string
+                  repo:
+                    type: string
+                    example: crepo1
+                  key:
+                    type: string
+                    example: 70880839277k
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+
+  /v1/{ictx}/s3/sign:
+    post:
+      tags:
+      - S3
+      summary: upload_part
+      description: |-
+        ## Ziskani url pro upload části souboru (multipart upload)
+      operationId: s3SignPOST
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Identifikace části nahrávaného souboru v S3 a v ASEP/ARL
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/signJson'
+        required: true
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                 url:
+                    type: string
+                    example: https://s3.cl4.du.cesnet.cz/...
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+
+  /v1/{ictx}/s3/complete:
+    post:
+      tags:
+      - S3
+      summary: complete_multipart_upload
+      description: |-
+        ## Dokončení uploadu velkého souboru v S3
+      operationId: s3CompletePOST
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Identifikace nahrávaného souboru v S3 (se seznamem jeho nahraných částí) a v ASEP/ARL
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/completeJson'
+        required: true
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                 location:
+                    type: string
+                    description: The URI that identifies the newly created object.
+      security:
+      - bearerAuth: []
+
+  /v1/{ictx}/s3/success:
+    put:
+      tags:
+      - S3
+      summary: dokončení uploadu
+      description: |-
+        ## Dokončení uploadu souboru v ASEP/ARL
+      operationId: s3SuccessPUT
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Identifikace nahrávaného souboru v ASEP/ARL
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/successJson'
+        required: true
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  repo:
+                    type: string
+                    example: crepo1
+                  key:
+                    type: string
+                    example: 70880839277k
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+
+  /v1/{ictx}/s3/list:
+    post:
+      tags:
+      - S3
+      summary: list_parts
+      description: |-
+        ## Získání seznamu úspěšně nahraných částí souboru
+        např. pro navázání přerušeného uploadu
+      operationId: s3ListPOST
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Identifikace nahrávaného souboru v S3 a v ASEP/ARL
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/abortJson'
+        required: true
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  parts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        PartNumber:
+                          type: integer
+                          example: 5                   
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+
+  /v1/{ictx}/s3/abort:
+    post:
+      tags:
+      - S3
+      summary: abort_multipart_upload
+      description: |-
+        ## Zrušení upload velkého souboru
+      operationId: s3AbortPOST
+      parameters:
+      - $ref: 'arl-v1.yaml#/components/parameters/ictx'
+      requestBody:
+        description: Identifikace nahrávaného souboru v S3 a v ASEP/ARL
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/abortJson'
+        required: true
+      responses:
+        "200":
+          description: Odpověď
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                 status:
+                    type: string
+                    example: OK
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpResp401'
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: 'arl-v1.yaml#/components/schemas/HttpErrRespGeneral'
+      security:
+      - bearerAuth: []
+
+components:
+  schemas:
+    uploadJson:
+      type: object
+      properties:
+        name:
+          type: string
+          example: soubory.zip
+        extension:
+          type: string
+          example: zip
+        size:
+          type: integer
+          example: 100000
+        type:
+          type: string
+          example: application/x-zip-compressed
+        arl:
+          type: object
+          properties:
+            class:
+              type: string
+              example: CavUnEpca
+            t001:
+              type: string
+              example: 'x0637538'
+    multiJson:
+      type: object
+      properties:
+        name:
+          type: string
+          example: soubory.zip
+        extension:
+          type: string
+          example: zip
+        size:
+          type: integer
+          example: 25000000
+        type:
+          type: string
+          example: application/x-zip-compressed
+        arl:
+          type: object
+          properties:
+            class:
+              type: string
+              example: CavUnEpca
+            t001:
+              type: string
+              example: 'x0637538'
+    signJson:
+      type: object
+      properties:
+        uploadId:
+          type: string
+        partNumber:
+          type: integer
+          example: 5
+        repo:
+          type: string
+          example: crepo1
+        key:
+          type: string
+          example: '70880839277k'
+    completeJson:
+      type: object
+      properties:
+        uploadId:
+          type: string
+        repo:
+          type: string
+          example: crepo1
+        key:
+          type: string
+          example: '70880839277k'
+        parts:
+          type: array
+          items:
+            type: object
+            properties:
+              PartNumber:
+                type: integer
+                example: 5
+    successJson:
+      type: object
+      properties:
+        repo:
+          type: string
+          example: crepo1
+        key:
+          type: string
+          example: '70880839277k'
+    abortJson:
+      type: object
+      properties:
+        uploadId:
+          type: string
+        repo:
+          type: string
+          example: crepo1
+        key:
+          type: string
+          example: '70880839277k'
+  parameters:
+    ictx:
+      name: ictx
+      in: path
+      description: Prefix instituce
+      required: true
+      schema:
+        type: string

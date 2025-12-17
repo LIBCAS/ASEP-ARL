@@ -1,4 +1,5 @@
 <csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+		<csp:if condition=('$g(data("ERASED")))>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="UTF-8">
 <meta
@@ -50,6 +51,8 @@
     <csp:if condition=(..txgn("GOOGLE_VERIFICATION")'="") note="Ověření pro služby Google">
 <meta name="google-site-verification" content="#(..txg("GOOGLE_VERIFICATION"))#">
     </csp:if>
+
+		</csp:if>
 
 <link rel="stylesheet" media="print" href="#(..cb(..style()_"print.css"))#">
 <link rel="stylesheet" href="#(..cb(..style(1)_"bskin1.css"))#">

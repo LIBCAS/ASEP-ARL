@@ -2,6 +2,8 @@
  * Lokalizacia
  * Slovencina#Cestina#Anglictina
  *
+ * 19.09.25 on; vymaz datoveho zaznamu na CAV
+ * 21.08.25 on; titleReturnRecord
  * 07.01.21 on; vymaz zaznamu
  * 13.02.20 on; oprava preklepu
  * 12.02.20 on; txFormIdEmpty a txErrorGetForm
@@ -68,7 +70,7 @@ epca.L10n = {
     // 08.09.17 on; hlaska zkracena (CAV)
     //evidenceManipulatingFormError: 'Záznam sa nepodarilo uložiť. \nPri manipulácií s formulárom sa vyskytla chyba:\n#Záznam se nepodařilo uložit. \nPři manipulaci s formulářem se vyskytla chyba:\n#Unable to save record. \nProblem while manipulating with form occured:\n'.ls(),
     evidenceManipulatingFormError: 'Záznam sa nepodarilo uložiť. \n#Záznam se nepodařilo uložit. \n#Unable to save record. \n'.ls(),
-    evidenceDeleteRecordError: 'Záznam sa nepodarilo vymazať. \n#Záznam se nepodařilo vymazat. \n#Unable to delete record. \n'.ls(),
+    evidenceDeleteRecordError: 'Záznam sa nepodarilo vymazať. \n#Záznam se nepodařilo smazat. \n#Unable to delete record. \n'.ls(),
     evidenceOpenRecordError: 'Pri otvorení záznamu sa vyskytla chyba:#Při otevření záznamu se vyskytla chyba:#Problem while opening record occured:'.ls(),
     evidenceRecordNotSelected: 'Nevybrali ste záznam.#Nevybrali jste záznam.#You have not selected a record.'.ls(),
     evidenceFormNotSelected: 'Nevybrali ste formulár.#Nevybrali jste formulář.#You have not selected a form.'.ls(),
@@ -81,8 +83,10 @@ epca.L10n = {
     evidenceClear969f: 'Odmazať 969f#Odmazat 969f#Clear 969f'.ls(),
     evidenceFirstSave: 'Pred odoslaním najprv uložte záznam do databáze.#Před odesláním nejprve uložte záznam do databáze#Save the record into the database before sending.'.ls(),
     evidenceSendRecordSuccess: 'Záznam bol úspešne odoslaný.#Záznam byl úspěšně odeslán.#Record sent successfully.'.ls(),
+    evidenceReturnRecordSuccess: 'Záznam bol úspešne vrátený.#Záznam byl úspěšně vrácen.#The record was successfully returned.'.ls(),
     // 08.09.17 on; hlaska zkracena (CAV)
     evidenceSendRecordError: 'Záznam sa nepodarilo odoslať. \n#Záznam se nepodařilo odeslat. \n#Unable to send record. \n'.ls(),
+    evidenceReturnRecordError: 'Záznam sa nepodarilo vrátiť. \n#Záznam se nepodařilo vrátit. \n#Unable to return record. \n'.ls(),
     evidenceClear969fNotFound: 'Nebyla nalezena hodnota "%s" v poli 969f!'.ls(),
     evidenceFirstSaveCommon: 'Záznam najprv uložte do databázy.#Záznam nejprve uložte do databáze.#Save the record first.'.ls(),
     // 27.11.17 on;
@@ -103,6 +107,7 @@ epca.L10n = {
     txSavingRecord: 'Ukladám záznam ... prosím čakajte#Ukládám záznam ... prosím čekejte#Saving record ... please wait'.ls(),
     txDeletingRecord: 'Mažem záznam ... prosím čakajte#Mažu záznam ... prosím čekejte#Deleting record ... please wait'.ls(),
     txSendingRecord: 'Odosielam záznam ... prosím čakajte#Odesílám záznam ... prosím čekejte#Sending record ... please wait'.ls(),
+    txReturningRecord: 'Vraciam záznam ... prosím čakajte#Vracím záznam ... prosím čekejte#Returning record ... please wait'.ls(),
     txCopyingRecord: 'Ukladám kópiu záznamu ... prosím čakajte#Ukládám kopii záznamu ... prosím čekejte#Saving copy of record ... please wait'.ls(),
     txMaxFieldLength: 'Maximálna povolená dĺžka pola je %s!#Maximální povolená délka pole je %s!#Maximal field length is %s!'.ls(),
     // 28.11.16 on;
@@ -113,6 +118,12 @@ epca.L10n = {
     txFormIdEmpty: 'K záznamu nie je priradený žiadny formulár!#K záznamu není přiřazený žádný formulář!#This record does not contain default form name!'.ls(),
     txErrorGetForm: 'Formulár s ID "%s" nebol nájdený!#Formulář s ID "%s" nebyl nalezen!#Form with ID "%s" not found!'.ls(),
     titleDeleteBtn: 'Vymazať#Vymazat#Delete'.ls(),
-    evidenceDeleteNewRecordError: 'Nedá sa zmazať neuložený záznam!#Nelze smazat neuložený záznam!#Unable to delete unsaved record!'.ls()
+    evidenceDeleteNewRecordError: 'Nedá sa zmazať neuložený záznam!#Nelze smazat neuložený záznam!#Unable to delete unsaved record!'.ls(),
+    titleReturnRecord: 'Vrátiť záznam#Vrátit záznam#Return record'.ls(),
+    evidenceReturnNoteEmpty: 'Poznámka k vráteniu nesmie byť prázdna!#Poznámka k vrácení nesmí být prázdná!#The return note must not be empty!'.ls(),
+    txDeleteRecordCAV: 'Zmazať záznam#Smazat záznam#Delete record'.ls(),
+    txDeletionReason: 'Dôvod zmazania#Důvod smazání#Deletion reason'.ls(),
+    txDeletionReasonCze: 'Česky#Česky#Czech'.ls(),
+    txDeletionReasonEng: 'Anglicky#Anglicky#English'.ls()
 };
 Ext.reg('epca.L10n', epca.L10n);

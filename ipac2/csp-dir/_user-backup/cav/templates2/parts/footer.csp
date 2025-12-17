@@ -1,0 +1,61 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+<script language="cache" runat="server">
+ // Wide layout
+ s wideL=$f(..getOption("WIDE"),data("PAGEID"))
+ s:'wideL wideL=..isOption("WIDELAYOUT")
+</script>
+
+
+
+<style>
+.metadata-test{
+        
+}
+</style>
+<div class="metadata-line d-flex justify-content-center text-white container">
+    <a target="_blank" href="https://creativecommons.org/public-domain/cc0/" class="external">#(..txg("FOOTER_METADATA_TEXT"))#</a>
+</div>
+<div id="footer">
+
+<div class="#($s(wideL:"container-fluid",1:"container"))#">
+<footer aria-label="#(..txg("FOOTER"))#" class="#($s(..isOption("WIDELAYOUT")="1":"row m-0",1:"row"))#">
+
+<div id="footer-brand" class="col-md-2">
+<ipac:a rel="home" op="search" title="#(..txg("HOME_TITLE"))#"><i class="icon-arl" aria-hidden="true"></i></ipac:a>
+</div>
+
+<div id="nav3" class="col-md-5">
+<nav>
+<ul class="nav">
+#(##class(i2.ui.menu).writeFootMenu(.data))#
+</ul>
+</nav>
+</div>
+
+
+<div id="contentinfo" role="contentinfo" class="col-md-5">
+<p id="footprint">
+<ipac:txgn param="MAIN_COPYRIGHT"/>&nbsp;
+    <csp:if condition=(..txgn("MAIN_URL")'="")>
+<span itemscope="itemscope" itemtype="https://schema.org/Organization"><ipac:a itemprop="url" rel="me external" target="_blank" href="#(..txg("MAIN_URL"))#"><span itemprop="name">#($s(..txgn("MAIN_TITLE2")'="":..txg("MAIN_TITLE2"),1:..txg("MAIN_TITLE")))#</span></ipac:a></span>
+    <csp:else>
+#($s(..txgn("MAIN_TITLE2")'="":..txg("MAIN_TITLE2"),1:..txg("MAIN_TITLE")))#
+    </csp:if>
+</p>
+<p id="cosmotron" itemscope="itemscope" itemtype="https://schema.org/Organization">
+#(data("---","COPYRIGHT_YEAR"))# &nbsp;<ipac:a dir="ltr" op="about">
+<abbr lang="en-GB" title="Internet Public Access Catalog">IPAC</abbr><time datetime="#(data("---","I2VERSION_DATEISO"))#" title="#(data("---","I2VERSION_NR"))# - #(data("---","I2VERSION_DATE"))#">&nbsp;v.#(data("---","I2VERSION_NR"))#</time></ipac:a>
+&nbsp;-&nbsp; <span dir="ltr">
+<a itemprop="url" rel="external" target="_blank" href="#(..txg("COSMOTRON_URL"))#" title="#(..txg("COSMOTRON_WEB_TITLE"))# #(..txg("COSMOTRON_NAME"))# #(..txg("EXTERNAL"))#"><span itemprop="name"><ipac:txg param="COSMOTRON_NAME"/></span></a></span>
+</p>
+</div>
+
+</footer>
+
+</div></div>
+
+<div class="overlay"></div>
+
+    <csp:if condition=('$g(data("ERASED")))>
+<ipac:tpl page="parts" version="jsmodal"/>
+    </csp:if>

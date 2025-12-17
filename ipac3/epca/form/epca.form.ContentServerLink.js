@@ -1,7 +1,7 @@
 /**
  * @author Laco Clementis, Michal Namesny
  *
- *
+ * 06.10.25 on; doplnen parametr client
  * 23.01.12 on; rozsireni setMarc
  */
 /*global epca,Ext,i3*/
@@ -91,7 +91,8 @@ epca.form.DisplayField = Ext.extend(Ext.form.DisplayField, {
       this.disable();
     } else {
       // zaznam uz byl ulozen do db
-      this.setValue('<a target="_blank" href="' + this.contentURL + '?ictx=' + sIctx + '&language=' + sLanguage + '&op=uploader&idx=' + sDb + '*' + sId + '">' + this.contentText + '</a>');
+      // 06.10.25 on; doplnen parametr client
+      this.setValue('<a target="_blank" href="' + this.contentURL + '?ictx=' + sIctx + '&language=' + sLanguage + '&op=uploader&idx=' + sDb + '*' + sId + '&client=1' + '">' + this.contentText + '</a>');
       this.enable();
     }
 

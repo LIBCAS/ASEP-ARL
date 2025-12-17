@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-20 10:46:33">
+<Class name="content.info">
+<Super>i2.ui.page</Super>
+<TimeChanged>67529,38556.508945073</TimeChanged>
+<TimeCreated>67495,34142.110325349</TimeCreated>
+
+<Parameter name="PageID">
+<Description><![CDATA[
+&op={PageID}]]></Description>
+<Default>continfo</Default>
+</Parameter>
+
+<Parameter name="Robots">
+<Description>
+meta tag Robots</Description>
+<Default>noindex,nofollow</Default>
+</Parameter>
+
+<Parameter name="Help">
+<Description>
+ma tato stranka napovedu?</Description>
+<Default>0</Default>
+</Parameter>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+   s data("RESTORE")=##class(i2.base.request).restore("repo,key")
+]]></Implementation>
+</Method>
+
+<Method name="data">
+<Description><![CDATA[
+<pre>Data pro HTML sablonu stranky
+spolecna data, pokud mozno needitovat v uzivatelske verzi stranky 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s repo=$$$GETREQVAR("repo")
+  s key=$$$GETREQVAR("key")
+  
+  if '##class(content.api).engineRead(repo,key,.array) {
+    s data("ERRORS")=data("ERRORS")_" "_..tx("ERRFILE")
+    q
+  }
+  s class=$g(array("class"),"x"), t001=$g(array("t001"),"x")
+  if '##class(User.MARC).readX(.handle,class,t001,"T") {
+    s data("ERRORS")=data("ERRORS")_" "_..tx("ERRREC")
+    q
+  }
+  
+  s data("ORIGNAME")=array("origname")
+  s data("RECTITLE")=##class(i2.data.layer).title(.handle)
+  s data("NOW")=$tr($zdt($h,4),"/",".")
+  s data("AJAX") = $$$GETREQVAR("st")="ajax"
+  
+  d ..userDataRec(.data,.handle,.array)
+  
+  d ..userData(.data)
+]]></Implementation>
+</Method>
+
+<Method name="userDataRec">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle,&array]]></FormalSpec>
+<Implementation><![CDATA[
+  s data("RECTITLE")=$p($$$getTagX(.handle,"Tbca"),"\n",1)
+  ;s data("FILENAME")=$p(data("ORIGNAME"),".")_"_metadata"
+  
+  s recType=##class(User.MARC).getTagX(.handle,"970b")
+  if recType="DATA" {  
+    s data("FILENAME")=$p(data("ORIGNAME"),".")_"_metadata"
+    s data("BASE64HTML")=##class(%SYSTEM.Encryption).Base64Encode($zcvt(data("RECTITLE")_"<br><br>"_data("NOW"),"O","UTF8"))
+    s data("METATEXT")=##class(rep.zf.tf).stripHtmlTags(data("RECTITLE"))_$$$CRLF_$$$CRLF_data("NOW")
+    s data("BASE64TEXT")=##class(%SYSTEM.Encryption).Base64Encode($zcvt(data("METATEXT"),"O","UTF8"))
+  }
+  elseif recType="X" {
+    s data("FILENAME")=$p(data("ORIGNAME"),".")_"_info"
+    s data("RECTITLE")=data("RECTITLE")_" pod licencí "_$g(array("licencecc"))
+    s text="preprint (nerecenzovaný dokument): "
+    s data("BASE64HTML")=##class(%SYSTEM.Encryption).Base64Encode($zcvt(text_data("RECTITLE")_"<br><br>"_data("NOW"),"O","UTF8"))
+    s data("METATEXT")=text_##class(rep.zf.tf).stripHtmlTags(data("RECTITLE"))_$$$CRLF_$$$CRLF_data("NOW")
+    s data("BASE64TEXT")=##class(%SYSTEM.Encryption).Base64Encode($zcvt(data("METATEXT"),"O","UTF8"))
+  } else {
+    s data("FILENAME")=""
+  }
+]]></Implementation>
+</Method>
+
+<Method name="zfLinkMeta">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,params:%String]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s class=$$$HandleClass(handle)
+  s id=$$$HandleId(handle)
+  q:(class="")||(id="") ""
+  q:'$d(^$$$MarcIndexG(class,id,"zmds"," mdsds")) ""
+  
+  s t001=$$$HandleT001(handle)
+  ;d ##class(User.MARC).readX(.h,class,t001,"T")
+  ;s rectitle=$p($$$getTagX(.h,"Tbca"),"\n",1)
+  s rectitle=$p(##class(User.CavUnEpca).getBibcitCAV(.handle),"\n")
+  s now=$tr($zdt($h,4),"/",".")
+  s text=##class(rep.zf.tf).stripHtmlTags(rectitle)_$$$CRLF_$$$CRLF_now
+  s base64=##class(%SYSTEM.Encryption).Base64Encode($zcvt(text,"O","UTF8"))
+  s base64=$replace(base64,$$$CRLF,"\crlf")
+  
+  d ##class(i2.html.tpl).getPageTexts(..#PageID)
+  s text=..tx("METATEXT") ;"Stáhnout soubor metadat"
+  ;metadata pro záznam
+  
+  q "% : <a download="""_..tx("METALINK")_" "_t001_".txt"" href=""data:text/plain;base64,"_base64_""">"_text_"</a>"
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-04-02 13:23:18">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-20 10:19:04">
 <Class name="i2.cust.cav.uploader">
 <Description><![CDATA[
 <pre>
+24.10.25 ln; client pridan do restore
+16.10.25 ln; pridano runtime 970b
 27.03.25 ln; podpora S3
 19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
 07.06.24 tt; getUseStat2: upravena podminka nevystaveneho zaznamu
@@ -28,7 +30,7 @@
 23.05.12 tt; drobna uprava sablony
 </pre>]]></Description>
 <Super>content.uploader</Super>
-<TimeChanged>67297,48186.599338731</TimeChanged>
+<TimeChanged>67529,37059.100922916</TimeChanged>
 <TimeCreated>62425,31868.699855</TimeCreated>
 
 <Parameter name="Ictx">
@@ -53,10 +55,14 @@ vraci retezec pri chybe
   s ret=##class(i2.ui.menu).accessPage(..#PageID)
   q:ret'="" ret
   
+  ;q:'..s3upload(1) ret ; apply
+  
   s idx=$$$GETREQVAR("idx")
   q:idx="" ret
   q:'##class(i2.dblink).recordReadLX(.handle,idx) ret
   q:$$$getTagX(.handle,"970b")'="DATA" ret
+  ;q:'..s3upload() ret  
+  
   q:'..getCred(.data) ret
   
   s repo=..userRepo()
@@ -67,13 +73,31 @@ vraci retezec pri chybe
   ; 09.12.21 ln; podpora vicejazycneho big data uploaderu
   ; 16.07.20 ln; big data uploader preveden na https
   s %response.Redirect="https://"_%request.CgiEnvs("HTTP_HOST")_"/big/uploader.html?ictx="_$$$GETICTX_"&lang="_$case($$$GETLANGUAGE,1:"sk",2:"cs",3:"en",:"")_"&repo="_repo_"&idx="_idx_"&user="_data("CREDUSER")_"&cred="_data("CRED")
-  
+    
   q ret
+]]></Implementation>
+</Method>
+
+<Method name="preHeader">
+<Description><![CDATA[
+<pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
+a vysledek vratit napr pres data("REPORTS")
+
+24.10.25 ln; client pridan do restore
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  ; url parametry pro obnoveni stavu stranky
+  s data("RESTORE")=##class(i2.base.request).restore("idx,status,iset,disprec,client")
+  ; multiupload
+  s data("MULTI")=$$$GETREQVAR("multi")=1
 ]]></Implementation>
 </Method>
 
 <Method name="s3upload">
 <ClassMethod>1</ClassMethod>
+<FormalSpec>apply:%Boolean=0</FormalSpec>
 <ReturnType>%Boolean</ReturnType>
 <Implementation><![CDATA[
   d ##class(i2.base.request).get(.array)
@@ -81,18 +105,20 @@ vraci retezec pri chybe
   d ##class(i2.base.request).purge(.array)
   d ##class(i2.base.request).first(.array)
   
-  q:'$d(array("repository")) 1
+  q:apply&&'$d(array("repository")) 1
   
   s idx=$g(array("idx"))
   q:idx="" 0  
-  k array("idx")  
+  k array("idx")
+  k array("pg")
   k array("FileStream")
+  k array("iset") ; no apply
   q:'##class(i2.dblink).recordReadLX(.handle,idx,"T") 0
   
   s data("IDX")=idx
   s data("REPO")=..userRepo()
   d ..userData(.data,.handle)
-  q:'..apply(.data,.array) 0
+  q:apply&&'..apply(.data,.array) 0
   
   s class=##class(User.Util).lname2objectName($p($p(idx,"*",1),"-",1))
   s t001=$p(idx,"*",2)
@@ -116,8 +142,10 @@ vraci retezec pri chybe
   
   s login=##class(i2.access).getLoginId()
   s pw=##class(i2.html.base).encode(%ipac2("arlsso"))
+  s lang=$case($$$GETLANGUAGE,1:"sk",2:"cs",3:"en",:2)
+  s restore=$replace(##class(i2.base.request).restore("iset,pg"),"&amp;","&")
   
-  s %response.Redirect="https://asep.lib.cas.cz/uploader/uppy.html?par="_par_"&_arlsso="_login_"&_arlssopw="_pw
+  s %response.Redirect="https://asep.lib.cas.cz/uploader/uppy.html?lang="_lang_"&"_restore_"&par="_par_"&_arlsso="_login_"&_arlssopw="_pw_"&client="_$$$GETREQVAR("client")
   q 0
 ]]></Implementation>
 </Method>
@@ -290,6 +318,7 @@ parametry: t001 uzivatele
 <pre> Generovani runtime (promenlivych, neulozenych) dat do pole runtime
 parametry: class a t001 zaznamu
 
+16.10.25 ln; pridano runtime 970b
 27.03.25 ln; podpora S3 
 27.04.22 tt; dano osetreni na status - uzivatel nejakym zpusobem dokazal rozhodit funkcnost tak, ze status byl 2
 08.11.16 tt; upravy kvuli velkym datum
@@ -311,18 +340,26 @@ parametry: class a t001 zaznamu
   ; 08.11.16 tt; upravy kvuli velkym datum
   if ##class(User.MARC).readX(.handle,class,t001)
   {
-    s sT970b=$$$getTagX(.handle,"970b")
-    if (sT970b="DATA") 
+    s t969f=$$$getTagX(.handle,"969f")
+    s t970b=$$$getTagX(.handle,"970b")
+    ; 16.10.25 ln; pridano runtime 970b
+    s runtime("970b")=t970b
+    
+    if (t970b="DATA")
     {
       s runtime("accession")=$$$getTagX(.handle,"C81a")
       s runtime("dayfrom")=$$$getTagX(.handle,"C81d")
+      
       s runtime("nusl")="false"
       s runtime("hodnoceni")="false"
       s runtime("recenze")="false"  
       ; 27.04.22 tt; dano osetreni na status - uzivatel nejakym zpusobem dokazal rozhodit funkcnost tak, ze status byl 2
-      s:($$$getTagX(.handle,"969f")="") runtime("status")="4"
+      s:t969f="" runtime("status")="4"
     }
-  
+    elseif (t970b="X") || (t970b="DMP") {
+      s:t970b="X" runtime("continfo")=1
+      s:t969f="" runtime("status")="4"
+    }
   }
 ]]></Implementation>
 </Method>

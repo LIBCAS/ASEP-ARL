@@ -34,6 +34,7 @@
 <input type="hidden" name="op" value="#(data("PAGEID"))#">
 <input type="hidden" name="idx" value="#(data("IDX"))#">
 <input type="hidden" name="repository" value="#(data("REPO"))#">
+<input type="hidden" name="client" value="#(..req("client"))#">
 <csp:if condition=($$$GETREQVAR("_ladenka")="1")><input type="hidden" name="_ladenka" value="1"></csp:if>
 </div>
 

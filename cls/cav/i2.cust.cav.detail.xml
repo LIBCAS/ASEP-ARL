@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-11-13 13:54:33">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-20 09:48:33">
 <Class name="i2.cust.cav.detail">
+<Description><![CDATA[
+<pre>
+
+17.09.25 ln; podpora tombstone page
+16.09.25 ln; handlenet permalink vede na prvni zobrazovak
+19.04.16 tt; nastaveni desiderat na 969f = N nebo D
+11.10.12 tt; zalozena metoda pro zobrazovani informaci v panelu u vyhledavani
+</pre>]]></Description>
 <Super>i2.ui.detail</Super>
-<TimeChanged>67157,49735.721937753</TimeChanged>
+<TimeChanged>67529,35309.302593446</TimeChanged>
 <TimeCreated>62741,48621.093776</TimeCreated>
 
 <Parameter name="Ictx">
 <Description>
-19.04.16 tt; nastaveni desiderat na 969f = N nebo D
-11.10.12 tt; zalozena metoda pro zobrazovani informaci v panelu u vyhledavani
 ictx instituce</Description>
 <Default>cav</Default>
 </Parameter>
@@ -56,6 +62,69 @@ standardne ..tx("NORIGHTS") nebo ..tx("NOREC")
   }
   
   q ""
+]]></Implementation>
+</Method>
+
+<Method name="setupZF">
+<Description><![CDATA[
+<pre> 
+
+16.09.25 ln; handlenet permalink vede na prvni zobrazovak
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data]]></FormalSpec>
+<Implementation><![CDATA[
+  s iset=data("ISET") ; TODO ? $$$GETREQVAR("bpg")
+  if iset="basket" {
+    s currZF=##class(i2.basket).zfDetailGet($p(data("IDX"),"*",1))
+  }
+  elseif iset'="" {  
+    s isetInfo=##class(i2.dblink).getISetInfo(iset)
+    s currZF=$p(isetInfo,$c(10),$$$cISetZF2)
+  } else {
+    ;s currZF=##class(i2.config).getSourceDetailZF(##class(i2.common).currSourcesGetFirstZF(),$p(data("IDX"),"*",1))
+    ; 17.09.25 ln; handlenet permalink vede na prvni zobrazovak
+    s currZF=##class(i2.common).currSourcesGetFirstZF()
+  }
+   
+  s zf=$$$GETREQVAR("zf")
+  if (zf'="") && (currZF'=zf) { 
+    s currZF=zf
+    if iset="basket" {
+      d ##class(i2.basket).zfDetailSet(currZF)
+    }
+    elseif iset'="" {
+      s $p(isetInfo,$c(10),$$$cISetZF2)=zf 
+      d ##class(i2.dblink).setISetInfo(iset,isetInfo)
+    }
+  }
+  s:currZF="" currZF="SHORT"  
+  s data("ZF_SEL")=currZF
+]]></Implementation>
+</Method>
+
+<Method name="recordData">
+<Description><![CDATA[
+<pre> Informace k záznamu. Datová alternativa k zobrazováku. Data se načítají z ##class(i2.data.meta)
+
+17.09.25 ln; podpora tombstone page
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&data,&handle]]></FormalSpec>
+<Implementation><![CDATA[
+  s line=##class(User.MARC).getTagX(.handle,"969")_$c(31)
+  if $f(line,$c(31)_"fERASE"_$c(31)) {
+    ; 17.09.25 ln; podpora tombstone page
+    s data("ERASED")=1
+    s data("TBC")=$$$getTagX(.handle,"Tbca")
+    s data("DOI")="https://doi.org/"_##class(User.MARC).getTagX(.handle,"017a")
+    s u69=##class(User.MARC).getTagX(.handle,"U69")
+    s data("REASON")=##class(User.MARC).getSubTagStr(u69,"a")
+    s:$$$GETLANGUAGE=3 data("REASON")=##class(User.MARC).getSubTagStr(u69,"b")
+    s data("ERASEDATE")=##class(util.date).dtDisp(##class(User.MARC).getSubTagStr(u69,"d"))
+  } else {
+    d ##class(i2.data.meta).all(.data,.handle)
+  }
 ]]></Implementation>
 </Method>
 </Class>

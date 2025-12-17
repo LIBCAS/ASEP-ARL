@@ -1,6 +1,7 @@
 /*
  * Obrazovka flexpop.
  *
+ * 06.08.25 on; moznost vynutit stary nebo novy SE pro jeden dotaz
  * 13.06.24 on; moznost zmenit text ZF
  * 30.04.24 on; zakaze tooltip - je stejne prazdny
  * 26.04.24 on; muze jit o pole (id db a nazev db)
@@ -1869,6 +1870,15 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
         // 21.01.14 on; moznost nastavit novy SE pro konkretni PB v konfiguraci
         //bNewSE = bNewSE || this.openParams.csUseNewSE;
         var bNewSE = i3.csUseNewSE || false;
+        // 06.08.25 on; moznost vynutit stary nebo novy SE pro jeden dotaz
+        if (this.forceSE === '1') {
+            // stary SE
+            bNewSE = false;
+        } else
+        if (this.forceSE === '2') {
+            // novy SE
+            bNewSE = true;
+        }
         // 18.11.16 on; pridana kontrola, jestli je checkbox viditelny
         //var bBrowse = this.getCmp('cbBrowse').getValue();
         c = this.getCmp('cbBrowse');
@@ -2025,7 +2035,7 @@ i3.ui.FlexPop.Win = Ext.extend(Ext.Window, {
             panelSearch.store.removeAll();
             return;
         }
-        // 13.01.22 onl pokud je ale temin prazdny a ja nastaveny novy SE, musim ho pridat
+        // 13.01.22 on; pokud je ale temin prazdny a ja nastaveny novy SE, musim ho pridat
         if ((sSrchTerm === '') && bNewSE) {
             panelSearch.store.baseParams.query = '@attr 98=2 ' + panelSearch.store.baseParams.query;
         }

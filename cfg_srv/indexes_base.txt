@@ -1,4 +1,7 @@
 # @id UN_TABLES BASE_INDEXES_TXT
+002    08.12.25 jk; index t001cr2 pridan do solru (katalog, autority)
+002    01.12.25 jk; do BASE_INDEXES_T pridan titu1e
+002    23.09.25 jk; do BASE_INDEXES_H pridany indexy los a di
 002    13.02.25 jk; do BASE_INDEXES_T pridan etp
 002    26.11.24 tj; pridany index dtr1 2571 do INDEXES_C a INDEXES_C2
 002    12.01.24 tt; pridana indexace qais - 2570
@@ -232,7 +235,7 @@
 200    aimbb2557cImpact faktor pre EPCA 0-neexistuje/1-existuje#Impact faktor pro EPCA 0-neexistuje/1-existujenimpact faktor pro EPCA - indexovane jako imp (ixIndexValuesIF)o463/461 -> zdroj serialsCODE
 200    aqjcrsjrb2558cKvartily JCR a SJR#Kvartily JCR a SJR#JCR and SJR Quartilenkvartily jcr a sjr dohromady v jenom; hodnoty (cisla) jsou rozlisena sufixem "jcr" nebo "sjr" napr. 3jcr; ze zdojového dokumentu indexace 9784 (hodnota stejná jako T164); vyuziva se v EpcaReports pro pole AND a ORo9784 ze zdrojového dokumenumzapina se na paramter quartileJcrSjr ($b) modifikatoru xclaHodKrit ($a) tj. primo souvisi s indexy qjcr a qsjr
 200    aqjcrsjrorb2560cKvartily JCR a SJR#Kvartily JCR a SJR#JCR and SJR Quartilenhodnoty kvartilu jcr a sjr kazdy zvlast se sufixem kvartilu ; hodnoty (cisla) jsou rozlisena sufixem "jcr" nebo "sjr" napr. 3jcr; ze zdrojového dokumentu indexace 9784,7 (hodnota stejná jako T164,7); vyuziva se v EpcaReportso978 ze zdrojového dokumenumzapina se na paramter quartileJcrSjr ($b) modifikatoru xclaHodKrit ($a) tj. primo souvisi s indexy qjcr a qsjr a qjcrsjr
-200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2
+200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2sCODE
 200    ackpcb2561cKategória publikácie od 2022o976ak976anECPA CREPC - hodnota pole 976a - vsechny opakovani podle a podpole (EPCA_CREPC_KATC)sCODE
 200    actvpb2562cTyp výstupu publikačnej činnosto976bk976bnECPA CREPC - hodnota pole 976b - vsechny opakovani podle a podpole (EPCA_CREPC_TYPD)sCODE
 200    acstob2563cŠtudijný odboro976ck976cnECPA CREPC - hodnota pole 976c - vsechny opakovani podle a podpole (EPCA_CREPC_STUDO)sCODE
@@ -461,7 +464,7 @@
 200    asuohb2554dxcObsadenie hudobného diela#Obsazení hudebního díla#Medium of PerformancenIndexuje sa celá spojená 382, aj samostne jednotlivé častio382,925asASCII,COMP,EXACT,LEFT,PHR
 200    apoub2556cPoužívateľské určenien100$a/17-19 (indexovaná každá pozíciu osobitne), len ak je písmenooPoužívateľské určenie
 200    aimbb2557cImpact faktor pre EPCA 0-neexistuje/1-existuje#Impact faktor pro EPCA 0-neexistuje/1-existujenimpact faktor pro EPCA - indexovane jako imp (ixIndexValuesIF)o463/461 -> zdroj serialsCODE
-200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2
+200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2sCODE
 200    aqjcrsjrb2558cKvartily JCR a SJR#Kvartily JCR a SJR#JCR and SJR Quartilenkvartily jcr a sjr dohromady v jenom; hodnoty (cisla) jsou rozlisena sufixem "jcr" nebo "sjr" napr. 3jcr; ze zdojového dokumentu indexace 9784 (hodnota stejná jako T164); vyuziva se v EpcaReports pro pole AND a ORo9784 ze zdrojového dokumenumzapina se na paramter quartileJcrSjr ($b) modifikatoru xclaHodKrit ($a) tj. primo souvisi s indexy qjcr a qsjr
 200    aqjcrsjrorb2560cKvartily JCR a SJR#Kvartily JCR a SJR#JCR and SJR Quartilenhodnoty kvartilu jcr a sjr kazdy zvlast se sufixem kvartilu ; hodnoty (cisla) jsou rozlisena sufixem "jcr" nebo "sjr" napr. 3jcr; ze zdrojového dokumentu indexace 9784,7 (hodnota stejná jako T164,7); vyuziva se v EpcaReportso978 ze zdrojového dokumenumzapina se na paramter quartileJcrSjr ($b) modifikatoru xclaHodKrit ($a) tj. primo souvisi s indexy qjcr a qsjr a qjcrsjr
 200    adoib2559cDOInDOIo024 - a (ak i1="7" a i2=" " a 2 = "doi")sCODE
@@ -589,7 +592,7 @@
 200    aupsb2350cInformácia o fulltexte#Informace o fulltextu#Information about fulltextnIdexace informací o ukládání fulltextů. Indexuje se podpole a i b. Pokud je nejaka hodnota, ulozi se tam FoC52sCODE
 200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmddsCODE
 200    aaugenb2319cAut. gener. záznamy (používateľ)#Aut. gener. záznamy (uživatel)#opouživateľ z prvého 999-d
-200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2
+200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2sCODE
 200    ag200cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a,b jsou povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o200 a_" "_b_ + _" "_c_" "_d_" "_f_" "_x
 200    ag210cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o210 a_" "_ +  _b_" "_c_" "_d_" "_e_" "_f
 200    ag215cautoritni index pro vyhledani##nIndex pro vyhledávání v autoritách. Podpole a je povinné pro vytvoření indexu. Pokud nejsou vyplněny, index se nevytváří. Z indexu se odstraní interpunkce pro snadnější vyhledávání. Index se vytváří v případě, že je v ARL_CFG nastaveno 200a=GenAuthRec 200b=1o215 a_" "_ +  _x_" "_y_" "_z
@@ -720,7 +723,7 @@
 200    adkpodendb2318ckoniec podujatia##nIndexovane len pri Inderxaparm „digkr“oC16f ak 980x = D
 200    aaugenb2319cAut. gener. záznamy (používateľ)#Aut. gener. záznamy (uživatel)#opouživateľ z prvého 999-d
 200    aa100osb2414cOsobná autorita#Osobní autoritadxnpridaný index "a100os" (na modifikátor "a100os") v metóde "ixIndexValuesAuth"otagy 100,400,500,700 subtagy acbdq0sASCII,COMP,EXACT,LEFT,PHR
-200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2
+200    at001cr2b2320cIdentifikácia záznamu z CREPČ2#Identifikace záznamu z CREPČ2o035$a ak $2 = CREPC2sCODE
 200    atyposdkb2323cTyp osoby - DK##nIndexovane len pri Inderxaparm „digkr“oC50a když 980x = D & 100'= ""sASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
 200    atypindkb2326cTyp instituce - DK##nIndexovane len pri Inderxaparm „digkr“oC15a když 980x = D & 110'= ""sASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
 200    atypakdkb2329cTyp akce DKnIndexovani len pri Inderxaparm „digkr“o111;C50$a ak 980x = DsASCII,COMP,EXACT,LEFT,PHR,RIGHT,FACET
@@ -804,6 +807,7 @@
 200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmdd
 ###
 # @id UN_TABLES BASE_INDEXES_H
+002    23.09.25 jk; pridany indexy los a di
 002    28.11.22 jk; pridana index price
 002    09.02.22 dk; v BASE_INDEXES_H, indexy 'tr' a 'tr0' zmenena hodnota podpole $s na 'N'
 002    30.07.19 oi; pridan index vyrtr0 - Úbytkové číslo (zarovnané nulami)
@@ -818,6 +822,7 @@
 200    aavailb2435cDostupnosť#Dostupnost#Availabilitynaktualne su pridelene tieto hodnoty 'p' - holding je k dispozicii prezencne, 'f' - k dispozicii na absencnu vypozicku (+nie je blok.ziadanky). pre 'f' sa dalej degeruje index t001f, podla ktoreho potom vieme pre dany titul najst vsetky volne hodlingy. Viz. tiez avail index v katalogu. Cislo atributu bolo zvolene tak aby bolo totozne aj pre katalog.nv-vypozicka,z-ziadanka,rd-drzana rezervaciaon/a - indexuju sa konstaty viz. poznamkaopridane statusy z itt z Trx sASCII,COMP,EXACT,LEFT,PHR
 200    abcb2003cČiarový kód#Čárový kód#Čiarový kódnciarovy kodo100-bsASCII,COMP,EXACT,LEFT,PHR
 200    acstcb2487cZúčtovacie stredisko#Zúčtovací středisko#Cost centermidxucetnzúčt.stř  (na modif."idxucet")o400n
+200    adib2100ndislokaciao100d
 200    adkb2410cTitul - druh dokumentu#Titul - druh dokumentu#Title - document typemtidruhndruh dokumentu, len s parametrom "tidruh"oindex dk z l_un_catsASCII,EXACT
 200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99dsASCII,EXACT
 200    adobab2479cDoba (typ) výpožičky#Doba (typ) výpožičky#Period (type) of check-outndoba vypozicky, pozn. Toto je pouzite pri dotahovani stavu holdingu u Txx katalogu a pod.o200-dsASCII,COMP,EXACT,LEFT,PHR
@@ -838,6 +843,7 @@
 200    alob2004cLokácia#Lokace#Locationnlokacia_dislokaciao100 l_d ( subtagy oddelene podtrzitkom )sASCII,COMP,EXACT,LEFT,PHR
 200    alocb2478cSkupina vlastníka záznamu#Skupina vlastníka záznamu#Group of record ownernlokacie kniznic, ktore maju stiahnuty zaznam , momentalne sa nepouzivao999-csASCII
 200    alockb2477cBlokovanie exemplára#Blokovanie exempláře#Lock of itemnblokovanie holdinguo200-lsASCII,COMP,EXACT,LEFT,PHR
+200    alosb2101nlokaciao100l
 200    aowb2008cVlastník#Vlastník#Ownernvlastniko400-osASCII,COMP,EXACT,LEFT,PHR
 200    apdodb2482cPoznámka k dodávateľovi#Poznámka k dodavateli#Vendor notedxnPoznámka k dodávateľovio400-usASCII,COMP,EXACT,LEFT,PHR
 200    apriceb2488nCena exmeplare z H_400d, pokud neni tak z H_400c
@@ -960,6 +966,7 @@
 200    azsb2014cZúčovacie stredisko#Zúčtovací středisko#nzuct.stredistoo210e
 ###
 # @id UN_TABLES BASE_INDEXES_T
+002    01.12.25 jk; pridan titu1e
 002    02.02.21 oi; doplneny index dttvg
 002    19.10.18 lp; doplneny popis indexu ukpk
 002    12.05.17 lp; doplnene a upravene zbyvajici nazvy a popisy indexu
@@ -1005,7 +1012,8 @@
 200    atitdcKód titulu s dátumom výpožičky#Kód titulu s datumem výpůjčky#Title ID with date of loanmtitdidxndatumy vypoziciek prislusneho titulu, funguje len po zapojeni modifikatora titdidx v Trx triede, obmedzene defaultne len na 1 rok dozadu, pocet dni sa da zmenit parametrom modifikatora.okod_titulu#datum_vypozicky (RRRRMMDD)
 200    atitlcKód titulu s lokáciou/dislokáciou#Kód titulu s lokací/dislokací#Title ID with location/dislocationmtitlidxnindex pro kontrolu, jestli uz byl tento titul v minulosti na dane lokaci_dislokaci, funguje jen po zapojeni modifikatoru titlidx v Trx tride, omezene defaultne na 1 rok dozadu, pocet dni se da zmenit parametrem modifikatoruokod_titulu#lokace_dislokace (jen pro T03a = e, tj. pohyb dokumentu)
 200    atitucDatabáza a kód titulu + databáza a kód čitateľa (časovo obmedzené)#Databáze a kód titulu + databáze a kód čtenáře (časovo omezeno)#Database and title ID + database and user ID (limited)mtituidxnindex pro kontrolu, jestli uz mel ctenar tento titul v minulosti vypujceny, funguje jen po zapojeni modifikatoru tituidx v Trx tride, omezene defaultne na 1 rok dozadu, pocet dni se da zmenit parametrem modifikatoruokod_titulu#kod_ctenare (pokud 200a = V)
-200    atitu1cDatabáza a kód titulu + databáza a kód čitateľa#Databáze a kód titulu + databáze a kód čtenáře#Database and title ID + database and user IDnindex pro kontrolu, jestli uz mel ctenar tento titul v minulosti vypujceny, ale neomezeny modifikatoremokod_titulu#kod_ctenare (pokud 200a = V)
+200    atitu1cDatabáza a kód titulu + databáza a kód čitateľa pro výpožičky#Databáze a kód titulu + databáze a kód čtenáře pro výpůjčky#Database and title ID + database and user ID for loansnindex pro kontrolu, jestli uz mel ctenar tento titul v minulosti vypujceny, ale neomezeny modifikatoremokod_titulu#kod_ctenare (pokud 200a = V)
+200    atitu1ecDatabáza a kód titulu + databáza a kód čitateľa pro e-výpožičky#Databáze a kód titulu + databáze a kód čtenáře pro e-výpůjčky#Database and title ID + database and user ID for e-loansnindex pro kontrolu, jestli uz mel ctenar na tento titul v minulosti e-vypujcku, ale neomezeny modifikatoremokod_titulu#kod_ctenare (pokud 200a = G)
 200    atrxtexcPrepadnuté Z a RD (max. 30 dní staré)#Propadnuté Z a RD (max. 30 dní staré)#Expired Z and RD (max. 30 days old)ntyp transakce (rd/z) - propadnute zadanky a drzene rezervace ne starsi nez 30 dnioT03-a (pokud T03a = rd/z, T03b neni, T03r neni starsi nez 30 dni)
 200    audocAktivita čitateľa#Aktivita čtenáře#Reader's activitymudoidxnkontrola aktivnich ctenaru, slozeny index kod_ctenare#datum_operace_ve_formatu_RRRRMMDD#oddeleni pro vsechny operace v transakci, ktere nejsou starsi nez 10 dni (10 je default, da se zmenit parametrem modifikatoru)o100-a#200-b(RRRRMMDD)#100-c
 200    audoscKontrola návštevnosti#Kontrola návštěvnosti#Traffic controlmudoidxnkontrola evidence navstevnosti, slozeny index kod_ctenare#datum_operace_ve_formatu_RRRRMMDD#oddeleni pro konkretni typ operace S, ktera neni starsi nez 10 dni (10 je default, da se zmenit parametrem modifikatoru)o100-a#200-b(RRRRMMDD)#100-c (pokud 200a = S)

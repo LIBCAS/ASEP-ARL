@@ -1,10 +1,23 @@
 ﻿/**
  * @author Michal Namesny
  *
+ * 02.12.25 on; uprava podminky pro vymaz bib. zaznamu
+ * 26.11.25 on; povolen vymaz i pro bibliograficke zaznamy
+ * 25.11.25 on; pokud je autor zaznamu aktualne prihlaseny steward, zpracovatel nebo superuser, neni komu zaznam vracet
+ * 21.11.25 on; je potreba kontrolovat i typ formulare?
+ * 07.11.25 on; omezeni zobrazeni podle 969f
+ * 24.10.25 on; zakaze editaci formulare pred kompletnim nactenim
+ * 21.10.25 on; zaznam bude ukladat vzdy
+ * 17.10.25 on; neotvirat upload do noveho panelu
+ * 13.10.25 on; mazat pouze odeslane zaznamy a pouze super uzivatel
+ * 06.10.25 on; doplnen parametr client
+ * 25.09.25 on; pripominky k navratu
+ * 19.09.25 on; vymaz datoveho zaznamu na CAV
+ * 18.09.25 on; moznost zadat logickou db
  * 23.06.25 on; ikona obrazek
  * 03.03.25 on; moznost nemazat Txx tagy
  * 20.02.25 on; ulozi zaznam pred prilozenim prilohy
- * 18.02.25 on; cteni boosteru pri zmene skinu 
+ * 18.02.25 on; cteni boosteru pri zmene skinu
  * 31.01.25 on; prida do ouska id zaznamu
  * 21.01.25 on; pridan parametr, zda nezakazat tlacitko Do IPAC
  * 20.01.25 on; doplneno pro sav
@@ -80,7 +93,7 @@
  * 30.08.11 on; doplnena moznost zadat kod zaznamu pro otevreni v editoru
  * 20.07.11 on; moznost predat nazev formulare v URL
  */
-/*global Ext,i3,epca,document,window,Blob,replacejscssfile,setTimeout,alert,getActCss */
+/*global Ext,i3,epca,document,window,Blob,replacejscssfile,setTimeout,alert,getActCss,location */
 
 Ext.ns('epca.evidence');
 
@@ -93,6 +106,7 @@ epca.evidence.c = {
 	sIndividual : 'I3UG_IN',
 	sProcessor : 'I3UG_ZP', // 28.03.17 on;
 	sSuper : 'I3UG_SU', // 28.03.17 on;
+	sDataSteward : 'I3UG_DS', // 21.08.25 on;
 
 	// 29.04.24 on; nastaveni bude pouze v csp souboru
 	//sActualCssStyle : 'css/' + i3.ictx.toLowerCase() + '.css', // globalni promenna - defaultni styl - musi byt shodny se stylem v indexEvidence.csp
@@ -103,7 +117,11 @@ epca.evidence.c = {
 	// 21.11.17 on; ikony v prehledu kontrol
 	sErrorImg : '<img src="images/exclamation.gif" alt="Error">',
 	sWarningImg : '<img src="images/check_warn.gif" alt="Warning">',
-	sInfoImg : '<img src="images/information.png" alt="Info">'
+	sInfoImg : '<img src="images/information.png" alt="Info">',
+
+	sIctxCav : 'cav', // 21.08.25 on;  // TODO: cav
+	sIctxSav : 'sav',
+	sIctxSluk : 'sluk'
 };
 
 epca.evidence.tx = {
@@ -190,12 +208,15 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			// 10.12.14 on; zjisti ZF
 			var comboDbBox = Ext.getCmp('topDbSelect');
 
+			// 18.08.25 on; podminka
 			// 23.02.23 on; musi vzit db z vybraneho formulare
-			//var dbname = comboDbBox.getValue();
-			//var n = comboDbBox.store.findExact('id', comboDbBox.getValue());
-			var n = comboDbBox.store.findExact('id', form.targetDb);
-			if (n >= 0) {
-				record = comboDbBox.store.getAt(n);
+			if (comboDbBox) {
+				//var dbname = comboDbBox.getValue();
+				//var n = comboDbBox.store.findExact('id', comboDbBox.getValue());
+				var n = comboDbBox.store.findExact('id', form.targetDb);
+				if (n >= 0) {
+					record = comboDbBox.store.getAt(n);
+				}
 			}
 			if (record) {
 				// existujici zaznam
@@ -356,7 +377,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				//autoWidth : true,
 				// 08.02.16 on; zruseno -  nechovalo se idelane pro pruznou delku poli
 				// 30.10.15 on; nastaveno pro CAV, kdyby nekde vadilo, prida vyjimku pro CAV
-				//minWidth : i3.ictx.toLowerCase() === 'cav' ? 980 : 800,
+				//minWidth : i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav ? 980 : 800,
 				items : [form.generate(true)],
 				//monitorValid : true,   // 22.01.16 on; zruseno, neni idealni
 				listeners : {
@@ -450,7 +471,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				},
 				scope: this
 				});*/
-				//if ((i3.ictx.toLowerCase() === 'cav') || (i3.ictx.toLowerCase() === 'sluk')) {
+				//if ((i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) || (i3.ictx.toLowerCase() === epca.evidence.c.sIctxSluk)) {
 
 				if (!Ext.isDefined(pTab) || (pTab === null)) {
 					return;
@@ -511,6 +532,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 		try {
 			newTab.show();
+			// 24.10.25 on; zakaze editaci formulare pred kompletnim nactenim
+			this.setDisabled(true);
 
 			var item = this.getForm(newTab);
 
@@ -525,6 +548,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			i3.msgOff(epca.evidence.c.sFormMsgId);
 			// 26.04.16 on; zobrazi chybu
 			i3.alert(err.message);
+			// 24.10.25 on; zakaze editaci formulare pred kompletnim nactenim
+			this.setDisabled(false);
 		}
 	},
 	/**
@@ -597,10 +622,12 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		} catch(err) {
 			// chyba
 			i3.msgOff(epca.evidence.c.sFormMsgId);
+			// 24.10.25 on; zakaze editaci formulare pred kompletnim nactenim
+			this.setDisabled(false);
 		}
-
 		i3.msgOff(epca.evidence.c.sFormMsgId);
-		//alert('msgOff');
+		// 24.10.25 on; zakaze editaci formulare pred kompletnim nactenim
+		this.setDisabled(false);
 	},
 	/**
 	 * Odmaze z objektu polozky s prazdnymi hodnotami (prazdny string, undefined, prazdne pole)
@@ -633,10 +660,10 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		// Tagy ktore nie je potrebne nacitavat
 		//if (key === '000' || key[0] === 'T') {
 		if (!epca.Config.User.csDoNotDeleteTxx) {
-		  if (key[0] === 'T') {
-	        delete object[key];
-		  }
-	    }
+			if (key[0] === 'T') {
+				delete object[key];
+			}
+		}
 	},
 	isUnloadedData : function(object) {
 		return !epca.isEmpty(object);
@@ -686,7 +713,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			xtype : 'spacer',
 			width : 10,
 			hidden : true
-		}, cmpPrintSeparator, cmpSave, cmpSaveSeparator, cmpNew, cmpCopyRecordBtnSeparator = {
+		}, cmpPrintSeparator, cmpSave, cmpSaveSeparator, cmpReturnForCorrectionSeparator, cmpReturnForCorrection, cmpNew, cmpCopyRecordBtnSeparator = {
 			id : 'maintb_copyrecordbtn_separator', // 18.11.22 on;
 			xtype : 'spacer',
 			width : 10,
@@ -717,7 +744,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			hidden : true
 		}, cmpDeleteBtnSeparator = {
 			xtype : 'spacer',
-			//id : 'maintb_deletebtn_separator',
+			id : 'maintb_deletebtn_separator',
 			width : 10,
 			hidden : true
 		};
@@ -911,7 +938,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			valueField : 'id',
 			displayField : 'text',
 			// 11.12.15 on; vetsi pole pro CAV
-			width : i3.ictx.toLowerCase() === 'cav' ? 150 : 100,
+			width : i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav ? 150 : 100,
 			autoSelect : true,
 			forceSelection : true,
 			emptyText : epca.L10n.titleDatabase,
@@ -923,11 +950,16 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				//url : 'UnDatabases.json',
 				//url : 'UnDatabases_' + i3.ictx.toLowerCase() + '.json',
 				url : 'UnDatabases_' + i3.ictx.toLowerCase() + '.json5',
-				fields : ['id', 'text', 'index', 'limits', 'fldlist', 'dflist', 'shortdf', 'formtype'],
+				// 18.05.25 on; moznost zapojit logickou db ("db")
+				fields : ['id', 'text', 'index', 'limits', 'fldlist', 'dflist', 'shortdf', 'formtype', 'db'],
 				listeners : {
 					load : function(pStore) {
 						// 12.11.12 on; po nahrani automaticky vybere prvni polozku
 						var thisCombo = Ext.getCmp('topDbSelect');
+						// 18.08.25 on; kontrola
+						if (!thisCombo) {
+							return;
+						}
 						var record = pStore.getAt(0);
 						var c1, c2;
 
@@ -1174,6 +1206,27 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			iconCls : 'icon-save-img',
 			handler : function() {
 				this.save();
+			},
+			scope : this
+		};
+
+		// 21.08.25 on; vratit k oprave
+		cmpReturnForCorrectionSeparator = {
+			xtype : 'spacer',
+			width : 10,
+			id : 'maintb_return_record_separator',
+			hidden : true
+		};
+
+		// 21.08.25 on; vratit k oprave
+		cmpReturnForCorrection = {
+			text : this.csGetBtnText(epca.Config.User.ReturnRecordBtnFnText, epca.L10n.titleReturnRecord),
+			tooltip : epca.Config.User.ReturnRecordBtnFnHint || '',
+			id : 'maintb_return_record',
+			hidden : true,
+			iconCls : 'icon-return',
+			handler : function() {
+				this.csReturnForCorrection();
 			},
 			scope : this
 		};
@@ -1475,23 +1528,24 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		if (!i3.isEmptyString(epca.Config.User.csShowDeleteBtn)) {
 			cmpDeleteBtn = {
 				xtype : 'button',
-				//id : 'maintb_deletebtn',
+				id : 'maintb_deletebtn',
 				iconCls : 'icon-delete',
 				tooltip : epca.Config.User.csShowDeleteBtnHint || '',
 				text : this.csGetBtnText(epca.Config.User.csShowDeleteBtnText, epca.L10n.titleDeleteBtn),
+				hidden : true,
 				handler : function() {
 					this.csDeleteRecord();
 				},
 				scope : this
 			};
 			Ext.apply(cmpDeleteBtnSeparator, {
-				hidden : false
+				hidden : true
 			});
 		}
-        
-        // 20.01.25 on; doplneno SAV
+
+		// 20.01.25 on; doplneno SAV
 		// 16.09.15 on; vyjimka pro CAV - jina poradi policek v menu
-		if ((i3.ictx.toLowerCase() === 'cav')||(i3.ictx.toLowerCase() === 'sav')) {
+		if ((i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) || (i3.ictx.toLowerCase() === epca.evidence.c.sIctxSav)) {
 			// 14.07.23 on; zrusena vyjimka pro individualniho uzivatele
 			// zmena popisu tlacitka ulozit
 			//if (this.csIsAnonymousUser() || this.csIsIndividualUser()) {
@@ -1506,12 +1560,14 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				};
 			}
 
+			// 21.08.25 on; doplnen data steward
 			// 07.01.21 on; doplnen vymaz
 			// 28.03.17 on; zmena logiky, nejdriv zkontroluju zpracovatele, pak individuala a zbytek je anonym
 			// 24.09.15 on; vyjimka pro anonymniho uzivatele
-			if (this.csIsSuperUser() || this.csIsProcessorUser()) {
+			if (this.csIsSuperUser() || this.csIsDataSteward() || this.csIsProcessorUser()) {
+				// 21.08.25 on; pridana moznost vratit k oprave
 				aTBarItems = [cmpNew, cmpWosScopusSeparator, cmpWosScopus, cmpPrintSeparator, cmpPrint, cmpCopyRecordBtnSeparator, cmpCopyRecordBtn, cmpCheckRecordBtnSeparator, cmpCheckRecordBtn, cmpContentServerBtnSeparator, cmpContentServerBtn, //
-				cmpFnClearSeparator, cmpFnClear969f, cmpFn969fSeparator, cmpFn969f, cmpDeleteBtnSeparator, cmpDeleteBtn, /*cmpMainSearchSeparator, cmpMainSearch,*/cmpPBSearch, cmpDBList, cmpURLBtnSeparator, cmpURLBtn, cmpSaveSeparator, cmpSave, {
+				cmpFnClearSeparator, cmpFnClear969f, cmpFn969fSeparator, cmpFn969f, cmpDeleteBtnSeparator, cmpDeleteBtn, /*cmpMainSearchSeparator, cmpMainSearch,*/cmpPBSearch, cmpDBList, cmpURLBtnSeparator, cmpURLBtn, cmpSaveSeparator, cmpSave, cmpReturnForCorrectionSeparator, cmpReturnForCorrection, {
 					xtype : 'tbfill'
 				}, cmnUserName, cmpUsernameSeparator, cmpLogout, cmpCssListSeparator, cmpCssList];
 			} else if (this.csIsIndividualUser()) {
@@ -1585,7 +1641,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 		// nastavi db
 		var comboDbBox = Ext.ComponentMgr.get('topDbSelect');
-		if (Ext.isEmpty(comboDbBox.getValue())) {
+		// 18.08.25 on; podminka
+		if (comboDbBox && Ext.isEmpty(comboDbBox.getValue())) {
 			comboDbBox.setValue(epca.Config.User.dbCat);
 		}
 
@@ -1684,18 +1741,18 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	/**
 	 * Ulozenie zaznam
 	 * @param {Object} is_new
-	 * 
+	 *
 	 * 20.02.25 on; parametr poCallback
 	 */
 	save : function(pbClose, poMarc, pbForceCheck, psMsgAfterSave, poCallback) {
 		var activTab, record, is_new, c, nScrollTop, prop, newMarc, cmpBtnSave;
-		
+
 		// 10.10.23 on; snaha zamezit pokusu o opakovane vlozeni noveho zaznamu (dvojklikem)
 		cmpBtnSave = Ext.getCmp('maintb_save');
 		cmpBtnSave.setDisabled(true);
 		try {
 			activTab = this.getTabPanelForms().getActiveTab();
-			
+
 			// 26.07.16 on; neexistuje zadny formular
 			if (!activTab) {
 				// 10.10.23 on;
@@ -1712,9 +1769,9 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				return;
 			}
 
-            // 20.02.25 on; podminka
-            if (!poCallback) {
-			  i3.msgOn(epca.L10n.txSavingRecord, undefined, undefined, epca.evidence.c.sFormMsgId2);
+			// 20.02.25 on; podminka
+			if (!poCallback) {
+				i3.msgOn(epca.L10n.txSavingRecord, undefined, undefined, epca.evidence.c.sFormMsgId2);
 			}
 			try {
 				// 12.11.15 on; predelane
@@ -1757,10 +1814,10 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 			} catch(err) {
 				// chyba
-                // 20.02.25 on; podminka
-                if (!poCallback) {
-		          i3.msgOff(epca.evidence.c.sFormMsgId2);
-		        }
+				// 20.02.25 on; podminka
+				if (!poCallback) {
+					i3.msgOff(epca.evidence.c.sFormMsgId2);
+				}
 			}
 
 			// 21.12.20 on; zapamatuje si pozici scrollbaru
@@ -1777,7 +1834,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				// 28.06.23 on; nebude se kontrolovat zadny zaznam na CAV
 				// 21.06.23 on; nekontrolovat Datovy zaznam na CAV pri ulozeni
 				//check : ((activTab.form.unFormat === 'E') && (i3.ictx.toLowerCase() === 'cav') && !pbForceCheck) ? '0' : '1',
-				check : (((i3.ictx.toLowerCase() === 'cav')||(i3.ictx.toLowerCase() === 'sav')) && !pbForceCheck) ? '0' : '1',
+				check : (((i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) || (i3.ictx.toLowerCase() === epca.evidence.c.sIctxSav)) && !pbForceCheck) ? '0' : '1',
 				success : function(oMARC_rec, poResult) {
 					var m;
 					try {
@@ -1825,37 +1882,37 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 						// 13.09.17 on; vysledky kontrol
 						this.csCheckRecordResult(poResult, true);
 
-			            // 20.02.25 on; podminka
-                        if (!poCallback) {
-  							// 28.05.24 on; pro zaznam ctenare zobrazi v pripade U95a=1 jinou hlasku
-    						if ((activTab.form.unFormat === 'U')&&(oMARC_rec.getTag('U95a') === '1')) {
+						// 20.02.25 on; podminka
+						if (!poCallback) {
+							// 28.05.24 on; pro zaznam ctenare zobrazi v pripade U95a=1 jinou hlasku
+							if ((activTab.form.unFormat === 'U') && (oMARC_rec.getTag('U95a') === '1')) {
 								m = new i3.WS.Msg('INFEPCAUSER001');
-        	   	                 i3.alert(m.userText); 
+								i3.alert(m.userText);
 							} else {
-							  epca.notify(epca.L10n.evidenceSaveRecordSuccess, epca.L10n.messageOK, "icon-accept");
+								epca.notify(epca.L10n.evidenceSaveRecordSuccess, epca.L10n.messageOK, "icon-accept");
 							}
 						}
-						
+
 						/// 20.02.25 on; moznost predat callback
 						if (poCallback) {
-                          poCallback.call(this);
-                        }
-                
+							poCallback.call(this);
+						}
+
 					} catch(err) {
 						// chyba
-      		            // 20.02.25 on; podminka
-                        if (!poCallback) {
-    						i3.msgOff(epca.evidence.c.sFormMsgId2);
-    					}
-         				// 10.10.23 on; 
-		    			cmpBtnSave.setDisabled(false);
+						// 20.02.25 on; podminka
+						if (!poCallback) {
+							i3.msgOff(epca.evidence.c.sFormMsgId2);
+						}
+						// 10.10.23 on;
+						cmpBtnSave.setDisabled(false);
 					}
-                    // 20.02.25 on; podminka
-                    if (!poCallback) {
-				  	  i3.msgOff(epca.evidence.c.sFormMsgId2);
-				  	} 
-       				// 10.10.23 on; 
-	    			cmpBtnSave.setDisabled(false);
+					// 20.02.25 on; podminka
+					if (!poCallback) {
+						i3.msgOff(epca.evidence.c.sFormMsgId2);
+					}
+					// 10.10.23 on;
+					cmpBtnSave.setDisabled(false);
 				},
 				failure : function(errorMsg, poResult) {
 					i3.msgOff(epca.evidence.c.sFormMsgId2);
@@ -1864,8 +1921,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 					this.csCheckRecordResult(poResult, true);
 
 					epca.notify(epca.L10n.evidenceManipulatingFormError + errorMsg, epca.L10n.messageError, "icon-error-epca");
-					
-					// 10.10.23 on; 
+
+					// 10.10.23 on;
 					cmpBtnSave.setDisabled(false);
 				},
 				//scope : activTab.marcCloneToSet // v clone sa nachadza 005 a 009, pretoze sa nezobrazuje
@@ -2130,7 +2187,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 		// 31.01.25 on; prida do ouska id zaznamu
 		var sId = actTab.recordId || epca.evidence.tx.txNew;
-		actTab.setTitle(actTab.form.title.ls()+'*'+sId);
+		actTab.setTitle(actTab.form.title.ls() + '*' + sId);
 
 		// Ako prechadza marc stromom, odmazavaju sa z neho nacitane hodnoty
 		epca.semafor = {};
@@ -2299,6 +2356,25 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 
 		// 01.07.24 on; slouceno a pridano "I"
 		/*if (target.tagName === 'IMG') {// pokud jde o obrazek (mozna lupu?), zkusi nacist jinak
+		 href = '';
+		 // musim smazat href
+		 targetEl = Ext.fly(target);
+		 anchor = targetEl.up("a");
+		 if (anchor) {
+		 href = anchor.dom.href;
+		 }
+		 } else
+		 // 10.01.19 on; SPAN
+		 if (target.tagName === 'SPAN') {
+		 href = '';
+		 // musim smazat href
+		 targetEl = Ext.fly(target);
+		 anchor = targetEl.up("a");
+		 if (anchor) {
+		 href = anchor.dom.href;
+		 }
+		 }*/
+		if ((target.tagName === 'IMG') || (target.tagName === 'SPAN') || (target.tagName === 'I')) {
 			href = '';
 			// musim smazat href
 			targetEl = Ext.fly(target);
@@ -2306,26 +2382,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			if (anchor) {
 				href = anchor.dom.href;
 			}
-		} else
-		// 10.01.19 on; SPAN
-		if (target.tagName === 'SPAN') {
-			href = '';
-			// musim smazat href
-			targetEl = Ext.fly(target);
-			anchor = targetEl.up("a");
-			if (anchor) {
-				href = anchor.dom.href;
-			}
-		}*/
-		if ((target.tagName === 'IMG')||(target.tagName === 'SPAN')||(target.tagName === 'I')) {
-			href = '';
-			// musim smazat href
-			targetEl = Ext.fly(target);
-			anchor = targetEl.up("a");
-			if (anchor) {
-				href = anchor.dom.href;
-			}
-		} 
+		}
 
 		if (href) {
 			// 11.12.15 on; moznost otevrit zaznam v nove zalozce
@@ -2519,8 +2576,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			sFldlist = record.data['fldlist'];
 			sDFlist = record.data['dflist'];
 			sShortDF = record.data['shortdf'];
-		    // 06.12.24 on; moznost nastavit v UnDatabases_ictx.json formtype
-		    sFormType = record.data['formtype'];
+			// 06.12.24 on; moznost nastavit v UnDatabases_ictx.json formtype
+			sFormType = record.data['formtype'];
 		}
 
 		// 12.12.14 on; pokud se ma pouzivat ascii, zapne ho defaultne
@@ -2537,7 +2594,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			initTerm : term,
 			searchMode : pbSearch, //                   search mode 0: scan,1: search, 2: browse,3: ascii
 			wannaMarcRes : true, //                     request result in MARC
-			
+
 			// 06.12.24 on; pridam typ formulare
 			//callback : this.csLoadMarcRec,
 			callback : this.csLoadMarcRec.createDelegate(this, [null, sFormType], true),
@@ -2546,7 +2603,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			displayFmt : sShortDF, // zkraceny ZF
 			csDisabledOKBtn : epca.Config.User.csPBMainSearchOnlyView,
 			// 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
-            csDisplayFormatText : epca.Config.User.DisplayFormatText,
+			csDisplayFormatText : epca.Config.User.DisplayFormatText,
 			scope : this
 		});
 
@@ -4223,7 +4280,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	 * upload souboru do content serveru
 	 */
 	csUploadContentServer : function() {
-		var activTab, sId;
+		var activTab;
 
 		activTab = this.getTabPanelForms().getActiveTab();
 
@@ -4232,16 +4289,18 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			return;
 		}
 
+		// 21.10.25 on; zaznam bude ukladat vzdy
 		// id zaznamu
-		sId = activTab.recordId;
-		// nejrive je nutne zaznam ulozit
-		if (this.csIsNewRecord(sId)) {
-			// 20.02.25 on; zkusi zaznam ulozit
-			//epca.notify(epca.L10n.evidenceFirstSaveCommon, epca.L10n.messageError, 'icon-error');
-			this.csUploadContentServer1SaveNewRec(activTab);
-			return;
-		}
-		this.csUploadContentServer0();
+		/*sId = activTab.recordId;
+		 // nejrive je nutne zaznam ulozit
+		 if (this.csIsNewRecord(sId)) {
+		 // 20.02.25 on; zkusi zaznam ulozit
+		 //epca.notify(epca.L10n.evidenceFirstSaveCommon, epca.L10n.messageError, 'icon-error');
+		 this.csUploadContentServer1SaveNewRec(activTab);
+		 return;
+		 }
+		 this.csUploadContentServer0();*/
+		this.csUploadContentServer1SaveNewRec(activTab);
 	},
 	csUploadContentServer0 : function() {
 		var activTab, sId, sDb, sIctx, sLanguage, sURL;
@@ -4256,7 +4315,6 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		// id zaznamu
 		sId = activTab.recordId;
 
-		
 		// class
 		sDb = i3.className2LName(activTab.form.targetDb);
 
@@ -4276,16 +4334,22 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			} else {
 				sURL = '/i2/i2.entry.cls';
 			}
-			sURL += '?ictx=' + sIctx + '&language=' + sLanguage + '&op=uploader&idx=' + sDb + '*' + sId;
+			// 06.10.25 on; doplnen parametr client
+			sURL += '?ictx=' + sIctx + '&language=' + sLanguage + '&op=uploader&idx=' + sDb + '*' + sId + '&client=1';
 		}
 
 		// zobrazi v novem okne
-		window.open(sURL, '_blank');
+		// 17.10.25 on; neotvirat upload do noveho panelu
+		if (epca.Config.User.ShowContentServerBtnNoNewWindow) {
+			location.href = sURL;
+		} else {
+			window.open(sURL, '_blank');
+		}
 	},
 	// 20.02.25 on; ulozi zaznam pred prilozenim prilohy
 	csUploadContentServer1SaveNewRec : function(activTab) {
 		var c;
-		
+
 		if (!Ext.isDefined(activTab) || activTab === null) {
 			return;
 		}
@@ -4408,6 +4472,13 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		return this.csIsUserOfGroup(epca.evidence.c.sSuper);
 	},
 	/*
+	 * zjisteni, zda jde o data stewarda pro CAV
+	 *
+	 */
+	csIsDataSteward : function() {
+		return this.csIsUserOfGroup(epca.evidence.c.sDataSteward);
+	},
+	/*
 	 * zjisteni, zda jde o anonymniho uzivatele pro CAV - ma na konci 100$b "-a"
 	 *
 	 */
@@ -4428,8 +4499,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	csCheckBeforeClear969f : function(cmpBtn, activTab, pbShowMsg, poOutParams) {
 		var index, i, s969f, bFound;
 		//cmpBtn.setTooltip('');
-		
-		// 21.01.25 on; zobrazit tlacitko zakazane? 
+
+		// 21.01.25 on; zobrazit tlacitko zakazane?
 		poOutParams = poOutParams || {};
 		poOutParams.disabled = false;
 
@@ -4528,7 +4599,12 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		// 27.06.23 on; pro Datovy zaznam na CAV je nutne pro zobrazeni tlacitko k odeslani do IPAC vyplnene pole U95c=1
 		//if ((i3.ictx.toLowerCase() === 'cav') && (activTab.form.unFormat === 'E')) {
 		if (activTab.form.unFormat === 'E') {
-			// 21.01.25 on; 
+			// 21.08.25 on; pokud jde o CAV, tak tlacitko zobrazim jen pro uzivatele SU (super user)
+			if ((i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) && !this.csIsSuperUser()) {
+				return false;
+			}
+
+			// 21.01.25 on;
 			poOutParams.disabled = true;
 
 			if (!newMarc['U95']) {
@@ -4537,7 +4613,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			if (!newMarc['U95'][epca.form.Helper.c.sSubtagPrefix + 'c']) {
 				return false;
 			}
-			if (newMarc['U95'][epca.form.Helper.c.sSubtagPrefix + 'c'] !== '1') {
+			// 21.08.25 on; podpora pro super usera (2)
+			if ((newMarc['U95'][epca.form.Helper.c.sSubtagPrefix + 'c'] !== '1') && (newMarc['U95'][epca.form.Helper.c.sSubtagPrefix + 'c'] !== '2')) {
 				return false;
 			}
 		}
@@ -4585,6 +4662,11 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			if (epca.Config.User.csSet969fTitleAllowedFormTypes.fieldLocate('#', activTab.form.unFormat) === 0) {
 				return false;
 			}
+		}
+
+		// 21.08.25 on; pokud jde o CAV, tak tlacitko zobrazim jen pro uzivatele SU (super user)
+		if ((activTab.form.unFormat === 'E') && (i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) && !this.csIsSuperUser()) {
+			return false;
 		}
 
 		var newMarc = this.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
@@ -4664,6 +4746,48 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		// pokud je nastaveni omezeni zobrazeni tlacitko podle typu formulare, zkontroluje to
 		if (!i3.isEmptyString(epca.Config.User.ShowContentServerBtnFnParam)) {
 			if (epca.Config.User.ShowContentServerBtnFnParam.fieldLocate('#', activTab.form.unFormat) === 0) {
+				return false;
+			}
+		}
+
+		// 07.11.25 on; jenom pokud 969f ma predepsane hodnoty
+		if (!i3.isEmptyString(epca.Config.User.ShowContentServerBtn969f)) {
+			var i, index, s969f, newMarc = this.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
+			var bFound = false;
+			this.mergeMarc(activTab.marcCloneToSet, newMarc);
+
+			if (newMarc['969'] && newMarc['969'][epca.form.Helper.c.sSubtagPrefix + 'f']) {
+				var o = newMarc['969'][epca.form.Helper.c.sSubtagPrefix + 'f'];
+
+				if (!Ext.isArray(o)) {
+					for ( i = 1; i <= epca.Config.User.ShowContentServerBtn969f.fieldcount('#'); i += 1) {
+						s969f = epca.Config.User.ShowContentServerBtn969f.piece('#', i);
+						if (o === s969f) {
+							bFound = true;
+							break;
+						}
+					}
+				} else {
+					for ( i = 1; i <= epca.Config.User.ShowContentServerBtn969f.fieldcount('#'); i += 1) {
+						s969f = epca.Config.User.ShowContentServerBtn969f.piece('#', i);
+						index = o.indexOf(s969f);
+						if (index >= 0) {
+							bFound = true;
+							break;
+						}
+					}
+				}
+			}
+
+			// 21.11.25 on; je potreba kontrolovat i typ formulare?
+			if (!i3.isEmptyString(epca.Config.User.ShowContentServerBtnFormTypesToCheck969f)) {
+				// pokud neni formulare vyjmenovany, nekontrolovat 969f
+				if (epca.Config.User.ShowContentServerBtnFormTypesToCheck969f.fieldLocate('#', activTab.form.unFormat) === 0) {
+					bFound = true;
+				}
+			}
+
+			if (!bFound) {
 				return false;
 			}
 		}
@@ -4788,7 +4912,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			c.setVisible(bVisible);
 			// 21.01.25 on; pokud se ma tlacitko zakazat, zobrazi ho
 			if (!bVisible && oDisabled.disabled) {
-			 	bVisible = true;	
+				bVisible = true;
 				c.setVisible(true);
 				c.setDisabled(true);
 			} else {
@@ -4839,6 +4963,28 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			bVisible = this.csCheckCopyRecordVisibility(c, activTab);
 			c.setVisible(bVisible);
 			c = Ext.getCmp('maintb_copyrecordbtn_separator');
+			if (c) {
+				c.setVisible(bVisible);
+			}
+		}
+
+		// 21.08.25 on; tlacitko pro navrat zaznamu k uprave
+		c = Ext.getCmp('maintb_return_record');
+		if (c) {
+			bVisible = this.csCheckReturnRecordVisibility(activTab);
+			c.setVisible(bVisible);
+			c = Ext.getCmp('maintb_return_record_separator');
+			if (c) {
+				c.setVisible(bVisible);
+			}
+		}
+
+		// 18.09.25 on; tlacitko pro vymaz zaznamu
+		c = Ext.getCmp('maintb_deletebtn');
+		if (c) {
+			bVisible = this.csCheckDeleteRecordVisibility(activTab);
+			c.setVisible(bVisible);
+			c = Ext.getCmp('maintb_deletebtn_separator');
 			if (c) {
 				c.setVisible(bVisible);
 			}
@@ -4922,7 +5068,19 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	},
 	csGetRecSearch : function(cmp) {
 		var comboDbBox = Ext.getCmp('topDbSelect');
-		var dbname = comboDbBox.getValue();
+		var record, ldbname = '', dbname = comboDbBox.getValue();
+		// 18.09.25 on; moznost zadat logickou db
+		var n = comboDbBox.store.findExact('id', dbname);
+		if (n >= 0) {
+			record = comboDbBox.store.getAt(n);
+		}
+		if (record) {
+			//
+			ldbname = record.data['db'];
+			if (!i3.isEmptyString(ldbname)) {
+				dbname = ldbname;
+			}
+		}
 		if (!cmp) {
 			cmp = Ext.getCmp('mainsearch_term');
 		}
@@ -4935,6 +5093,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			classn : dbname,
 			fmt : 'LINEMARC',
 			t001 : sValue,
+			csUseNewSE : true, //18.09.25 on; zapojen novy SE kvuli vyhledavani v logicke db
 			success : function(selectedRecord) {
 				// 05.11.15 on; doplneno nacteni formatu z comboboxu
 				var record, sFormType = '', n = comboDbBox.store.findExact('id', comboDbBox.getValue());
@@ -5068,8 +5227,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		// 29.04.24 on; upraveno
 		// pouze pokud se lisi od aktualniho
 		//if (epca.evidence.c.sActualCssStyle !== sValue) {
-         sActCss = getActCss(oParams);
-		if (sActCss  !== sValue) {
+		sActCss = getActCss(oParams);
+		if (sActCss !== sValue) {
 			// 18.02.25 on; booster
 			// 29.04.24 on; upraveno
 			//Replace all occurences "oldstyle.css" with "newstyle.css"
@@ -5176,7 +5335,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			scope : this,
 			dbOptions : aDBOptions,
 			// 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
-            csDisplayFormatText : epca.Config.User.DisplayFormatText
+			csDisplayFormatText : epca.Config.User.DisplayFormatText
 		});
 
 		// Otvorit flexpop so search/browse
@@ -5730,6 +5889,12 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			return;
 		}
 
+		// 19.09.25 on; na CAV se bude zaznam mazat jinak
+		if (i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) {
+			this.csDeleteRecordCAV(activTab);
+			return;
+		}
+
 		i3.msgOn(epca.L10n.txDeletingRecord, undefined, undefined, epca.evidence.c.sFormMsgId2);
 		try {
 
@@ -5868,5 +6033,433 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		}
 		// pridavame limitu
 		return pOper + ' ' + pLim + ' ' + pPQF;
+	},
+	/**
+	 * Navrat zaznamu k uprave
+	 *
+	 * 21.08.25 on;
+	 */
+	csReturnForCorrection : function() {
+		var activTab = this.getTabPanelForms().getActiveTab(), record, prop, nScrollTop;
+
+		// jen pro adminy
+		if (!this.csIsProcessorUser() && !this.csIsSuperUser() && !this.csIsDataSteward()) {
+			return;
+		}
+
+		i3.msgOn(epca.L10n.txReturningRecord, undefined, undefined, epca.evidence.c.sFormMsgId);
+		try {
+			//c = Ext.getCmp('maintb_return_record');
+
+			// kontroly pred provedenim
+			if (!this.csCheckReturnRecordVisibility(activTab)) {
+				i3.msgOff(epca.evidence.c.sFormMsgId);
+				return;
+			}
+
+			var newMarc = this.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
+
+			this.mergeMarc(activTab.marcCloneToSet, newMarc);
+
+			//newMarc['001'] = activTab.recordId;
+
+			// pole U96a musi byt vyplnene
+			if (!newMarc['U96'] || !newMarc['U96'][epca.form.Helper.c.sSubtagPrefix + 'a']) {
+				i3.msgOff(epca.evidence.c.sFormMsgId);
+				epca.notify(epca.L10n.evidenceReturnRecordError + epca.L10n.evidenceReturnNoteEmpty, epca.L10n.messageError, "icon-error-epca");
+				return;
+			}
+
+			if (!newMarc['U95']) {
+				newMarc['U95'] = {};
+			}
+
+			prop = epca.form.Helper.c.sSubtagPrefix + 'c';
+			// 21.08.25 on; pokud jde o superusera nastavi "1", zbytek (datasteward/zpracovatel) "0"
+			if (this.csIsSuperUser()) {
+				newMarc['U95'][prop] = '1';
+			} else {
+				newMarc['U95'][prop] = '0';
+			}
+
+			record = epca.convertToMarc(newMarc);
+
+			//  mozna  uprava zaznamu  pred  ulozenim
+			if (epca.Config.User && epca.Config.User.csPreSave) {
+				epca.Config.User.csPreSave(record, activTab);
+			}
+
+			record.t001 = activTab.recordId;
+			record.classn = activTab.form.targetDb;
+			record.data = (record.dataToWsRecord(true)).record;
+		} catch(err) {
+			// chyba
+			i3.msgOff(epca.evidence.c.sFormMsgId);
+		}
+
+		// zapamatuje si pozici scrollbaru
+		var c = activTab.getFormMainFieldset();
+		if (c && c.ownerCt) {
+			nScrollTop = activTab.getFormMainFieldset().ownerCt.body.dom.scrollTop;
+		} else {
+			nScrollTop = 0;
+		}
+
+		i3.WS.update({
+			operation : 'update',
+			// nekontrolovat pri vraceni
+			check : '0',
+			success : function(oMARC_rec) {
+				try {
+					// 25.09.25 on; zaznam se nebude nacitat, zavre se
+					/*if (epca.Config.User && epca.Config.User.csPreOpen) {
+					 epca.Config.User.csPreOpen(oMARC_rec);
+					 }
+					 this.recordId = oMARC_rec.t001;
+					 this.marcToSet = epca.convertToObject(oMARC_rec.data, epca.Config.getDbFormat(oMARC_rec.classn));
+
+					 // zapamatuje si MARC zaznam
+					 this.csOrigMarcRecord = oMARC_rec;
+
+					 this.csLoadRecord(activTab, undefined, true);
+					 // csLoadRecord rozdeleno na 2 casti
+					 this.csAddFormWait(this, activTab, undefined, undefined, this.csLoadRecordEnd, undefined, nScrollTop);
+
+					 // rolovani na spravnou pozici - protoze pokud mam vice opakovani fieldsetu (napr. autori), dojde k odskoku na 2 opakovani
+					 // je to tady i v metode csLoadRecordEnd, ktera se vola pozdeji - neni tam moc videt odskok nahoru a zpet
+					 if (nScrollTop && (nScrollTop > 0)) {
+					 c = activTab.getFormMainFieldset();
+					 if (c) {
+					 c.ownerCt.body.dom.scrollTop = nScrollTop;
+					 }
+					 }*/
+				} catch(err) {
+					// chyba
+					i3.msgOff(epca.evidence.c.sFormMsgId);
+				}
+				i3.msgOff(epca.evidence.c.sFormMsgId);
+
+				// zavre zalozku
+				this.getTabPanelForms().remove(activTab);
+				i3.alert(epca.L10n.evidenceReturnRecordSuccess);
+
+				epca.notify(epca.L10n.evidenceReturnRecordSuccess, epca.L10n.messageOK, "icon-accept");
+			},
+			failure : function(errorMsg) {
+				// chyba
+				i3.msgOff(epca.evidence.c.sFormMsgId);
+
+				epca.notify(epca.L10n.evidenceReturnRecordError + errorMsg, epca.L10n.messageError, "icon-error-epca");
+			},
+			scope : this // 11.08.11 on; zmena scope
+		}, record);
+	},
+	/**
+	 * zobrazeni tlacitka pro vraceni zaznamu
+	 *
+	 * 21.08.25 on;
+	 */
+	csCheckReturnRecordVisibility : function(activTab) {
+		if (!Ext.isDefined(activTab) || activTab === null) {
+			return false;
+		}
+		// 24.09.25 on; nesmi jit o novy zaznam
+		// zatim pouze pro adminy cav a pro formulare "E"
+		if (!this.csIsNewRecord(activTab.recordId) && (activTab.form.unFormat === 'E') && (i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) && (this.csIsSuperUser() || this.csIsDataSteward() || this.csIsProcessorUser())) {
+			// 25.09.25 on; nesmi byt prazdne pole 969f
+			var newMarc = this.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
+			this.mergeMarc(activTab.marcCloneToSet, newMarc);
+			if (!newMarc['969'] || !newMarc['969'][epca.form.Helper.c.sSubtagPrefix + 'f']) {
+				return false;
+			}
+
+			// 25.11.25 on; pokud je autor zaznamu aktualne prihlaseny steward, zpracovatel nebo superuser, neni komu zaznam vracet
+			if (newMarc['999'] && newMarc['999'][epca.form.Helper.c.sSubtagPrefix + 'e']) {
+				//alert(i3.Login.ctx.isUserT001 + ' ' + newMarc['999'][epca.form.Helper.c.sSubtagPrefix + 'e'].piece('*', 2));
+				if (i3.Login.ctx.isUserT001 === newMarc['999'][epca.form.Helper.c.sSubtagPrefix + 'e'].piece('*', 2)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+		return false;
+	},
+	/**
+	 * zobrazeni tlacitka pro vymaz zaznamu
+	 *
+	 * 21.08.25 on;
+	 */
+	csCheckDeleteRecordVisibility : function(activTab) {
+		if (!Ext.isDefined(activTab) || activTab === null) {
+			return false;
+		}
+		// na cav se bude zobrazovat pouze pro adminy
+		if (i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) {
+			// 26.11.25 on; povolen vymaz i pro bibliograficke zaznamy
+			//if (activTab.form.unFormat !== 'E') {
+			//	return false;
+			//}
+
+			// v aplikaci se budou mazat pouze odeslane zaznamy - musi byt prazdne pole 969f
+			var newMarc = this.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
+			this.mergeMarc(activTab.marcCloneToSet, newMarc);
+			if (!activTab.marcCloneToSet) {
+				return false;
+			}
+			if (newMarc['969'] && newMarc['969'][epca.form.Helper.c.sSubtagPrefix + 'f']) {
+				return false;
+			}
+			// super uzivatel muze mazat vsechny odeslane zaznamy
+			if (this.csIsSuperUser()) {
+				return true;
+			} else
+			// 02.12.25 on; zpracovatel/admin může mazat všechny odeslané záznamy aktuálního roku sběru (bez ohledu na označení do RIV) + záznamy jiných roků, které nejsou označené do RIV
+			if (this.csIsProcessorUser()) {
+				// pouze bibliograficke zaznamy
+				if (activTab.form.unFormat !== 'B') {
+					return false;
+				}
+				// pokud je jiny rok sberu a je oznacen export do RIV - konec
+				if (!newMarc['C26']) {
+					return false;
+				}
+				if ((newMarc['C26'][epca.form.Helper.c.sSubtagPrefix + 'd'] !== epca.Config.User.csDataCollectionYear) && (newMarc['C26'][epca.form.Helper.c.sSubtagPrefix + 'b'] === '1')) {
+					return false;
+				}
+				return true;
+			}
+
+			return false;
+		}
+
+		return true;
+	},
+	/**
+	 * @param {Object} activTab
+	 *
+	 * 19.09.25 on; "vymaz" hotoveho zaznamu na CAV
+	 *
+	 */
+	csDeleteRecordCAV : function(activTab) {
+		// 13.10.25 on; zapojena funkce
+		/*if (!Ext.isDefined(activTab) || activTab === null) {
+		 return;
+		 }
+		 // jen datasety
+		 if (activTab.form.unFormat !== 'E') {
+		 return;
+		 }
+
+		 // jen super uzivatel nebo zapracovatel + data v jinem ulozisti
+		 if (!this.csIsSuperUser() && (!this.csIsProcessorUser() || (activTab.form.formId !== 'DFLT_DATA_U'))) {
+		 return;
+		 }*/
+		if (!this.csCheckDeleteRecordVisibility(activTab)) {
+			return;
+		}
+
+		// dialog pro zapis pole U69a,b,d
+		i3.ui.csOpenColWin({
+			title : epca.L10n.txDeleteRecordCAV,
+			CsPanel : epca.evidence.pnlDeleteRecCAV,
+			//CsPanel: pnl,
+			width : 800,
+			y : 10,
+			csHideHelp : true
+		}, {// panel config
+			// csMarcConvDefUN pripadne zapojit v epca.Config.User.js
+			csLinRecord : {}, //i3.DataFmt.fromMarc(epca.Config.User.csMarcConvDefUN, poRec, oErr, true),
+			csOnAfterOK : this.csDeleteRecordCAV0.createDelegate(this, [activTab], 0),
+			csOnAfterOKScope : this
+		});
+	},
+	/**
+	 * @param {Object} activTab
+	 *
+	 * 19.09.25 on; "vymaz" datoveho zaznamu na CAV
+	 *
+	 */
+	csDeleteRecordCAV0 : function(activTab, linrec) {
+		var record, nScrollTop;
+
+		i3.msgOn(epca.L10n.txDeletingRecord, undefined, undefined, epca.evidence.c.sFormMsgId);
+		try {
+			var newMarc = this.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
+			this.mergeMarc(activTab.marcCloneToSet, newMarc);
+
+			if (!newMarc['U69']) {
+				newMarc['U69'] = {};
+			}
+			if (!newMarc['969']) {
+				newMarc['969'] = {};
+			}
+
+			// duvod cesky
+			newMarc['U69'][epca.form.Helper.c.sSubtagPrefix + 'a'] = linrec.t100a;
+			// duvod anglicky
+			newMarc['U69'][epca.form.Helper.c.sSubtagPrefix + 'b'] = linrec.t100b;
+			// datum
+			newMarc['U69'][epca.form.Helper.c.sSubtagPrefix + 'd'] = i3.c.dateTimeInt0();
+			// 23.09.25 on; nove opakovani nesmi byt
+			// 22.09.25 on; prida nove opakovani 969f
+			/*prop = epca.form.Helper.c.sSubtagPrefix + 'f';
+			 var o = newMarc['969'][prop];
+			 var sValue = 'ERASE';
+			 if (Ext.isArray(o)) {
+			 o.push(sValue);
+			 } else if (!i3.isEmptyString(o)) {
+			 o = [o, sValue];
+			 } else {
+			 o = sValue;
+			 }
+			 newMarc['969'][prop] = o;*/
+			newMarc['969'][epca.form.Helper.c.sSubtagPrefix + 'f'] = 'ERASE';
+
+			record = epca.convertToMarc(newMarc);
+
+			//  mozna  uprava zaznamu  pred  ulozenim
+			if (epca.Config.User && epca.Config.User.csPreSave) {
+				epca.Config.User.csPreSave(record, activTab);
+			}
+
+			record.t001 = activTab.recordId;
+			record.classn = activTab.form.targetDb;
+			record.data = (record.dataToWsRecord(true)).record;
+		} catch(err) {
+			// chyba
+			i3.msgOff(epca.evidence.c.sFormMsgId);
+		}
+
+		// zapamatuje si pozici scrollbaru
+		var c = activTab.getFormMainFieldset();
+		if (c && c.ownerCt) {
+			nScrollTop = activTab.getFormMainFieldset().ownerCt.body.dom.scrollTop;
+		} else {
+			nScrollTop = 0;
+		}
+
+		i3.WS.update({
+			operation : 'update',
+			// nekontrolovat pri vymazu
+			check : '0',
+			success : function(oMARC_rec) {
+				// zaznam se nebude po ulzoeni nacitat, zalozka se zavira
+				/*try {
+				 // 12.11.15 on;
+				 if (epca.Config.User && epca.Config.User.csPreOpen) {
+				 epca.Config.User.csPreOpen(oMARC_rec);
+				 }
+				 this.recordId = oMARC_rec.t001;
+				 this.marcToSet = epca.convertToObject(oMARC_rec.data, epca.Config.getDbFormat(oMARC_rec.classn));
+
+				 // zapamatuje si MARC zaznam
+				 this.csOrigMarcRecord = oMARC_rec;
+
+				 this.csLoadRecord(activTab, undefined, true);
+				 // csLoadRecord rozdeleno na 2 casti
+				 this.csAddFormWait(this, activTab, undefined, undefined, this.csLoadRecordEnd, undefined, nScrollTop);
+
+				 // rolovani na spravnou pozici - protoze pokud mam vice opakovani fieldsetu (napr. autori), dojde k odskoku na 2 opakovani
+				 // je to tady i v metode csLoadRecordEnd, ktera se vola pozdeji - neni tam moc videt odskok nahoru a zpet
+				 if (nScrollTop && (nScrollTop > 0)) {
+				 c = activTab.getFormMainFieldset();
+				 if (c) {
+				 c.ownerCt.body.dom.scrollTop = nScrollTop;
+				 }
+				 }
+				 } catch(err) {
+				 // chyba
+				 i3.msgOff(epca.evidence.c.sFormMsgId);
+				 }*/
+				i3.msgOff(epca.evidence.c.sFormMsgId);
+
+				// zavre zalozku
+				this.getTabPanelForms().remove(activTab);
+
+				epca.notify(epca.L10n.evidencedeleteRecordSuccess, epca.L10n.messageOK, "icon-accept");
+			},
+			failure : function(errorMsg) {
+				// chyba
+				i3.msgOff(epca.evidence.c.sFormMsgId);
+
+				epca.notify(epca.L10n.evidenceDeleteRecordError + errorMsg, epca.L10n.messageError, "icon-error-epca");
+			},
+			scope : this // 11.08.11 on; zmena scope
+		}, record);
+
 	}
+});
+
+epca.evidence.pnlDeleteRecCAV = Ext.extend(i3.ui.ColPanel, {
+	constructor : function(config) {
+		config = config || {};
+
+		Ext.apply(config, {
+			items : [{
+				xtype : 'panel',
+				width : '100%',
+				layout : 'form',
+				labelAlign : 'left',
+				items : [{
+					xtype : 'fieldset',
+					title : epca.L10n.txDeletionReason,
+					//width : '100%',
+					anchor : '-5',
+					labelAlign : 'left',
+					items : [{
+						xtype : 'textarea',
+						fieldLabel : epca.L10n.txDeletionReasonCze,
+						labelSeparator : '',
+						name : 't100a',
+						nameSpace : 'a',
+						anchor : '-5',
+						allowBlank : false
+					}, {
+						xtype : 'textarea',
+						fieldLabel : epca.L10n.txDeletionReasonEng,
+						labelSeparator : '',
+						name : 't100b',
+						nameSpace : 'a',
+						anchor : '-5',
+						allowBlank : false
+					}]
+				}]
+			}/*, {
+			 xtype : 'panel',
+			 width : '50%',
+			 layout : 'form',
+			 items : [{
+			 xtype : 'textfield',
+			 fieldLabel : '300a',
+			 labelSeparator : '',
+			 name : 't300a',
+			 nameSpace : 'a',
+			 anchor : '-5'
+			 }]
+			 }, {
+			 xtype : 'panel',
+			 width : '100%',
+			 layout : 'form',
+			 items : [{
+			 xtype : 'cs_combo_st',
+			 fieldLabel : 'Defaultní formulář',
+			 anchor : i3.c.anchorBase,
+			 csStatTableN : 'STABLE_UN_C99D',
+			 name : 'tC99d',
+			 nameSpace : 'a',
+			 allowBlank : false
+			 }]
+			 }*/]
+		});
+		epca.evidence.pnlDeleteRecCAV.superclass.constructor.call(this, config);
+	}
+	/*csRecord2Form : function() {
+	 this.csLinRecord.tC99d = '';
+
+	 // inherited method
+	 this.constructor.superclass.csRecord2Form.call(this);
+	 // validace formulare
+	 this.form.isValid();
+	 }*/
 });

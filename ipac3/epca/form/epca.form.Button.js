@@ -1,4 +1,5 @@
 /**
+ * 22.08.25 on; nebudu to zakazovat
  * 10.17.23 on; typ musi byt "button", jinak se pri stisku enteru kdekoliv na formulari vyvola "click" tlacitka
  * 23.06.21 on; zalozeno
  */
@@ -83,8 +84,9 @@ epca.form.Button = Ext.extend(Ext.Button, {
       value = '';
     }
     
+    // 22.08.25 on; nebudu to zakazovat 
     // zatim natvrdo, pokud je hodnota pole "1", bude tlacitko disablovane
-    this.setDisabled(value === "1");
+    //this.setDisabled(value === "1");
   },
   setPropertyTitle : function(titles) {
     // 25.10.11 on; preda uzivatelsky nazev pole

@@ -2,6 +2,7 @@
  * Kniznica najzakladnejsich univerzalnych komponent dorobenych Ext-u.
  * Mala by byt nacitana po i3.UI.Ext.js.
  *
+ * 06.10.25 on; doplnen parametr client
  * 11.10.23 on; pokud je zprava uz zobrazena, nebud zobrazovat znova
  * 23.08.23 on; pokud se dotahuje ze subtagu $b - vybere spravnou mutaci
  * 01.11.22 on; csDeduplicateID - moznost pridat ke kodu polozky ciselniku odlisujici retezec (deduplikace kodu ciselniku) 
@@ -2764,8 +2765,9 @@ i3.ui.ContentServerLink = Ext.extend(Ext.form.DisplayField, {
             this.disable();
         } else {
             // zaznam uz byl ulozen do db
+            // 06.10.25 on; doplnen parametr client
             // 04.10.17 on; doplneno sso
-            this.setValue('<a target="_blank" href="' + psURL + '?ictx=' + sIctx + '&language=' + sLanguage + '&op=uploader&idx=' + psDB + '*' + ps001 + '&_arlsso=' + encodeURIComponent(i3.WS.csSecurity.username) + '&_arlssopw=' + encodeURIComponent(i3.WS.csSecurity.arlsso) + '">' + this.csContentText + '</a>');
+            this.setValue('<a target="_blank" href="' + psURL + '?ictx=' + sIctx + '&language=' + sLanguage + '&op=uploader&idx=' + psDB + '*' + ps001 + '&_arlsso=' + encodeURIComponent(i3.WS.csSecurity.username) + '&_arlssopw=' + encodeURIComponent(i3.WS.csSecurity.arlsso) + '&client=1' + '">' + this.csContentText + '</a>');
             this.enable();
         }
     }

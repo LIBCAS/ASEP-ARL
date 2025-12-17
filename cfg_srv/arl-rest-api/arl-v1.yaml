@@ -35,7 +35,7 @@ info:
       <b>Authorization: Bearer OTJBNTJGNzNGMTM2QzI4ODhGQg</b></pre>
   version: "1.0"
 servers:
-- url: https://server/apiarl/prod
+- url: https://asep.lib.cas.cz/apiarl/prod
 tags:
 - name: Auth
   description: Autentizace
@@ -52,6 +52,10 @@ tags:
   externalDocs:
     description: ARL wiki
     url: https://arl2.library.sk/wiki_arl/index.php/Main_Page
+- name: Cav
+  description: "Zákaznické služby Cav"
+- name: S3
+  description: "Nahtrávání souborů do S3"
 - name: Cir
   description: "Cirkulace (čtenáři, výpůjčka, návrat, platba, ...)"
   externalDocs:
@@ -271,6 +275,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/HttpErrRespGeneral'
 
+  /v1/cust/cav/config/{confrec}:
+    $ref: 'arl-v1_cav.yaml#/paths/~1v1~1cust~1cav~1config~1{confrec}'
+  /v1/cust/cav/page/{page}:
+    $ref: 'arl-v1_cav.yaml#/paths/~1v1~1cust~1cav~1page~1{page}'
+  /v1/cust/cav/graph:
+    $ref: 'arl-v1_cav.yaml#/paths/~1v1~1cust~1cav~1graph'
+  /v1/cust/cav/authors/{ustav}:
+    $ref: 'arl-v1_cav.yaml#/paths/~1v1~1cust~1cav~1authors~1{ustav}'
+  /v1/{ictx}/s3/title/{t001}:
+    $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1title~1{t001}'
+  /v1/{ictx}/s3/download/{repo}/{key}:
+    $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1download~1{repo}~1{key}'
+  /v1/{ictx}/s3/upload:
+    $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1upload'
+  /v1/{ictx}/s3/multipart:
+    $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1multipart'
+  /v1/{ictx}/s3/sign:
+    $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1sign'
+  /v1/{ictx}/s3/complete:
+    $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1complete'
+  /v1/{ictx}/s3/success:
+    $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1success'  
+  /v1/{ictx}/s3/list:
+     $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1list'
+  /v1/{ictx}/s3/abort:
+     $ref: 'arl-v1_s3.yaml#/paths/~1v1~1{ictx}~1s3~1abort'
   /v1/{ictx}/record:
     $ref: 'arl-v1_rec.yaml#/paths/~1v1~1{ictx}~1record'
   /v1/{ictx}/record/{class}/{term}:

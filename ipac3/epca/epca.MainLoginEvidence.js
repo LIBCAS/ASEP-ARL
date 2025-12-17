@@ -1,6 +1,11 @@
 /**
  * Main okno pre epca
  *
+ * 26.11.25 on; aktualni rok sberu pouzity v aplikaci
+ * 21.11.25 on; omezeni zobrazeni podle typu formulare
+ * 07.11.25 on; omezeni zobrazeni podle 969f
+ * 17.10.25 on; neotvirat upload do noveho panelu
+ * 21.08.25 on; zmena textu tlacitka pro navrat zaznamu k uprave
  * 09.07.25 on; nazev i3 aplikace do titulku login dialogu
  * 03.03.25 on; moznost nemazat Txx tagy
  * 10.06.24 on; moznost nastavit popisek zobrazovaciho formatu
@@ -181,7 +186,7 @@ Ext.apply(i3, function() {
                     url: 'config_' + i3.ictx.toLowerCase() + '.json5',
                     root: 'data',
                     // 18.11.22 on; param5
-                    fields: ['id', 'value', 'param', 'param2', 'param3', 'param4', 'param5'],
+                    fields: ['id', 'value', 'param', 'param2', 'param3', 'param4', 'param5', 'param6', 'param7'],
                     listeners: {
                         load: {
                             fn: function(store) {
@@ -299,6 +304,12 @@ Ext.apply(i3, function() {
                                 epca.Config.User.ShowContentServerBtnFnParam = getPropValue(store, 'ShowContentServerBtnFn', 'param3');
                                 // 25.02.16 on; libovolne URL na CS
                                 epca.Config.User.ShowContentServerBtnURL = getPropValue(store, 'ShowContentServerBtnFn', 'param4');
+                                // 17.10.25 on; neotvirat upload do noveho panelu
+                                epca.Config.User.ShowContentServerBtnNoNewWindow = (getPropValue(store, 'ShowContentServerBtnFn', 'param5') === 'true');
+                                // 07.11.25 on; omezeni zobrazeni podle 969f - jenom pokud 969f ma predepsane hodnoty
+                                epca.Config.User.ShowContentServerBtn969f = getPropValue(store, 'ShowContentServerBtnFn', 'param6');
+                                // 21.11.25 on; omezeni zobrazeni podle typu formulare
+                                epca.Config.User.ShowContentServerBtnFormTypesToCheck969f = getPropValue(store, 'ShowContentServerBtnFn', 'param7');
                                 // 20.11.15 on; funkce jako tlacitko pro libovolny odkaz
                                 epca.Config.User.ShowURLBtnFn = getPropValue(store, 'ShowURLBtn');
                                 epca.Config.User.ShowURLBtnFnText = getPropValue(store, 'ShowURLBtn', 'param');
@@ -363,6 +374,11 @@ Ext.apply(i3, function() {
                                 epca.Config.User.ShowLoginLanguageSwitcher = (getPropValue(store, 'ShowLoginLanguageSwitcher') === 'true');
                                 // 03.03.25 on; moznost nemazat Txx tagy
                                 epca.Config.User.csDoNotDeleteTxx = (getPropValue(store, 'DoNotDeleteTxx') === 'true');
+                                // 21.08.25 on; zmena textu tlacitka pro navrat zaznamu k uprave
+                                epca.Config.User.ReturnRecordBtnFnText = getPropValue(store, 'ReturnBtnText', 'param');
+                                epca.Config.User.ReturnRecordBtnFnHint = getPropValue(store, 'ReturnBtnText', 'param2');
+                                // 26.11.25 on; aktualni rok sberu pouzity v aplikaci
+                                epca.Config.User.csDataCollectionYear = getPropValue(store, 'DataCollectionYear');
                                 Ext.QuickTips.init();
                                 // 11.09.12 on; kontrola povolenych cookies
                                 if (!i3.checkCookies(true)) {

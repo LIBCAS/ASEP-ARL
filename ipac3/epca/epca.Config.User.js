@@ -1,6 +1,9 @@
 /**
  * Ruzne uzivatelske metodu s tesnou vazbou na kod aplikace
  *
+ * 24.10.25 on; nepridelovat DOI
+ * 25.09.25 on; zruseny konstanty
+ * 21.08.25 on; pokud jde o admina (datasteward/zpracovatel/superuser), vlozi "2"
  * 20.02.25 on; bude se volat existujici metoda
  * 05.11.24 on; konfigurace pro SAV (kopie CAV)
  * 14.07.23 on; zrusena vyjimka pro individualniho uzivatele
@@ -15,7 +18,7 @@
 /*global epca, Ext, i3*/
 Ext.ns('epca.Config.User');
 // konfigurace pro CAV
-if (i3.ictx.toLowerCase() === 'cav') { // TODO zmenit na cav
+if (i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) {
     epca.Config.User = {
         csPreSave: function(record, pTab) {
             var i, bFirst701Found = false;
@@ -154,7 +157,7 @@ if (i3.ictx.toLowerCase() === 'cav') { // TODO zmenit na cav
         },
         // 22.06.23 on; udalost pri odeslani datoveho zaznamu
         csOnSendClick: function() {
-            var cmpSave = Ext.getCmp('maintb_save');
+            //var cmpSave = Ext.getCmp('maintb_save');
             var c = Ext.getCmp('tabPanelForms');
             if (!c) {
                 return;
@@ -173,8 +176,17 @@ if (i3.ictx.toLowerCase() === 'cav') { // TODO zmenit na cav
             if (!marcData['U95']) {
                 marcData['U95'] = {};
             }
-            marcData['U95'][epca.form.Helper.c.sSubtagPrefix + 'c'] = '1';
-            // individualni uzivatel - vedec
+            // 21.08.25 on; pokud jde o admina (datasteward/zpracovatel/superuser), vlozi "2"
+            if (mainForm.csIsProcessorUser() || mainForm.csIsSuperUser() || mainForm.csIsDataSteward()) {
+                marcData['U95'][epca.form.Helper.c.sSubtagPrefix + 'c'] = '2';
+            } else {
+                marcData['U95'][epca.form.Helper.c.sSubtagPrefix + 'c'] = '1';
+            }
+            // 22.08.25 on; pri odeslani odmaze U96a 
+            if (marcData['U96'] && marcData['U96'][epca.form.Helper.c.sSubtagPrefix + 'a']) {
+                marcData['U96'][epca.form.Helper.c.sSubtagPrefix + 'a'] = '';
+            }
+            // individualni uzivatel - autor
             // pokud budou chyby zobrazit upozornění, pokud nebudou, tak záznam zmizí + hlaska
             if (mainForm.csIsIndividualUser()) {
                 //var marcData = mainForm.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
@@ -184,16 +196,37 @@ if (i3.ictx.toLowerCase() === 'cav') { // TODO zmenit na cav
                     mainForm.save(true, marcData, true, 'Děkujeme, že ukládáte data do datového repozitáře ASEP. O zveřejnění budete informováni e-mailem.');
                 }
             } else
-                // zpracovatek nebo superuzivatel
+                // zpracovatel, data steward nebo superuzivatel
                 // pokud budou chyby zobrazit upozornění
-                if (mainForm.csIsProcessorUser() || mainForm.csIsSuperUser()) {
+                if (mainForm.csIsProcessorUser() || mainForm.csIsSuperUser() || mainForm.csIsDataSteward()) {
                     //var marcData = mainForm.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
                     //mainForm.mergeMarc(activTab.marcCloneToSet, marcData);
                     if (activTab.form.unFormat === 'E') {
+                        // 25.09.25 on; odeslano super uzivateli, hlaska + zavreni zaznamu
                         // pri ulozeni vynuti kontrolu 
-                        mainForm.save(false, marcData, true);
+                        //mainForm.save(false, marcData, true);
+                        mainForm.save(true, marcData, true, 'Záznam byl odeslán.');
                     }
                 }
+        },
+        // 24.10.25 on; nepridelovat DOI
+        csOnNoDOIClick: function(checked, cmp) {
+            var s, c = cmp.previousSibling();
+            // pokud je nejaka hodnota vyplnena, nebudu nic menit
+            if (c.getValue() !== '') {
+                return;
+            }
+            if (checked) {
+                // zapamatuje si aktualni emptyText
+                c.csLastValue = c.emptyText;
+                c.emptyText = '';
+                // timto vynutim zmenu emptyText
+                c.setValue('');
+            } else {
+                c.emptyText = c.csLastValue;
+                // timto vynutim zmenu emptyText
+                c.setValue('');
+            }
         }
         /**
          * Prevodni tabulka pro prebirani zaznamu z WOS/SCOPUS
@@ -287,7 +320,7 @@ if (i3.ictx.toLowerCase() === 'cav') { // TODO zmenit na cav
      });*/
 } else
     // 05.11.24 on; konfigurace pro SAV (kopie CAV)
-    if (i3.ictx.toLowerCase() === 'sav') {
+    if (i3.ictx.toLowerCase() === epca.evidence.c.sIctxSav) {
         epca.Config.User = {
             csPreSave: function(record, pTab) {
                 var i, bFirst701Found = false;
@@ -395,7 +428,7 @@ if (i3.ictx.toLowerCase() === 'cav') { // TODO zmenit na cav
                     //mainForm.mergeMarc(activTab.marcCloneToSet, marcData);
                     if (activTab.form.unFormat === 'E') {
                         // po ulozeni zavre zalozku, vynuti kontrolu a zobrazi hlasku
-                        mainForm.save(true, marcData, true, 'Ďakujeme, že ukladáte dáta do dátového repozitára ASEP. O zverejnení budete informovaní e-mailom.');
+                        mainForm.save(true, marcData, true, 'Ďakujeme, že ukladáte dáta do dátového repozitára. O zverejnení budete informovaní e-mailom.');
                     }
                 } else
                     // zpracovatek nebo superuzivatel

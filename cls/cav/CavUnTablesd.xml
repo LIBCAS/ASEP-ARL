@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-12 15:08:53">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-08-14 13:05:14">
 <Class name="User.CavUnTablesd">
 <Description><![CDATA[
 dynamic user  tables
 
+14.08.25 ln; zakomentovano volani genEpcaAnalOddel
 12.07.24 ln; operace ipref
 24.05.24 tt; zalozeno postSaveEx
              dokumentace: https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2023/Konfigurace#Podp.C5.AFrn.C3.A9_indexy
@@ -15,7 +16,7 @@ dynamic user  tables
 ---from top]]></Description>
 <ClassType>persistent</ClassType>
 <Super>User.DataTable</Super>
-<TimeChanged>67033,54527.163415563</TimeChanged>
+<TimeChanged>67431,47110.356149022</TimeChanged>
 <TimeCreated>59575,83515.846714</TimeCreated>
 
 <Parameter name="INDEXPARAMS">
@@ -120,6 +121,7 @@ post save handler - toto je metoda volana po uspesnom zapise zaznamu
 Navrat:
  "" nebo nejaka informace (text, return code), nerozlisuje se jestli jde o chybu nebo info,
 
+14.08.25 ln; zakomentovano volani genEpcaAnalOddel
 24.05.24 tt; zalozeno</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&handle]]></FormalSpec>
@@ -130,10 +132,10 @@ Navrat:
    s sT001=$$$HandleT001(handle)       ; ziskani t001
    s sClass=$$$HandleClass(handle)     ; ziskani tridy
     
-   if ($p(sT001,"_",1,2)="ANALYTIKA_ODDEL")
+   /*if ($p(sT001,"_",1,2)="ANALYTIKA_ODDEL")
    { ; Pri ulozeni vzdy znovu vygenerujeme EPCA_ODDEL_GENERATED_INDEX_ZAODD
      s ret = ..genEpcaAnalOddel(.handle)
-   } 
+   }*/ 
    
    q ret
 ]]></Implementation>
@@ -174,7 +176,7 @@ dokumentace: https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2023/Ko
       if (sT200'="")
       { ; pokud mame vyplnene data, muzeme provadet akce 
         s sCisloOddel=$$$getSubTagStr(sT200,"a")
-        s sTextOddel=$zcvt($p(sT001,"_",$l(sT001,"_"))_$tr($$$getSubTagStr(sT200,"b")," ",""),"L")     ; text Oddeleni
+        s sTextOddel=$zcvt($p(sT001,"_",$l(sT001,"_"))_$tr($$$getSubTagStr(sT200,"b")," ,"_$c(160),""),"L")     ; text Oddeleni
         d ##class(User.MARC).appendLineX(.handleANAL,"200    "_$c(31)_"a"_sTextOddel_$c(31)_"b"_sCisloOddel)
       }
     } while (c'=0)

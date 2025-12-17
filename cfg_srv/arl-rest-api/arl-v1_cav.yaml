@@ -61,27 +61,39 @@ paths:
       summary: Stránkované vyhledávání pro Analytika
       description: |-
         ## Vrací stránku MARC záznamů podle selekčních kritérií
-        položka conf parametru params určuje konfiguraci (KONFIG_STRANA_UT*), tomu odpovídá v CavUnTablesd záznam s předponou ANALYTIKA_, kde je konfigurace konkrétní stránky se záznamy Analytik včetně selekčních kritérií
+        alternativou k parametru conf je položka conf parametru params
       operationId: pageGET
       parameters:
       - $ref: '#/components/parameters/page'
+      - name: conf
+        in: query
+        description: konfigurační záznam konkrétní stránky se záznamy Analytik včetně selekčních kritérií (CavUnTablesd záznam s předponou ANALYTIKA_)
+        schema:
+          type: string
+          enum: [KONFIG_STRANA_UT02, KONFIG_STRANA_UT03, KONFIG_STRANA_UT06]
+          example: KONFIG_STRANA_UT02
+      - $ref: '#/components/parameters/mutace'
       - name: pageSize
         in: query
         description: velikost stránky, default 50, max 100
-        example: 2
+        schema: 
+          type: integer
+          example: 2
       - name: params
         in: query
         description: |-
-          json popisující dotaz, volitelné položky:
+          json popisující dotaz, volitelné položky (závisí na konfiguraci) :
             - zf            - zobrazovací formát, např.: CAV_BIBCIT_INI
             - trideni       - např.: DKI_AUP_TITLE
-            - pageSize      - velikost stránky, default 50, max 100
+            - conf          - alternativa k parametru conf
+            - mutace        - alternativa k parametru mutace
+            - pageSize      - alternativa, velikost stránky, default 50, max 100
             - autor         - lname autora, např.: cav_un_auth*0311597        
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/paramsPage'
+              $ref: '#/components/schemas/paramsJson'
       responses:
         "200":
           description: Result
@@ -122,20 +134,28 @@ paths:
       summary: Získání tabulky pro graf Analytik
       description: |-
         ## Vrací tabulku pro graf podle selekčních kritérií
-        položka conf parametru params určuje konfiguraci (KONFIG_STRANA_US*), tomu odpovídá v CavUnTablesd záznam s předponou ANALYTIKA_, kde je konfigurace konkrétní stránky grafu Analytik včetně selekčních kritérií
+        alternativou k parametru conf je položka conf parametru params
       operationId: graphGET
       parameters:
+      - name: conf
+        in: query
+        description: konfigurační záznam konkrétní stránky grafu Analytik včetně selekčních kritérií (CavUnTablesd záznam s předponou ANALYTIKA_)
+        schema:
+          type: string
+          enum: [KONFIG_STRANA_US02, KONFIG_STRANA_US03, KONFIG_STRANA_US04]
+          example: KONFIG_STRANA_US02
+      - $ref: '#/components/parameters/mutace'
       - name: params
         in: query
         description: |-
-          json popisující dotaz
-          
-          volitelné položky - závisí na konfiguraci
+          json popisující dotaz, volitelné položky (závisí na konfiguraci):
+            - conf          - alternativa k parametru conf
+            - mutace        - alternativa k parametru mutace
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/paramsGraph'
+              $ref: '#/components/schemas/paramsJson'
       responses:
         "200":
           description: Result
@@ -247,16 +267,18 @@ components:
             example: 1
           - type: string
             enum: [f]
+    mutace:
+      name: mutace
+      in: query
+      description: volba jazykové mutace
+      schema:
+        type: string
+        enum: [cs, en]
+        example: cs
   schemas:
-    paramsPage:
+    paramsJson:
       type: object
       properties:
-        conf:
-          type: string
-          example: KONFIG_STRANA_UT02
-        mutace:
-          type: string
-          enum: [cs, en]        
         ustav:
           type: string
           example: arub-q
@@ -270,31 +292,6 @@ components:
           items:
             type: string
           example: ["J","JI","B","M","C","K","O"]
-        navaznosti:
-          type: string
-          example: "'infh"
-    paramsGraph:
-      type: object
-      properties:
-        conf:
-          type: string
-          example: KONFIG_STRANA_US02
-        mutace:
-          type: string
-          enum: [cs, en]        
-        ustav:
-          type: string
-          example: bfu-r
-        rokVydani:
-          type: array
-          items:
-            type: string
-          example: ["2023","2022","2021","2020"]
-        druhDokumentu:
-          type: array
-          items:
-            type: string
-          example: ["J","JI","B","M","C","K"]
         navaznosti:
           type: string
           example: "'infh"
@@ -319,6 +316,9 @@ components:
         conf:
           type: string
           example: KONFIG_STRANA_UT02
+        mutace:
+          type: string
+          example: cs
         ustav:
           type: string
           example: bfu-r
@@ -371,6 +371,9 @@ components:
         conf:
           type: string
           example: KONFIG_STRANA_US02
+        mutace:
+          type: string
+          example: en
         ustav:
           type: string
           example: bfu-r

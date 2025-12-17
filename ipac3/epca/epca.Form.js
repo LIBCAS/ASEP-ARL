@@ -1,5 +1,6 @@
 /**
  *
+ * 06.08.25 on; moznost vynutit search engine
  * 23.01.25 on; ohraniceni formulare
  * 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
  * 27.02.23 on; minus na poli
@@ -635,6 +636,8 @@ epca.Form.prototype = {
                 }
                 // 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
                 designedField.csFlexPopParams.csDisplayFormatText = epca.Config.User.DisplayFormatText;
+                // 06.08.25 on; moznost vynutit search engine
+                designedField.csFlexPopParams.forceSE = designedField.forceSE;
             } else
                 // 04.11.21 on; html kod v labelu
                 if (designedField.xtype === 'epca.label') {

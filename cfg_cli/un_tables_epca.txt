@@ -2837,7 +2837,7 @@
 200    aNbUplatněná certifikovaná metodikaccertifikovana-metodika-postup-specializovana-mapafA
 200    aRbSoftwarecsoftwarefA
 200    aFbUžitný a průmyslový vzorcuzitny-prumyslovy-vzorfA
-200    aIbInovace$$cinovacefA
+200    aIbInovacecinovacefA
 ###
 # @id UN_TABLES EPC_DRUH_DOK_FORM
 002    Zoznam vstupnych formularov - prve pismeno zodpoveda ciselniku EPC_DRUH_DOK, druhe (ak je pouzite) rozlisuje formular
@@ -4380,6 +4380,38 @@
 200    aSR2bštandardný výstup regionálneho dosahu so stredným rozsahom
 200    aSR3bštandardný výstup regionálneho dosahu s malým rozsahom
 200    aIbiný výstup, ktorý nemožno zaradiť do kategórie E, Z alebo S
+###
+# @id UN_TABLES US_T976P_CREUC
+002    17.07.25 dk; založen číselník pro 'Rekonštrukcia/prestavba' záznamů CREUČ 
+200    a1bÁno
+200    a0bNie
+###
+# @id UN_TABLES US_T976R_CREUC
+002    17.07.25 dk; založen číselník pro 'Štádium realizácie' záznamů CREUČ 
+200    aurbdokument pre vydanie územného rozhodnutia
+200    aspbdokument pre vydanie stavebného povolenia
+200    atdbtendrová dokumentácia
+200    arsbdokument pre realizáciu stavby 
+200    ajsbjednostupňový projekt 
+200    avpbvystavené na podujatí
+###
+# @id UN_TABLES US_T976T_CREUC
+002    17.07.25 dk; založen číselník pro 'Typy diela' záznamů CREUČ 
+200    aarbarchitektúra
+200    aurburbanizmus
+200    avpbverejný priestor
+200    ainbinteriér
+200    avsbvýstavníctvo
+200    akabkrajinná architektúra
+200    avabvirtuálna architektúra 
+200    apdbproduktový a priemyselný dizajn
+200    atdbtextilný dizajn
+200    aodbodevný dizajn
+200    aadbart dizajn
+200    avibvizuálna komunikácia - identita
+200    avpbvizuálna komunikácia - publikácia
+200    avobvizuálna komunikácia - obálka
+200    avrbvizuálna komunikácia – priestor
 ###
 # @id UN_TABLES UT_GARANT
 002    08.02.10 js; doplneny ciselnik

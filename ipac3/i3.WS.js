@@ -1,4 +1,5 @@
 /**
+ * 18.09.25 on; moznost pouzit novy SE
  * 20.01.25 on; zf obaleny div s id  
  * 07.06.24 on; muze byt rovno 0
  * 26.04.24 on; znacka body muze mit i nejake parametry
@@ -361,11 +362,11 @@ i3.WS = {
         //console.log('i3.WS.getRecord');
         var successFn = config.success,
             scope = config.scope || this,
-            sIndex /*, sNewSE = ''*/ ;
-        // 24.07.15 pokud je nastaven novy SE, pouzije ho
-        //if (i3.csUseNewSE) {
-        //  sNewSE = '@attr 98=2 ';
-        //}
+            sIndex, sNewSE = '';
+        // 18.09.25 on; moznost pouzit novy SE
+        if (config.csUseNewSE) {
+            sNewSE = '@attr 98=2 ';
+        }
         // ak existuje property idx, vygenerujeme z nej classn.t001
         if (config.idx) {
             config.classn = config.idx.piece('*', 1);
@@ -383,7 +384,7 @@ i3.WS = {
         Ext.apply(config, {
             // 13.06.12 on; doplnena moznost zmenit index (vyhledat 1 zaznam podle jineho indexu)
             //query : '@attr 1=12 \'' + config.t001 + '\'',
-            query: /*sNewSE +*/ '@attr 1=' + sIndex + ' \'' + config.t001 + '\'',
+            query: sNewSE + '@attr 1=' + sIndex + ' \'' + config.t001 + '\'',
             // Callback redefinujeme, pretoze "success" u "search" nam preda zoznam zaznamov,
             // ale nas callback chce len jeden zaznam
             // T.j. defacto len forwardneme success call nasemu callbacku s tym, ze vratime len

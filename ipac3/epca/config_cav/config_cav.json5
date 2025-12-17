@@ -79,7 +79,10 @@
    "value": "true",
    "param" : ".",
    "param2" : "Nahrát přílohu#Nahrát přílohu#Upload attachment".ls(),
-   "param3" : "B#E"
+   "param3" : "B#E",
+   "param5" : "true",
+   "param6" : "N#D",
+   "param7" : "E"
 },{ 
   "id": "FnSet969f",
   "value": "N#D" ,
@@ -142,5 +145,17 @@
 }, {
   "id": "UseNewSE",
   "value": "false"
+},{
+   "id": "ReturnBtnText",
+   "param": ".",
+   "paramx": "Vrátiť na úpravu#Vrátit k úpravě#Return to correction".ls(),
+   "param2": "Vrátiť na úpravu#Vrátit k úpravě#Return to correction".ls()
+},{ "id": "ShowDeleteBtn",
+   "value": "true",
+   "param" : "Smazat",
+   "param2" : "Smazat záznam"
+}, {
+  "id": "DataCollectionYear",
+  "value" : "2026"
 }]
 }

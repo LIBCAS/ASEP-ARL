@@ -1,0 +1,21 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<div id="outer" class="row#($s(..isOption("WIDELAYOUT")="1":" m-0",1:""))#">
+<div class="container-fluid">
+<div id="inner" class="#($s(..isOption("WIDELAYOUT")="1":"container-fluid",1:"container"))#">
+
+    <ipac:report simple/>
+    <csp:if condition=(..isReport()="error")>
+        <ipac:tpl page="parts" version="erroraside"/>
+    <ipac:exit/>
+    </csp:if>
+
+<p><ipac:tx param="ERASED_REASON"/> #(data("REASON"))#</p>
+
+<p>#(data("TBC"))#</p>
+
+<p><ipac:tx param="ERASED_DATE"/> #(data("ERASEDATE"))#</p>
+
+</div>
+</div>
+</div>

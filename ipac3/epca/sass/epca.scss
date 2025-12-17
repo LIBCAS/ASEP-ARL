@@ -131,6 +131,11 @@
     background-image: url("#{$images-dir}refresh.png") !important;
 }
 
+.icon-return {
+    background-image: url("#{$images-dir}return.png") !important;
+}
+
+
 /* ikona z kontrol zaznamu */
 .x-tool-csCheckError {
     background: transparent url("#{$images-dir}exclamation.gif");

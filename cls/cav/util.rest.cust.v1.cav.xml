@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-04-16 11:45:21">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-26 12:27:36">
 <Class name="util.rest.cust.v1.cav">
 <Description><![CDATA[
 <pre> Sluzby REST API pro cav
 
+20.11.25 ln; zprovoznena bibliometrie pro analytika
+25.08.25 ln; oprava druhDokumentu je pouze J
 14.04.25 ln; nededuplikovat autory shodnych jmen a ruznych t001
 09.04.25 ln; optimalizace lateral join a %PARALLEL
 07.04.25 ln; optimalizace pomoci indexu zaura
@@ -16,7 +18,7 @@
 26.09.24 ln; generovani tokenu pro export (wkhtmltopdf)
 </pre>]]></Description>
 <Super>util.rest.superREST</Super>
-<TimeChanged>67311,37800.075034161</TimeChanged>
+<TimeChanged>67535,44821.137470515</TimeChanged>
 <TimeCreated>66858,37156.8890089</TimeCreated>
 
 <Parameter name="HandleCorsRequest">
@@ -123,10 +125,12 @@ d ##class(util.rest.cust.v1.cav).authorsGET("uivt-o")
   ;s search="Kůrk"
   s search=$g(%request.Data("search",1))
   s sr=##class(User.Util).diaTRU($zcvt($zstrip(search,"<>W"),"L"))
+  s sr=$zstrip($tr(sr,","," "),"=W")
   s srl=$l(sr)
   
   s node=" "_$zcvt(ustav,"L")_";", start=node, len=$l(start)
   s:ustav="all" node=" ", start=node, len=$l(start)
+  
   for { s node=$o(^$$$MarcIndexG("CavUnAuth",index,node),1,val) q:node=""
     q:$e(node,1,len)'=start
     
@@ -142,8 +146,8 @@ d ##class(util.rest.cust.v1.cav).authorsGET("uivt-o")
     continue:jmeno_prijmeni=""
     
     if (sr'="") {
-      if ($f(sr,",") || $f(sr," ")) {
-	    continue:sr'=(jmDia_", "_prDia)
+      if $f(sr," ") {
+        continue:(($p(sr," ")'=jmDia)||($p(sr," ",2)'=prDia))&&(($p(sr," ")'=prDia)||($p(sr," ",2)'=jmDia))
       }
       elseif (sr'=$e(jmDia,1,srl)) && (sr'=$e(prDia,1,srl)) {
         continue
@@ -345,7 +349,8 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
   s categs=##class(i2.access).scanLoginChecks(ictx,env("ip"),0,.psErr,0)
   ;s cm.access=access, cm.ourIP=env("ip"), cm.categs=categs
   if $f(access,"INTRANET") {
-    s:$f(categs,"_COSMO")||$f(categs,"_SSC-A")||$f(categs,"_EXTRA")&&'$f(categs,"_EXTRA")||$f(categs,"_"_$zcvt(ustav,"U")) isAccess=1
+    s:$f(categs,"_COSMO")||$f(categs,"_SSC-A")||$f(categs,"_EXTRA")||$f(categs,"_"_$zcvt(ustav,"U")) isAccess=1
+    ;s ^ln($i(^ln))=access_"|"_categs_"|"_isAccess_"|"_env("ip")_"|"_ictx_"|"_psErr
   }
   if $f(access,"LOGIN") {
     s workgrps=##class(util.sec.security).securityGet(userName,"e")
@@ -392,7 +397,8 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
   }
   
   ;s ql="SELECT * FROM (SELECT util_sql.index(Class,Arlid,'zpz') as zpdruhDokumentu, sum(util_sql.index(Class,Arlid,'ye',' 2023')) as ye2023, sum(util_sql.index(Class,Arlid,'ye',' 2022')) as ye2022 FROM %NOTOPOPT (SELECT T001, Class, Arlid, util_sql.isinindex(Class,Arlid,'ye',' 2024~ 2023','=') AS rokVydani, util_sql.isinindex(Class,Arlid,'zpz',' j~ ji~ b~ m~ c~ k','=') AS druhDokumentu FROM base.arlsql WHERE Class = 'CavUnEpca' AND Index = 'pra' AND Value = ' bfu-r') WHERE rokVydani = '1' AND druhDokumentu = '1') GROUP BY zpdruhDokumentu"
-  if (cm.filter="list") && (cm.osaY="druhDokumentu") && (json.druhDokumentu."0"="J") {
+  ; 25.08.25 ln; oprava druhDokumentu je pouze J
+  if (cm.filter="list") && (cm.osaY="druhDokumentu") && (json.druhDokumentu."0"="J") && $f(json.druhDokumentu.%ToJSON(),"JI") {
     d json.druhDokumentu.%Remove("0")
     s sql=$p(..sql(cm,json),"FROM (",2,*)
     s json.druhDokumentu=["J"]
@@ -419,6 +425,7 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
   s lim=json.lim
   s bX=(cm.conf="KONFIG_STRANA_US08") || (cm.conf="KONFIG_STRANA_OS03")
   s:bX cm.filter="W"
+  s bY=(cm.conf="KONFIG_STRANA_US04") || (cm.conf="KONFIG_STRANA_USAIS") || (cm.conf="KONFIG_STRANA_USJIF") || (cm.conf="KONFIG_STRANA_USSJR")
   
   
   s tStatement = ##class(%SQL.Statement).%New()
@@ -438,6 +445,7 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
     s line=[]
     s val=$zstrip(rset.%GetData(1),"<W"), orig=val, from=2
     s:bX val=$zstrip(rset.%GetData(2),"<W")
+    ;s:bY t001Y=$p(val,")",*), val=$p(val,")",1,*-1)_")", orig=val
     ;s:fldX="ZQAIS" limpost=";"_val
     
     if (cm.filter="cisY") || ($e(cm.filter)=";") {
@@ -450,7 +458,12 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
     
     s lino={ "value":(val) }, array(0)="x"
     s:bX lino.t001=rset.%GetData(1)
+    if bY && (rset.%GetData(2)'="") {
+      s idY=##class(User.MARC).getIDByIndex(cm.class,"issn",rset.%GetData(2))
+      ;s:idY lino.t001=$p(##class(User.MARC).getIdxVal(cm.class,idY,"sek"),"*",2)
+    }
     d line.%Push(lino)
+    
     s:cm.proj'="" orig=$zstrip(rset.%GetData(2),"<W"), from=3
     if bX {
      s what=rset.%GetData(1)
@@ -466,10 +479,22 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
     continue:(cm.proj'="")&&(orig="") ; TODO ? vzdy
     s link=linkBase_lim_"&limv_"_fldY_"="_##class(i2.html.base).encode(orig)
     ;s:fldX'="ZQAIS" link=link_"&limv_"_fldY_"="_##class(i2.html.base).encode(orig)
+    ;s:bY idY1=##class(User.MARC).existsT001(cm.class,t001Y)
+    
     s seqcols=1
     for i=from:1:colsCount {
       s array(seqcols)=$g(array(seqcols))+rset.%GetData(i), seqcols=seqcols+1
-      d line.%Push({ "value":(rset.%GetData(i)), "link": (link_"&limv_"_fldX_"="_$e(columns.GetAt(i).colName,xlen,*)_limpost) })
+      s colName=columns.GetAt(i).colName
+      s value=rset.%GetData(i)
+      /*if bY && idY {
+        s projY=##class(User.MARC).getIdxVal(cm.class,idY,"zmamet"," "_$e(colName,xlen,*))
+        s value=$tr($p(projY,";",2,*),";","/")_value
+      }*/
+      if (fldX="2080") || ((fldX="DATE") && '$e(colName,xlen,*)) { ; TODO obecne vypinani odkazu
+        d line.%Push({ "value":(value) })
+      } else {  
+        d line.%Push({ "value":(value), "link": (link_"&limv_"_fldX_"="_$e(colName,xlen,*)_limpost) })
+      }
     }
     d arr.%Push(line)
     s seq=seq+1
@@ -481,7 +506,7 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
     s itr2=val1.%GetIterator()  
     s strip=[]
     while itr2.%GetNext(.key2,.val2) { 
-      d:array(key2)'=0 strip.%Push(val2)
+      d:(array(key2)'=0)||bY strip.%Push(val2)
     }
     d arr.%Set(key1,strip)
   }
@@ -492,11 +517,13 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
     d cols.%Push(columns.GetAt(2).colName)
     s from=4
   } else {
-    d cols.%Push(columns.GetAt(1).colName)
+    s name=columns.GetAt(1).colName
+    s:dyn.cisX'="" name=##class(User.Util).sXlate(dyn.cisX,$zcvt(name,"U"),,ipref,,lang)
+    d cols.%Push(name)
     s:cm.proj'="" from=3
   }
   for i=from:1:colsCount {
-    continue:$g(array(i-from+1))=0 ; 28.02.25 ln; fitrace sloupcu grafu jen s nulami
+    continue:'bY&&($g(array(i-from+1))=0) ; 28.02.25 ln; fitrace sloupcu grafu jen s nulami
     s name=$e(columns.GetAt(i).colName,xlen,*)
     s:dyn.cisX'="" name=##class(User.Util).sXlate(dyn.cisX,$zcvt(name,"U"),,ipref,,lang)
     d cols.%Push(name)
@@ -790,6 +817,11 @@ s dyn={"ustav":"arub-q","rokVydani":["2025","2024"],"druhDokumentu":["J","JI","B
 s cm={"conf": "KONFIG_STRANA_US04","class": "CavUnEpca","zobrazeni":"GRAF","typ":"PREHLED_PERIODIK","osaX":"rokVydani","osaY":"issn","proj":"util_sql.field(Arlid,'463/200a')||' '||'(ISSN '||issnorig||')'","order":"asc"}
 s dyn={"ustav":"bc-a","rokVydani":["2024","2023","2022","2021","2020","2019"],"oddeleni":"","druhDokumentu":["J","JI","B","M","C","K","O"],"indikatory":[],"issn":[],"conf":"KONFIG_STRANA_US04","mutace":"cs","site":"1"}
 
+s cm={"conf": "KONFIG_STRANA_USJIF","class": "CavUnEpca","zobrazeni":"GRAF","typ":"PREHLED_PERIODIK","osaX":"indikatoryJIF","cisX":"ANALYTIKA_KONFIG_CIS_INDIKATORY_JIF","osaY":"issn","proj":"util_sql.field(Arlid,'463/200a')||' '||'(ISSN '||issnorig||')'","order":"asc"}
+s dyn={"ustav":"bfu-r","rokVydani":["2023"],"oddeleni":"","indikatoryJIF":["JIF","QJIF","DJIF"],"issn":[],"conf":"KONFIG_STRANA_USJIF","mutace":"cs","site":1}
+s cm={"conf": "KONFIG_STRANA_USJIF","class": "CavUnEpca","zobrazeni":"GRAF","typ":"PREHLED_PERIODIK","osaX":"rokVydani","osaY":"issn","proj":"util_sql.field(Arlid,'463/200a')||' '||'(ISSN '||issnorig||')'","order":"asc"}
+s dyn={"ustav":"bfu-r","rokVydani":["2023"],"oddeleni":"","issn":[],"conf":"KONFIG_STRANA_USJIF","mutace":"cs","site":1}
+
 s cm={"conf": "KONFIG_STRANA_US05","class": "CavUnEpca","zobrazeni":"GRAF","typ":"INDIKATORY_PERIODIK","osaX":"rokVydani","osaY":"percentily","cisY":""}
 s cm={"conf": "KONFIG_STRANA_US05","class": "CavUnEpca","zobrazeni":"GRAF","typ":"INDIKATORY_PERIODIK","osaX":"rokVydani","osaY":"percentily","cisY":"ANALYTIKA_KONFIG_CIS_DECKVART","proj":"$piece(util_sql.index(Class,Arlid,'zmaqais'),';',2)","filter":"cisY"}
 s dyn={"ustav":"bc-a","rokVydani":["2022","2021","2020","2019"],"oddeleni":"","oborWos":"","KOLABORACE":"","percentily":"QAIS","conf":"KONFIG_STRANA_US05","mutace":"cs","site":"1"}
@@ -810,6 +842,8 @@ s cm={"conf": "KONFIG_STRANA_OS03","class": "CavUnEpca","zobrazeni":"GRAF","typ"
 s dyn={"ustav":"arub-q","rokVydani":["2024","2023","2022","2021","2020","2019"],"oddeleni":"64753","druhDokumentu":["J","JI","B","M","C","K","O"],"EXPORT":[],"conf":"KONFIG_STRANA_OS03","mutace":"cs","site":"1"}
 
 w ##class(util.rest.cust.v1.cav).sql(cm,dyn)
+
+20.11.25 ln; zprovoznena bibliometrie pro analytika
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>cm:%DynamicObject,dyn:%DynamicObject</FormalSpec>
@@ -841,6 +875,7 @@ w ##class(util.rest.cust.v1.cav).sql(cm,dyn)
     continue:attr=""
     s index=##class(User.UtilQS).getIndexName4Attrib(class,attr,2)
     continue:index=""
+    continue:index="zmamet"
     
     if first {
       s ret=ret_"'"_index_"' AND Value = ' "_$zcvt(val,"L")_"') WHERE ", first=0
@@ -874,6 +909,7 @@ w ##class(util.rest.cust.v1.cav).sql(cm,dyn)
   }
   
   s valuesX=dyn.%Get(cm.osaX)
+  s:'$isobject(valuesX) valuesX=[(valuesX)]
   ;s:'$isobject(years)||'years.%Size() years=[2024,2023,2022,2021,2020]
   
   s attr=##class(User.Util).sXlate(stable,cm.osaX,,ipref,"100d")
@@ -915,12 +951,37 @@ w ##class(util.rest.cust.v1.cav).sql(cm,dyn)
     s part=" FROM %PARALLEL (SELECT Arlid, Class, T001, util_sql.index(Class,Arlid,'"_yindex_"') as "_yproj
   }
   
-  s itr=valuesX.%GetIterator(), part2=""
+  s itr=valuesX.%GetIterator()
   while itr.%GetNext(.key,.val) {
     ;s start=start_", sum("_xindex_val_$s(bX:" %AFTERHAVING",1:"")_") AS "_xindex_val
-    s start=start_", sum("_xindex_val_") AS "_xindex_val
-    s part=part_", util_sql.index(Class,Arlid,'"_xindex_"',' "_$zcvt(val,"L")_"') as "_xproj_val
-    s part2=part2_", "_xproj_val
+    if xproj'="zmamet" {
+      s start=start_", sum("_xindex_val_") AS "_xindex_val
+      s part=part_", util_sql.index(Class,Arlid,'"_xindex_"',' "_$zcvt(val,"L")_"') as "_xproj_val
+    } else {
+      s start=start_", $PIECE("_xindex_val_",';',"_##class(User.Util).sXlate(cm.cisX,val,,ipref,"p")_") AS "_xindex_val
+      s part=part_", util_sql.findindex(Class,Arlid,'"_xindex_"',' "_(dyn.rokVydani."0"-0)_"') as "_xproj_val
+    }
+  }
+  if xproj="zmamet" {
+    s valt=dyn.rokVydani."0"
+    s start=start_", sum("_xindex_valt_") AS "_xindex_valt
+    s part=part_", util_sql.index(Class,Arlid,'ye',' "_valt_"') as "_xindex_valt
+  }
+  ; 20.11.25 ln; zprovoznena bibliometrie pro analytika
+  if cm.conf="KONFIG_STRANA_USJIF" {
+    s start=start_", NVL($PIECE(yeJIF,';',14),'n.a.') AS yeJIF, NVL(UPPER($PIECE(yeQJIF,';',15)),'n.a.') AS yeQJIF"
+    s part1=", util_sql.findindex(Class,Arlid,'zmamet',' "_dyn.rokVydani_"') as "_xproj
+    s part=part_part1_"JIF"_part1_"QJIF"
+  }
+  elseif cm.conf="KONFIG_STRANA_USAIS" {
+    s start=start_", NVL($PIECE(yeAIS,';',6),'n.a.') AS yeAIS, NVL(UPPER($PIECE(yeQAIS,';',7)),'n.a.') AS yeQAIS, REPLACE(REPLACE(REPLACE(UPPER($PIECE(yeOAIS,';',18)),'–',' &#8209; '),' ','&nbsp;'),'|',' ') as yeOAIS"
+    s part1=", util_sql.findindex(Class,Arlid,'zmamet',' "_dyn.rokVydani_"') as "_xproj
+    s part=part_part1_"AIS"_part1_"QAIS"_part1_"OAIS"
+  }
+  elseif cm.conf="KONFIG_STRANA_USSJR" {
+    s start=start_", NVL($PIECE(yeSJR,';',10),'n.a.') AS yeSJR, NVL(UPPER($PIECE(yeQSJR,';',17)),'n.a.') AS yeQSJR" ; 17
+    s part1=", util_sql.findindex(Class,Arlid,'zmamet',' "_dyn.rokVydani_"') as "_xproj
+    s part=part_part1_"SJR"_part1_"QSJR"
   }
   
   s dyn.xlen=$l(xindex)+1

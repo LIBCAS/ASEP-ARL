@@ -1,0 +1,112 @@
+////
+/// PATIČKA stránek
+////
+
+#footer {
+	width: 100%;
+
+	.container,
+	.container-fluid {
+		/*background: linear-gradient(-135deg, white 5px, transparent 0) 0 5px,
+			linear-gradient(135deg, white 5px, $dark 0) 0 5px;*/
+		background-size: 5px 20px;
+		color: white;
+		padding-top: 1.5rem;
+		padding-bottom: 1rem;
+		background-position: top;
+		background-repeat: repeat-x;
+		background-color: $dark;
+		position: relative;
+	}
+
+	li {
+		background: rgb(46, 46, 46);
+		background: linear-gradient(
+			to bottom,
+			rgba(46, 46, 46, 1) 0%,
+			rgba(46, 46, 46, 1) 25%,
+			rgba(36, 36, 36, 1) 50%,
+			rgba(55, 55, 55, 1) 75%,
+			rgba(46, 46, 46, 1) 100%
+		);
+		background-position: bottom;
+		background-repeat: repeat-x;
+		background-size: 2px 5px;
+
+		a {
+			white-space: pre;
+
+			&.active {
+				font-weight: bold;
+			}
+		}
+	}
+
+	.col {
+		margin-top: 0.6rem;
+	}
+
+	a {
+		color: white;
+	}
+
+	p {
+		margin-bottom: 0.5rem;
+	}
+}
+
+#footer-brand {
+	a {
+		padding: 0 0.6rem;
+	}
+
+	.icon-arl {
+		font-size: 1.875rem;
+	}
+}
+
+@media (min-width: map-get($grid-breakpoints, sm)) {
+	#contentinfo {
+		p {
+			padding: 0 0.3rem;
+			text-align: right;
+		}
+	}
+
+	#cosmotron a {
+		white-space: pre;
+	}
+}
+
+@media (max-width: map-get($grid-breakpoints, sm)) {
+	#contentinfo {
+		margin-top: 1.5rem;
+		margin-left: 0.5rem;
+	}
+}
+
+#scrollUp {
+	@extend .btn;
+	@extend .btn-light;
+
+	bottom: 10px;
+	right: 80px;
+	padding: 0.6rem 1.2rem;
+
+	&::before {
+		content: "\F10b";
+		font-family: "IPAC Icons";
+		color: $primary;
+		font-weight: 700;
+		font-size: 1.8rem;
+	}
+}
+
+.metadata-line {
+	padding-top: 0.2rem;
+	padding-bottom: 0.2rem;
+	background-color: #262626;
+	a {
+		color: white;
+	}
+}

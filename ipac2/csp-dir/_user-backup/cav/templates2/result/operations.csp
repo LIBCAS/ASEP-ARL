@@ -48,7 +48,8 @@
 
     <csp:if condition=($g(data("RECORDS",node,"ZRecDel"))=1)>
 <li class="cavdelete nav-item"><ipac:a class="modal-ajax nav-link" op="cavdelete" param="idx=#(item)#" restore title="Smazat záznam: #(..v("title"))#" data-modal-name="Smazat záznam" data-modal-linkicon="icon-remove" data-modal-centered="1" data-modal-size="modal-sm"><i class="icon-remove" aria-hidden="true"></i>&nbsp;<ipac:atext/></ipac:a></li>
-    </csp:if>   
+    </csp:if>
+       
      <csp:if condition=($g(data("RECORDS",node,"ZRecDATATyp"))="")>
     <csp:if condition=($g(data("RECORDS",node,"ZContLSprava"))=1)>
 <li class="contser nav-item"><ipac:a class="nav-link" op="contser" idx="#(item)#" restore><i aria-hidden="true" class="icon-list"></i>&nbsp; <ipac:atext/></ipac:a></li>
@@ -72,6 +73,7 @@
  <li class="cavasep nav-item"><ipac:search class="nav-link" fld1="ZMDL" rel="nofollow" term1="#($g(data("RECORDS",node,"ZRecMDLinkHod")))#" src="cav_un_epca-4" qt="asep" sort="DT1_UST"><i aria-hidden="true" class="icon-cavasep"></i>&nbsp;<ipac:tx param="PUBASEP"/></ipac:search></li>
     </csp:if>   
     
+<ipac:off note="09.07.25 ln; skryto na zadost cav - uz zobrazeno v zakladnim formatu">
      <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL1"))'="")>
 <li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL1")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL1")))#"><i aria-hidden="true" class="icon-cavasep"></i>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
     </csp:if>
@@ -104,7 +106,9 @@
     </csp:if>
   <csp:if condition=($g(data("RECORDS",node,"ZRecDATAURL11"))'="")>
 <li class="cavasep nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"ZRecDATAURL11")))#" href="#($g(data("RECORDS",node,"ZRecDATAURL11")))#"><i aria-hidden="true" class="icon-cavasep"></i>&nbsp;<ipac:tx param="DALSIPUB"></a></li>
-    </csp:if> 
+    </csp:if>
+</ipac:off>
+       
        </csp:if>     
 
     </csp:if>

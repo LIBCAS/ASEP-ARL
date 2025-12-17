@@ -16,6 +16,8 @@
 002       + samozrejme pozn. na zaciatok tohoto suboru
 002    =============================================
 002    -
+002    23.10.25 dk; úprava UN_C95, přidáno UN_C96
+002    14.08.25 jk; pridan UN_T71
 002    14.03.25 dk; pridano US_C94 a US_C95
 002    24.10.24 mk; pridane ACQO_T03f
 002    12.07.24 jk; pridano UN_C92 a UN_C93
@@ -310,6 +312,11 @@
 200    aabdotiahni podľa kódu z C05$x hodnotu 200$a z l_un_auth#dotáhni podle kódu z 700$x hodnotu 200$a z l_un_authjUNA_200a
 200    aabdotiahni podľa kódu z C05$x hodnotu 200$b z l_un_auth#dotáhni podle kódu z 700$x hodnotu 200$b z l_un_authjUNA_200b
 200    aabdotiahni podľa kódu z C05$x hodnotu 200$f z l_un_auth#dotáhni podle kódu z 700$x hodnotu 200$f z l_un_authjUNA_200f
+###
+# @id UN_TAGMAP UN_T71
+002    STU - info do AIS ze se jedna o zaznam ohlasu 
+100    aEpca - ohlas
+200    aabpočet záznamů, u kterých je záznam evidován jako ohlas v 971$x
 ###
 # @id UN_TAGMAP UNA_T01
 002    rs; plati len pre PAR; vsade inde sa pouziva T04
@@ -1214,13 +1221,19 @@
 100    ametriky z Clarivate Journals
 ###
 # @id UN_TAGMAP UN_C95
+002    23.10.25 dk; úprava pole - bude se ukládat pouze vazba na preprint
 002    04.06.25 dk; úprava pole - bude se používat pro oba typy vazeb
 002    07.03.25 dk; založeno pole pro vazbu na preprint dokumentu
 002    Vyhledávání pouze v záznamech kromě druhu dokumentu 'X' - zatím
-100    aOdkaz na preprint/postprintc0dO
+100    aOdkaz na preprintc0dO
 200    a3bKód záznamucOd0ePBS,cav_un_epca^4g001.,1
-200    aabNázev preprintu/postprintucRd0g200a,1
-200    ahbHandle preprintu/postprintucOd0gC60a,1
+200    aabNázev preprintucRd0g200a,1
+200    ahbHandle preprintucOd0gC60a,1
+###
+# @id UN_TAGMAP UN_C96
+002    07.03.25 dk; založeno pole pro vazbu na preprint uložený v jiném archivu
+100    aOdkaz na preprint v jiném archivuc1dO
+200    aubOdkaz na preprintcOd0
 ###
 # @id UN_TAGMAP UN_D01
 002    17.08.15 js; založené pre evidenciu digitalizácie, zatiaľ bez funkčného odkazu

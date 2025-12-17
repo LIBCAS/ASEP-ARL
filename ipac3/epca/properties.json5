@@ -1,4 +1,5 @@
-﻿// 26.02.25 on; field_emptyText
+﻿// 06.08.25 on; field_forceSE
+// 26.02.25 on; field_emptyText
 // 27.06.23 on; button
 // 07.06.23 on; formatovani - JSON5
 // 04.11.21 on; field_label_html_2, field_label_html_3, x_help_2, x_help_3
@@ -613,6 +614,22 @@
 	"editable": true,
 	"bindedXtype": ["cs_auth_select_form"]
 }, {
+	"id": "field_forceSE",
+	"variable": "forceSE",
+	"text": "použít search engine",
+	"editable": true,
+	"values": [{
+		"id": "0",
+		"text": "default"
+	}, {
+		"id": "1",
+		"text": "starý SE"
+	}, {
+		"id": "2",
+		"text": "nový SE"
+	}],
+	"bindedXtype": ["cs_auth_select_form"]
+}, {
 	"id": "field_kvparams",
 	"variable": "kvparams",
 	"text": "parametry",
@@ -634,8 +651,7 @@
 	"id": "field_emptyText",
 	"variable": "emptyText",
 	"text": "default text",
-	"editable": true,
-	"bindedXtype": ["epca.marc_textfield", "epca.marc_textarea", "epca.codeddata_combobox", "epca.codeddata_datefield"]
+	"editable": true
 }, {
 	"id": "tag",
 	"variable": "tag",

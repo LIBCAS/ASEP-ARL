@@ -47,6 +47,10 @@ s data("DESCRIPTION")=..tx("DESCRIPTION")_": "_"<cite>"_data("RECTITLE")_"</cite
 
 <ipac:dtx param="CONTENT_UP"/>
 
+	<csp:if condition=(..req("client"))>
+<h3 class="text-center"><ipac:sso target="_self" app="epca/indexT.csp" param="recid=#(data("T001z"))#&language=#($$$GETSESSVAR("language"))#&client_info=aRL i3 web client 1.0"><ipac:tx param="CLIENT_BACK"/></ipac:sso></h3>
+<br>
+	</csp:if>
 
 	<csp:if condition=('data("NODEMAIN"))>
 <ipac:tpl page="parts" version="tabs"/>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.3 (Build 517U)" ts="2024-11-01 15:31:51">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-20 10:56:08">
 <Class name="content.zf">
 <Description><![CDATA[
 <pre> zobrazovaci bloky pro contentServer
 
+21.10.25 ln; odkaz na stranku continfo
 01.11.24 on; zmena lup na https
 20.03.24 on; doplnen prefix "ws1://"
 06.03.24 tt; pridan typ pro zobrazeni - type
@@ -40,13 +41,14 @@
 ...
 </pre>]]></Description>
 <IncludeCode>Common,%occCommon,I2</IncludeCode>
-<TimeChanged>67145,51069.5997867</TimeChanged>
+<TimeChanged>67528,44652.84528839</TimeChanged>
 <TimeCreated>62188,40801.56001</TimeCreated>
 
 <Method name="fmtContent">
 <Description><![CDATA[
 <pre> blok vypisujici tabulku se soubory contentServeru
 
+21.10.25 ln; odkaz na stranku continfo
 10.01.24 ln; modifikator all pro klienta
 15.08.22 ln; fix pristupu "S"
 08.04.22 ln; rank trideni pres api selectRecAll
@@ -131,7 +133,7 @@
   s filter=$p(filter,"-")
   
   ; 05.06.17 ln; modifikator blank
-  s target=""
+  s target="", hpend=""
   s blank=+$g(par("pm",1,"M=blank"))
   s:blank target=""" target=""_blank"
   
@@ -144,6 +146,7 @@
   
   ; 15.08.22 ln; fix pristupu "S"
   s bReader = ##class(i2.base.tpl).isPage("contreader")
+  s bInfo = ##class(i2.base.tpl).isPage("continfo")
   
   /*  
   w !,"<pre>"
@@ -244,12 +247,17 @@
         ; 08.07.21 ln; zabezpeceny dokument take jako typ pristupu1
         ; 3.10.20 ln; fulltextove solr jadro
         s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contreader","idx="_idx_"&repo="_repo_"&key="_key)_target
+      }
+      elseif $g(array("continfo")) && bInfo 
+      { ; 21.10.25 ln; odkaz na stranku continfo
+        s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("continfo","idx="_idx_"&repo="_repo_"&key="_key)_target
+        s hpend=" class=""modal-ajax"" data-modal-centered=""1"" data-modal-size=""modal-lg"" data-modal-login=""1"""
       } else {        
         ; 05.06.17 ln; modifikator blank
         s href=##class(content.csg2).getLink(repo,key,,ssopar)_target
       }
       ; 24.03.22 ln; zruseni podpory verze bez bootstrap
-      s icon="<a rel=""nofollow"" href="""_href_"""><span aria-hidden=""true"" class=""icon-lock-open""></span></a>"
+      s icon="<a rel=""nofollow"""_hpend_" href="""_href_"""><span aria-hidden=""true"" class=""icon-lock-open""></span></a>"
       ; 15.12.16 ln; opraven preklep v prefixu
       s access="<a rel=""nofollow"" href="""_href_""">"_##class(rep.zf.tf).prefix(.handle,"0996")_"</a>"
     }
@@ -263,7 +271,7 @@
       s name=##class(i2.config).languageSelect(array("translation"))
     }
     if mode'=5 {
-      s orig="<a rel=""nofollow"" href="""_href_""">"_name_"</a>"
+      s orig="<a rel=""nofollow"""_hpend_" href="""_href_""">"_name_"</a>"
     } else {
       s orig=name
     }

@@ -1,4 +1,7 @@
 # @id UN_TABLES BASE_A_IPAC_COMMON_TXT
+002    03.12.25 jk; upraveny BASE_IPAC2_XMLPARSE Wos a Scopus pro M21
+002    01.12.25 jk; do IPAC2_TX_DETAIL a IPAC2_TX_RESULT pridan MYELOANS
+002    30.10.25 lp; do BASE_BORROW_I2_REQUEST doplnene varianty navratovych kodu pro knihoboxy OK002BOX, OK002WBOX, OK002TBOX
 002    27.06.25 jk; indikator i1=2 u anotace tagu 520 v BASE_IPAC2_XMLPARSE_FLEXIBOOKS_M21 a BASE_IPAC2_XMLPARSE_EREADING_M21
 002	   12.05.25 dp; do BASE_IPAC2_TX_CONTLIST pridano ERRTAB, do BASE_IPAC2_TX_MYDOC pridano MYLOANS
 002    06.05.25 ln; do BASE_IPAC2_TX_EPSN pridano SAFE a SAFEOK
@@ -2471,6 +2474,7 @@
 200    aMORECOMMENTSONDEMAND_NOTEbTento titul obsahuje komentáre. Komentáre zobrazíte kniknutím na odkaz nižšie.#Tento titul obsahuje komentáře. Komentáře zobrazíte po kniknutí na odkaz níže.#This title contains comments. You can display comments by clicking on link below.
 200    aMORECOMMENTSONDEMANDbZobraziť komentáre#Zobrazit komentáře#Show comments
 200    aMYLOANSbMé výpožičky#Moje výpůjčky#My loans
+200    aMYELOANSbMé e-výpožičky#Moje e-výpůjčky#My e-loans
 200    aNORECbZáznam nebol nájdený#Záznam nebyl nalezen#Record was not found
 200    aNORIGHTSbNa zobrazenie daného záznamu nemáte dostatočné prístupové práva#Pro zobrazení daného záznamu nemáte dostatečné přístupové práva#You do not have rights for record display
 200    aRATING_BANbNemáte povolené vkladať nové komentáre z dôvodu nízkej reputácie.#Nemáte povolení vkládat nové komentáře z důvodu nízké reputace.#You are unable to add new comments. Your account has been banned.
@@ -4123,6 +4127,7 @@
 200    aMORETITLEbZobraziť viac položiek#Zobrazit více položek#View more items
 200    aMVS_TEXTbPožiadať o požičanie dokumentu z inej kničnice formou MVS.#Požádat o půjčení dokumentu z jiné knihovny formou MVS.#Ask for loan from another library by inter-library loan service.
 200    aMYLOANSbMé výpožičky#Moje výpůjčky#My loans
+200    aMYELOANSbMé e-výpožičky#Moje e-výpůjčky#My e-loans
 200    aNEWS_SUBSCRIPTIONbOdber noviniek#Odběr novinek#News subscription
 200    aNEXTbĎalšie#Další#Next
 200    aNOSORTbNezotriedené - prekročený limit 2000 záznamov#Nesetříděno - překročen limit 2000 záznamů#Unsorted - limit 2000 has been exceeded
@@ -5792,6 +5797,7 @@
 002    -------------------------------------------------------------------
 ###
 # @id UN_TABLES BASE_BORROW_I2_REQUEST
+002    30.10.25 lp; doplnene varianty navratovych kodu pro knihoboxy OK002BOX, OK002WBOX, OK002TBOX
 002    15.05.19 lp; do pravidel pridany kod ERRR008, ktery nema prerusit simulaci
 002    12.08.16 lp; pridany novy parametr $$l pro doreseni kodu INFZ001D
 002    12.02.16 lp; doplnene pravidlo pro INFZ001D
@@ -5842,6 +5848,8 @@
 200    aOK002*b*c1g%4i?j%3
 002    *** OK002B #signatura #přír_číslo #jméno_pobočky #datum_platnosti #text_k_dislokaci - žádanka na pobočce vytvořena
 200    aOK002B*b*c1g%5i?j%4
+002    *** OK002BOX #signatura #přír_číslo #jméno_pobočky #datum_platnosti #text_k_dislokaci - žádanka do knihoboxu vytvořena
+200    aOK002BOX*b*c1g%5i?j%4
 002    *** OK002BS #jméno_čtenáře #čár_kód_čtenáře #jméno_pobočky #datum_platnosti #text_k_dislokaci - vytvořena žádanka na cirkulaci seriálů na pobočce
 200    aOK002BS*b*c1g%5i?j%4
 002    *** OK002S #jméno_čtenáře #čár_kód_čtenáře #datum_platnosti #text_k_dislokaci - vytvořena žádanka na cirkulaci seriálů
@@ -5850,10 +5858,14 @@
 200    aOK002T*b*c1g%4i?j%3
 002    *** OK002TB #signatura #přír_číslo #jméno_pobočky #datum_platnosti #text_k_dislokaci - žádanka na termín na pobočce vytvořena
 200    aOK002TB*b*c1g%5i?j%4
+002    *** OK002TBOX #signatura #přír_číslo #jméno_pobočky #datum_platnosti #text_k_dislokaci - žádanka na termín do knihoboxu vytvořena
+200    aOK002TBOX*b*c1g%5i?j%4
 002    *** OK002W #signatura #přír_číslo #datum_platnosti #text_k_dislokaci - vytvořena objednávka z volného výběru
 200    aOK002W*b*c1f1g%4i?j%3
 002    *** OK002WB #signatura #přír_číslo #jméno_pobočky #datum_platnosti #text_k_dislokaci - vytvořena objednávka z volného výběru na pobočce
 200    aOK002WB*b*c1f1g%5i?j%4
+002    *** OK002WBOX #signatura #přír_číslo #jméno_pobočky #datum_platnosti #text_k_dislokaci - vytvořena objednávka z volného výběru do knihoboxu
+200    aOK002WBOX*b*c1f1g%5i?j%4
 002    *** INFZ001D - nalezen volný exemplář na neskladové lokaci, nejde udělat žádanka, ale je potřeba o tom informovat čtenáře
 200    aINFZ001Db*l?
 002    ***********************************************
@@ -6037,7 +6049,7 @@
 200    aC46bC46    |a%sc/atom:citedby-count
 200    aC82bC82    |a%sc/atom:article-number
 200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/prism:publicationNamec/prism:issnc/prism:eIssnc/prism:coverDatec/prism:volumec/prism:issueIdentifier
-200    aT34bT34    |aumb_scopus*%s#REF=%s#REFSRCTITLE=%s|bSCOPUS|c%s|e%sc/dc:titlec/dc:creatorc/prism:publicationNamec/prism:coverDate:::-:::1c/prism:aggregationType
+200    aT34bT34    |aictx_scopus*%s#REF=%s#REFSRCTITLE=%s|bSCOPUS|c%s|e%s|f1c/dc:titlec/dc:creatorc/prism:publicationNamec/prism:coverDate:::-:::1c/prism:aggregationType
 ###
 # @id UnTablesd BASE_IPAC2_XMLPARSE_SCOPUS_M21
 002    31.10.16 jk; doplneno ISBN
@@ -6064,7 +6076,7 @@
 200    aC46bC46    |a%sc/atom:citedby-count
 200    aC82bC82    |a%sc/atom:article-number
 200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%sc/prism:publicationNamec/prism:issnc/prism:eIssnc/prism:coverDatec/prism:volumec/prism:issueIdentifier
-200    aT34bT34    |aumb_scopus*%s#REF=%s#REFSRCTITLE=%s|bSCOPUS|c%s|e%sc/dc:titlec/dc:creatorc/prism:publicationNamec/prism:coverDate:::-:::1c/prism:aggregationType
+200    aT34bT34    |aictx_scopus*%s#REF=%s#REFSRCTITLE=%s|bSCOPUS|c%s|e%s|f1c/dc:titlec/dc:creatorc/prism:publicationNamec/prism:coverDate:::-:::1c/prism:aggregationType
 ###
 # @id UnTablesd BASE_IPAC2_XMLPARSE_SD
 002    03.05.22 jk; uprava na ScienceDirect API V2
@@ -6113,7 +6125,7 @@
 200    aC46bC46    |a%sc/static_data/summary/names/@count
 200    aC82bC82    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="art_no"]/@value::: :::2
 200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%s|g%s|h%s|i%s|j%s|k%s|l%sc/static_data/summary/titles/title[@type="source"]c/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type=" "]/@valuec/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)c/static_data/summary/conferences/conference/conf_titles/conf_titlec/static_data/summary/conferences/conference/conf_locations/conf_location/conf_cityc/static_data/summary/conferences/conference/conf_locations/conf_location/conf_statec/static_data/summary/conferences/conference/conf_dates/conf_datec/static_data/summary/conferences/conference/conf_dates/conf_date/@conf_startc/static_data/summary/conferences/conference/conf_dates/conf_date/@conf_end
-200    aT34bT34    |aictx_clwoscit*%s|bWOS|c%s|d%s|e%sc/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2c/static_data/summary/pub_info/@pubtype
+200    aT34bT34    |aictx_clwoscit*%s|bWOS|c%s|d%s|e%s|f1c/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2c/static_data/summary/pub_info/@pubtype
 200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/static_data/fullrecord_metadata/addresses/address_namec/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/@addr_noc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/full_addressc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/cityc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/country
 ###
 # @id UN_TABLES BASE_IPAC2_XMLPARSE_CLWOS_M21
@@ -6132,7 +6144,7 @@
 200    a490b490 1  |a%sc/static_data/summary/titles/title[@type="book_series"]
 200    a653b653    |a%s:::653    :::c/static_data/item/keywords_plus/keywordc/static_data/item/keywords_plus/keyword[]
 200    a653_1b653    |a%s:::653    :::c/static_data/fullrecord_metadata/keywords/keywordc/static_data/fullrecord_metadata/keywords/keyword[]
-200    a655b655    |a%sc/static_data/summary/doctypes/doctype
+200    a655b655    |a%s:::655    :::c/static_data/summary/doctypes/doctypec/static_data/summary/doctypes/doctype[]
 200    a100b100 1  |a%s|4%s|u%s|z%s|A%s|B%s:::700 1  :::c/static_data/summary/names/namec/static_data/summary/names/name[]/full_namec/static_data/summary/names/name[]/@rolec/static_data/summary/names/name[]/@addr_noc/static_data/summary/names/name[]/@reprintc/static_data/contributors/contributor/name[full_name=//static_data/summary/names/name[]/full_name]/@orcid_idc/static_data/contributors/contributor/name[full_name=//static_data/summary/names/name[]/full_name]/@r_id
 200    a773b773 08 |t%s|gVol. %s, no. %s (%s), pp. %s|x%sc/static_data/summary/titles/title[@type="source"]c/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)c/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/pagec/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@value
 200    a970b970    |bRBX
@@ -6141,7 +6153,7 @@
 200    aC46bC46    |a%sc/static_data/summary/names/@count
 200    aC82bC82    |a%sc/dynamic_data/cluster_related/identifiers/identifier[@type="art_no"]/@value::: :::2
 200    aU01bU01    |a%s|b%s|c%s|d%s|e%s|f%s|g%s|h%s|i%s|j%s|k%s|l%sc/static_data/summary/titles/title[@type="source"]c/dynamic_data/cluster_related/identifiers/identifier[@type="issn"]/@valuec/dynamic_data/cluster_related/identifiers/identifier[@type=" "]/@valuec/static_data/summary/pub_info/@pubyearc/static_data/summary/pub_info/@volc/static_data/item/bib_id:::(:::)c/static_data/summary/conferences/conference/conf_titles/conf_titlec/static_data/summary/conferences/conference/conf_locations/conf_location/conf_cityc/static_data/summary/conferences/conference/conf_locations/conf_location/conf_statec/static_data/summary/conferences/conference/conf_dates/conf_datec/static_data/summary/conferences/conference/conf_dates/conf_date/@conf_startc/static_data/summary/conferences/conference/conf_dates/conf_date/@conf_end
-200    aT34bT34    |astu_clwoscit*%s|bWOS|c%s|d%s|e%sc/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2c/static_data/summary/pub_info/@pubtype
+200    aT34bT34    |aictx_clwoscit*%s|bWOS|c%s|d%s|e%s|f1c/UID:::%COLON%:::2c/static_data/summary/pub_info/@pubyearc/static_data/summary/EWUID/edition/@value:::.:::2c/static_data/summary/pub_info/@pubtype
 200    aT35bT35    |a%s|b%s|c%s|d%s:::T35    :::c/static_data/fullrecord_metadata/addresses/address_namec/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/@addr_noc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/full_addressc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/cityc/static_data/fullrecord_metadata/addresses/address_name[]/address_spec/country
 ###
 # @id UnTablesd BASE_IPAC2_XMLPARSE_OAI_CREPC_CIT_M21

@@ -1,0 +1,81 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/>
+
+<h2><ipac:tx param="NADDATA"/></h2>
+<ul class="list-group">
+   <ipac:off>Nový datový záznam (metadata)</ipac:off>
+    <li class="list-group-item"><ipac:sso rel="external" class="external" target="_blank" app="epca/indexT.csp" param="language=#($$$GETSESSVAR("language"))#&formtype=e&recid=cav_un_epca*new&client_info=aRL i3 web client 1.0"><ipac:tx param="NEWRECMD"/></ipac:sso></li>
+    <br>
+  <csp:if condition=(data("ZSUPER"))>
+   </ul>
+   <h2><ipac:tx param="NADKONTROLY"/></h2>
+<ul class="list-group">
+	<csp:if condition=(data("KNAVCHECK"))>
+<li class="list-group-item"><ipac:search fld1="ZMDS" term1="mdknav" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="KNAVCHECK"/></strong></ipac:search></li>
+	</csp:if>
+	<csp:if condition=(data("KNAVBACK"))>
+<li class="list-group-item"><ipac:search fld1="ZMDS" term1="mdkback" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="KNAVBACK"/></ipac:search></li>
+	</csp:if>
+</ul>
+   <h2><ipac:tx param="NADDATAPR"/></h2>
+<ul class="list-group">
+   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="md" rel="nofollow" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mdv" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="DS" term1="n" rel="nofollow" boolop1="and" fld2="ZMDS" term2="mdz" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZ"/></ipac:search></li>
+   <br>
+   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mddsvjr" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li>
+   <li class="list-group-item"><ipac:search fld1="ZMDS" term1="mdsds" rel="nofollow" src="#($$$GETICTX)#_un_epca-1" qt="asep" sort="ZID"><ipac:tx param="MDIDAT"/></ipac:search></li>
+  </csp:if>
+  <csp:if condition=(data("ZPRAC")&&(data("USTAV_ZPRAC_JMENO")'="SPEC_ZPRAC"))>
+      <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZSOUHZZPRAC"/></ipac:search></li>
+      
+    </ul>
+<h2><ipac:tx param="NADKONTROLY"/></h2>
+<ul class="list-group">
+	<csp:if condition=(data("ZLINKDATAKONTROLA")&&data("MDNZSOUHZ"))>
+<li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" boolop2="and" fld3="DS" term3="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="MDNZSOUHZ"/></strong></ipac:search></li>
+    </csp:if>
+    <csp:if condition=(data("ZPRACBACK"))>
+<li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdzback" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZPRACBACK"/></ipac:search></li>
+	</csp:if>
+	<csp:if condition=(data("ZPRACKNAV"))>
+<li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdknav" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="ZPRACKNAV"/></ipac:search></li>
+	</csp:if>
+	<csp:if condition=(data("ZPRACKNAVBACK"))>
+<li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdkback" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="ZPRACKNAVBACK"/></strong></ipac:search></li>
+	</csp:if>
+</ul>    
+<h2><ipac:tx param="NADDATAPR"/></h2>
+<ul class="list-group">
+    <li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mdv" boolop2="not" fld3="DS" term3="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
+    <ipac:off><li class="list-group-item"><ipac:search fld1="PRAD" rel="nofollow" term1="#(data("USTAV_Z"))#" boolop1="and" fld2="ZMDS" term2="mddsvjr" boolop2="and" fld3="DS" term3="n" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li></ipac:off>
+  </csp:if>
+  <csp:if condition=(data("ZPRAC")&&(data("USTAV_ZPRAC_JMENO")="SPEC_ZPRAC"))>
+      <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZSOUHZZPRAC"/></ipac:search></li>
+      <csp:if condition=(data("ZLINKDATAKONTROLA"))>
+          <ipac:off>link - datové záznamy ke kontrole - jen na základě existence dat</ipac:off>
+          <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="MDNZSOUHZ"/></strong></ipac:search></li>
+      </csp:if>
+    </ul>
+    <h2><ipac:tx param="NADDATAPR"/></h2>
+<ul class="list-group">
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdv" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZ"/></ipac:search></li>
+    <ipac:off><li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mddsvjr" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDDSVJR"/></ipac:search></li></ipac:off>
+  </csp:if>
+  <csp:if condition=(data("ZUSER"))>
+
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdznesouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDNZA"/></ipac:search></li>
+     </ul>
+    <h2><ipac:tx param="NADKONTROLY"/></h2>
+<ul class="list-group">
+	<csp:if condition=(data("MDOZA"))>
+<li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdzsouh" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDOZA"/></ipac:search></li>
+    </csp:if>
+    <csp:if condition=(data("AUTORBACK"))>
+<li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdzback" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><strong><ipac:tx param="AUTORBACK"/></strong></ipac:search></li>
+	</csp:if>
+</ul>
+    <h2><ipac:tx param="NADDATAPR"/></h2>
+<ul class="list-group">
+    <li class="list-group-item"><ipac:search fld1="IOWN" rel="nofollow" term1="#($$$GETICTX)#_is_user#(data("USER_ID"))#" boolop1="and" fld2="ZMDS" term2="mdv" src="#($$$GETICTX)#_un_epca-4" qt="asep" sort="ZID"><ipac:tx param="MDVZ"/></ipac:search></li>
+   </csp:if>
+</ul>

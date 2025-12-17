@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 865U)" ts="2021-07-09 13:02:47">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-13 11:55:59">
 <Class name="i2.cust.cav.list">
 <Description><![CDATA[
 <pre>
+13.11.25 ln; podpora druhu X a DMP
 09.07.21 kp; uprava metody getSubSite
 05.12.17 tt; odstraneny datove zaznamy pro schvalovani
 14.02.13 jk; vymazan template(), writeBody()
@@ -11,7 +12,7 @@
 24.05.12 zalozena trida 
 </pre>]]></Description>
 <Super>content.list</Super>
-<TimeChanged>65934,46945.309797</TimeChanged>
+<TimeChanged>67522,42915.175749846</TimeChanged>
 <TimeCreated>62600,49457.920423</TimeCreated>
 
 <Parameter name="Ictx">
@@ -70,8 +71,11 @@ ictx instituce</Description>
     s idx=##class(User.Util).objectName2lname(array("class"))_"*"_array("t001")
     if '$d(records(idx)) {
       continue:'##class(User.MARC).readX(.handle,array("class"),array("t001"))
+      ; 13.11.25 ln; podpora druhu X a DMP
       ; 05.12.17 tt; odstraneny datove zaznamy pro schvalovani
-      continue:($$$getTagX(.handle,"970b")="DATA")
+      s dk=$$$getTagX(.handle,"970b")
+      continue:(dk="DATA")||(dk="X")||(dk="DMP")
+      
       s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contser","idx="_idx_"&amp;status="_data("STATUS"))
       s title=##class(i2.data.layer).title(.handle)
       s hrefRec=$$$BASEURL_##class(i2.html.tpl).getRecordURL(idx,title)

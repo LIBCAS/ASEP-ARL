@@ -2,6 +2,7 @@
  * EPCA Form Designer
  * @author Kungfu
  *
+ * 05.11.25 on; nazev formulare musim vzit z atributu
  * 23.01.25 on; moznost skryt ohraniceni
  * 29.04.24 on; nastaveni css bude pouze v csp souboru
  * 21.02.23 on; jazykova mutace nazvu formulare
@@ -278,7 +279,10 @@ epca.designer.DesignerPanel = Ext.extend(Ext.Panel, {
             }
 
             this.openForm.unFormat = this.unFormat;
-            this.openForm.title = rootNode.text;
+            // 05.11.25 on; nazev formulare musim vzit z atributu
+            //this.openForm.title = rootNode.text;
+            this.openForm.title = rootNode.attributes.formProperties.formName;
+            
             this.openForm.targetDb = rootNode.attributes.formProperties.formDBTable;
             // 27.10.11 on;
             this.openForm.formTablesdCache = rootNode.attributes.formProperties.formTablesdCache;

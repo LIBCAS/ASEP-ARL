@@ -1,4 +1,5 @@
 /**
+ * 17.10.25 on; mezera v nazvu fieldsetu se bude odmazavat
  * 04.11.21 on; vyber jazykove mutace
  * 17.12.20 on; doplneno csSetOnFirstFieldInNewFieldset
  * 28.11.19 on; prefix nazvu subtagu
@@ -38,6 +39,10 @@ epca.form.Helper = {
         if (tag.length === 3) {
           if ((item.tagLabelUser) && (item.tagLabelUser !== '')) {
             sTitle = this.csGetUserTitle(item.tagLabelUser);
+            // 17.10.25 on; mezera v nazvu fieldsetu se bude odmazavat
+            if (sTitle === ' ') {
+              sTitle = '';
+            }
           } else {
             sTitle = tag + ' ' + titles[i].title;
           }
@@ -64,6 +69,10 @@ epca.form.Helper = {
       } else if (tag.length === 3) {
         if ((item.tagLabelUser) && (item.tagLabelUser !== '')) {
           sTitle = this.csGetUserTitle(item.tagLabelUser);
+          // 17.10.25 on; mezera v nazvu fieldsetu se bude odmazavat
+          if (sTitle === ' ') {
+          	sTitle = '';
+          }
         } else {
           sTitle = tag;
         }

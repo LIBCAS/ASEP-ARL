@@ -2,6 +2,8 @@
 002    -
 002    fiktivny tag - histora zmien suboru un_tagmap.txt 
 002    -
+002    28.08.25 jk; do UN_978 $9 pridan JIF decil
+002    20.08.25 jk; uprava UN_978
 002    03.06.24 tt; 978: pridane podpole Q
 002    28.05.24 tt; pridano podpole P do _978
 002    11.03.24 dk; založeno 978_USA pro EPCA údaje autorit
@@ -479,6 +481,7 @@
 200    afbRežie - datumycOd1g935f
 ###
 # @id UN_TAGMAP UN_978
+002    20.08.25 jk; uprava $e,$7, pridano $8
 002    23.03.22 tt; 978: pridany pole M N - po komunikaci s NA jako standard
 002    02.08.17 tt; UN_978:pridany popole D-F
 002    13.09.16 tt; UN_978:pridany popole 2-6
@@ -488,9 +491,9 @@
 100    aCharakteristika periodikab0c1
 200    aabRoky karentovania#Roky karentování#Year of KarentcOd1efn
 200    abbKarentovanosť#Karentovanost#Karent StatuscOd1eST,UN_EPCA_KARENTfST,UN_EPCA_KARENTn
-200    acbImpakt faktor#Impakt faktor#Impact FactorcOd1efn
+200    acbJIF (Impakt faktor)#JIF (Impakt faktor)#JIF (Impact Factor)cOd1efn
 200    adbDatabázacOd1efnpre potreby RIV a pre SAV, moze sa pouzit ciselnik databaz
-200    aebVedný odbor JCR#Vedný obor JCRcOd1efn(v tvare: ??,0) ?? = označenie odboru, 0 = poradie, opakovateľné pre každý odbor
+200    aebVedný odbor JCR (Clarivate Journal Citation Report)#Vedný obor JCR (Clarivate Journal Citation Report)cOd1efnvice vednich oboru je oddeleno svislitkem, poradi odpovida poradi AIS kvartilu podle oboru v$$8
 200    afb5-ročný impakt faktor#5-letý impakt faktorcOd0efn5-year IF
 200    agbIndex bezprostredného vplyvucOd0efnimmediacy index
 200    ahbPolčas citovaniacOd0efncited half-life
@@ -518,10 +521,12 @@
 200    a4bSJR Best QuartilecOd0nScopus
 200    a5bImpact Factor without Journal Self CitescOd0nWos
 200    a6bCitable ItemscOd0nWos
-200    a7bJCR kvartilcOd0nWOS
+200    a7bJIF best kvartilcOd0nWOS
+200    a8bAIS kvartil podle vedniho oborucOd0nvice vednich oboru je oddeleno svislitkem, poradi odpovida poradi AIS kvartilu podle oboru v$$e
+200    a9bJIF decilcOd0nWOS, hodnoty 1-10 podle JIF percentilu $C ("1" 90=<JIF_PCT, "2" 80=<JIF_PCT<90, "3" 70=<JIF_PCT<80, ..., "10" JIF_PCT<10)
 200    aAbAIS PCTcOd0nArticle InfluenceTM Score Percentile
 200    aBbAIS AL PCTcOd0nArticle InfluenceTM Score Article Level Percentile
-200    aCbIF PCTcOd0nImpakt faktor percentil - average jif percentile - pry je to prumerna hodnota za percentily v kategorií
+200    aCbJIF PCTcOd0nImpakt faktor percentil - average jif percentile - pry je to prumerna hodnota za percentily v kategorií
 200    aDbQAIS Quartil Article Influence ScorecOd0nQuartil Article Influence Score
 200    aEbQSJR Quartil Scientific Journal RankingscOd0nQuartil Scientific Journal Rankings
 200    aFbQTC Quartil Clarivate AnalyticscOd0nQuartil Clarivate Analytics
@@ -536,6 +541,9 @@
 200    aObNordic List LevelcOd0eST,EPCA_NORDIC_LIST_LEVELfST,EPCA_NORDIC_LIST_LEVELnNordic List Level
 200    aPbJCR best journal IF percentilcOd0nJCR best journal IF percentil - je to nejlepší percentil v libovolné kategorii
 200    aQbSJR decil - vedná oblasťcOd0nPro Sav SJR decil vedná oblasť - Podpole L je SJR 1. decil, ale podla KATEGORII,a nasi si vymysleli podla VEDNYCH OBLASTI. 
+200    aRbnení zdokumentováno
+200    aSbnení zdokumentováno
+200    aTbnení zdokumentováno
 ###
 # @id UN_TAGMAP UN_981
 100    aOsobní jméno - majitelb1c1

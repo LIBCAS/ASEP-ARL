@@ -1,4 +1,5 @@
 /**
+ * 24.10.25 on; preda i celou komponentu - checkbox
  * 10.11.21 on; moznost zapojit reakci na check event 
  * 04.01.17 on; rozsireni funkce clearFields
  * 19.07.16 on; formular nemusi byt v tabu
@@ -44,7 +45,8 @@ epca.form.Checkbox = Ext.extend(Ext.form.Checkbox, {
         // 10.11.21 on; moznost zapojit funkci v designeru - neni to asi moc bezpecne..
         if (!this.csStopOnCheck) {
           if (!i3.isEmptyString(this.csOnCheckEvent)) {
-            eval(this.csOnCheckEvent)(checked);
+          	// 24.10.25 on; preda i celou komponentu - checkbox
+            eval(this.csOnCheckEvent)(checked, cmp);
           }
         }
       }

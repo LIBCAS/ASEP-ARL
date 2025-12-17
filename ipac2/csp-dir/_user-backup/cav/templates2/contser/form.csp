@@ -17,7 +17,7 @@
 </span>
 </span>
 </legend>
-    <csp:if condition=($g(data("REC_970b"))'="DATA") note="08.03.17 tt; upraveno zobrazovani pro velka data">
+    <csp:if condition=(($g(data("REC_970b"))'="DATA")&&($g(data("REC_970b"))'="X")&&($g(data("REC_970b"))'="DMP")) note="08.03.17 tt; upraveno zobrazovani pro velka data">
 <csp:if condition=(..v("ver"))>
 <div class="row form-group">
 <div class="col-4"><ipac:tx param="VER"/></div>
@@ -70,3 +70,4 @@
 
 </fieldset>
 </ipac:form>
+<br>

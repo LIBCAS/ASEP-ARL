@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-13 14:00:16">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-25 15:32:08">
 <Class name="User.CavS">
 <Description><![CDATA[
 <pre>
+17.10.25 jk; v Cav formulari je moznost zakazat prideleni DOI
+26.09.25 ln; schvalovani autor->zprac->super
+12.09.25 ln; podpora druhu X a DMP
 13.03.25 jk; zalozeno genDoiDataCite
 28.02.25 ln; vyjimky pro analytika
 27.02.25 jk; pristup se cte z CREDENTIALS
@@ -38,7 +41,7 @@ Uzivatelske funkce a vystupy pro Cav (CavS)]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
 <ProcedureBlock>1</ProcedureBlock>
 <Super>%Library.RegisteredObject</Super>
-<TimeChanged>67277,48273.10431402</TimeChanged>
+<TimeChanged>67534,38178.000043914</TimeChanged>
 <TimeCreated>59592,28773.586903</TimeCreated>
 
 <Method name="classNameX">
@@ -2169,6 +2172,7 @@ Parametry:
 
 Dokumentace: https://cosmo2/wiki/index.php/Cav-full_text_upload_25#Zobrazov.C3.A1n.C3.AD_soubor.C5.AF_v_zobrazovac.C3.ADch_form.C3.A1tech
 
+12.09.25 ln; podpora druhu X a DMP
 20.09.23 tt; pridan 1. parametr v parametrech - pro zobrazovani souboru v ruznych kontextech
 11.11.16 tt; pridana volba u zobrazeni velkych dat
 30.11.14 tt; pridan spolupracujici zpracovatel do rozsireneho zobrazeni udaju content serveru
@@ -2194,23 +2198,34 @@ Dokumentace: https://cosmo2/wiki/index.php/Cav-full_text_upload_25#Zobrazov.C3.A
   
   ; 11.01.18 tt; upraven zobrazovaci format pro DATA content server
   ; 01.11.17 tt; pridan u dat sloupec pristup
-  if ((sT970b="DATA")&&((sPar1="DATA")||(sPar1="")))  
+  if (sT970b="DATA")
   { ; 11.11.16 tt; pridana volba u zobrazeni velkych dat
-    d ##class(content.zf).fmtContent(.result, .handle,"T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CON1 TP=\s M=key-extension M=symb-##class(i2.cust.cav.archivelist).zfTabSymb T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 CL=-30 T=CONa TP=0995 CL=-20")
+    d:(sPar1="DATA")||(sPar1="") ##class(content.zf).fmtContent(.result, .handle,"T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CON1 TP=\s M=key-extension M=symb-##class(i2.cust.cav.archivelist).zfTabSymb T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 CL=-30 T=CONa TP=0995 CL=-20")
   }
-  elseif (((sUserR=2)||(sUserR=6)||(sUserR=5))&&((sPar1="EPCA")||(sPar1=""))&&(sT970b'="DATA"))  
-  { ; zpracovatelum ukazeme jinou tabulku
-    ; 27.02.19 tt; upraveno zobrazeni sloupce hodnoceni
-    ; T=CON9 TP=U200 M=key-user - zobrazeni uzivatelu - 001 
-    d ##class(content.zf).fmtContent(.result, .handle,"M=filter-recenze-true-not T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 T=CONv TP=0057 M=cis-UT_ASEP_VERSION-1 T=CONt TP=0995 M=cis-UT_ASEP_ACCESS-1 T=CONl M=cis-UT_ASEP_NUSL-1 TP=U123 T=CONu TP=U200 T=CON1 M=key-hodnoceni M=cis-UT_ASEP_NUSL-1 TP=U127 CL=-2")
-    d ##class(rep.zf.ub).fmtUb(.handle,"T=005 M=text-&nbsp; PR=",.result)
-    d ##class(content.zf).fmtContent(.result, .handle,"M=filter-recenze-true T=CONi TP=\s CL=-5 T=CONn TP=U128 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 T=CONv TP=0057 M=cis-UT_ASEP_VERSION-1 T=CONt TP=0995 M=cis-UT_ASEP_ACCESS-1 T=CONl M=cis-UT_ASEP_NUSL-1 TP=U123 T=CONu TP=U200 T=CON1 M=key-hodnoceni M=cis-UT_ASEP_NUSL-1 TP=U127 CL=-2")
+  elseif (sT970b="X") || (sT970b="DMP")
+  { ; 12.09.25 ln; podpora druhu X a DMP
+    if user'="" {
+      d:(sPar1="EPCA")||(sPar1="") ##class(content.zf).fmtContent(.result, .handle,"T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 T=CON2 M=key-licencecc TP=U166 T=CONt TP=0995 M=cis-UT_ASEP_ACCESS-1 T=CONu TP=U200")
+  } else {
+    d:(sPar1="EPCA")||(sPar1="") ##class(content.zf).fmtContent(.result, .handle,"T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 T=CON2 M=key-licencecc TP=U166 T=CONt TP=0995 M=cis-UT_ASEP_ACCESS-1")
   }
-  elseif (((sPar1="EPCA")||(sPar1=""))&&(sT970b'="DATA"))
-  { ; ostatnim uzivatelum standardni
-    d ##class(content.zf).fmtContent(.result, .handle,"M=filter-recenze-true-not T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-9 T=CONc TP=0994 T=CONv TP=0057 M=cis-UT_ASEP_VERSION-1 T=CONa TP=0995 CL=-10")
-    d ##class(rep.zf.ub).fmtUb(.handle,"T=005 M=text-&nbsp; PR=",.result)
-    d ##class(content.zf).fmtContent(.result, .handle,"M=filter-recenze-true T=CONi TP=\s CL=-5 T=CONn TP=U128 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-9 T=CONc TP=0994 T=CONv TP=0057 M=cis-UT_ASEP_VERSION-1 T=CONa TP=0995 CL=-10")
+  }
+  elseif (sPar1="EPCA")||(sPar1="") ; ostatni sT970b
+  {
+    if ((sUserR=2)||(sUserR=6)||(sUserR=5))
+    { ; zpracovatelum ukazeme jinou tabulku
+      ; 27.02.19 tt; upraveno zobrazeni sloupce hodnoceni
+      ; T=CON9 TP=U200 M=key-user - zobrazeni uzivatelu - 001 
+      d ##class(content.zf).fmtContent(.result, .handle,"M=filter-recenze-true-not T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 T=CONv TP=0057 M=cis-UT_ASEP_VERSION-1 T=CONt TP=0995 M=cis-UT_ASEP_ACCESS-1 T=CONl M=cis-UT_ASEP_NUSL-1 TP=U123 T=CONu TP=U200 T=CON1 M=key-hodnoceni M=cis-UT_ASEP_NUSL-1 TP=U127 CL=-2")
+      d ##class(rep.zf.ub).fmtUb(.handle,"T=005 M=text-&nbsp; PR=",.result)
+      d ##class(content.zf).fmtContent(.result, .handle,"M=filter-recenze-true T=CONi TP=\s CL=-5 T=CONn TP=U128 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 T=CONv TP=0057 M=cis-UT_ASEP_VERSION-1 T=CONt TP=0995 M=cis-UT_ASEP_ACCESS-1 T=CONl M=cis-UT_ASEP_NUSL-1 TP=U123 T=CONu TP=U200 T=CON1 M=key-hodnoceni M=cis-UT_ASEP_NUSL-1 TP=U127 CL=-2")
+    }
+    else
+    { ; ostatnim uzivatelum standardni
+      d ##class(content.zf).fmtContent(.result, .handle,"M=filter-recenze-true-not T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-9 T=CONc TP=0994 T=CONv TP=0057 M=cis-UT_ASEP_VERSION-1 T=CONa TP=0995 CL=-10")
+      d ##class(rep.zf.ub).fmtUb(.handle,"T=005 M=text-&nbsp; PR=",.result)
+      d ##class(content.zf).fmtContent(.result, .handle,"M=filter-recenze-true T=CONi TP=\s CL=-5 T=CONn TP=U128 T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-9 T=CONc TP=0994 T=CONv TP=0057 M=cis-UT_ASEP_VERSION-1 T=CONa TP=0995 CL=-10")
+    }
   }
   s nLStop=$o(result(""),-1)+1
   
@@ -2386,25 +2401,34 @@ Navrat:
 <Description><![CDATA[
 <pre>
 Provolani API DataCite pro prideleni DOI u zaznamu ktere splni podminku
-Kontorluji se zaznamy zalozene zpetne za 15 dnu.
+Kontroluji se zaznamy ktere jsou datasety (979b=DATA) zalozene zpetne za 15 dnu.
+Podminky zpracovani zaznamu jsou stejne jako v CavUnEcpa AllowSaveEx
 Zapojeno v ZBACK
 
+17.10.25 jk; v Cav formulari je moznost zakazat prideleni DOI
 13.03.25 jk; zalozeno
 <pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <Implementation><![CDATA[
-  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
-  s sDtZac=$zd($h-300,8)        ; aktualni datum - 15 dnu
-  s sDtKon=$zd($h+1,8)         ; aktualni datum + jeden den
+  w !,"CavS.genDoiDataCite start at "_$zdt($h,3)
   
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+  s sDtZac=$zd($h-300,8)       ; aktualni datum - 15 dnu
+  s sDtKon=$zd($h+1,8)         ; aktualni datum + jeden den  
   s class=ipref_"UnEpca"
+  
+  w !," class: "_class
+  w !," from : "_sDtZac
+  w !," to   : "_sDtKon
+  w !
 
   ; udelame selekt podle dt1
   d ##class(User.Util).XselIndex(class_" dt1 bt "_sDtZac_"~"_sDtKon)   ; vyselektujeme zaznamy vytvorene do 15 dnu
-  d ##class(User.Util).Xselect("&&"_class_" !zmdt = md")                ; jen datove zaznamy (dataset 979b=DATA) 
+  d ##class(User.Util).Xselect("&&"_class_" !zmdt = md")               ; jen datove zaznamy (dataset 979b=DATA) 
 
   if '##class(User.Util).XcheckActiveList() {
     w !,"No find any "_class_" dataset records create between '"_sDtZac_"' - '"_sDtKon_"', nothing to do"
+    w !!,"CavS.genDoiDataCite finished at "_$zdt($h,3),!
     q
   }
 
@@ -2419,15 +2443,21 @@ Zapojeno v ZBACK
       w !,"ERROR record id:"_id_" not found!" 
       continue
      
-      ; podle CavUnEcpa AllowSaveEx
+      ; podminky prideleni DOI podle CavUnEcpa AllowSaveEx
+      ; - použil se formulář DFLT_DATA
+      ; - druh dokumentu je DATA (dataset)
+      ; - 969f je prazdne (je odeslano do IPACu)
+      ; - neni prideleno DOI pres jineho poskytovatele (C76 prazdne)
+      ; - ve formulari neni zakazano prideleni DOI (017$0'=1)
       s sT001=$$$HandleT001(handle)
+      s sC76=$$$getTagX(.handle,"C76")
+      s s0170=$$$getTagX(.handle,"0170")
+      s sTC99d=$$$getTagX(.handle,"C99d")
       s sDruhDok=$zcvt($$$getTagX(.handle,"970b"),"U")
       s s969fUP=$zcvt($$$getTagX(.handle,"969f"),"U")
-      s sC76u=$$$getTagX(.handle,"C76u") ; navazane soubory
-      if (sDruhDok="DATA")&&(s969fUP'="D")&&(s969fUP'="N")&&(sC76u'="") {
-        s doi=##class(util.ie.datacite).getDoiFromHandle(ipref,.handle,.bDataCiteDoi) 
+      if (sTC99d="DFLT_DATA")&&(sDruhDok="DATA")&&(s969fUP="")&&(sC76="")&&(s0170'="1") {  
+        s doi=##class(util.ie.datacite).getDoiFromHandle(ipref,.handle,.bDataCiteDoi)
         continue:doi'=""
-        
         s errDoi=##class(util.ie.datacite).process(.handle,"create","publish")  ; vlozit do DUI fronty
         if errDoi'="" {
           s cntErr=cntErr+1
@@ -2435,7 +2465,7 @@ Zapojeno v ZBACK
         }
         else {
           s cntOK=cntOK+1
-          w !,class_"/"_sT001_" succesfully added to DUI for create new DataCite DOI"
+          w !,class_"/"_sT001_" succesfully added to DUI to create new DataCite DOI"
         }
       }
     }   
@@ -2450,6 +2480,8 @@ Zapojeno v ZBACK
   w !,"  - added to DUI successfully      :"_$j(cntOK,5)
   w !,"  - errors                         :"_$j(cntErr,5)
   w !,"  unprocessed records              :"_$j(cntUnproc,5)
+  
+  w !!,"CavS.genDoiDataCite finished at "_$zdt($h,3),!
 ]]></Implementation>
 </Method>
 
@@ -4360,6 +4392,7 @@ Parametry - aktualne zpracovavany handle
                     c  - kopie datasetu
                     
 
+26.09.25 ln; schvalovani autor->zprac->super
 01.12.22 tt; pridana funcnost vytvoreni kopie datasetu 
 19.05.22 tt; pridáno mošnost pro super -k
 19.12.19 tt; pridana zmena druhu dokumentu - k
@@ -4419,8 +4452,9 @@ Parametry - aktualne zpracovavany handle
         s:((($f(pRole,"u")&&$f(pRole,"z"))||$f(pRole,"k"))&&(sR970b="BXXS")) bRet=bRet_"w"
         //s:(($f(pRole,"h"))&&(sAktRokSb=sRC26Rok)&&((sR969f="N")||(sR969f="D"))&&(sU95a'=1)) bRet=bRet_"wd"
         
-        // 24.06.24 tt; provedena zmena pravu datovvych zaznamu pro odesltani zpracovateli        
-        s:(($f(pRole,"h"))&&(sAktRokSb=sRC26Rok)&&((sR969f="N")||(sR969f="D"))&&(sU95c'=1)) bRet=bRet_"wd"
+        ; 26.09.25 ln; schvalovani autor->zprac->super
+        ; 24.06.24 tt; provedena zmena pravu datovvych zaznamu pro odesltani zpracovateli        
+        s:(($f(pRole,"h"))&&(sAktRokSb=sRC26Rok)&&((sR969f="N")||(sR969f="D"))&&(sU95c<1)) bRet=bRet_"wd"
         if ($f(pRole,"c")&&($f(sC99d,"_EPCA_")))
         { ; pokud mame zpracovatele k zaznamu - zpracovatel daneho ustavu, muze
          // if (sRC26RIV=1)
@@ -4446,13 +4480,14 @@ Parametry - aktualne zpracovavany handle
           s:(('sRC26RIV)) bRet=bRet_"k"
           s:((sRC26Rok>=sAktRokSb)&&(sRC26RIV)) bRet=bRet_"k"          
         }
-        if ($f(pRole,"c")&&($f(sC99d,"DATA")))
+        ; 26.09.25 ln; schvalovani autor->zprac->super
+        if ($f(pRole,"c")&&($f(sC99d,"DATA")))&&(sU95c=1)
         { ; pokud mame zpracovatele k zaznamu - zpracovatel daneho ustavu, muze
           s bRet=bRet_"wo" 
           ; zpracovatel muze mazat jakykoli zaznam v aktualnim roku sberu pokud neni vystaveny v ipacu
           if (((sR969f="N")||(sR969f="D"))&&(sU95a=1))
           { ; 14.03.17 tt; pridana logika pro datasety s U95a
-            s:(sAktRokSb=sRC26Rok) bRet=bRet_"wdo" 
+            s:(sAktRokSb=sRC26Rok) bRet=bRet_"d" 
           }          
         }
 
