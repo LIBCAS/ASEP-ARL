@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2024-03-19 09:14:34">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.6 (Build 809U)" ts="2026-02-04 13:08:32">
 <Class name="content.api">
 <Description><![CDATA[
 <pre> Api pro praci s contentServerem
 pouzivat tyto funkce a ne primo content.engine
 
+04.02.26 ln; call nevyzaduje inicializaci
+08.01.26 ln; ochrana pred neplatnou tridou (agroforestry)
 19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 07.04.22 ln; CRank generovat vzdy
 16.02.22 ln; podpora CRank
@@ -17,7 +19,7 @@ pouzivat tyto funkce a ne primo content.engine
 26.09.12 ln; aktualizace imageServeru pri zmene typu 
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>66918,32846.1435188</TimeChanged>
+<TimeChanged>67605,47300.2641169</TimeChanged>
 <TimeCreated>62300,30441.455262</TimeCreated>
 
 <Method name="isEnabled">
@@ -53,10 +55,15 @@ pouzivat tyto funkce a ne primo content.engine
 </Method>
 
 <Method name="engineRead">
-<Description>
-array je vstupne/vystupni parametr</Description>
+<Description><![CDATA[
+<pre> pro dany soubor vraci pristupovy mod (IctxUnTablesd CONTENT_MAIN_READ)
+array je vystupni parametr
+runtime je vstupni parametr
+
+04.02.26 ln; call nevyzaduje inicializaci
+</pre>]]></Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[repo:%String,key:%String,&array,&runtime]]></FormalSpec>
+<FormalSpec><![CDATA[repo:%String,key:%String,&array,&runtime,ictx=""]]></FormalSpec>
 <ReturnType>%Boolean</ReturnType>
 <Implementation><![CDATA[
   q:repo="" 0
@@ -64,9 +71,9 @@ array je vstupne/vystupni parametr</Description>
   
   q:'##class(content.engine).get(.array,repo,key,$g(runtime("oldversion"))) 0
   m array=runtime 
-  q:$g(array("SIMUL")) ##class(content.engine).call(.array,"Read")
+  q:$g(array("SIMUL")) ##class(content.engine).call(.array,"Read",ictx)
   
-  q +##class(content.engine).call(.array,"Read")
+  q +##class(content.engine).call(.array,"Read",ictx)
 ]]></Implementation>
 </Method>
 
@@ -88,11 +95,19 @@ array je vstupne/vystupni parametr</Description>
 </Method>
 
 <Method name="engineToUpload">
+<Description><![CDATA[
+<pre> Vraci 0/1 jestli uzivatel ma pravo uploadu zaznam, ne pro konkretni soubor
+vyzaduje uzly t001 a class v runtime
+
+08.01.26 ln; ochrana pred neplatnou tridou (agroforestry)
+</pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&array,&runtime]]></FormalSpec>
 <ReturnType>%Integer</ReturnType>
 <Implementation><![CDATA[
   k array
+  q:'##class(User.Util).isClassName($g(runtime("class"))) 0
+  
   d ##class(content.engine).runtime(.array)
   m array=runtime
   s array("ictx")=$$$GETICTX
@@ -118,11 +133,19 @@ array je vstupne/vystupni parametr</Description>
 </Method>
 
 <Method name="engineToEdit">
+<Description><![CDATA[
+<pre> Vraci 0/1 jestli uzivatel ma pravo editace pro zaznam, ne pro konkretni soubor
+vyzaduje uzly t001 a class v runtime
+
+08.01.26 ln; ochrana pred neplatnou tridou (agroforestry)
+</pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&array,&runtime]]></FormalSpec>
 <ReturnType>%Integer</ReturnType>
 <Implementation><![CDATA[
   k array
+  q:'##class(User.Util).isClassName($g(runtime("class"))) 0
+  
   d ##class(content.engine).runtime(.array)
   m array=runtime
   s array("ictx")=$$$GETICTX

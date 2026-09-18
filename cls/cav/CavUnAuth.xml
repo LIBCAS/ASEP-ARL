@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-09-01 15:57:50">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-09-17 11:53:49">
 <Class name="User.CavUnAuth">
 <Description><![CDATA[
 <pre>
+10.09.26 dk; indexace nových autoritních záznamů - úložiště 'uloe'
+18.12.25 ln; autorky za svobodna aktivni jen publikovanim pod svou autoritou
 27.08.25 rn; počet ne/odoslaných záznamov epca
 14.08.25 ln; vylepsena normalizace pro indexy zaall a zaact
 16.04.25 ln; v zaact jen aktivni autori
@@ -113,7 +115,7 @@
 <IncludeCode>Common</IncludeCode>
 <ProcedureBlock>1</ProcedureBlock>
 <Super>User.DataTable</Super>
-<TimeChanged>67449,53694.231221658</TimeChanged>
+<TimeChanged>67830,42749.339446917</TimeChanged>
 <TimeCreated>59575,83515.931262</TimeCreated>
 
 <Parameter name="INDEXPARAMS">
@@ -808,6 +810,7 @@ TU1 - skrateny ZF do EPCA formularov
        s:tmpDate>maxDate maxDate=tmpDate,maxT001=tmpT001
      }
    }
+   
    ; 21.02.25 ln; index zmain - link na aktualni verzi jmena
    d:maxT001'="" $$$addIDX("zmain","cav_un_auth*"_maxT001,"b")
    
@@ -1002,6 +1005,7 @@ TU1 - skrateny ZF do EPCA formularov
    }
  }
  
+ 
  ; 18.01.08 rs; pridany index ICO ustavu (pracoviska)
  s s980x=##class(User.MARC).getTagX(.handle,"980x",-1)
  if $f(s980x,"w")
@@ -1040,6 +1044,9 @@ TU1 - skrateny ZF do EPCA formularov
      }
    }         
  }
+ 
+ ; 10.09.26 dk; indexace nových autoritních záznamů - úložiště 'uloe'
+ d:($$$tag("c99d")="dflt_un_auth_230_u") $$$addIDX("uloe",$$$tag("230a"),"b")
  
  ; 23.10.13 tt; pridany index spolupracujici instituce
  s s980x=##class(User.MARC).getTagX(.handle,"980x",-1)
@@ -1152,6 +1159,7 @@ Metoda, ktera vraci 1 - aktivni autor/0 - neaktivni autor
 parametry: kod autora
            pocet roku zpet - default 5 let
 
+18.12.25 ln; autorky za svobodna aktivni jen publikovanim pod svou autoritou
 18.06.24 tt; založena metoda</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>ipref,pAutT001,pRoky=5</FormalSpec>
@@ -1168,8 +1176,13 @@ parametry: kod autora
     s sCatT001=##class(User.MARC).getT001(sIdCat)
     if ##class(User.MARC).readLX(.handleC,ictx_"_un_epca*"_sCatT001) 
     { 
-       s sCC26d=$$$getTagX(.handleC,"C26d")
-       s:((sCC26d+pRoky) >= sActYear) ret=1
+      s sCC26d=$$$getTagX(.handleC,"C26d")
+      if ((sCC26d+pRoky) >= sActYear) 
+      { ; 18.12.25 ln; autorky za svobodna aktivni jen publikovanim pod svou autoritou
+        s all700=$$$getTagXC(.handleC,"70*",-1)
+        s ret=$f(all700,$c(31)_"3"_ictx_"_un_auth*"_pAutT001)
+        return:ret 1
+      }
     }  
     
     /*s sPomYE1=""

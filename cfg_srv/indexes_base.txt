@@ -1,4 +1,5 @@
 # @id UN_TABLES BASE_INDEXES_TXT
+002    13.01.26 jk; do BASE_INDEXES_H pridany index dtrs 
 002    08.12.25 jk; index t001cr2 pridan do solru (katalog, autority)
 002    01.12.25 jk; do BASE_INDEXES_T pridan titu1e
 002    23.09.25 jk; do BASE_INDEXES_H pridany indexy los a di
@@ -537,7 +538,7 @@
 200    adkpodbeginb2317czaciatok podujatia##nIndexovane len pri Inderxaparm „digkr“oC16e ak 980x = D
 200    adkpodendb2318ckoniec podujatia##nIndexovane len pri Inderxaparm „digkr“oC16f ak 980x = D
 200    adocdkb1032c#generovany podle metody i2.data.layer.kind#oLEN SOLR, cfsindex typu G
-200    adsb2492cĎalšie spracovanie#Další zpracovánídxndalsie spracovanie, toto je specialne pole, ktore moze obsahovat interny status autority podobne ako je to u bibliogr.zaznamovo969-fsCODE
+200    adsb2492cĎalšie spracovanie#Další zpracováníndalsie spracovanie, toto je specialne pole, ktore moze obsahovat interny status autority podobne ako je to u bibliogr.zaznamovo969-fsCODE
 200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamuo005- sN,SORT
 200    adt1b30b31b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#ndatum vytvorenia zaznamu ( prvy datum v 999-d)oviz . atribut 2485o999-d ( vo formate yyyymmdd)sN,SORT
 200    adtkab2468cRok konania akcie#Rok konání akce#nrok konania akcieo910-bsN
@@ -665,7 +666,7 @@
 200    adkb1031cDruh dokumentu#Druh dokumentu#Material-typendruh suboru, moze byt dalej triedene na REDO autority a podobnendruh suboru, upresnenie pre uzivatelske autorityo"100","110","111","130","148","150","151","155","180","181","182","185","190"o"1XX"+980 xrzretazene hodnoty cislo pola+hodnota 980 x - bez oddelovaca - napr. 110vsCODE
 200    adkfb2029cFormulár#Formulár#Data sheetnkod formulara v ktorom bude zaznam otrovenyoC99dsCODE
 200    adocdkb1032cngenerovany podle metody i2.data.layer.kindoLEN SOLR, cfsindex typu G
-200    adsb2492cĎalšie spracovanie#Další zpracovánídxndalsie spracovanie, toto je specialne pole, ktore moze obsahovat interny status autority podobne ako je to u bibliogr.zaznamovo969fsCODE
+200    adsb2492cĎalšie spracovanie#Další zpracováníndalsie spracovanie, toto je specialne pole, ktore moze obsahovat interny status autority podobne ako je to u bibliogr.zaznamovo969fsCODE
 200    adtb1012cDátum/čas posl.modifikácie#Datum/čas posl.modifikace#Date/time last modifiedntimestamp zaznamuo005sN,SORT
 200    adt1b30b31b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#ndatum vytvorenia zaznamu ( prvy datum v 999-d)o#N/Ao999d ( vo formate yyyymmdd)sN,SORT
 200    adtkab2468cRok konania akcie#Rok konání akce#nrok konania akcieoC15fsN
@@ -807,6 +808,7 @@
 200    ausrb2490cPoužívateľ a dátum zmeny/vytv. záznamu#Uživatel a datum změny/vytv. záznamu#User and date of change/insert of recordmalldtmnbodka plus uzivatel kt. zaznam vytvoril pomlcka datum vytvorenia zaznamu (prvy datum v 999-d); bodka plus datum vytvorenia zaznamu (prvy datum v 999-d); uzivatel pomlcka datum poslednej modifikacie (pri pouziti parametru "alldtm" vsechny modifikace zaznamu); datum poslednej modifikacie zaznamu (pri pouziti parametru "alldtm" vsechny modifikace zaznamu), vklada aj dezideratao999-d; .username-yyyymmdd; .yyyymmdd; username-yyyymmdd; yyyymmdd
 ###
 # @id UN_TABLES BASE_INDEXES_H
+002    13.01.26 jk; pridany index dtrs 
 002    23.09.25 jk; pridany indexy los a di
 002    28.11.22 jk; pridana index price
 002    09.02.22 dk; v BASE_INDEXES_H, indexy 'tr' a 'tr0' zmenena hodnota podpole $s na 'N'
@@ -833,6 +835,7 @@
 200    adt1b2485cDátum vytvorenia záznamu#Datum vytvoření záznamu#Date of record insertndatum vytvorenia zaznamu ( prvy datum v 999-d)o999-d ( vo formate yyyymmdd)sN
 200    adtcdb2481cDoplnková informácia (acqinfo2)#Doplňková informac (acqinfo2)#Additional data (acqinfo2)npole acqinfo2 u CZ kniznic (zatial VY,KL,LI) sa pouziva na zadanie datumu od ktoreho sa CD dany pocet dni (aktualne 270) poziciava len prezencneo400-ssN
 200    adtrb30b31b2007cDátum príjmu#Datum příjmu#Date of accessmdtr0ndatum prijmu, na modifikátor „dtr0“ sa pri prázdnom „400a“ zaindexuje „00000000“oviz . atribut 2007o400-asN
+200    adtrsb2103cDátum príjmu nebo "0"#Datum příjmu nebo "0"#Date of access od "0"ndatum prijmu, hodnota z 400a, pokud neni zaindexuje se "0"o400-asN
 200    afakib2475cInterné číslo faktúry#Interní číslo faktúry#Internal number of invoiceninterni cislo fakturyo400-qsASCII,COMP,EXACT,LEFT,PHR
 200    afaktb2417cČíslo faktúry#Číslo faktury#Invoice numbermfaktidxncislo faktury len ak je pouzity v indexparam parameter faktidxopodla 400-h dotiahnutie z invoice 200asASCII,COMP,EXACT
 200    ahisb2491cDatabáza a kód záznamu pre chronológiu#Databáze a kód záznamu pro chronologii#Database and ID for chronologynpro historii: tabulka * kod puvodniho zaznamuohis d*k

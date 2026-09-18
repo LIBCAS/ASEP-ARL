@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-10-08 14:28:24">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-07-28 14:45:32">
 <Class name="i2.cust.cav.archivelist">
 <Description><![CDATA[
 <pre>
@@ -10,7 +10,7 @@
 15.01.19 ln; ikona pres font, odkaz do noveho tabu
 </pre>]]></Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>67486,52093.158336255</TimeChanged>
+<TimeChanged>67779,53121.81070981</TimeChanged>
 <TimeCreated>64231,36027.593241</TimeCreated>
 
 <Parameter name="PageID">
@@ -90,9 +90,7 @@ spolecna data, pokud mozno needitovat v uzivatelske verzi stranky
   
   ; 08.04.25 ln; podpora S3
   if ($e(key,*)="k") && '##class(%File).Exists(path) {
-    s config=##class(util.rest.v1.s3REST).commonConfig(repo,key)
-    s config.origname=array("origname")
-    s url=##class(util.rest.v1.s3REST).getFile(config...)
+    s url=##class(util.rest.v1.s3REST).getFileUrl($$$IPREF,repo,key,array("origname"))
     s data("url")=url
     s data("dir")=dir
     

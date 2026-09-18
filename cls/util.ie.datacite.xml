@@ -1,0 +1,2246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-09-17 10:54:31">
+<Class name="util.ie.datacite">
+<Description><![CDATA[
+<pre>
+Pristup k API Data Cite pro pridelovani DOI. Instituce musi byt member clenem.
+Na testovaci NS se vyuziva API test.
+- vyuzito na Cav
+
+17.09.26 ln; v UT_ASEP_LICENCECC zruseny podpole p a s
+31.08.26 jk; zapojen ciselnik UT_ASEP_LICENCECC
+12.08.26 ln; popdpora licence s i bez pomlcek
+20.07.26 ln; metody exportDataciteXml* z CavUnEpca
+22.05.26 jk; vymazat formatovaci znaky
+01.04.26 jk; oprava URL ORCID
+18.11.25 jk; pridana moznost zapnout/vypnout zpracovani
+17.10.25 jk; drobnejsi upravy
+</pre>]]></Description>
+<IncludeCode>Common,I2</IncludeCode>
+<TimeChanged>67830,39180.618514956</TimeChanged>
+<TimeCreated>67267,53188.0857721</TimeCreated>
+
+<Method name="process">
+<Description><![CDATA[
+<pre>
+Plneni DUI fronty pro zpracovani DOI DataCite
+ handle     zaznam, ocekava se CavUnEpca zaznam typu dataset
+ 
+ operation  "create"       vytvoreni noveho DOI
+            "update"       aktualizace metadat zaznamu registrovaneho v DOI, na Cav nepouzito
+            "updateState"  zmena stavu, na Cav uvazovano pro draft->findable nakonec nepouzito
+            "updateUrl"    zmena url (vymaz zaznamu, navrat z chronolgie)
+            "delete"       na Cav nepouzito, asi by se pripadne pouzilo s vymazem celeho zaznamu no lepsi je presun na stramku IPAC vymazanych coz dela "updateUrl-deleted"
+ 
+ event      nastavit podle povolenych stavu a workflow instituce https://support.datacite.org/docs/doi-states
+            ""             podle operation:
+                             create zalozi draft DOI
+                             update a updateUrl nezmeni stav
+                             updateState toto nepodporuje
+                             delete toto nepouziva, lze smazat pouze existujici draft DOI
+            "register"     nepouzivame, vytvoreni register DOI nebo zmena draft->registered
+            "publish"      publikovano, vytvoreni publish DOI (pouzito na Cav) nebo zmena draft,registered -> findable (nepouzito na Cav)
+            "hide"         nepouzivame, zmena draft->registered
+ 
+ urlType    pro operation="updateUrl" 
+            "persistent"   url na zaznam v IPACu (obnoveni zaznamu z chronologie nebo navrat z vyrazenych)
+            "deleted"      url na IPAC stranku smazanych zaznamu (vymaz zaznamu)
+
+ Navrat: "" nebo chyba z kontrol
+
+18.11.25 jk; pridana moznost zapnout/vypnout zpracovani
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,operation,event="",urlType=""]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s class=$$$HandleClass(handle)
+  s t001=$$$HandleT001(handle)
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s idx=##class(User.Util).objectName2lname(class)_"*"_t001
+  
+  ; 18.11.25 jk; pridana moznost zapnout/vypnout zpracovani
+  s bOn=+##class(User.Util).sXlate("ARL_CFG","DataciteDOI","N",ipref)
+  q:'bOn ""
+    
+  s err=..checking(ipref,.handle,operation,event)
+  q:err'="" err
+
+  s doi=..getDoiFromHandle(ipref,.handle,.bDataCiteDoi)
+  if 'bDataCiteDoi { s doi="" }
+
+  ; nemame zadne datove uloziste, vse si vlozime do DUI
+  s $li(list,1)=""           ; volna pozice pro stamp zpracovani v DUI
+  s $li(list,2)=idx
+  s $li(list,3)=""           ; volna pozice pro pocet zpracovani
+  s $li(list,4)=operation    
+  s $li(list,5)=event        ; operace pro zmenu stavu zaznamu
+  s $li(list,6)=urlType      ; zmena url
+  s $li(list,7)=doi          ; DOI pro operace "updateUrl - deleted" a "delete" kdy uz nemam zaznam v DB
+  
+  ; nevkladat duplicitni pozadavek
+  s node="", bDuiExist=0
+  for {
+    s node=$o(^ChangeLog($$$duiDataCite,node),1,val)
+    q:node=""
+    
+    s idxE=$lg(val,2)
+    s opE=$lg(val,4)
+    s evE=$lg(val,5)
+    s urlE=$lg(val,6)
+    s doiE=$lg(val,7)
+    if (idx=idxE)&&(operation=opE)&&(event=evE)&&(urlType=urlE)&&(doi=doiE) {
+      s bDuiExist=1 q
+    }
+  }
+  q:bDuiExist ""
+  
+  d ##class(User.ChangeLog).dataciteDuiEnqueue(list)
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="duiProcess">
+<Description>
+18.11.25 jk; pridana moznost zapnout/vypnout zpracovani</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>id,list</FormalSpec>
+<PublicList>sUser</PublicList>
+<Implementation><![CDATA[
+  s prg=" util.ie.datacite.duiProcess "
+  w !,prg_"execute id="_id
+  
+  n sUser s sUser="dui_datacite" ; pro CavUnEpca.userIsAdmin() aby se dalo zapsat DOI do 017
+  
+  s ret=""        ; do DUI nevracet chybu, pri chybe se zapise znovu s casovou znackou
+  q:id="" ret
+  q:list="" ret
+  q:'$lv(list) ret
+  
+  s bDone=0
+  try {                     ; abychom neshodili DUI
+    s idx=$li(list,2)
+    s loop=$li(list,3)+1    ; kolikaty bezi pokus DUI o zpracovani
+    s op=$li(list,4)
+    s event=$li(list,5)
+    s urlType=$li(list,6)
+    s doi=$li(list,7)
+    s class=##class(User.Util).lname2objectName($p(idx,"*"))
+    s ipref=##class(User.Util).getClassPrefixParam(class)
+    w !,"  loop="_loop_", idx="_idx_", DOI="_doi_", operation="_op_", event="_event_", urlType="_urlType
+        
+    ; 18.11.25 jk; pridana moznost zapnout/vypnout zpracovani
+    s bOn=+##class(User.Util).sXlate("ARL_CFG","DataciteDOI","N",ipref)
+    if 'bOn { 
+      w !,"  Datacite process is OFF (check the ARL_CFG DataciteDOI)"
+      s bDone=1   ; vyhodime z DUI
+      q 
+    }      
+    
+    if (op="delete")||((op="updateUrl")&&(urlType="deleted"))  {
+      ; operace u kterych nemame handle (zaznam byl vymazan z DB)
+      if op="updateUrl" {
+        ; pro urlType="deleted"
+        s bUp=..updateDoiUrl(ipref,doi,idx,urlType)
+        if bUp {
+          w !,"  the DataCite url updated succesfully"
+          s bDone=1
+        }
+      }
+      elseif op="delete" {
+        s bDel=..deleteDoi(ipref,doi)   ; pocita se ze zaznam je uz vymazan
+        if bDel {
+          w !,"  the DataCite delete DOI succesfully"
+          s bDone=1
+        }
+      }
+    }
+    else {
+    
+      if '##class(User.MARC).readLX(.handle,idx,"T") {
+        w !,"  ERRDATACITE002 error readX idx="_idx
+        ; potrebujeme mit zaznam ulozeny v db, pokud by nahodou DUI predbehnula ulozeni zaznamu, udelame 2 pokusy o zpracovani
+        s:loop>1 bDone=1 ; probehnul druhy pokus, vyhodime z DUI
+        q
+      }
+
+      s err=..checking(ipref,.handle,op,event)
+      if err'="" {
+        w !,"  "_err
+        s bDone=1        ; vyhodime z DUI
+        q
+      }
+    
+      if op="create" {
+        s doi=..createDoi(ipref,.handle,event)
+        if doi'="" {
+          ; aktualizace DOI v zaznamu, zatim pro Unimarc
+          s s017="017 7  "_$c(31)_"a"_doi_$c(31)_"2DOI"
+          d $$$setTagX(.handle,s017)
+          s sc=##class(User.MARC).writeX(.handle,1,1,0,3_$c(10)_"datacite"_$c(10)_"127.0.0.1")
+          if $$$ISERR(sc) { w !,"  ERRDATACITE006 add new DOI to record, writeX sc="_##class(User.Util).status2str(sc) }  ; z DUI musime vyhodit, takze uspesne zpracovani
+          else { w !,"  new DOI added to MARC record" }
+      
+          s bDone=1
+        }
+      }
+      else {
+        s doi=..getDoiFromHandle(ipref,.handle,.bDataCiteDoi)
+
+        if op="update" {
+          s bUp=..updateDoi(ipref,doi,.handle,event)
+          if bUp {
+            w !,"  the DataCite metadata updated succesfully"
+            s bDone=1
+          }
+        }
+        elseif op="updateState" {
+          s bUp=..updateDoiState(ipref,doi,event)
+          if bUp {
+            w !,"  the DataCite state updated succesfully"
+            s bDone=1
+          }
+        }
+        elseif op="updateUrl" {
+          ; pro urlType="persistent"
+          s bUp=..updateDoiUrl(ipref,doi,idx,urlType)
+          if bUp {
+            w !,"  the DataCite url updated succesfully"
+            s bDone=1
+          }
+        }
+      }
+    }
+  }
+  catch exp {
+    w !,"  ERRDATACITE001#exception:"_exp.Name_exp.Location_", "_$SYSTEM.Status.Error(exp.Code,exp.Data) 
+  }
+
+  if 'bDone {
+    ; neuspesne provolani
+    s stamp=$zdt(##class(User.Util).dateHdtAdd($h,(3600*4)),3,1)   ; dalsi pokus za 4 hodiny, z DUI se nevyhazuje
+    s $li(list)=stamp
+    s $li(list,3)=$li(list,3)+1  ; loop
+    s newId=##class(User.ChangeLog).dataciteDuiEnqueue(list)
+    w !,"  unprocessed, inserted back to dui new id="_newId
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="createDoi">
+<Description><![CDATA[
+<pre>
+Zalozeni noveho DOI
+handle  zaznam pro ktery se zaklada, plni se z nej metadata, potrebujeme i Txx
+        zatim umime zpracovat je zaznam CavUnEpca typu dataset
+event   ""           draft doi
+        "register"   nepouzivame, state move from draft to registered
+        "publish"    novy zaznam  stav publikovano, nepouzivame:state move from draft or registered to findable
+        "hide"       nepouzivame, state move from findable to registered
+Navrat
+       ""  chyba pri zalozeni
+       nebo nove prirazene DOI
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,&handle,event=""]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=""
+  ; po UTF konverzi neni spravna diakritka napr. kdyz se ulozi body do globalu, ale v datacite Fabrica je OK
+  s body=$$$ToUTF8(..handle2json(ipref,.handle,event)) 
+  #dim req As %Net.HttpRequest
+  s req=..getHttpRequest(ipref)
+  d req.EntityBody.Write(body)
+  s sc=req.Post("/dois")
+  if $$$ISERR(sc) {
+    w !,"  ERRDATACITE003 createDoi %Net.HttpRequest POST API datacite request error: "_##class(User.Util).status2str(sc)
+    q ret
+  }
+  s st=req.HttpResponse.StatusCode
+  if st'="201" {
+    w !,"  ERRDATACITE004 createDoi %Net.HttpRequest POST API datacite http status code: "_req.HttpResponse.StatusCode_" "_req.HttpResponse.StatusLine
+    ; detail chyby 
+    s streamHttp=req.HttpResponse.Data
+    s response=streamHttp.Read(streamHttp.Size)
+    w !,response,!
+    s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+    if $isobject(obj) {
+      ; format chybove odpoved {"errors":[{"status":400,"title":"No valid prefix found"}]}
+      s iter=obj.errors.%GetIterator()
+      while iter.%GetNext(.key, .value, .type ) {
+        w !,"  status: "_value.status,"  title: "_value.title
+      }
+    }
+    else {
+      w !,"  no JSON response"
+    }
+    q ret
+  }
+    
+  ; odpoved vraci vsechna metada nove prirazenemu DOI, coz nevyuzijeme
+  s streamHttp=req.HttpResponse.Data
+  s response=streamHttp.Read(streamHttp.Size)
+  
+  s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+  if '$isobject(obj) {
+    ; tohle by nemelo nastat, potrebujeme precist prirazene DOI
+    w !,"  ERRDATACITE005 createDoi %Net.HttpRequest POST API datacite no JSON response"
+    q ret
+  }
+  s ret=obj.data.attributes.doi  
+  w !,"  new registered DOI="_ret
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="updateDoi">
+<Description><![CDATA[
+<pre>
+API umoznuje predat jen udaje ktere chcem aktualizovat. Tohle neumime a tak posleme vse.
+Pro zmenu stavu draft->published pouzivat updateDoiState() na Cav nakonec nevyuzito.
+
+doi     DOI jako pojistka ze uz jej mame prideleny, lze ziskat i z handle UN_017
+        muze byt zalozeno i jinak nez pres datacie, tady to nekontrolujeme, v nejhorsim vyleti chyba
+handle  zaznam ktery se aktualizuje, plni se z nej metadata, potrebujeme i Txx
+        zatim umime zpracovat je zaznam CavUnEpca typu dataset
+event   neni nutne posilat, prazdne se nevlozi do Json a neaktualizuje se
+        ""           draft
+        "register"   nepouzivame, state move from draft to registered
+        "publish"    publikovano, state move from draft or registered to findable
+        "hide"       nepouzivame, state move from findable to registered
+Navrat 0/1
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,doi,&handle,event=""]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s ret=0
+  ; po UTF konverzi neni spravna diakritka napr. kdyz se ulozi body do globalu, ale v datacite Fabrica je OK
+  s body=$$$ToUTF8(..handle2json(ipref,.handle,event))
+  #dim req As %Net.HttpRequest
+  s req=..getHttpRequest(ipref)
+  d req.EntityBody.Write(body)
+  s sc=req.Put("/dois/"_doi)
+  if $$$ISERR(sc) {
+    w !,"  ERRDATACITE003 updateDoi %Net.HttpRequest POST API datacite request error: "_##class(User.Util).status2str(sc)
+    q ret
+  }
+  s st=req.HttpResponse.StatusCode
+  if st'="200" {
+    w !,"  ERRDATACITE004 updateDoi %Net.HttpRequest POST API datacite http status code: "_req.HttpResponse.StatusCode_" "_req.HttpResponse.StatusLine
+    ; detail chyby 
+    s streamHttp=req.HttpResponse.Data
+    s response=streamHttp.Read(streamHttp.Size)
+    w !,response,!
+    s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+    if $isobject(obj) {
+      ; format chybove odpoved {"errors":[{"status":400,"title":"No valid prefix found"}]}
+      s iter=obj.errors.%GetIterator()
+      while iter.%GetNext(.key, .value, .type ) {
+        w !,"  status: "_value.status,"  title: "_value.title
+      }
+    }
+    else {
+      w !,"  no JSON response"
+    }
+    q ret
+  }
+    
+  ; odpoved vraci vsechna metada nove prirazenemu DOI, coz nevyuzijeme
+  s streamHttp=req.HttpResponse.Data
+  s response=streamHttp.Read(streamHttp.Size)
+  
+  s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+  if '$isobject(obj) {
+    ; tohle by nemelo nastat, potrebujeme precist prirazene DOI
+    w !,"  ERRDATACITE005 updateDoi %Net.HttpRequest POST API datacite no JSON response"
+    q ret
+  }
+  s ret=1
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="updateDoiState">
+<Description><![CDATA[
+<pre>
+Na Cav se uvazovalo o zmenu draft -> publish, nakonec nepouzito
+Zmena stavu DOI
+event   pozaovany novy stav:
+        ""           draft doi, tady se neposila
+        "register"   nepouzivame, state move from draft to registered
+        "publish"    nepouzivame, publikovano, state move from draft or registered to findable
+        "hide"       nepouzivame, state move from findable to registered
+Navrat 0/1
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref,doi,event=""</FormalSpec>
+<Implementation><![CDATA[
+  s ret=0
+  s obj={
+    "data": {
+        "type": "dois",
+        "attributes": {
+            "event": (event),
+            "doi": (doi)
+        }
+    }}
+  ; po UTF konverzi neni spravna diakritka napr. kdyz se ulozi body do globalu, ale v datacite Fabrica je OK
+  s body=$$$ToUTF8(obj.%ToJSON())
+    
+  #dim req As %Net.HttpRequest
+  s req=..getHttpRequest(ipref)
+  d req.EntityBody.Write(body)
+  s sc=req.Put("/dois/"_doi)
+  if $$$ISERR(sc) {
+    w !,"  ERRDATACITE003 updateDoiState %Net.HttpRequest POST API datacite request error: "_##class(User.Util).status2str(sc)
+    q ret
+  }
+  s st=req.HttpResponse.StatusCode
+  if st'="200" {
+    w !,"  ERRDATACITE004 updateDoiState %Net.HttpRequest POST API datacite http status code: "_req.HttpResponse.StatusCode_" "_req.HttpResponse.StatusLine
+    ; detail chyby 
+    s streamHttp=req.HttpResponse.Data
+    s response=streamHttp.Read(streamHttp.Size)
+    w !,response,!
+    s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+    if $isobject(obj) {
+      ; format chybove odpoved {"errors":[{"status":400,"title":"No valid prefix found"}]}
+      s iter=obj.errors.%GetIterator()
+      while iter.%GetNext(.key, .value, .type ) {
+        w !,"  status: "_value.status,"  title: "_value.title
+      }
+    }
+    else {
+      w !,"  no JSON response"
+    }
+    q ret
+  }
+    
+  ; odpoved vraci vsechna metada nove prirazenemu DOI, coz nevyuzijeme
+  s streamHttp=req.HttpResponse.Data
+  s response=streamHttp.Read(streamHttp.Size)
+  
+  s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+  if '$isobject(obj) {
+    ; tohle by nemelo nastat
+    w !,"  ERRDATACITE005 updateDoiState %Net.HttpRequest POST API datacite no JSON response"
+    q ret
+  }
+  s ret=1
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="updateDoiUrl">
+<Description><![CDATA[
+<pre>
+Zmena atributu URL v metadatech DOI
+urlType    "persistent"   default, url na zaznam v IPACu (obnoveni zaznamu z chronologie nebo navrat z vyrazenych)
+           "deleted"      url na IPAC stranku smazanych zaznamu (vymaz zaznamu)
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref,doi,idx,urlType=""</FormalSpec>
+<Implementation><![CDATA[
+  s ret=0
+  s hlink=""
+    
+  ; The landing page
+  ; s Cav dohodnuto ze pujde o persistentni link do IPACu, url je stejne jako pro handle.net
+  s ictx=$zcvt(ipref,"l")
+  s language=+##class(User.Util).getServerLanguage(ipref)
+  d ##class(i2.init).batchinit(ictx,language)
+  s sBaseURL=##class(i2.html.tpl).getBaseURL()
+  if urlType="deleted" {
+    s confT001="CREDENTIALS_"_$zcvt(ipref,"u")
+    s key="datacite"
+    s:##class(User.Util).onTestNamespace() key=key_"_test"
+    s urldel=##class(User.Util).sXlate(confT001,key,"SN",ipref,"i",,"CmSecurity")     ; url na stranku smazane zaznamy, bez base URL
+    s hlink=sBaseURL_urldel
+  }
+  else {
+    ; linku na detail zaznamu v ipacu 
+    s hlink=sBaseURL_##class(i2.html.tpl).getRecordURL(idx)
+    s hlink=##class(User.Util).strswap(hlink,"&amp;","&")
+  }
+  
+  k %ipac2 ; pokusime se hned po sobe uklidit, jsme totiz v DUI, deinicializace
+    
+  s obj={
+    "data": {
+        "type": "dois",
+        "attributes": {
+            "url": (hlink)
+        }
+    }}
+  ; po UTF konverzi neni spravna diakritka napr. kdyz se ulozi body do globalu, ale v datacite Fabrica je OK
+  s body=$$$ToUTF8(obj.%ToJSON())
+  
+  #dim req As %Net.HttpRequest
+  s req=..getHttpRequest(ipref)
+  d req.EntityBody.Write(body)
+  s sc=req.Put("/dois/"_doi)
+  if $$$ISERR(sc) {
+    w !,"  ERRDATACITE003 updateDoiUrl %Net.HttpRequest POST API datacite request error: "_##class(User.Util).status2str(sc)
+    q ret
+  }
+  s st=req.HttpResponse.StatusCode
+  if st'="200" {
+    w !,"  ERRDATACITE004 updateDoiUrl %Net.HttpRequest POST API datacite http status code: "_req.HttpResponse.StatusCode_" "_req.HttpResponse.StatusLine
+    ; detail chyby 
+    s streamHttp=req.HttpResponse.Data
+    s response=streamHttp.Read(streamHttp.Size)
+    w !,response,!
+    s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+    if $isobject(obj) {
+      ; format chybove odpoved {"errors":[{"status":400,"title":"No valid prefix found"}]}
+      s iter=obj.errors.%GetIterator()
+      while iter.%GetNext(.key, .value, .type ) {
+        w !,"  status: "_value.status,"  title: "_value.title
+      }
+    }
+    else {
+      w !,"  no JSON response"
+    }
+    q ret
+  }
+    
+  ; odpoved vraci vsechna metada nove prirazenemu DOI, coz nevyuzijeme
+  s streamHttp=req.HttpResponse.Data
+  s response=streamHttp.Read(streamHttp.Size)
+  
+  s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+  if '$isobject(obj) {
+    ; tohle by nemelo nastat
+    w !,"  ERRDATACITE005 updateDoiUrl %Net.HttpRequest POST API datacite no JSON response"
+    q ret
+  }
+  s ret=1
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="deleteDoi">
+<Description><![CDATA[
+<pre>
+Lze smazat pouze draft DOI.
+Alternativa: published DOI lze zmenit na Registered, tim uz nebude pres DOI dohledatelne a URL zmenit na IPAC stranku smazanych zaznamu
+  tohle ale zatim nedelame, DOI se nechava Published/Draft a jen se zmenu URL na smazane
+Navrat 0/1
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref,doi</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s ret=0
+  #dim req As %Net.HttpRequest
+  s req=..getHttpRequest(ipref)
+  s sc=req.Delete("/dois/"_doi)
+  if $$$ISERR(sc) {
+    s err="  ERRDATACITE003 deleteDOI %Net.HttpRequest POST API datacite request error: "_##class(User.Util).status2str(sc)
+    w !,err
+    q
+  }
+  s st=req.HttpResponse.StatusCode
+  if st'="204" {
+    w !,"  ERRDATACITE004 deleteDOI %Net.HttpRequest POST API datacite http status code: "_req.HttpResponse.StatusCode_" "_req.HttpResponse.StatusLine
+    ; detail chyby 
+    s streamHttp=req.HttpResponse.Data
+    s response=streamHttp.Read(streamHttp.Size)
+    s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+    if $isobject(obj) {
+      ; format chybove odpovedi: {"errors":[{"status":"404","title":"The resource you are looking for doesn't exist."}]}
+      s iter=obj.errors.%GetIterator()
+      while iter.%GetNext(.key, .value, .type ) {
+        w !,"  status: "_value.status,"  title: "_value.title
+      }
+    }
+    else {
+      w !,"  no JSON response"
+    }
+    q ret
+  }
+  
+  s ret=1  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="getHttpRequest">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref</FormalSpec>
+<ReturnType>%Net.HttpRequest</ReturnType>
+<Implementation><![CDATA[
+  s confT001="CREDENTIALS_"_$zcvt(ipref,"u")
+  s key="datacite"
+  s:##class(User.Util).onTestNamespace() key=key_"_test"
+  
+  s server=##class(User.Util).sXlate(confT001,key,"SN",ipref,"b",,"CmSecurity")
+  s user=##class(User.Util).sXlate(confT001,key,"SN",ipref,"d",,"CmSecurity")
+  s pwd=##class(User.Util).sXlate(confT001,key,"SN",ipref,"e",,"CmSecurity")
+  s auth=$system.Encryption.Base64Encode(user_":"_pwd)
+  
+  s req=##class(%Net.HttpRequest).%New()
+  s req.Server=server
+  s req.ContentCharset="UTF-8"
+  s req.ContentType="application/json"
+  s req.Https=1
+  s req.SSLConfiguration="https"
+  s req.Authorization="Basic "_auth
+  d req.SetHeader("Accept","application/json")
+    
+  q req
+]]></Implementation>
+</Method>
+
+<Method name="handle2json">
+<Description><![CDATA[
+<pre>
+Prevede EPCA zaznam do DataCite JSON
+- zatim jen Unimarc z Cav
+
+event   ""           draft doi
+        "register"   nepouzivame, state move from draft to registered
+        "publish"    publikovano, state move from draft or registered to findable
+        "hide"       nepouzivame, state move from findable to registered
+bIpacContext  0/1 "0" - inicializovant IPAC prostredi
+
+22.05.26 jk; vymazat formatovaci znaky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,&handle,event="",bIpacContext=0]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s type=##class(User.MARC).recordDataFmtX(.handle,.subfmt)
+  
+  s confT001="CREDENTIALS_"_$zcvt(ipref,"u")
+  s key="datacite"
+  s:##class(User.Util).onTestNamespace() key=key_"_test"
+  s providerId=##class(User.Util).sXlate(confT001,key,"SN",ipref,"c",,"CmSecurity")
+  s clientId=##class(User.Util).sXlate(confT001,key,"SN",ipref,"d",,"CmSecurity")
+  s prefix=##class(User.Util).sXlate(confT001,key,"SN",ipref,"f",,"CmSecurity")
+  s suffix=##class(User.Util).sXlate(confT001,key,"SN",ipref,"g",,"CmSecurity")
+  s publisher=##class(User.Util).sXlate(confT001,key,"SN",ipref,"h",,"CmSecurity")
+  
+  if suffix'="" { s suffix=$replace(suffix,"%T001%",$$$HandleT001(handle)) }  ; substituce %T001%
+  
+  d ..handle2jsonPrepare(ipref,.handle,.tmp)
+  
+  ; schema metadat je zde https://schema.datacite.org/
+  ; interaktivni vyplneni https://support.datacite.org/reference/post_dois
+  s obj={}
+  s data={}
+  s obj.data=data
+  
+  s data.type="dois"
+
+  s attrib={}
+  s data.attributes=attrib
+  s:publisher'="" data.attributes.publisher=publisher  ; z CREDENTIALS
+  
+  if suffix="" { s attrib.prefix=prefix }  ; sufix vygeneruje datacite
+  else { s attrib.doi=prefix_"/"_suffix }  ; vytvorime si cele DOI
+  
+  s:event="draft" event=""  ; event pro draft se do API nevklada
+  s:event'="" attrib.event=event
+
+  s idfs=[]
+  if $g(tmp("handle.net"))'="" {
+    ; v CavUnEpca je v subjects
+    s hnd ={}
+    s hnd.identifierType="Handle.Net"
+    s hnd.identifier=tmp("handle.net")
+    d idfs.%Push(hnd)
+  }
+  s:idfs.%Size() data.attributes.identifiers=idfs
+    
+  ; plneni dat autoru
+  s creators=[]
+  if ($g(tmp("autori","pocet"),-1)>=0)
+  { 
+    for i=0:1:tmp("autori","pocet") {
+      s creator={
+          "nameType": "Personal",
+          "name": (tmp("autor",i,"celejmeno")),
+          "givenName": (tmp("autor",i,"jmeno")),
+          "familyName": (tmp("autor",i,"prijmeni"))          
+        }    
+      if ($g(tmp("autor",i,"ror"))'="") {
+        s affs=[]
+        s affiliation={
+            "affiliationIdentifier": (tmp("autor",i,"ror")),
+            "affiliationIdentifierScheme": "ROR",               ; musi byt vyplneno
+            "name": ($g(tmp("autor",i,"rornazev"))),
+            "schemeUri": "https://ror.org"
+          }
+        d affs.%Push(affiliation)
+        s creator.affiliation=affs
+      }
+        
+      s nameIds=[]
+      if ($g(tmp("autor",i,"orcid"))'="") {
+        ; export orcid - s:(sOrcid'="") tmp("autor",pocetAutoru,"orcid")="https://orcid.org"">https://orcid.org/"_sOrcid
+        s ni= {
+            "schemeUri": "https://orcid.org",
+            "nameIdentifier": (tmp("autor",i,"orcid")),
+            "nameIdentifierScheme": "ORCID"                     ; musi byt vyplneno
+          }
+        d nameIds.%Push(ni)
+      }
+      if ($g(tmp("autor",i,"wos"))'="") {
+       ; export wos -     s:(sWOS'="") tmp("autor",pocetAutoru,"wos")="https://www.webofscience.com/wos/author/record/"_sWOS
+       s ni= {
+            "nameIdentifier": (tmp("autor",i,"wos")),
+            "nameIdentifierScheme": "Other"                     ; musi byt vyplneno
+            }
+       d nameIds.%Push(ni)      
+      }    
+      if ($g(tmp("autor",i,"scopus"))'="") {
+        ; export scopus -     s:(sSCOPUS'="") tmp("autor",pocetAutoru,"scopus")="https://www.scopus.com/authid/detail.uri?authorId="_sSCOPUS
+        s ni= {
+            "nameIdentifier": (tmp("autor",i,"scopus")),
+            "nameIdentifierScheme": "Other"                     ; musi byt vyplneno
+            }
+        d nameIds.%Push(ni)      
+      }
+      s:nameIds.%Size() creator.nameIdentifiers=nameIds   
+         
+      d creators.%Push(creator)
+    }
+  }
+  s:creators.%Size() data.attributes.creators=creators  
+
+  s titles=[]
+  if (($g(tmp("nazev"))'="")&&($g(tmp("nazevPreklad"))'="")) {
+    ; nazev cesky
+    s title={ "lang": "cs", "title": (tmp("nazev")) }
+    d titles.%Push(title)
+  }
+  elseif (($g(tmp("nazev"))'="")&&($g(tmp("nazevPreklad"))="")) {
+    ; nazev anglicky
+    s title={"lang": "en", "title": (tmp("nazev")) }
+    d titles.%Push(title)
+  }  
+  if ($g(tmp("nazevPreklad"))'="") {
+    ; preklad nazvu
+    s title={"lang": "en", "title": (tmp("nazevPreklad")),"titleType": "TranslatedTitle" }
+    d titles.%Push(title)
+  }
+  if ($g( tmp("nazevAlternativni"))'="") {
+    ; preklad nazvu
+    s title={"lang": "", "title": (tmp("nazevAlternativni")),"titleType": "AlternativeTitle" }
+    d titles.%Push(title)
+  }
+  s:titles.%Size() data.attributes.titles=titles
+
+  s pubYear=$g(tmp("rokPublikace"))
+  s:pubYear'="" data.attributes.publicationYear=pubYear
+  
+  s subjects=[]
+  if ($g(tmp("subjekt"))=1) {
+    s caa=0
+    do { ; cyklus pres vsechny ID
+      s sT610=$$$getTagXC(.handle,"610",.caa) ; vsechny ID
+      continue:((sT610="")&&(caa'=0))
+      
+      s sT610a=$$$getSubTagStr(sT610,"a")
+      if (sT610a'="") {
+        ; 22.05.26 jk; vymazat formatovaci znaky
+        d ##class(rep.epca.exportBase).symClearFormatInfoStr(.sT610a)
+        s subject={"subject": (sT610a)}
+        d subjects.%Push(subject)
+      }
+    } while (caa'=0)
+   
+    if ($g(data("C26y"))'="") {  
+      s data("C26y")="FOS: "_data("C26y")
+      s subject={
+          "subject": (data("C26y")),
+          "valueUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "schemeUri": "http://www.oecd.org/science/inno",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        }      
+      d subjects.%Push(subject)
+    }
+  }
+  s:subjects.%Size() data.attributes.subjects=subjects
+  
+  if $g(tmp("jazyk"))'="" {
+    s data.attributes.language=tmp("jazyk")
+  }
+  
+  ; podle https://datacite-metadata-schema.readthedocs.io/en/4.6/properties/resourcetype/
+  ; se pouzivaji uz jen resourceType a resourceTypeGeneral
+  ; zatim necham tak
+
+  ; kompletni prevod pro typy ktere mame v 608a a jdou do XML v exportDataciteXmlHandle(), podle AI: 
+  ; 608a  DataCite     RIS    BibTeX                 CiteProc          SchemaOrg
+  ; ----  --------     ---    ------                 --------          ---------
+  ; DS    Dataset      DATA   @misc                  dataset           Dataset
+  ; TX    Text         GEN    @misc nebo @article    document          CreativeWork
+  ; OBR   Image        FIGURE @misc                  figure            ImageObject
+  ; VI    Audiovisual  VIDEO  @misc                  video             VideoObject
+  ; AUD   Sound        SOUND  @misc                  song nebo speech  AudioObject
+  ; SW    Software     COMP   @misc                  book nebo article SoftwareSourceCode
+
+  s data.attributes.types={
+      "ris": "DATA",                
+      "bibtex": "misc",             
+      "citeproc": "dataset",       
+      "schemaOrg": "Dataset",      
+      "resourceType": "Dataset",
+      "resourceTypeGeneral": "Dataset"
+    }
+  
+  s sizes=..getCsSizes(.handle)
+  if sizes.%Size() {
+     s data.attributes.sizes=sizes
+  }
+    
+  ; U22 casove obdobi od/do, format datumu YYYY-MM-DD nebo YYYY
+  s sU22=##class(User.MARC).getTagX(.handle,"U22")
+  s sDatumOd=$e($$$getSubTagStr(sU22,"a"),1,8)
+  s sDatumDo=$e($$$getSubTagStr(sU22,"b"),1,8)
+  if $l(sDatumOd)=8 { s sDatumOd=$e(sDatumOd,1,4)_"-"_$e(sDatumOd,5,6)_"-"_$e(sDatumOd,7,8) }
+  if $l(sDatumDo)=8 { s sDatumDo=$e(sDatumDo,1,4)_"-"_$e(sDatumDo,5,6)_"-"_$e(sDatumDo,7,8) }
+  s dateCoverage=sDatumOd
+  if sDatumDo'="" {
+    s:dateCoverage'="" dateCoverage=dateCoverage_"/"
+    s dateCoverage=dateCoverage_sDatumDo
+  }
+  if (dateCoverage'="") {
+    s dates=[]
+    s date={}
+    s date.date=dateCoverage
+    s date.dateType="Coverage"
+    d dates.%Push(date)
+    s data.attributes.dates=dates
+  }
+  
+  s data.attributes.formats=["json"]
+  
+  s verze=$g(tmp("verze"))
+  s:verze'="" data.attributes.version=$g(tmp("verze"))
+  
+  d ..getLicense(.handle,.license)
+  if license.%Size() {
+    s rightsList=[]
+    d rightsList.%Push(license)
+    s data.attributes.rightsList=rightsList
+  }
+  
+  s descriptions=[]
+  d:($g(tmp("abstractCz"))'="") descriptions.%Push({
+         "lang": "cs",
+         "description": (tmp("abstractCz")),
+         "descriptionType": "Abstract"                    ; musi byt vyplneno
+  })  
+  d:($g(tmp("abstractEn"))'="") descriptions.%Push({
+     "lang": "en",
+     "description": (tmp("abstractEn")),
+     "descriptionType": "Abstract"                        ; musi byt vyplneno
+  })
+  s:descriptions.%Size() data.attributes.descriptions=descriptions
+
+  ; geoLocationPlace 617a, 617d
+  s c=0
+  s geoLocations=[]
+  do {
+    s s617=$$$getTagXC(.handle,"617",.c)
+    continue:s617=""
+    
+    s geoA=$$$getSubTagStr(s617,"a")
+    s geoD=$$$getSubTagStr(s617,"d")
+    s geo=geoA
+    if geoD'="" {
+      s:geo'="" geo=geo_", "
+      s geo=geo_geoD
+    }  
+    if geo'="" {
+      d geoLocations.%Push({
+         "geoLocationPlace": (geo)
+      })
+    }
+  } while c'=0
+  s:geoLocations.%Size() data.attributes.geoLocations=geoLocations
+  
+  s fundingReferences=[]
+  if ($g(tmp("projekt"))) { ; ulozime projekty
+    s caa=0
+    do { ; cyklus pres vsechny ID
+      s sTC12=$$$getTagXC(.handle,"C12",.caa) ; vsechny ID
+      continue:((sTC12="")&&(caa'=0))
+      
+      s sTC12a=$$$getSubTagStr(sTC12,"a")   ; cislo grantu CEP
+      s sTC12b=$$$getSubTagStr(sTC12,"b")   ; poskytovatel grantu CEP
+      s sTC12o=$$$getSubTagStr(sTC12,"o")   ; poskytovatel grantu z EU
+      s sTC12n=$$$getSubTagStr(sTC12,"n")   ; cislo grantu EU
+      
+      ; exportovat jen projekty CEP a zahranicni
+      s isCEP=(sTC12a'="")&&(sTC12b'="")
+      s isFore=(sTC12o'="")&&(sTC12n'="")
+      continue:'isCEP&&'isFore
+      
+      if isCEP {
+        s awardNumber=sTC12a
+        s poskname=##class(User.Util).sXlate("UN_POSKYT",sTC12b,"N",ipref,,3)      ; EN nazev poskytovatele z ciselniku
+        s poskcode=sTC12b
+      }
+      else {
+        s awardNumber=sTC12n
+        s poskname=##class(User.Util).sXlate("UN_POSKYT_EU",sTC12o,"N",ipref,,3)   ; EN nazev poskytovatele z ciselniku
+        s poskcode=sTC12o
+      }
+      
+      ; ROR poskytovatele grantu z ciselniku EPCA_GA_DOI
+      s ror=""
+      if poskcode'="" {
+        s ror=##class(User.Util).sXlate("EPCA_GA_DOI",poskcode,"N",ipref,"e")
+        if ror'="" { s:'$f(ror,"http") ror="https://ror.org/"_ror }
+      }
+      
+      ; dalsi polozky z autoritniho zaznamu projektu
+      s sTC123=$$$getSubTagStr(sTC12,"3")
+      s awardUri="", awardTitle=""
+      if sTC123'="" && (##class(User.MARC).readLX(.hndlproj,sTC123)) { 
+        if isCEP { 
+          s cepID=##class(User.MARC).getTagX(.hndlproj,"230h")
+          s:cepID'="" awardUri="https://www.isvavai.cz/cep?s=jednoduche-vyhledavani&ss=detail&n=0&h="_$replace($zcvt(cepID,"O","URL"),"/","%2F") }  ; escape neresi "/" proto replace 
+        else { 
+          s awardUri=##class(User.MARC).getTagX(.hndlproj,"300a") 
+        }
+        s awardTitle=##class(User.MARC).getTagX(.hndlproj,"230a")                     ; orig. nazev CZ/EN
+        s:awardTitle="" awardTitle=##class(User.MARC).getTagX(.hndlproj,"430a")       ; nazev EN
+      }
+      
+      s funder={}
+      s funder.awardNumber=sTC12a
+      s:awardUri'="" funder.awardUri=awardUri
+      s:awardTitle'="" funder.awardTitle=awardTitle
+      s funder.funderName=poskname    ; musi byt vyplneno, pro draft to API nekontroluje ale pak nelze zmenit draft -> findable
+      if ror'="" {
+        s funder.funderIdentifier=ror
+        s funder.funderIdentifierType="ROR"
+      }
+      
+      d fundingReferences.%Push(funder)
+      
+    } while (caa'=0)    
+  }
+  /*; do stejne property se exportuji i vsechny vyzkumne infrastruktury C90a
+  s c=0
+  do {
+    s sC90=$$$getTagXC(.handle,"C90",.c)
+    continue:sC90=""
+    
+    s sC90a=$$$getSubTagStr(sC90,"a")
+    s infname=##class(User.Util).sXlate("UN_INFRASTRUKTURA",sC90a,"N",ipref)
+    if infname'="" {
+      s funder={}
+      s funder.funderIdentifier=sC90a
+      s funder.funderIdentifierType="OTHER"
+      s funder.funderName=infname  ; musi byt vyplneno, pro draft to API nekontroluje ale pak nelze zmenit draft -> findable
+      d fundingReferences.%Push(funder)
+    }
+  } while c'=0*/
+  s:fundingReferences.%Size() data.attributes.fundingReferences=fundingReferences
+  
+  s relatedIdentifiers=[]
+  s caa=0
+  do { ; cyklus pres vsechny vazby
+    s sTU88=$$$getTagXC(.handle,"U88",.caa) ; vsechny ID
+    continue:(sTU88="")
+    s sTU88h=$$$getSubTagStr(sTU88,"h")
+    continue:(sTU88h="")
+    
+    d relatedIdentifiers.%Push({"relationType": "IsDocumentedBy",         ; musi byt vyplneno
+                                "relatedIdentifier": (sTU88h),
+                                "relatedIdentifierType": "URL"})          ; musi byt vyplneno
+  } while (caa'=0)
+  if ($$$getTagX(.handle,"970b")="DATA"){
+    ; ziskame si predchazejici verzi a u ni zjistime handle
+    s sVerzePred=""
+    s sVerzePo=""
+    s retVer=..versionDataGetAll(.handle,.verze)
+    for i=1:1:$l(retVer,"#") {  
+      s ver=$p(retVer,"#",i)
+      q:($f(ver,("*"_$$$HandleT001(handle)))) 
+      s sVerzePred=ver     
+    }
+    for i=$l(retVer,"#"):-1:1 {
+     s ver=$p(retVer,"#",i)
+     q:($f(ver,("*"_$$$HandleT001(handle)))) 
+     s sVerzePo=ver     
+    }
+    if (sVerzePred'="") {
+      if ##class(User.MARC).readLX(.handleD,sVerzePred) {
+        s doi=$$$getTagX(.handleD,"017a")  ; ne pres index doi, Cav nema vyplnene indikatory
+        if doi'="" {
+          s:'$f(doi,"doi.org") doi="https://doi.org/"_$$$trim(doi)
+          d relatedIdentifiers.%Push({"relationType": "IsNewVersionOf",                ; musi byt vyplneno
+                                      "relatedIdentifier": (doi),
+                                      "relatedIdentifierType": "DOI"})                 ; musi byt vyplneno
+        }
+        
+      }
+    }
+    if (sVerzePo'="") {
+      if ##class(User.MARC).readLX(.handleP,sVerzePo) {
+        s doi=$$$getTagX(.handleP,"017a")  ; ne pres index doi, Cav nema vyplnene indikatory
+        if doi'="" {
+          s:'$f(doi,"doi.org") doi="https://doi.org/"_$$$trim(doi)
+          d relatedIdentifiers.%Push({"relationType": "IsPreviousVersionOf",           ; musi byt vyplneno
+                                      "relatedIdentifier": (doi),
+                                      "relatedIdentifierType": "DOI"})                 ; musi byt vyplneno
+        }
+      }
+    } 
+  }
+  s:relatedIdentifiers.%Size() data.attributes.relatedIdentifiers=relatedIdentifiers
+  
+  ; The landing page
+  ; s Cav dohodnuto ze pujde o persistentni link do IPACu
+  ; udelame to podle handle.net
+  s ictx=$zcvt(ipref,"l")
+  s language=+##class(User.Util).getServerLanguage(ipref)
+  s idx=##class(User.Util).objectName2lname($$$HandleClass(handle))_"*"_$$$HandleT001(handle)
+  if 'bIpacContext { d ##class(i2.init).batchinit(ictx,language) }
+  s sBaseURL=##class(i2.html.tpl).getBaseURL()
+  ; linku na detail zaznamu v ipacu 
+  s hlink=sBaseURL_##class(i2.html.tpl).getRecordURL(idx)
+  s hlink=##class(User.Util).strswap(hlink,"&amp;","&")
+  if 'bIpacContext { k %ipac2 } ; pokusime se hned po sobe uklidit, jsme nejspis v DUI, deinicializace
+  s data.attributes.url=hlink
+  
+  ; https://schema.datacite.org/meta/kernel-4.6/
+  s data.attributes.schemaVersion="http://datacite.org/schema/kernel-4"
+  
+  
+  ; POZOR neni ve schematu - nejspis to bude API ignorovat
+  ; je to z pozadavku Cav na export datacite do IPACu
+  ; https://asep-portal.lib.cas.cz/a_porady/naceneni_2023/0544591_dataset_JSON.pdf
+  s data.attributes.providerId=$zcvt(providerId,"L")
+  s data.attributes.clientId=$zcvt(clientId,"L")
+  s data.attributes.agency="datacite"
+  
+  s str=obj.%ToJSON()
+  q str
+]]></Implementation>
+</Method>
+
+<Method name="handle2jsonPrepare">
+<Description><![CDATA[
+<pre>
+Pozor je to Cav Unimarc verze, nemusi sedet na SK.
+Pro Cav je potreba zachovat.
+Prevazato z CavUnEpca.exportDataciteJsonHandleData()
+
+22.05.26 jk; vymazat formatovaci znaky
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,&handle,&data]]></FormalSpec>
+<Implementation><![CDATA[
+ s data("doiurl")="",data("handle.net")="",data("doi")=""
+  
+ s nC=##class(User.MARC).recordLineCountX(.handle) ; ziskani poctu radku v zaznamu 
+ for i=1:1:nC { 
+   s lsLine=##class(User.MARC).getLineX(.handle,i) 
+   continue:lsLine="" 
+   
+   s sTag=$e(lsLine,1,3)
+   if (sTag="017") {
+     ; nacteme si DOI
+     s:($$$getSubTagStr(lsLine,"2")="DOI") sDOI=$$$getSubTagStr(lsLine,"a")   
+     continue:(sDOI="")
+       
+     ; osetrime obe varianty DOI s a bez url
+     if ($l(sDOI,"/")>5) {
+       s data("doiurl")=sDOI
+       s data("doi")=$p(sDOI,"/",4,999)
+     }
+     else {
+       s data("doiurl")="https://doi.org/"_sDOI
+       s data("doi")=sDOI
+     }
+   } 
+   elseif (sTag="101") {
+     ; <language>  volitelné   101a
+     s iso6392=$$$getSubTagStr(lsLine,"a")
+     if iso6392'="" {
+       s iso6391=..getLangCode(iso6392) 
+       s:(iso6391'="") data("jazyk")=iso6391
+     }
+   }
+   elseif (sTag="200") { 
+     s title=$$$getSubTagStr(lsLine,"a")                          ; nazev
+     ; 22.05.26 jk; vymazat formatovaci znaky
+     d ##class(rep.epca.exportBase).symClearFormatInfoStr(.title)
+     s data("nazev")=title
+     s data("nazevAlternativni")=$$$getSubTagStr(lsLine,"e")      ; alternativni nazev
+   }
+   elseif (sTag="541") {
+     ; nacteme si preklad nazvu - 541a, lang="en" -541zv
+     s:($$$getSubTagStr(lsLine,"z")="eng") data("nazevPreklad")=$$$getSubTagStr(lsLine,"a")
+   }
+   elseif (sTag="608") {
+     ; <resourceType> povinné     608a    Typ datových souborů
+     s data("typSouboru")=$$$getSubTagStr(lsLine,"a")   
+   }
+   elseif (sTag="610") {
+     ; priznak, jestli exportovat subjekt
+     s:($$$getSubTagStr(lsLine,"a")'="") data("subjekt")=1
+   }
+   elseif (sTag="C12") {
+     s:($$$getSubTagStr(lsLine,"a")'="") data("projekt")=1
+   }
+   elseif (sTag="C15") {
+     s data("abstractCz")=$$$trim($replace($$$getSubTagStr(lsLine,"a"),"\n"," "))
+     s data("abstractEn")=$$$trim($replace($$$getSubTagStr(lsLine,"b"),"\n"," "))
+   }
+   elseif (sTag="C26") {
+     s:($$$getSubTagStr(lsLine,"x")'="") bSubject=1
+     s data("C26x")=##class(User.Util).sXlate("EPCA_OECDALL",$$$getSubTagStr(lsLine,"x"),,ipref)
+     s data("C26y")=##class(User.Util).sXlate("EPCA_OECDALL",$$$getSubTagStr(lsLine,"y"),,ipref)
+     s data("C26z")=##class(User.Util).sXlate("EPCA_OECDALL",$$$getSubTagStr(lsLine,"z"),,ipref)      
+   }
+   elseif (sTag="C60") {
+     ; handle. net
+     s data("handle.net")=$$$getSubTagStr(lsLine,"a")   
+   }
+   elseif (sTag="T16") {
+     ; <publicationYear> povinné
+     s data("rokPublikace")=$$$getSubTagStr(lsLine,"r")   
+   }
+   elseif (sTag="U03") {
+     ; <version>   volitelné   U03a
+     s data("verze")=$zstrip($$$getSubTagStr(lsLine,"a"),"<","0")
+   }
+   elseif (sTag="U22") { 
+     s data("datumOd")=$e($$$getSubTagStr(lsLine,"a"),1,8)
+     s data("datumDo")=$e($$$getSubTagStr(lsLine,"b"),1,8)
+   }
+   elseif ((sTag="700") || (sTag="701") || (sTag="702")) {
+     ; zpracovani udaju o autorovi
+     d ..handle2jsonPrepareAuth(ipref,.data,lsLine)  
+   }
+ }
+]]></Implementation>
+</Method>
+
+<Method name="handle2jsonPrepareAuth">
+<Description><![CDATA[
+<pre>
+Pozor je to Cav Unimarc verze, nemusi sedet na SK.
+Pro Cav je potreba zachovat.
+Prevazato z CavUnEpca.exportDataciteJsonAutInfo(()
+  pAutor - aktualni zpracovavany autor 700,701,702
+
+01.04.26 jk; oprava URL ORCID
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,&data,pAutor]]></FormalSpec>
+<Implementation><![CDATA[
+  s sUstav=$$$getSubTagStr(.pAutor,"p")
+  s sPrijmeni=$$$getSubTagStr(.pAutor,"a")
+  s sJmeno=$$$getSubTagStr(.pAutor,"b")
+  s sLink=$$$getSubTagStr(.pAutor,"3")
+  s sOrcid="",sRor="",sRorNazev=sUstav, sWOS="",sSCOPUS=""
+
+  if (sLink'="") {
+    if ##class(User.MARC).readLX(.handlea70X,sLink) {
+      ; pokud se nam podarilo autoritu otevrit
+      s caa=0
+      do { ; cyklus pres vsechny ID
+        s sT035=$$$getTagXC(.handlea70X,"035",.caa) ; vsechny ID
+        continue:((sT035="")&&(caa'=0))
+        s sT035a=$$$getSubTagStr(sT035,"a")
+        s sT0352=$$$getSubTagStr(sT035,"2")
+        if (sT0352="ORCID") {
+          ; mam orcid   035     $a 0000-0002-4606-1218 $2 ORCID 
+          s sOrcid=sT035a
+        }        
+        elseif (sT0352="WOS") {
+          ; mam wos  035       $a F-5169-2014 $2 WOS 
+          s sWOS=sT035a
+        } 
+        elseif (sT0352="SCOPUS") {
+          ; mam scopus      035     $a 6603184151  $2 SCOPUS 
+          s sSCOPUS=sT035a
+        }          
+      }while (caa'=0)
+    }
+  }
+   
+  s sUstav=$zcvt($zstrip(sUstav,"<>W"),"L")  ; ziskame zkratku ustavu
+  if (sUstav'="") {
+    s sTerm=" "_sUstav_" (o)"               ; seskladame termini pro vyhledani konkretniho ustavu
+    s sPracid=##class(User.MARC).getIDByIndex(ipref_"UnAuth","aucr",sTerm)
+    if (sPracid'=0) {
+      ; pokud id neni 0 - mam ustav a muzeme jej otevrit
+      if ##class(User.MARC).getDATAX(.hndla,sPracid)
+      { ; pokud se podarilo otevrit zaznam pracoviste, nacteme informace
+        ; ziskame nazvy pracoviste v jazykovych mutacich
+        s xx="0"
+        do {
+          s sT410=$$$getTagXC(.hndla,"410",.xx) ; vsechny variantni nazvy
+          continue:((sT410="")&&(xx'=0))
+          if (sT410'="") {
+            ; pokud mame vyplnene data, muzeme provadet akce 
+            s sT4108=$$$getSubTagStr(sT410,"8")
+            s:(sT4108="eng") sRorNazev=$$$getSubTagStr(sT410,"a")
+          }
+        } while (xx'=0)
+      }
+      s sRor=..getAuthROR(.hndla)
+    }
+  }   
+    
+  ; osetrime si pocet autoru
+  s pocetAutoru=$g(data("autori","pocet"),-1)
+  s pocetAutoru=pocetAutoru+1
+  s data("autori","pocet")=pocetAutoru
+    
+  s:(sPrijmeni'="") data("autor",pocetAutoru,"celejmeno")=sPrijmeni_", "_sJmeno
+  s:(sJmeno'="") data("autor",pocetAutoru,"jmeno")=sJmeno
+  s:(sPrijmeni'="") data("autor",pocetAutoru,"prijmeni")=sPrijmeni
+  ; 01.04.26 jk; oprava URL ORCID
+  s:(sOrcid'="") data("autor",pocetAutoru,"orcid")="https://orcid.org/"_sOrcid
+  s:(sWOS'="") data("autor",pocetAutoru,"wos")="https://www.webofscience.com/wos/author/record/"_sWOS
+  s:(sSCOPUS'="") data("autor",pocetAutoru,"scopus")="https://www.scopus.com/authid/detail.uri?authorId="_sSCOPUS
+  s:(sRorNazev'="") data("autor",pocetAutoru,"rornazev")=sRorNazev
+  s:(sRor'="") data("autor",pocetAutoru,"ror")="https://ror.org/"_sRor
+]]></Implementation>
+</Method>
+
+<Method name="getAuthROR">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=""
+  s c="0"
+  do {
+    s s035=$$$getTagXC(.handle,"035",.c)
+    continue:(s035="")
+    if (s035'="") {
+      s s0352=$$$getSubTagStr(s035,"2")
+      if (s0352="PIDROR") {
+        s ret=$$$getSubTagStr(s035,"a")
+        q
+      }
+    }
+  } while (c'=0)
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="getCsSizes">
+<Description><![CDATA[
+<pre>
+Vraci velikosti vsech souboru ktere ma zaznam ulozeny v Content Serveru
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<ReturnType>%DynamicArray</ReturnType>
+<Implementation><![CDATA[
+  s ret=[]
+  
+  d ##class(content.api).selectRecAll(.output,$$$HandleClass(handle),$$$HandleT001(handle))
+  s item=""
+  for { 
+    s item=$o(output(item)) q:item=""
+    s repo=output(item,"repository")   ; ziskame repository
+    s key=output(item,"key")           ; klice
+  
+    d ##class(content.api).getBatch(.array,repo,key)
+    s hsize=array("humansize")
+    continue:hsize=""
+    
+    d ret.%Push(hsize)   
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="getLicense">
+<Description><![CDATA[
+<pre>
+Licence, trochu jinak nez je v CavS2.zfLicence()
+ podle pozadavku Cav - dokumentu uprava_xml_datacite_cosm.docx
+ https://datacite-metadata-schema.readthedocs.io/_/downloads/en/4.6/pdf/
+ https://spdx.org/licenses/
+ 
+ obj   JSON licence
+ ret   html format
+
+17.09.26 ln; v UT_ASEP_LICENCECC zruseny podpole p a s
+31.08.26 jk; zapojen ciselnik UT_ASEP_LICENCECC 
+12.08.26 ln; popdpora licence s i bez pomlcek
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,&obj:%DynamicAbstractObject=""]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ipref=##class(User.Util).getClassPrefixParam($$$HandleClass(handle))
+  s language=3  ; EN
+  
+  ; 31.08.26 jk; zapojen ciselnik UT_ASEP_LICENCECC
+  s sC81b=$$$getTagX(.handle,"C81b")
+  
+  s (rights,rightsUri,schemeUri,rightsIdentifier,rightsIdentifierScheme,lang)=""
+  if ##class(User.Util).sXlate("UT_ASEP_LICENCECC",sC81b,"E",ipref)="@exist@" {
+    s rights=##class(User.Util).sXlate("UT_ASEP_LICENCECC",sC81b,"N",ipref,,language)
+    s rightsUri=##class(User.Util).sXlate("UT_ASEP_LICENCECC",sC81b,"N",ipref,"o",language)
+    s schemeUri="https://spdx.org/licenses/"
+    s rightsIdentifier=sC81b
+    s rightsIdentifierScheme="SPDX"
+    s lang="en"
+  }
+  else {
+    ; dalsi hodnoty sC81b zjisteny z dat CavUnEpca 
+  
+    ; 12.08.26 ln; popdpora licence s i bez pomlcek
+    s sC81b=$tr(sC81b,"-"," ")
+    s sC81c=$$$getTagX(.handle,"C81c")
+    s sC81e=$$$getTagX(.handle,"C81e")
+    s sC60a=$$$getTagX(.handle,"C60a")  ; handle.net
+  
+    ; hodnoty sC81b zjisteny z dat CavUnEpca
+    if sC81b="CC0 1.0" {
+      s rights="Creative Commons Zero v1.0 Universal"
+      s rightsUri="https://creativecommons.org/publicdomain/zero/1.0/legalcode"
+      s schemeUri="https://spdx.org/licenses/"
+      s rightsIdentifier="CC0-1.0"
+      s rightsIdentifierScheme="SPDX"
+      s lang="en"
+    }
+    elseif sC81b="CC BY 4.0" {
+      s rights="Creative Commons Attribution 4.0 International"
+      s rightsUri="https://creativecommons.org/licenses/by/4.0/legalcode"
+      s schemeUri="https://spdx.org/licenses/"
+      s rightsIdentifier="CC-BY-4.0"
+      s rightsIdentifierScheme="SPDX"
+      s lang="en"
+    }
+    elseif sC81b="CC BY ND 4.0" {
+      s rights="Creative Commons Attribution No Derivatives 4.0 International"
+      s rightsUri="https://creativecommons.org/licenses/by-nd/4.0/legalcode"
+      s schemeUri="https://spdx.org/licenses/"
+      s rightsIdentifier="CC-BY-ND-4.0"
+      s rightsIdentifierScheme="SPDX"
+      s lang="en"
+    }
+    elseif sC81b="CC BY SA 4.0" {
+      s rights="Creative Commons Attribution Share Alike 4.0 International"
+      s rightsUri="https://creativecommons.org/licenses/by-sa/4.0/legalcode"
+      s schemeUri="https://spdx.org/licenses/"
+      s rightsIdentifier="CC-BY-SA-4.0"
+      s rightsIdentifierScheme="SPDX"
+      s lang="en"
+    }
+    elseif (sC81b="CC BY NC 4.0") || (sC81b="BY NC") {
+      s rights="Creative Commons Attribution Non Commercial 4.0 International"
+      s rightsUri="https://creativecommons.org/licenses/by-nc/4.0/legalcode"
+      s schemeUri="https://spdx.org/licenses/"
+      s rightsIdentifier="CC-BY-NC-4.0"
+      s rightsIdentifierScheme="SPDX"
+      s lang="en"
+    }
+    elseif (sC81b="CC BY NC ND 4.0") || (sC81b="BY NC ND") {
+      s rights="Creative Commons Attribution Non Commercial No Derivatives 4.0 International"
+      s rightsUri="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode"
+      s schemeUri="https://spdx.org/licenses/"
+      s rightsIdentifier="CC-BY-NC-ND-4.0"
+      s rightsIdentifierScheme="SPDX"
+      s lang="en"
+    }
+    elseif (sC81b="CC BY NC SA 4.0") || (sC81b="BY NC SA") {
+      s rights="Creative Commons Attribution Non Commercial Share Alike 4.0 International"
+      s rightsUri="https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode"
+      s schemeUri="https://spdx.org/licenses/"
+      s rightsIdentifier="CC-BY-NC-SA-4.0"
+      s rightsIdentifierScheme="SPDX"
+      s lang="en"
+    }
+    elseif sC81c'="" {
+      ; jina licence
+      s rights="Academic Free License v1.1"
+      s rightsUri="https://spdx.org/licenses/AFL-1.1.html"
+      s schemeUri="https://spdx.org/licenses/"
+      s rightsIdentifier="AFL-1.1"
+      s rightsIdentifierScheme="SPDX"
+    }
+    elseif sC81e'="" {
+      ; vlastni licence
+      s rights="Dataset has its own license"
+      s rightsUri=sC60a
+    }
+  }
+  
+  s obj={}
+  if rights'="" { 
+    s obj.rights=rights 
+    if rightsUri'="" { s obj.rightsUri=rightsUri }
+    if schemeUri'="" { s obj.schemeUri=schemeUri }
+    if rightsIdentifier'="" { s obj.rightsIdentifier=rightsIdentifier }
+    if rightsIdentifierScheme'="" { s obj.rightsIdentifierScheme = rightsIdentifierScheme }
+    if lang'="" { s obj.lang=lang }
+  }
+  
+  s ret=""
+  if rights'="" {
+    if lang'="" { s ret=ret_" xml:lang="""_lang_"""" }
+    if schemeUri'="" { s ret=ret_" schemeURI="""_##class(User.Util).XMLfixup(schemeUri)_"""" }
+    if rightsIdentifierScheme'="" { s ret=ret_" rightsIdentifierScheme="""_##class(User.Util).XMLfixup(rightsIdentifierScheme)_""""  }
+    if rightsIdentifier'="" { s ret=ret_" rightsIdentifier="""_##class(User.Util).XMLfixup(rightsIdentifier)_"""" }
+    if rightsUri'="" { s ret=ret_" rightsURI="""_##class(User.Util).XMLfixup(rightsUri)_"""" }
+    s ret="<rights"_ret_">"_##class(User.Util).XMLfixup(rights)_"</rights>"
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="getLangCode">
+<Description><![CDATA[
+<pre>
+Preklad kodu jazyka z ISO 639-2 na ISO 639-1
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>code</FormalSpec>
+<Implementation><![CDATA[
+  s obj={ "aar": "aa", "abk": "ab", "afr": "af", "aka": "ak", "alb": "sq", "amh": "am", "ara": "ar", 
+          "arg": "an", "arm": "hy", "asm": "as", "ava": "av", "ave": "ae", "aym": "ay", "aze": "az", "bak": "ba", "bam": "bm", "baq": "eu", "bel": "be", 
+          "ben": "bn", "bis": "bi", "bos": "bs", "bre": "br", "bul": "bg", "bur": "my", "cat": "ca", "cha": "ch", "che": "ce", "chi": "zh", "chu": "cu", 
+          "chv": "cv", "cor": "kw", "cos": "co", "cre": "cr", "cze": "cs", "dan": "da", "div": "dv", "dut": "nl", "dzo": "dz", "eng": "en", "epo": "eo", 
+          "est": "et", "ewe": "ee", "fao": "fo", "fij": "fj", "fin": "fi", "fre": "fr", "fry": "fy", "ful": "ff", "geo": "ka", "ger": "de", "gla": "gd", 
+          "gle": "ga", "glg": "gl", "glv": "gv", "gre": "el", "grn": "gn", "guj": "gu", "hat": "ht", "hau": "ha", "heb": "he", "her": "hz", "hin": "hi", 
+          "hmo": "ho", "hrv": "hr", "hun": "hu", "ibo": "ig", "ice": "is", "ido": "io", "iii": "ii", "iku": "iu", "ile": "ie", "ina": "ia", "ind": "id", 
+          "ipk": "ik", "ita": "it", "jav": "jv", "jpn": "ja", "kal": "kl", "kan": "kn", "kas": "ks", "kau": "kr", "kaz": "kk", "khm": "km", "kik": "ki", 
+          "kin": "rw", "kir": "ky", "kom": "kv", "kon": "kg", "kor": "ko", "kua": "kj", "kur": "ku", "lao": "lo", "lat": "la", "lav": "lv", "lim": "li", 
+          "lin": "ln", "lit": "lt", "ltz": "lb", "lub": "lu", "lug": "lg", "mac": "mk", "mah": "mh", "mal": "ml", "mao": "mi", "mar": "mr", "may": "ms", 
+          "mlg": "mg", "mlt": "mt", "mon": "mn", "nau": "na", "nav": "nv", "nbl": "nr", "nde": "nd", "ndo": "ng", "nep": "ne", "nno": "nn", "nob": "nb", 
+          "nor": "no", "nya": "ny", "oci": "oc", "oji": "oj", "ori": "or", "orm": "om", "oss": "os", "pan": "pa", "per": "fa", "pli": "pi", "pol": "pl", 
+          "por": "pt", "pus": "ps", "que": "qu", "roh": "rm", "rum": "ro", "run": "rn", "rus": "ru", "sag": "sg", "san": "sa", "sin": "si", "slo": "sk", 
+          "slv": "sl", "sme": "se", "smo": "sm", "sna": "sn", "snd": "sd", "som": "so", "sot": "st", "spa": "es", "srd": "sc", "srp": "sr", "ssw": "ss", 
+          "sun": "su", "swa": "sw", "swe": "sv", "tah": "ty", "tam": "ta", "tat": "tt", "tel": "te", "tgk": "tg", "tgl": "tl", "tha": "th", "tib": "bo", 
+          "tir": "ti", "ton": "to", "tsn": "tn", "tso": "ts", "tuk": "tk", "tur": "tr", "twi": "tw", "uig": "ug", "ukr": "uk", "urd": "ur", "uzb": "uz", 
+          "ven": "ve", "vie": "vi", "vol": "vo", "wel": "cy", "wln": "wa", "wol": "wo", "xho": "xh", "yid": "yi", "yor": "yo", "zha": "za", "zul": "zu"}
+  q obj.%Get(code)
+]]></Implementation>
+</Method>
+
+<Method name="versionDataGetAll">
+<Description><![CDATA[
+<pre>
+Prevzato z CavUnEpca, POZOR pracuje s class "UnEpca|
+Metoda pro vraceni retezcu s verzemi. Vraci sVerze a retezec. Bud prazdny, pokud neni vyssi verze nez 0, nebo vyplneny
+ 
+handle - aktualni zpracovavany handle
+pPar   - parametry - zobrazit i s pracovni verzi  
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,&sVerze,pPar=""]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret="", sRetU03a="", sRetU033=""
+  k sVerze
+  q:($$$getTagX(.handle,"C99d")'="DFLT_DATA") ""
+  
+  s ipref=##class(User.Util).getClassPrefixParam($$$HandleClass(handle))
+  s ictx=$zcvt(ipref,"L"), sT001=$$$HandleT001(handle)
+  
+  ; seskládání správného dotazu na vyhledání poslední verze
+  s link=$$$getTagX(.handle,"U033")
+  s:(link="") link=ictx_"_un_epca*"_sT001
+  s:(link'="") link=" "_link
+  
+  s idxData=""
+  for  
+  { ; zistit vsechny navazani na datove zaznamy
+    s idxData=$o(^$$$MarcIndexG(ipref_"UnEpca","zdv",link,idxData))
+    q:(idxData="")
+    if ##class(User.MARC).getDATAX(.verhandle,idxData)
+    {
+      s sU03=$$$getTagX(.verhandle,"U03")
+      s sU03a=$$$getTagX(.verhandle,"U03a")
+      if ((sU03a'="")&&(sU03a>sRetU03a)) 
+      {
+        s sRetU03a=sU03a   ; vyplnime si posledni verzi
+        s sRetU033=ictx_"_un_epca*"_$$$HandleT001(verhandle) 
+        s sVerze(sU03a)=sRetU033 
+        s ret=ret_"#"_sRetU033
+      }
+      elseif ((sU03a="")&&($p(pPar,"-",1)=1)&&('$f(link,$$$HandleT001(verhandle))))
+      { ; rozpracovaná kopie datasetu - zobrazit i ji
+        s sRetU03a=""
+        s sRetU033=ictx_"_un_epca*"_$$$HandleT001(verhandle) 
+        s sVerze("09999")=sRetU033
+        s ret=ret_"#"_sRetU033
+      }
+    }
+  }  
+  
+  if $d(sVerze)
+  {
+    s sVerze("001")=$e(link,2,99),ret=$e(link,2,99)_ret
+  }
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="checking">
+<Description><![CDATA[
+<pre>
+Kontroly jestli je pozadavek zpracovatelny. Zatim jen pro Unimarc.
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,&handle,operation,event]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=""
+  
+  ; kontrola konfigurace
+  s confT001="CREDENTIALS_"_$zcvt(ipref,"u")
+  s key="datacite"
+  s:##class(User.Util).onTestNamespace() key=key_"_test"
+  if ##class(User.Util).sXlate(confT001,key,"SE",ipref,"b",,"CmSecurity")="@noexist@" {
+    s ret="ERRDATACITE007#the config CmSecurity/"_confT001_" key='"_key_"' doesn't exist"
+    q ret
+  }
+  
+  if (operation'="create")&&(operation'="update")&&(operation'="updateState")&&(operation'="updateUrl")&&(operation'="delete") {
+    s ret="ERRDATACITE008#bad operation='"_operation_"', allowed only 'create', 'update', 'updateState', 'updateUrl' or 'delete'"
+    q ret
+  }
+  
+  if (event'="")&&(event'="register")&&(event'="publish")&&(event'="hide") {
+    s ret="ERRDATACITE009#bad event'"_event_"', allowed only '', 'register', 'publish' or 'hide'"
+    q ret
+  }
+  
+  ; kontroly podle existence DOI
+  s doi=..getDoiFromHandle(ipref,.handle,.bDataCiteDoi)
+  if (doi'="")&&('bDataCiteDoi) { 
+    s ret="ERRDATACITE010#exists no-DataCite doi='"_doi_"'"
+    q ret
+  }  
+  
+  if (operation="create") { 
+    if (doi'="") {
+      s ret="ERRDATACITE011#exists doi='"_doi_"', not allowed operation 'create'"
+      q ret
+    }
+  }           
+  elseif 'bDataCiteDoi { 
+    s ret="ERRDATACITE012#record not assigned Datacite doi, it is mandatory for operations 'update', 'updateState', 'updateUrl' and 'delete'"
+    q ret
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="getDoiFromHandle">
+<Description><![CDATA[
+<pre>
+Z handlu vracime prvni nalezene DOI. Zatim pro Unimarc
+ bIsDataCite    byref "1" pokud je nalezene DOI z DataCite
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,&handle,&bIsDataCite=0]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=""
+  s bIsDataCite=0
+  s confT001="CREDENTIALS_"_$zcvt(ipref,"u")
+  s key="datacite"
+  s:##class(User.Util).onTestNamespace() key=key_"_test"
+  s prefix=##class(User.Util).sXlate(confT001,key,"SN",ipref,"f",,"CmSecurity")
+  q:prefix="" ret
+  
+  s c=0
+  do {
+    s s017=$$$getTagXC(.handle,"017",.c) ; vsechny ID
+    continue:(s017="")
+      
+    s s0172=$zcvt($$$getSubTagStr(s017,"2"),"U")
+    continue:s0172'="DOI"
+      
+    s s017a=$$$getSubTagStr(s017,"a")
+    continue:s017a=""
+      
+    s ret=s017a
+    if $p(s017a,"/")=prefix { s bIsDataCite=1 }
+    q
+  } while c'=0
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="deleteDoiFromHandle">
+<Description><![CDATA[
+<pre>
+Z handlu vymazeme predane DOI. Zatim pro Unimarc.
+Kontroly na DOI probihaji v checking()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[doi,&handle]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  s ret=0
+  s c=0, tmp="", bChange=0
+  do {
+    s s017=$$$getTagXC(.handle,"017",.c) ; vsechny ID
+    continue:(s017="")
+      
+    s s017a=$$$getSubTagStr(s017,"a")
+    if s017a'=doi {
+      s:tmp'="" tmp=tmp_$c(10)
+      s tmp=tmp_$c(31)_s017
+    }
+    else {
+      s bChange=1
+    }
+  } while c'=0
+  
+  q:'bChange ret
+  
+  if tmp="" { d ##class(User.MARC).delTagX(.handle,"017") }
+  else { d ##class(User.MARC).setTagX(.handle,tmp) }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="testGetDoi">
+<Description><![CDATA[
+<pre>
+d ##class(util.ie.datacite).testGetDOI("Cbvk")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref</FormalSpec>
+<Implementation><![CDATA[
+  s doi="10.83278/fxc1-qa48"
+  //s doi="10.82381/x7v9-z856"
+  s req=..getHttpRequest(ipref)
+  s sc=req.Get("/dois/"_doi)
+  if $$$ISERR(sc) {
+    s err="  ERROR HTTP request "_##class(User.Util).status2str(sc)
+    w !,err
+    q
+  }
+  s st=req.HttpResponse.StatusCode
+  if st'="200" {
+    s err="  ERROR HTTP response statu code = "_st_", "_req.HttpResponse.Data.Read()
+    w !,err
+    q
+  }
+    
+  s streamHttp=req.HttpResponse.Data
+  s response=streamHttp.Read(500000)
+  s doiJson=##class(%DynamicAbstractObject).%FromJSON(response)
+
+  w !
+  zw doiJson
+]]></Implementation>
+</Method>
+
+<Method name="exportDataciteXml">
+<Description><![CDATA[
+<pre> Metoda zajišťující export do datacite xml. Může být dle vzoru exportXMLUN
+
+29.07.24 jk; doplneno vyhodnoceni podle charset
+20.06.23 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,pnWhat,pnOutFmt]]></FormalSpec>
+<Implementation><![CDATA[
+  ; 29.07.24 jk; doplneno vyhodnoceni podle charset
+  s charset=$$$GETREQVAR("charset")
+  if pnWhat=$$$I2ExportHdr    {
+    if charset="CP1250" { d ##class(i2.export).outputAdd("<?xml version=""1.0"" encoding=""windows-1250""?>"_$c(10),pnOutFmt) }
+    elseif charset="UTF8" { d ##class(i2.export).outputAdd("<?xml version=""1.0"" encoding=""UTF-8""?>"_$c(10),pnOutFmt) }
+    else { d ##class(i2.export).outputAdd("<?xml version=""1.0"" encoding=""UTF-8""?>"_$c(10),pnOutFmt) }   ; default UTF8
+      
+    q
+  }
+  if pnWhat=$$$I2ExportFooter q
+  if pnWhat'=$$$I2ExportBody zt "ER1" ; poistka chybne volanie
+
+  ; zjisteni parametru z konfigurace volaneho exportu
+  s sExpInfo=##class(i2.export).getExportInfo()
+  ; v $e jsou doplnkove options
+  s sFmtParams=$p(sExpInfo,$c(10),$$$I2cfgrowE)
+  
+  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  s sClass=$$$HandleClass(handle)     ; ziskani tridy
+  if ##class(User.MARC).readX(.handleN,sClass,sT001,"T")  
+  {
+    d ..exportDataciteXmlHandle(.handleN,pnOutFmt,sFmtParams)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="exportDataciteXmlHandle">
+<Description><![CDATA[
+<pre> Export jednoho záznamu v XML do DATACITE a OPENAIRE
+
+Parametry:  handle - aktualni zpracovavany handle
+            pnOutFmt, sFmtParams - vystupni soubor a patametry
+            pTyp - "Datacite" - export datacite z kosiku
+                   "Openaire" - oai xml pro openaire OAI_DATACITE format
+
+22.05.26 jk; vymazat formatovaci znaky
+30.08.23 tt; provedeny úpravy exportu datacite
+20.06.23 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,pnOutFmt,sFmtParams="",pTyp="Datacite"]]></FormalSpec>
+<Implementation><![CDATA[
+  s class=$$$HandleClass(handle)     ; ziskani tridy
+  s ipref=$$$Class2Ipref(class)      ; Ipref (instalacni prefix)
+ s bEndOfRec=0,brk=0
+ s type=##class(User.MARC).recordDataFmtX(.handle,.subfmt)
+  
+ ; pridana moznost vlozeni xmlns prefixu pres options (I2_EXPORT/200$e)
+ s sPrefix=sFmtParams
+ if sPrefix'="",'$f(sPrefix,":") s sPrefix=sPrefix_":"
+ 
+
+ d ##class(i2.export).outputAdd("<"_sPrefix_"resource"
+         _" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"""
+         _" xmlns=""http://datacite.org/schema/kernel-4e"""
+         _" xsi:schemaLocation=""http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4/metadata.xsd"">"_$c(10),pnOutFmt)
+  
+  s sDOI="", sTitle="", sTransTitle="", sAltTitle="",sT16r="",sTypSouboru="",bSubject=0
+  s sJazyk="",sPopisCz="", sPopisEn="",bProjekt=0,sDatumOd="",sDatumDo="",sLokace="",sHandle="",bVazby=0
+  s sVerze=""
+  
+  s nC=##class(User.MARC).recordLineCountX(.handle) ; ziskani poctu radku v zaznamu 
+  f i=1:1:nC 
+  { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
+    s lsLine=##class(User.MARC).getLineX(.handle,i) continue:lsLine="" 
+    s sTag=$e(lsLine,1,3)
+    if (sTag="017")
+    {  ; nacteme si DOI
+       s:($$$getSubTagStr(lsLine,"2")="DOI") sDOI=$$$getSubTagStr(lsLine,"a")   
+    } 
+    elseif (sTag="101") 
+    { ; <language>  volitelné   101a
+     s sJazyk=$$$getSubTagStr(lsLine,"a")
+     s:(sJazyk="eng") sJazyk="en"
+     s:(sJazyk="cze") sJazyk="cs"
+    }
+    elseif (sTag="200") 
+    { 
+      s sTitle=$$$getSubTagStr(lsLine,"a")      ; nazev
+      ; 22.05.26 jk; vymazat formatovaci znaky
+      d ##class(rep.epca.exportBase).symClearFormatInfoStr(.sTitle)
+      s sTitle=##class(User.Util).XMLfixup(sTitle)
+      s sAltTitle=##class(User.Util).XMLfixup($$$getSubTagStr(lsLine,"e"))   ; alternativni nazev
+    }
+    elseif (sTag="541") 
+    { ; nacteme si preklad nazvu - 541a, lang="en" -541zv
+      s:($$$getSubTagStr(lsLine,"z")="eng") sTransTitle=##class(User.Util).XMLfixup($$$getSubTagStr(lsLine,"a"))
+    }
+    elseif (sTag="608") 
+    { ; <resourceType> povinné     608a    Typ datových souborů
+      s sTypSouboru=##class(User.Util).XMLfixup($$$getSubTagStr(lsLine,"a"))   
+    }
+    elseif (sTag="610") 
+    { ; priznak, jestli exportuovat subjekt
+      s:($$$getSubTagStr(lsLine,"a")'="") bSubject=1
+    }
+    elseif (sTag="C12") 
+    { ; priznak, jestli exportuovat subjekt
+      s:($$$getSubTagStr(lsLine,"a")'="") bProjekt=1
+    }
+    elseif (sTag="C15") 
+    { ; <description xml:lang="cs" descriptionType="Abstract">  doporučené  C15a    Popis v CZ
+      ; <description xml:lang="en" descriptionType="Abstract">  doporučené  C15b    Popis v AJ
+      s sPopisCz=##class(User.Util).XMLfixup($$$trim($replace($$$getSubTagStr(lsLine,"a"),"\n"," ")))
+      s sPopisEn=##class(User.Util).XMLfixup($$$trim($replace($$$getSubTagStr(lsLine,"b"),"\n"," ")))
+    }
+    elseif (sTag="C26") 
+    { ; priznak, jestli exportuovat subjekt
+      s:($$$getSubTagStr(lsLine,"x")'="") bSubject=1
+      s sC26x=##class(User.Util).sXlate("EPCA_OECDALL",$$$getSubTagStr(lsLine,"x"),,ipref)
+      s sC26y=##class(User.Util).sXlate("EPCA_OECDALL",$$$getSubTagStr(lsLine,"y"),,ipref)
+      s sC26z=##class(User.Util).sXlate("EPCA_OECDALL",$$$getSubTagStr(lsLine,"z"),,ipref)      
+    }
+    elseif (sTag="C60") 
+    { ; handle. net
+      s sHandle=$$$getSubTagStr(lsLine,"a")   
+    }
+    elseif (sTag="T16") 
+    { ; <publicationYear> 
+      s sT16r=$$$getSubTagStr(lsLine,"r")   
+    }
+    elseif (sTag="U03") 
+    { ; <version>   volitelné   U03a
+      /// 01.12.23 tt; na zaklade pozadavku drobne upravy zakazky 2022 (29.11.23) upraveno
+      s sVerze=$zstrip($$$getSubTagStr(lsLine,"a"),"<","0")
+    }
+    elseif (sTag="U22") 
+    { ; priznak, jestli exportovat subjekt
+      s sDatumOd=$e($$$getSubTagStr(lsLine,"a"),1,8)
+      s sDatumDo=$e($$$getSubTagStr(lsLine,"b"),1,8)
+    }
+    elseif (sTag="U88") 
+    { ; navazane zaznamy
+      s:($$$getSubTagStr(lsLine,"h")'="") bVazby=1
+    }
+  
+
+  }
+ ; export DOI
+ d:(sDOI'="") ##class(i2.export).outputAdd($$$spc(2)_"<identifier identifierType=""DOI"">"_sDOI_"</identifier>"_$c(10),pnOutFmt) 
+
+ ; nepouzijeme 70* kvoli tomu, ze poradie tagov moze byt zmenene
+ s sAutoriVsichni=$$$getTagXC(.handle,"700",-1)_$c(10)
+                      _$$$getTagXC(.handle,"701",-1)_$c(10)
+                      _$$$getTagXC(.handle,"702",-1)
+
+ d:(sAutoriVsichni'="") ##class(i2.export).outputAdd($$$spc(2)_"<creators>"_$c(10),pnOutFmt)
+ s c=$l(sAutoriVsichni,$c(10))
+ f i=1:1:c
+ {
+   s sAutor=$p(sAutoriVsichni,$c(10),i)
+   continue:(sAutor="")
+   d ..exportDataciteXmlAutInfo(sAutor,pnOutFmt,pTyp) 
+ }
+ d:(sAutoriVsichni'="") ##class(i2.export).outputAdd($$$spc(2)_"</creators>"_$c(10),pnOutFmt)
+
+ d ##class(i2.export).outputAdd($$$spc(2)_"<titles>"_$c(10),pnOutFmt)
+ if (pTyp="Datacite")
+ {
+   d:((sTitle'="")&&(sTransTitle'="")) ##class(i2.export).outputAdd($$$spc(4)_"<title xml:lang=""cs"">"_sTitle_"</title>"_$c(10),pnOutFmt)
+   d:((sTitle'="")&&(sTransTitle="")) ##class(i2.export).outputAdd($$$spc(4)_"<title xml:lang=""en"">"_sTitle_"</title>"_$c(10),pnOutFmt)
+   d:(sTransTitle'="") ##class(i2.export).outputAdd($$$spc(4)_"<title titleType=""TranslatedTitle"" xml:lang=""en"">"_sTransTitle_"</title>"_$c(10),pnOutFmt)
+   d:(sAltTitle'="") ##class(i2.export).outputAdd($$$spc(4)_"<title titleType=""AlternativeTitle"">"_sAltTitle_"</title>"_$c(10),pnOutFmt)
+ }
+ else
+ {
+   d:(sTitle'="") ##class(i2.export).outputAdd($$$spc(4)_"<title>"_sTitle_"</title>"_$c(10),pnOutFmt)
+   d:(sTransTitle'="") ##class(i2.export).outputAdd($$$spc(4)_"<title titleType=""TranslatedTitle"">"_sTransTitle_"</title>"_$c(10),pnOutFmt)
+   d:(sAltTitle'="") ##class(i2.export).outputAdd($$$spc(4)_"<title titleType=""AlternativeTitle"">"_sAltTitle_"</title>"_$c(10),pnOutFmt)
+ }
+ d ##class(i2.export).outputAdd($$$spc(2)_"</titles>"_$c(10),pnOutFmt)
+ d ##class(i2.export).outputAdd($$$spc(2)_"<publisher>ASEP Repository</publisher>"_$c(10),pnOutFmt)
+ d ##class(i2.export).outputAdd($$$spc(2)_"<publicationYear>"_sT16r_"</publicationYear>"_$c(10),pnOutFmt)
+ 
+ 
+ if (sTypSouboru'="")
+ {
+  // w !,$$$spc(4)_"<resourceType resourceTypeGeneral=""Text"">"_sTypSouboru_"</resourceType>"_$c(10),pnOutFmt)
+  if (sTypSouboru="DS") { d ##class(i2.export).outputAdd($$$spc(2)_"<resourceType resourceTypeGeneral=""Dataset"">Dataset</resourceType>"_$c(10),pnOutFmt) }
+  elseif (sTypSouboru="TX") { d ##class(i2.export).outputAdd($$$spc(2)_"<resourceType resourceTypeGeneral=""Text""/>"_$c(10),pnOutFmt) }
+  elseif (sTypSouboru="OBR") { d ##class(i2.export).outputAdd($$$spc(2)_"<resourceType resourceTypeGeneral=""Image""/>"_$c(10),pnOutFmt) }
+  elseif (sTypSouboru="VI") { d ##class(i2.export).outputAdd($$$spc(2)_"<resourceType resourceTypeGeneral=""Audiovisual""/>"_$c(10),pnOutFmt) }
+  elseif (sTypSouboru="AUD") { d ##class(i2.export).outputAdd($$$spc(2)_"<resourceType resourceTypeGeneral=""Sound""/>"_$c(10),pnOutFmt) }
+  elseif (sTypSouboru="SW") { d ##class(i2.export).outputAdd($$$spc(2)_"<resourceType resourceTypeGeneral=""Software""/>"_$c(10),pnOutFmt) }
+ }
+ 
+ 
+ if (bSubject=1)
+ {
+   d ##class(i2.export).outputAdd($$$spc(2)_"<subjects>"_$c(10),pnOutFmt)
+   s caa=0
+   d { ; cyklus pres vsechny ID
+       s sT610=$$$getTagXC(.handle,"610",.caa) ; vsechny ID
+       continue:((sT610="")&&(caa'=0))
+       s sT610a=$$$getSubTagStr(sT610,"a")
+       ; 22.05.26 jk; vymazat formatovaci znaky
+       d ##class(rep.epca.exportBase).symClearFormatInfoStr(.sT610a)
+       d:(sT610a'="") ##class(i2.export).outputAdd($$$spc(4)_"<subject valueURI="""">"_sT610a_"</subject>"_$c(10),pnOutFmt)
+   } while (caa'=0)
+   //w:(sC26x'="") !,$$$spc(6)_"<subject subjectScheme=""Fields of Science and Technology (FOS)"" schemeURI=""http://www.oecd.org/science/inno"" valueURI=""http://www.oecd.org/science/inno/38235147.pdf"">"_sC26x_"</subject>"_$c(10),pnOutFmt)
+   if (sC26y'="")
+   {
+     //d ##class(i2.export).outputAdd($$$spc(4)_"<subject subjectScheme=""Fields of Science and Technology (FOS)"" schemeURI=""http://www.oecd.org/science/inno"" valueURI=""http://www.oecd.org/science/inno/38235147.pdf"">FOS: "_$p(sC26y," ",2,999)_"</subject>"_$c(10),pnOutFmt)
+     d ##class(i2.export).outputAdd($$$spc(4)_"<subject subjectScheme=""Fields of Science and Technology (FOS)"" schemeURI=""http://www.oecd.org/science/inno/38235147.pdf"" valueURI="""">FOS: "_sC26y_"</subject>"_$c(10),pnOutFmt)
+   }
+   //w:(sC26z'="") !,$$$spc(6)_"<subject subjectScheme=""Fields of Science and Technology (FOS)"" schemeURI=""http://www.oecd.org/science/inno"" valueURI=""http://www.oecd.org/science/inno/38235147.pdf"">"_sC26z_"</subject>"
+   d ##class(i2.export).outputAdd($$$spc(2)_"</subjects>"_$c(10),pnOutFmt)
+ }
+ 
+ ; U22 casove obdobi od/do, format datumu YYYY-MM-DD nebo YYYY
+ if $l(sDatumOd)=8 { s sDatumOd=$e(sDatumOd,1,4)_"-"_$e(sDatumOd,5,6)_"-"_$e(sDatumOd,7,8) }
+ if $l(sDatumDo)=8 { s sDatumDo=$e(sDatumDo,1,4)_"-"_$e(sDatumDo,5,6)_"-"_$e(sDatumDo,7,8) }
+ s dateCoverage=sDatumOd
+ if sDatumDo'="" {
+   s:dateCoverage'="" dateCoverage=dateCoverage_"/"
+   s dateCoverage=dateCoverage_sDatumDo
+ }
+ if (dateCoverage'="") {
+   d ##class(i2.export).outputAdd($$$spc(2)_"<dates>"_$c(10),pnOutFmt)
+   d ##class(i2.export).outputAdd($$$spc(4)_"<date dateType=""Coverage"">"_dateCoverage_"</date>"_$c(10),pnOutFmt)
+   d ##class(i2.export).outputAdd($$$spc(2)_"</dates>"_$c(10),pnOutFmt)
+ }
+ 
+ d:(sJazyk'="") ##class(i2.export).outputAdd($$$spc(2)_"<language>"_sJazyk_"</language>"_$c(10),pnOutFmt)
+ d:((sVerze'="")&&(pTyp="Datacite")) ##class(i2.export).outputAdd($$$spc(2)_"<version>"_sVerze_"</version>"_$c(10),pnOutFmt)
+ 
+ if (sHandle'="")
+ {
+   d ##class(i2.export).outputAdd($$$spc(2)_"<alternateIdentifiers>"_$c(10),pnOutFmt)
+   d:(sHandle'="") ##class(i2.export).outputAdd($$$spc(4)_"<alternateIdentifier alternateIdentifierType=""Handle"">"_sHandle_"</alternateIdentifier>"_$c(10),pnOutFmt)
+   d ##class(i2.export).outputAdd($$$spc(2)_"</alternateIdentifiers>"_$c(10),pnOutFmt)
+ }
+ 
+ s relatedIdentifiers=""
+ if ((bVazby=1)&&(pTyp="Datacite")) {
+   s caa=0
+   do { ; cyklus pres vsechny vazby
+     s sTU88=$$$getTagXC(.handle,"U88",.caa) ; vsechny ID
+     continue:((sTU88="")&&(caa'=0))
+     s sTU88h=$$$getSubTagStr(sTU88,"h")
+     s:(sTU88h'="") relatedIdentifiers=relatedIdentifiers_$$$spc(4)_"<relatedIdentifier relatedIdentifierType=""URL"" relationType=""IsDocumentedBy"">"_sTU88h_"</relatedIdentifier>"_$c(10)
+   } while (caa'=0)
+ }
+ 
+ if (($$$getTagX(.handle,"970b")="DATA")&&(pTyp="Datacite")) {
+   ; ziskame predchazejici a nasledujici verzi
+   s sVerzePred="", sVerzePo=""
+   s retVer=..versionDataGetAll(.handle)
+   for i=1:1:$l(retVer,"#") {  
+     s ver=$p(retVer,"#",i)
+     q:($f(ver,("*"_$$$HandleT001(handle)))) 
+     s sVerzePred=ver     
+   }
+   for i=$l(retVer,"#"):-1:1 {
+     s ver=$p(retVer,"#",i)
+     q:($f(ver,("*"_$$$HandleT001(handle)))) 
+     s sVerzePo=ver     
+   }
+   
+   if (sVerzePred'="") {
+     if ##class(User.MARC).readLX(.handleD,sVerzePred) {
+       s doi=$$$getTagX(.handleD,"017a")  ; ne pres index doi, Cav nema vyplnene indikatory
+       if doi'="" {
+         s:'$f(doi,"doi.org") doi="https://doi.org/"_$$$trim(doi)
+         s relatedIdentifiers=relatedIdentifiers_$$$spc(4)_"<relatedIdentifier relatedIdentifierType=""DOI"" relationType=""IsNewVersionOf"">"_doi_"</relatedIdentifier>"_$c(10)
+       }
+     }
+   }
+   
+   if (sVerzePo'="") {
+     if ##class(User.MARC).readLX(.handleP,sVerzePo) {
+       s doi=$$$getTagX(.handleP,"017a")  ; ne pres index doi, Cav nema vyplnene indikatory
+       if doi'="" {
+         s:'$f(doi,"doi.org") doi="https://doi.org/"_$$$trim(doi)
+         s relatedIdentifiers=relatedIdentifiers_$$$spc(4)_"<relatedIdentifier relatedIdentifierType=""DOI"" relationType=""IsPreviousVersionOf"">"_doi_"</relatedIdentifier>"_$c(10)
+       }
+     }
+   }
+     
+   // 1.12.23 tt; na zaklade pozadavku drobne upravy zakazky 2022 (29.11.23) upraveno
+   ///s sTU03a=$zstrip($$$getTagX(.handle,"U03a"),"<","0") ; ziskame verzi datasetu
+   //d:(sTU03a'="") ##class(i2.export).outputAdd($$$spc(2)_"<version>"_sTU03a_"</version>")
+ }
+ 
+ if relatedIdentifiers'="" {
+   s relatedIdentifiers=$$$spc(2)_"<relatedIdentifiers>"_$c(10)_relatedIdentifiers_$$$spc(2)_"</relatedIdentifiers>"_$c(10)
+   d ##class(i2.export).outputAdd(relatedIdentifiers,pnOutFmt)
+ }
+ 
+ 
+ if ((sPopisEn'="")||(sPopisCz'=""))
+ {
+   s sPopisCz=##class(User.Util).XMLfixup(sPopisCz)
+   s sPopisEn=##class(User.Util).XMLfixup(sPopisEn)
+   
+   d ##class(i2.export).outputAdd($$$spc(2)_"<descriptions>"_$c(10),pnOutFmt)
+   if (pTyp="Datacite")
+   {
+     d:((sPopisCz'="")&&(sPopisEn'="")) ##class(i2.export).outputAdd($$$spc(4)_"<description xml:lang=""cs"" descriptionType=""Abstract"">"_sPopisCz_"</description>"_$c(10),pnOutFmt)
+     d:((sPopisCz'="")&&(sPopisEn="")) ##class(i2.export).outputAdd($$$spc(4)_"<description xml:lang=""en"" descriptionType=""Abstract"">"_sPopisCz_"</description>"_$c(10),pnOutFmt)
+     d:(sPopisEn'="") ##class(i2.export).outputAdd($$$spc(4)_"<description xml:lang=""en"" descriptionType=""Abstract"">"_sPopisEn_"</description>"_$c(10),pnOutFmt)     
+   }
+   else
+   {
+     d:(sPopisCz'="") ##class(i2.export).outputAdd($$$spc(4)_"<description descriptionType=""Abstract"">"_sPopisCz_"</description>"_$c(10),pnOutFmt)
+     d:(sPopisEn'="") ##class(i2.export).outputAdd($$$spc(4)_"<description descriptionType=""Abstract"">"_sPopisEn_"</description>"_$c(10),pnOutFmt)     
+   }
+   d ##class(i2.export).outputAdd($$$spc(2)_"</descriptions>"_$c(10),pnOutFmt)
+ }
+ 
+ s sizes=##class(util.ie.datacite).getCsSizes(.handle)
+ if sizes.%Size() {
+   d ##class(i2.export).outputAdd($$$spc(2)_"<sizes>"_$c(10),pnOutFmt)
+   s iter=sizes.%GetIterator()
+   while iter.%GetNext(.key,.value,.type ) {
+     d ##class(i2.export).outputAdd($$$spc(4)_"<size>"_##class(User.Util).XMLfixup(value)_"</size>"_$c(10),pnOutFmt)
+   }
+   d ##class(i2.export).outputAdd($$$spc(2)_"</sizes>"_$c(10),pnOutFmt)
+ }
+ 
+ s license=##class(util.ie.datacite).getLicense(.handle)
+ if license'="" {
+   d ##class(i2.export).outputAdd($$$spc(2)_"<rightsList>"_$c(10),pnOutFmt)
+   d ##class(i2.export).outputAdd($$$spc(4)_license_$c(10),pnOutFmt)
+   d ##class(i2.export).outputAdd($$$spc(2)_"</rightsList>"_$c(10),pnOutFmt)
+ }
+ 
+ ; geoLocationPlace 617a, 617d
+ s geoLocations=""
+ s c=0
+ do {
+   s s617=$$$getTagXC(.handle,"617",.c)
+   continue:s617=""
+    
+   s geoA=$$$getSubTagStr(s617,"a")
+    s geoD=$$$getSubTagStr(s617,"d")
+    s geo=geoA
+    if geoD'="" {
+      s:geo'="" geo=geo_", "
+      s geo=geo_geoD
+    }  
+    if geo'="" {
+      s:geoLocations="" geoLocations=$$$spc(4)_"<geoLocations>"_$c(10)
+      s geoLocations=geoLocations_$$$spc(6)_"<geoLocation>"_$c(10)
+      s geoLocations=geoLocations_$$$spc(6)_"<geoLocationPlace>"_##class(User.Util).XMLfixup(geo)_"</geoLocationPlace>"_$c(10)
+      s geoLocations=geoLocations_$$$spc(6)_"</geoLocation>"_$c(10)
+    }
+  } while c'=0
+ if geoLocations'="" {
+   s geoLocations=geoLocations_$$$spc(4)_"</geoLocations>"_$c(10)
+   d ##class(i2.export).outputAdd(geoLocations,pnOutFmt)
+ }
+ 
+ if (bProjekt)
+ {
+   d:(pTyp="Datacite") ##class(i2.export).outputAdd($$$spc(2)_"<fundingReferences>"_$c(10),pnOutFmt)
+   s caa=0
+   d { ; cyklus pres vsechny ID
+     s sTC12=$$$getTagXC(.handle,"C12",.caa) ; vsechny ID
+     continue:((sTC12="")&&(caa'=0))
+      
+     s sTC12a=$$$getSubTagStr(sTC12,"a")   ; cislo grantu CEP
+     s sTC12b=$$$getSubTagStr(sTC12,"b")   ; poskytovatel grantu CEP
+     s sTC12o=$$$getSubTagStr(sTC12,"o")   ; poskytovatel grantu z EU
+     s sTC12n=$$$getSubTagStr(sTC12,"n")   ; cislo grantu EU
+      
+     ; exportovat jen projekty CEP a zahranicni
+     s isCEP=(sTC12a'="")&&(sTC12b'="")
+     s isFore=(sTC12o'="")&&(sTC12n'="")
+     continue:'isCEP&&'isFore
+
+     if isCEP {
+       s awardNumber=sTC12a
+       s poskname=##class(User.Util).sXlate("UN_POSKYT",sTC12b,"N",ipref,,3)      ; EN nazev poskytovatele z ciselniku
+       s poskcode=sTC12b
+     }
+     else {
+       s awardNumber=sTC12n
+       s poskname=##class(User.Util).sXlate("UN_POSKYT_EU",sTC12n,"N",ipref,,3)   ; EN nazev poskytovatele z ciselniku
+       s poskcode=sTC12o
+     }
+
+     ; ROR poskytovatele grantu z ciselniku EPCA_GA_DOI
+     s ror=""
+     if poskcode'="" {
+       s ror=##class(User.Util).sXlate("EPCA_GA_DOI",poskcode,"N",ipref,"e")
+       if ror'="" { s:'$f(ror,"http") ror="https://ror.org/"_ror }
+     }
+
+     ; dalsi polozky z autoritniho zaznamu projektu
+     s sTC123=$$$getSubTagStr(sTC12,"3")
+     s awardUri="", awardTitle=""
+      if sTC123'="" && (##class(User.MARC).readLX(.hndlproj,sTC123)) { 
+        if isCEP { 
+          s cepID=##class(User.MARC).getTagX(.hndlproj,"230h")
+          s:cepID'="" awardUri="https://www.isvavai.cz/cep?s=jednoduche-vyhledavani&ss=detail&n=0&h="_$replace($zcvt(cepID,"O","URL"),"/","%2F") }  ; escape neresi "/" proto replace 
+        else { 
+          s awardUri=##class(User.MARC).getTagX(.hndlproj,"300a") 
+        }
+        s awardTitle=##class(User.MARC).getTagX(.hndlproj,"230a")                     ; orig. nazev CZ/EN
+        s:awardTitle="" awardTitle=##class(User.MARC).getTagX(.hndlproj,"430a")       ; nazev EN
+      }
+
+     if pTyp="Datacite" {
+       d ##class(i2.export).outputAdd($$$spc(4)_"<fundingReference>"_$c(10),pnOutFmt)
+       d ##class(i2.export).outputAdd($$$spc(6)_"<funderName>"_##class(User.Util).XMLfixup(poskname)_"</funderName>"_$c(10),pnOutFmt)
+       d ##class(i2.export).outputAdd($$$spc(6)_"<funderIdentifier funderIdentifierType=""ROR"">"_##class(User.Util).XMLfixup(ror)_"</funderIdentifier>"_$c(10),pnOutFmt)
+       if awardUri'="" { d ##class(i2.export).outputAdd($$$spc(6)_"<awardNumber awardUri="""_##class(User.Util).XMLfixup(awardUri)_""">"_##class(User.Util).XMLfixup(sTC12a)_"</awardNumber>"_$c(10),pnOutFmt) }
+       else { d ##class(i2.export).outputAdd($$$spc(6)_"<awardNumber>"_##class(User.Util).XMLfixup(sTC12a)_"</awardNumber>"_$c(10),pnOutFmt) }
+       if awardTitle'="" { d ##class(i2.export).outputAdd($$$spc(6)_"<awardTitle>"_##class(User.Util).XMLfixup(awardTitle)_"</awardTitle>"_$c(10),pnOutFmt) }
+       d ##class(i2.export).outputAdd($$$spc(4)_"</fundingReference>"_$c(10),pnOutFmt)
+     }
+     elseif pTyp="Openaire" {
+       d ##class(i2.export).outputAdd($$$spc(2)_"<contributor contributorType=""Funder"">"_$c(10),pnOutFmt)
+       d ##class(i2.export).outputAdd($$$spc(4)_"<contributorName>"_##class(User.Util).XMLfixup(poskname)_"</contributorName>"_$c(10),pnOutFmt)
+       d:(awardNumber'="") ##class(i2.export).outputAdd($$$spc(4)_"<nameIdentifier nameIdentifierScheme=""info"">"_##class(User.Util).XMLfixup(awardNumber)_"</nameIdentifier>"_$c(10),pnOutFmt)
+       d ##class(i2.export).outputAdd($$$spc(2)_"</contributor>"_$c(10),pnOutFmt)
+     }
+   } while (caa'=0)
+   
+   d:(pTyp="Datacite") ##class(i2.export).outputAdd($$$spc(2)_"</fundingReferences>"_$c(10),pnOutFmt)
+ }    
+ 
+ d ##class(i2.export).outputAdd("</"_sPrefix_"resource>"_$c(10),pnOutFmt)
+]]></Implementation>
+</Method>
+
+<Method name="exportDataciteXmlAutInfo">
+<Description><![CDATA[
+<pre> Cteni a vypis informaci o autorovi
+ Parametry: pAutor - aktualni zpracovavany autor 700,701,702
+            pTyp - parametry z volajici metody, rozlisovani openaire/datacite viz. vyse
+                   "Datacite" - export datacite z kosiku
+                   "Openaire" - oai xml pro openaire OAI_DATACITE format
+
+19.07.24 jk; doplneny quity do cyklu
+20.06.23 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pAutor,pnOutFmt,pTyp</FormalSpec>
+<Implementation><![CDATA[
+   s class=$$$HandleClass(handle)     ; ziskani tridy
+   s ipref=$$$Class2Ipref(class)      ; Ipref (instalacni prefix)
+   s sUstav=$$$getSubTagStr(.pAutor,"p")
+   s sPrijmeni=$$$getSubTagStr(.pAutor,"a")
+   s sJmeno=$$$getSubTagStr(.pAutor,"b")
+   s sLink=$$$getSubTagStr(.pAutor,"3")
+   s sOrcid="",sRor="",sRorNazev=sUstav, sWOS="",sSCOPUS=""
+
+   if (sLink'="")
+   {
+     if ##class(User.MARC).readLX(.handlea70X,sLink)
+     { ; pokud se nam podarilo autoritu otevrit
+       s caa=0
+       d { ; cyklus pres vsechny ID
+          s sT035=$$$getTagXC(.handlea70X,"035",.caa) ; vsechny ID
+          continue:((sT035="")&&(caa'=0))
+          s sT035a=$$$getSubTagStr(sT035,"a")
+          s sT0352=$$$getSubTagStr(sT035,"2")
+          if (sT0352="ORCID")
+          { ; mam orcid   035     $a 0000-0002-4606-1218 $2 ORCID 
+            s sOrcid=sT035a
+          }        
+          elseif (sT0352="WOS")
+          { ; mam wos  035       $a F-5169-2014 $2 WOS 
+            s sWOS=sT035a
+          } 
+           elseif (sT0352="SCOPUS")
+          { ; mam scopus      035     $a 6603184151  $2 SCOPUS 
+            s sSCOPUS=sT035a
+          }          
+        } while (caa'=0)
+     }
+   }
+   
+    s sUstav=$zcvt($zstrip(sUstav,"<>W"),"L")  ; ziskame zkratku ustavu
+    if (sUstav'="")
+    {
+       s sTerm=" "_sUstav_" (o)"               ; seskladame termini pro vyhledani konkretniho ustavu
+       s sPracid=##class(User.MARC).getIDByIndex(ipref_"UnAuth","aucr",sTerm)
+       if (sPracid'=0)
+       { ; pokud id neni 0 - mam ustav a muzeme jej otevrit
+         if ##class(User.MARC).getDATAX(.hndla,sPracid)
+         { 
+           ; 19.07.24 jk; doplneny quity do cyklu
+           ; pokud se podarilo otevrit zaznam pracoviste, nacteme informace
+           ; ziskame nazvy pracoviste v jazykovych mutacich
+           s xx="0"
+           d {
+               s sT410=$$$getTagXC(.hndla,"410",.xx) ; vsechny variantni nazvy
+               
+               continue:((sT410="")&&(xx'=0))
+               if (sT410'="")
+               { 
+                 ; pokud mame vyplnene data, muzeme provadet akce 
+                 s sT4108=$$$getSubTagStr(sT410,"8")
+                 if (sT4108="eng") {
+                   s sRorNazev=$$$getSubTagStr(sT410,"a")
+                   q
+                 }
+               }
+            } while (xx'=0)
+          
+           s xx="0"
+           d {
+             s sT035=$$$getTagXC(.hndla,"035",.xx) ; vsetky citacie
+              continue:((sT035="")&&(xx'=0))
+              if (sT035'="") { 
+                ; pokud mame vyplnene data, muzeme provadet akce 
+                s sT0352=$$$getSubTagStr(sT035,"2")
+                if (sT0352="PIDROR") {
+                  s sRor=$$$getSubTagStr(sT035,"a")
+                  q
+                }
+              }
+           } while (xx'=0)
+         }
+       }
+    }   
+    d ##class(i2.export).outputAdd($$$spc(4)_"<creator>"_$c(10),pnOutFmt)
+    if (pTyp="Datacite")
+    {
+      d:(sPrijmeni'="") ##class(i2.export).outputAdd($$$spc(6)_"<creatorName nameType=""Personal"">"_sPrijmeni_", "_sJmeno_"</creatorName>"_$c(10),pnOutFmt)
+      d:(sJmeno'="") ##class(i2.export).outputAdd($$$spc(6)_"<givenName>"_sJmeno_"</givenName>"_$c(10),pnOutFmt)
+      d:(sPrijmeni'="") ##class(i2.export).outputAdd($$$spc(6)_"<familyName>"_sPrijmeni_"</familyName>"_$c(10),pnOutFmt)
+      d:(sOrcid'="") ##class(i2.export).outputAdd($$$spc(6)_"<nameIdentifier nameIdentifierScheme=""ORCID"" schemeURI=""https://orcid.org"">https://orcid.org/"_sOrcid_"</nameIdentifier>"_$c(10),pnOutFmt)
+      d:(sWOS'="") ##class(i2.export).outputAdd($$$spc(6)_"<nameIdentifier nameIdentifierScheme=""Other"" schemeURI="""">https://www.webofscience.com/wos/author/record/"_sWOS_"</nameIdentifier>"_$c(10),pnOutFmt)
+      d:(sSCOPUS'="") ##class(i2.export).outputAdd($$$spc(6)_"<nameIdentifier nameIdentifierScheme=""Other"" schemeURI="""">https://www.scopus.com/authid/detail.uri?authorId="_sSCOPUS_"</nameIdentifier>"_$c(10),pnOutFmt)
+      d:((sRor'="")&&(sRorNazev'="")) ##class(i2.export).outputAdd($$$spc(6)_"<affiliation affiliationIdentifier=""https://ror.org/"_sRor_""" affiliationIdentifierScheme=""ROR"">"_sRorNazev_"</affiliation>"_$c(10),pnOutFmt)
+
+    }
+    else
+    { // "Openaire"
+      d:(sPrijmeni'="") ##class(i2.export).outputAdd($$$spc(6)_"<creatorName>"_sPrijmeni_", "_sJmeno_"</creatorName>"_$c(10),pnOutFmt)
+      d:(sRorNazev'="") ##class(i2.export).outputAdd($$$spc(6)_"<affiliation>"_sRorNazev_"</affiliation>"_$c(10),pnOutFmt)
+      d:(sOrcid'="") ##class(i2.export).outputAdd($$$spc(6)_"<nameIdentifier nameIdentifierScheme=""ORCID"" schemeURI=""https://orcid.org"">https://orcid.org/"_sOrcid_"</nameIdentifier>"_$c(10),pnOutFmt)
+      d:(sWOS'="") ##class(i2.export).outputAdd($$$spc(6)_"<nameIdentifier nameIdentifierScheme=""Other"" schemeURI="""">https://www.webofscience.com/wos/author/record/"_sWOS_"</nameIdentifier>"_$c(10),pnOutFmt)
+      d:(sSCOPUS'="") ##class(i2.export).outputAdd($$$spc(6)_"<nameIdentifier nameIdentifierScheme=""Other"" schemeURI="""">https://www.scopus.com/authid/detail.uri?authorId="_sSCOPUS_"</nameIdentifier>"_$c(10),pnOutFmt)
+    }
+    d ##class(i2.export).outputAdd($$$spc(4)_"</creator>"_$c(10),pnOutFmt)
+]]></Implementation>
+</Method>
+
+<Method name="exportDataciteJson">
+<Description><![CDATA[
+<pre> Metoda zajišťující export do datacite json.
+
+Dokumentace:
+   https://cosmo2.cs.cosmotron.cz/wiki/index.php?title=EPCA:datacite_doi
+   STARE https://asep-portal.lib.cas.cz/a_porady/naceneni_2023/0544591_dataset_JSON.pdf
+   STARE https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2023_ostatn%C3%AD#Export_JSON_Datacite_a_LD_sch.C3.A9ma_-_cs123464
+
+16.06.25 jk; pro json export zapojen util.ie.datacite
+18.04.24 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,pnWhat,pnOutFmt]]></FormalSpec>
+<Implementation><![CDATA[
+  // zadna hlavicka, ani paticka, jen json 
+  if pnWhat=$$$I2ExportHdr q
+  if pnWhat=$$$I2ExportFooter q
+  if pnWhat'=$$$I2ExportBody zt "ER1" ; poistka chybne volanie
+
+  ; zjisteni parametru z konfigurace volaneho exportu
+  s sExpInfo=##class(i2.export).getExportInfo()
+  ; v $e jsou doplnkove options
+  s sFmtParams=$p(sExpInfo,$c(10),$$$I2cfgrowE)
+  
+  s sT001=$$$HandleT001(handle)       ; ziskani t001
+  s sClass=$$$HandleClass(handle)     ; ziskani tridy
+  s ipref=##class(User.Util).getClassPrefixParam(sClass)
+  if ##class(User.MARC).readX(.handleN,sClass,sT001,"T")  {
+    s sExport=##class(util.ie.datacite).handle2json(ipref,.handle,"publish",1)
+    d ##class(i2.export).outputAdd(sExport,pnOutFmt)
+    
+    // STARE ZPRACOVANI 
+    //d ..exportDataciteJsonHandle(.handleN,pnOutFmt,sFmtParams)
+  }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

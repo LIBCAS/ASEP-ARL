@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-27 15:17:42">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-04-30 10:43:43">
 <Class name="content.engine">
 <Description><![CDATA[
 <pre> vykonne jadro contentServeru
 
+29.04.26 ln; metode runtime pridany parametry repo a key
+27.03.26 ln; fix vzdaleneho aratio pro linux
+04.02.26 ln; call nevyzaduje inicializaci
+18.09.25 ln; podpora vzdaleneho aratio z frontendu
 27.03.25 ln; podpora S3
 17.23.25 ln; volba -auto-orient pro generovani aratio
 15.01.25 ln; datasety nemaji C52
@@ -41,7 +45,7 @@
 18.09.12 ln; podpora pro pristup z zclienta
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>67291,55038.646757296</TimeChanged>
+<TimeChanged>67690,38598.214562107</TimeChanged>
 <TimeCreated>62187,27819.075418</TimeCreated>
 
 <Parameter name="pageSeparator">
@@ -57,23 +61,29 @@
 <Description><![CDATA[
 <pre> Volani generovane metody pro overeni prav
 
+29.04.26 ln; metode runtime pridany parametry repo a key
+04.02.26 ln; call nevyzaduje inicializaci
 27.03.25 ln; podpora S3
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&array,service:%String]]></FormalSpec>
+<FormalSpec><![CDATA[&array,service:%String,ictx=""]]></FormalSpec>
 <ReturnType>%Integer</ReturnType>
 <Implementation><![CDATA[
-  ; po prechodu 1 ictx 1 namespace se muze zrusit
-  q:$g(array("ictx"))'=$$$GETICTX 0
+  ; 04.02.26 ln; call nevyzaduje inicializaci
+  s:ictx="" ictx=$$$GETICTX
   
-  s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")
+  ; po prechodu 1 ictx 1 namespace se muze zrusit
+  q:$g(array("ictx"))'=ictx 0
+  
+  s callBack=##class(i2.init).getCallBack(ictx,"uploader")
   q:$f(callBack,".page404") 0
   
   if callBack'="" {
     ; 27.03.25 ln; podpora S3    
     s:$g(array("user"))'="" runtime("user")=array("user")
     
-    d $ZOBJCLASSMETHOD(callBack,"runtime",.runtime,$g(array("class")),$g(array("t001")))
+    ; 29.04.26 ln; metode runtime pridany parametry repo a key
+    d $ZOBJCLASSMETHOD(callBack,"runtime",.runtime,$g(array("class")),$g(array("t001")),$g(array("repository")),$g(array("key")))
     m array=runtime
   }    
   
@@ -84,10 +94,10 @@
   */
   
   try {
-    s ret=$ZOBJCLASSMETHOD("content.generated",$$$GETICTX_service,.array)
+    s ret=$ZOBJCLASSMETHOD("content.generated",ictx_service,.array)
   } catch {
     s ret=0
-    w !,"je to spatne: ",$$$GETICTX_service,!
+    w !,"je to spatne: ",ictx_service,!
   }
   q ret
 ]]></Implementation>
@@ -119,6 +129,7 @@
 <FormalSpec>repo:%String,key:%String,version=""</FormalSpec>
 <ReturnType>content.metadata</ReturnType>
 <Implementation><![CDATA[
+  q:(repo="")||(key="") ""
   s id=""
   ; 27.03.25 ln; podpora S3
   s:$e(key,*)="k" key=$e(key,1,*-1)
@@ -1155,6 +1166,8 @@ pregenerovani pokud verbose=2
 <Description><![CDATA[
 <pre> aratio = <sirka>x<vyska>
 
+27.03.26 ln; fix vzdaleneho aratio pro linux
+18.09.25 ln; podpora vzdaleneho aratio z frontendu
 17.23.25 ln; volba -auto-orient pro generovani aratio
 04.07.24 ln; magick nevypisuje warning jako novy convert
 15.02.23 ln; snaha zabranit csp timeoutu kvuli aratio
@@ -1168,8 +1181,10 @@ pregenerovani pokud verbose=2
   if (ext'="jpg") && (ext'="jpeg") && (ext'="gif") && (ext'="png") && (ext'="tif") q
   
   s pathSep=$$$PathSepp, convert="convert -quiet"_" "
+  s bWin=##class(User.Util).isWindows()
+  s front=##class(User.Util).sXlate("ARL_MAIN_CFG","SOLR","N",,"d")
   
-  if ##class(User.Util).isWindows() {
+  if bWin && (front="") {
     s pathRep=$zcvt(##class(i2.common).getArlDir("REPORTS"),"L")
     q:pathRep="" 0
     
@@ -1177,11 +1192,21 @@ pregenerovani pokud verbose=2
     ; 04.07.24 ln; magick nevypisuje warning jako novy convert
                 _"ImageMagick"_pathSep_"magick -quiet"_" "
   }
+  elseif bWin && (front'="")
+  { ; 27.03.26 ln; fix vzdaleneho aratio pro linux
+    ; 18.09.25 ln; podpora vzdaleneho aratio z frontendu
+    s path="/mnt/storage/"_$p(path,"storage\",2)
+  }
   
   ; 17.23.25 ln; volba -auto-orient pro generovani aratio
   s cmd=convert_path_" -auto-orient -format ""%P"" info:"  
+  s front=##class(User.Util).sXlate("ARL_MAIN_CFG","SOLR","N",,"d")
+  if (front'="")&&(array("repository")'="cbvkrepo") 
+  { ; 18.09.25 ln; podpora vzdaleneho aratio z frontendu
+    s:'bWin cmd="'"_cmd_"'"
+    s cmd=$tr("ssh cosmo@"_front_" "_cmd,"\","/")
+  }
   s aratio=##class(util.ie.cmd).line(cmd)
-  
   s:aratio'="" array("aratio")=aratio
 ]]></Implementation>
 </Method>

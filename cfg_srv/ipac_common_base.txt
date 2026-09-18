@@ -1,4 +1,9 @@
 # @id UN_TABLES BASE_A_IPAC_COMMON_TXT
+002    21.04.26 jk; doplneny texty souvisejici s online registraci
+002    10.03.26 ln; do BASE_IPAC2_TX_PREREG pridan REPORT_OK_PAY a EMAIL_BODY_PAY
+002    11.02.26 jk; do BASE_IPAC2_TX a BASE_IPAC2_TX_PAY pridany texty k online regstraci a prolongaci
+002    02.02.26 jk; do BASE_IPAC2_XMLPARSE_FLEXIBOOKS_M21 zapojen filtr
+002    10.12.25 ln; do BASE_IPAC2_TX_PREREG pridan DUPLICITY_ID a PREREG_TO_CATALOG
 002    03.12.25 jk; upraveny BASE_IPAC2_XMLPARSE Wos a Scopus pro M21
 002    01.12.25 jk; do IPAC2_TX_DETAIL a IPAC2_TX_RESULT pridan MYELOANS
 002    30.10.25 lp; do BASE_BORROW_I2_REQUEST doplnene varianty navratovych kodu pro knihoboxy OK002BOX, OK002WBOX, OK002TBOX
@@ -1145,6 +1150,8 @@
 200    aPG_CONTCHNG_TITLEbNahradenie súboru novou verziou#Nahrazení souboru novou verzí#File replace to new version
 200    aPG_CONTCHRO_TEXTbChronológia contentServeru#Chronologie contentServeru#Chronology of contentServer
 200    aPG_CONTCHRO_TITLEbZobraziť chronológiu k súboru#Zobrazit chronologii k soboru#View chronology to file
+200    aPG_CONTINFO_TEXTbStiahnutie súboru#Stažení souboru#File download
+200    aPG_CONTINFO_TITLEbStránka s informáciami pre súbor na stiahnutie#Stránka s informacemi pro soubor ke stažení#File download info
 200    aPG_CONTLIST_TEXTbStavy súborov#Stavy souborů#States of files
 200    aPG_CONTLIST_TITLEbSpráva a prehľad stavov súborov#Správa a přehled stavů souborů#States of files summary and management
 200    aPG_CONTLOOK_TEXTbVyhľadávanie v Content Serveru#Vyhledáváni v Content Serveru#Search in Content Server
@@ -1427,6 +1434,7 @@
 200    aDEBUG_VARIABLESbPremenné#Proměnné#Variables
 200    aDEBUG_VERSIONbVerzia#Verze#Verse
 200    aDEBUG_VIEW_USERTPLbZobraziť stránku s užívateľskými šablónami.#Zobrazit stránku s uživatelskými šablonami.#View the User Templates page.
+200    aDUPLICITY_IDbUžívateľ s týmto ID je už registrovaný#Uživatel s tímto ID je již registrován#The user with this ID is already registered
 002    =======================================================================
 002    =======================================================================
 200    aA_STYLE2bborder-radius:4px;color:\#ffffff;background:\#367cbe;border:1px solid \#2667a5;font-family:'Helvetica Neue','Helvetica','Arial',sans-serif;font-size:12px;display:inline-block;font-weight:bold;line-height:27px;text-align:center;text-decoration:none;width:150px;nOdkaz jako tlačítko - menší
@@ -2040,6 +2048,32 @@
 200    aPAY_GWPLM_SUPERCASHbsuperCASH#superCASH#superCASH
 200    aPAY_NOTFINDTRXRECbNebol nájdený záznam transakcie č.#Nebyl nalezen záznam transakce č.#Transaction record not found, transaction No.
 200    aPAY_PAYMETHODONLINEbonline platba#online platba#online payment
+002    ---
+002    Online registrace
+002    ---
+002    -- formular preregra, zatim je jen ve verzi pro Li
+200    aPG_PREREGRA_TEXTbRegistrácia vzdialeného prístupu#Registrace vzdáleného přístupu#Remote access registration
+200    aPG_PREREGRA_TITLEbFormulár na predregistráciu používateľa pre vzdialený prístup#Formulář na předregistraci uživatele pro vzdálený přístup#User remote access pre-registration form page
+002    -- online registrace a prodlouzeni platnosti prukazu
+200    aPAY_ONLINEREG_TEXTbDokončiť registráciu#Dokončit registraci#Complete the registration
+200    aPAY_ONLINEREG1_TEXTbOnline registráciu môžete dokončiť na stránke#Online registraci dokončíte na stránce#You can complete your online registration on the page
+200    aPAY_ONLINEREG_TITLEbDokončite registráciu zaplatením poplatku online.#Dokončení registrace zaplacením online poplatku.#Complete your registration by paying the online fee.
+200    aPAY_ONLINEPROLONG_TEXTbPredĺžiť platnosť#Prodloužit platnost#Prolong the card validity
+200    aPAY_ONLINEPROLONG2_TEXTbPlatnosť registrácie môžete predĺžiť na stránke#Platnost registrace si prodloužíte na stránce#
+200    aPAY_ONLINEPROLONG_TITLEb#Prodloužení platnosti čtenářského průkazu zaplacením online poplatku#You can prolong the card validity of your registration on the page
+002    texty pro email po uploadu potvrzeni o sleve ze stranky i2.ui.pay
+200    aPAY_EMAILLIB_SUBJ_REGISTRbRegistrácia čitateľa - žiadosť o schválenie nároku na zľavu#Registrace čtenáře - žádost o schválení nároku na slevu#Registration - request for approval of discount claim
+200    aPAY_EMAILLIB_SUBJ_PROLONGbPredĺženie platnosti čitateľského preukazu - žiadosť o schválenie nároku na zľavu#Prodloužení platnosti čtenářského průkazu - žádost o scvhálení nároku na slevu#Registration prolong - request for approval of the claim for a discount
+200    aPAY_EMAILLIB_TITLEbŽiadosť o schválenie nároku na zľavu#Žádost o schválení nároku na slevu#Request for approval of discount claim
+200    aPAY_EMAILLIB_NAMEbMeno#Jméno#Name
+200    aPAY_EMAILLIB_BARCODEbČiarový kód#Čárový kód#Bracode
+200    aPAY_EMAILLIB_EMAILbEmail#E-mail#E-mail
+200    aPAY_EMAILLIB_T001bT001 záznamu#T001 záznamu#T001 record
+200    aPAY_EMAILLIB_FILEURLbDokument#Dokument#Document
+200    aPAY_EMAILUSER_SUBJ_REGISTRbRegistrácia čitateľa - rozhodnutie žiadosti o schálenie nároku na zľavu#Registrace čtenáře - rozhodnutí žádosti o schálení nároku na slevu#Registration - decision on the application for approval of entitlement to a discount
+200    aPAY_EMAILUSER_SUBJ_PROLONGbPredĺženie platnosti čitateľského preukazu - rozhodnutie žiadosti o schálenie nároku na zľavu#Prodloužení platnosti čtenářského průkazu - rozhodnutí žádosti o schálení nároku na slevu#Registration prolong - decision on the application for approval of entitlement to a discount
+200    aPAY_EMAILUSER_TITLE_ALLOWbNárok na zľavu bol schválený.#Nárok na slevu byl schválen.#The claim for a discount has been approved.
+200    aPAY_EMAILUSER_TITLE_DENYbNárok na zľavu bol zamietnutý.#Nárok na slevu byl zamítnut.#The claim for a discount has been rejected.
 ###
 # @id UN_TABLES BASE_IPAC2_TX_ABOUT
 200    aDESCRIPTIONbPopis online katalógu (IPAC) od firmy Cosmotron.#Popis online katalogu (IPAC) od firmy Cosmotron.#Description of the online catalogue (IPAC) by the company Cosmotron.
@@ -2599,6 +2633,8 @@
 200    aAGREEbSúhlasím#Souhlasím#Agree
 200    aAPPROVALbPotvrdenie#Potvrzení#Confirm
 200    aAUTHORbAutor#Autor#Author
+200    aBOOKPORT_FORM_UPb#<p><b>Za e-výpůjčku nic neplatíte. Z kolekce BOOKPORT si můžete půjčit libovolné množství titulů.</b></p>
+200    aBOOKPORT_FORM_DOWNb#<p><b>E-výpůjčky BOOKPORT můžete číst:</b></p><ul><li><b>Online</b> v internetovém prohlížeči.</li><li><b>Offline</b> prostřednictvím <a href="https://www.bookport.cz/aplikace/" target="_blank" rel="external" hreflang="cs">aplikace BOOKPORT</a>, kterou můžete mít až na 3 zařízeních. Offline lze mít v jeden okamžik vypůjčeno maximálně 6 titulů.</li></ul><p><b>Jak na výpůjčky e-knih BOOKPORT:</b></p><ul><li>Tlačítko "Půjčit si e-knihu" vás nasměruje na přihlášení eduID.cz, kde použijete své přihlašovací údaje do čtenářského konta.</li><li>Potvrdíte odeslání identifikačních informací volbou “Ano, akceptuji”.</li><li>Vyberete si, zda číst online či offline. U některých e-knih si můžete zvolit formát PDF či ePub (šipka na tlačítku).</li><li>Knihy si můžete prohlížet kdykoli, není nutné je vracet (jen knihy stažené v aplikaci je třeba promazat, když chcete nahrát jiné).</li><li>Při prvním přihlášení vám na e-mail přijde potvrzení registrace. Na tento e-mail není nutné reagovat.</li></ul><p><b>Kde najdu přehled e-knih BOOKPORT:</b></p><ul><li>v našem <a href="https://ipac.svkkl.cz/arl-kl/cs/vysledky/?field=ANY&limv_AVAIL=gb" target="_blank" rel="external" hreflang="cs">katalogu</a></li><li>na webu <a href="https://www.bookport.cz" target="_blank" rel="external" hreflang="cs">BOOKPORT</a> – vlevo nahoře vyberte "Katalog knih" a následně v horní liště ve filtru "Zobrazovat" navolíte možnost "Předplacené knihy" - zobrazí tituly dostupné k půjčení</li></ul>
 200    aBORROW_AbStiahnuť audioknihu z PalmKnihy.cz#Stáhnout audioknihu z PalmKnihy.cz#Download audiobook from PalmKnihy.cz
 200    aBORROWbStiahnuť e-knihu z PalmKnihy.cz#Stáhnout e-knihu z PalmKnihy.cz#Download e-books from PalmKnihy.cz
 200    aDESCRIPTION_AbUmožňuje požičať si audioknihu#Umožní vypůjčení audioknihy#Provides audiobook loan
@@ -2866,10 +2902,14 @@
 200    aBADEUSERbNebol nájdený IPAC záznam používateľa:#Nebyl nanalezen IPAC záznam uživatele:#The IPAC record of the user was not found:
 200    aBADMOBILEbNeplatné telefónne číslo pre zasielanie SMS, zadajte v medzinárodnom formáte s českou alebo slovenskou predvoľbou.#Neplatné telefonní číslo pro zasílání SMS, zadejte v mezinárodním formátu s českou nebo slovenskou předvolbou.#Invalid phone number for sending SMS, enter in international format with Czech or Slovak prefix.
 200    aBADPHONEbNeplatné telefónne číslo pre kontakt, zadajte v medzinárodnom formáte.#Neplatné telefonní číslo pro kontakt, zadejte v mezinárodním formátu.#Invalid phone number for phone contact, enter in international format.
+200    aBANKIDbPrepojiť s Bank iD účtom#Propojit s Bank iD účtem#Link to Bank iD account
+200    aBANKIDOKbUspešne prepojené s Bank iD účtom#Uspěšně propojeno s Bank iD účtem#Successfully linked to Bank iD account
 200    aDELETE_EMAIL_TITLEbVymazať e-mailovú adresu#Vymazat e-mailovou adresu#Delete e-mail address
 200    aDELETEbVymazať#Vymazat#Delete
 200    aDESCRIPTIONbÚprava osobných údajov (email, telefón, adresa) na zasielanie informácií.#Úprava osobních údajů (e-mail, telefon, adresa) pro zasílání informací.#Edit contact personal data (e-mail, telephone number, address).
 200    aEDITbUpraviť#Upravit#Edit
+200    aEINFRAbPrepojiť s e-INFRA účtom#Propojit s e-INFRA účtem#Link to e-INFRA account
+200    aEINFRAOKbUspešne prepojené se-INFRA účtom#Uspěšně propojeno s e-INFRA účtem#Successfully linked to e-INFRA account
 200    aEMAIL_BODY2bAk odkaz nefunguje, skúste ho zadať do prehliadača ručne.#Pokud odkaz nefunguje, zkuste jej zadat ručně do prohlížeče.#In case of any difficulties with the link, try to insert it manually into your browser.
 200    aEMAIL_BODYbVyžiadali ste si zmenu e-mailové adresy pre Vaše konto v online katalógu (IPAC) v knižnično-informačnom systéme ARL. Po kliknutí na nasledujúci odkaz bude emailová adresa zmenená.#Vyžádali jste si změnu e-mailové adresy v online katalogu (IPAC) knihovního systému ARL. Po kliknutí na následující odkaz bude e-mailová adresa změněna.#You have requested a change of your e-mail for the account in the online catalogue (IPAC) of the library information system ARL. Follow this link and change the e-mail address for your account.
 200    aEMAIL_TITLEbZmena emailu#Změna e-mailu#E-mail change
@@ -3778,9 +3818,9 @@
 200    aTITLEbPoužívateľ#Uživatel#User
 200    aWORKADRbAdresa do zamestnania#Adresa do zaměstnání#Bussiness address
 002    --- texty pro email "Knihovna ve zkratce"
-200    aIK_ABOUTLIBbDobrý den,/nknihovna 'Název knihovny' nabízí své služby od roku '1900'. Veřejnosti jsou dostupné pobočky ..., pojízdná a občasná knihovna. Otevírací doby najdete na stránkách www.knihovnaNazev.cz/otveviracidoba .
-200    aIK_SERVICESbSlužby knihovny/nPůjčování knih, map, časopisů, not, hudby, mluveného slova, filmů, her a obrazů./nPořádání kulturních akcí - výstav, přednášek, setkání, koncertů. Aktuální program je uveden na stránkách www.knihovnaNazev.cz/akce. Prostřednictvím online katalogu www.knihovnaNazev.cz/ipac můžete vyhlédávat ve fondu knihovny, sledovat stav výpůjček, rezervovat dokumenty, půjčovat elektronické dokumenty, spravovat konto čtenáře. 
-200    aIK_CONTACTSbKnihovna v .../nUlice č.p./nPSČ/nMěsto/ntel.123 456 789/nemail knihovna@knihovnaNazev.cz/n/n Pokud jste se v knihovně neregistrovali, jedna se o omyl způsobeny chybně zadaným e-mailem. Abychom mohli chybu napravit, potřebujeme se o ni dozvědět. Stači kliknout na 'Odpovědět' a do těla emailu napište NESPRAVNÝ E-MAIL.
+200    aIK_ABOUTLIBbDobrý den,\nknihovna 'Název knihovny' nabízí své služby od roku '1900'. Veřejnosti jsou dostupné pobočky ..., pojízdná a občasná knihovna. Otevírací doby najdete na stránkách www.knihovnaNazev.cz/otveviracidoba .
+200    aIK_SERVICESbSlužby knihovny\nPůjčování knih, map, časopisů, not, hudby, mluveného slova, filmů, her a obrazů.\nPořádání kulturních akcí - výstav, přednášek, setkání, koncertů. Aktuální program je uveden na stránkách www.knihovnaNazev.cz/akce. Prostřednictvím online katalogu www.knihovnaNazev.cz/ipac můžete vyhlédávat ve fondu knihovny, sledovat stav výpůjček, rezervovat dokumenty, půjčovat elektronické dokumenty, spravovat konto čtenáře. 
+200    aIK_CONTACTSbKnihovna v ...\nUlice č.p.\nPSČ\nMěsto\ntel.123 456 789\nemail knihovna@knihovnaNazev.cz\n\n Pokud jste se v knihovně neregistrovali, jedna se o omyl způsobeny chybně zadaným e-mailem. Abychom mohli chybu napravit, potřebujeme se o ni dozvědět. Stači kliknout na 'Odpovědět' a do těla emailu napište NESPRAVNÝ E-MAIL.
 ###
 # @id UN_TABLES BASE_IPAC2_TX_PRINT
 200    aERROR_IDXbChybné ID záznamu#Chybné ID záznamu#Invalid record ID
@@ -3824,6 +3864,7 @@
 200    aEMAIL_BODYbĎakujeme za registráciu. Pre úplné dokončenie registrácie Vás bude kontaktovať pracovník knižnice.#Děkujeme za registraci. Pro úplné dokončení registrace Vás bude kontaktovat zaměstnanec knihovny.#Thank you for your registration. You will be contacted by the library personell shortly, to complete your registration.
 200    aEMAIL_BODY2bVami zadané registračné údaje#Vámi zadané registrační údaje#Your registration data
 200    aEMAIL_BODY3bCez IPAC sa zaregistroval nový používateľ s týmito registračnými údajmi#Přes IPAC se zaregistroval nový uživatel, jeho registrační údaje#A new user registered via IPAC with these registration data
+200    aEMAIL_BODY_PAYbĎakujeme za registráciu. Registráciu môžete dokončiť zaplatením registračného poplatku online na stránke#Děkujeme za registraci. Registraci můžete dokončit zaplacením registračního poplatku online na stránce#Thank you for registering. You can complete your registration by paying the registration fee online at
 200    aEMAIL_TITLEbPredregistrácia#Předregistrace#Pre-registration
 200    aEMAIL_UNSUBSCRIBEbTáto správa bola zaslaná z online katalógu knižničného systému ARL.#Tato zpráva byla zaslána z online katalogu knihovního systému ARL.#This notice was send from online catalogue of library management system ARL.
 200    aERR_CITYbNázov mesta je nutné vyplniť#Název města je nutné vyplnit#City name is required
@@ -3856,6 +3897,7 @@
 200    aODBORbOdbor#Odbor#Branch
 200    aOSOBNIbOsobné údaje#Osobní údaje#Personal data
 200    aPAYKINDbSpôsob platieb#Způsob plateb#Payment method
+200    aPREREG_TO_CATALOGbPredregistrácia užívateľa do online katalógu cez#Předregistrace uživatele do online katalogu přes#User pre-registration to the online catalog via
 200    aPRIEZVISKObPriezvisko#Příjmení#Surname
 200    aPRIVACYbOdoslaním formulára súhlasíte so spracovaním osobných údajov podľa zákona č. 122/2013 Z. z.Zákon o ochrane osobných údajov.#Odesláním údajů souhlasíte se zpracováním Vašich osobních údajů podle zákona č. č. 101/2000 Sb. o ochraně osobních údajů.#By submitting this form you agree with the use of your personal data according to the Law on Personal Data Protection
 200    aPRIVACY2bo ochrane osobných údajov a tiež s ustanoveniami#a také s ustanoveními#and with
@@ -3869,6 +3911,7 @@
 200    aPWD_SHORTbheslo je príliš krátke (použite aspoň 6 znakov)#heslo je příliš krátké (použijte alespoň 6 znaků)#The new password is too short (minimum 6 characters)
 200    aPWD2bHeslo (potvrdenie)#Heslo (potvrzení)#Password (check)
 200    aREPORT_OKbPredregistrácia prebehla úspešne! Na úplné aktivovanie Vášho konta je nutné potvrdenie registrácie pracovníčkou knižnice.#Předregistrace proběhla úspěšně! Pro úplnou aktivaci Vašeho konta je třeba potvrzení registrace pracovníkem knihovny.#Pre-registration successfull! You need to visit the library personally for a complete activation of your account.
+200    aREPORT_OK_PAYbPredregistrácia prebehla úspešne! Pre úplnú aktiváciu vášho účtu je potrebné online zaplatenie registračného poplatku na stránke#Předregistrace proběhla úspěšně! Pro úplnou aktivaci Vašeho konta je třeba online zaplacení registračního poplatku na stránce#Pre-registration was successful! To fully activate your account, you must pay the registration fee online on the page
 200    aREPORT_SAVEDbZáznam bol úspešne uložený#záznam úspěšně uložen#Record saved
 200    aREQFIELDbNevyplnili ste povinné pole#Nevyplnili jste povinné pole#Please fill in the mandatory field
 200    aREQFIELD_PWDbPole na potvrdenie hesla je povinné!#Pole pro potvrzení hesla je povinné!#Password validation field is mandatory.
@@ -3889,6 +3932,97 @@
 200    aULICAPBbUlica, číslo#Ulice, číslo#Street, No.
 200    aULICAZAMbUlica, číslo - Zamestnávateľ#Ulice, číslo - Zaměstnavatel#Street, No. - Employer
 200    aVEDHODbVedecké hodnosti#Vědecké hodnosti#Academic science degree
+###
+# @id UN_TABLES BASE_IPAC2_TX_PREREG
+200    aAGREEbSúhlasím#Souhlasím#Agree
+200    aAKADTITbAkademické tituly#Akademické tituly#Academic degrees
+200    aBRANCHbPobočka#Pobočka#Branch
+200    aCOMbČíslo OP#Číslo OP#ID card / passport
+200    aCONFIRMbPotvrdenie#Potvrzení#Confirm
+200    aDALSIbĎalšie údaje#Další údaje#Next data
+200    aDESCRIPTIONbFormulár na registráciu vzdialeného prístupu užívateľa do knižnice.#Formulář na registraci vzdáleného přístupu uživatele do knihovny.#User remote acces registration form page.
+200    aDISAGREEbNesúhlasím#Nesouhlasím#Disagree
+200    aDTNARbDátum narodenia#Datum narození#Date of birth#Date of birth
+200    aDTNAR_ERRbChybný dátum, zadajte správny dátum vo formáte DD.MM.RRRR#Chybné datum, zadejte platné datum ve formátu DD.MM.RRRR#Date is invalid, write date in correct form: DD.MM.YYYY
+200    aDTNAR_EXAMPLEbDD.MM.RRRR (napríklad: "07.12.1977")#DD.MM.RRRR (například: "07.12.1977")#DD.MM.YYYY (e.g.: "07.12.1977")
+200    aDUPLICITY_IDbUžívateľ s týmto ID je už registrovaný#Uživatel s tímto ID je již registrován#The user with this ID is already registered
+200    aEMAILbEmail#E-mail#E-mail
+200    aEMAIL_BODYbĎakujeme za registráciu. Pre úplné dokončenie registrácie Vás bude kontaktovať pracovník knižnice.#Děkujeme za registraci.#Thank you for your registration. You will be contacted by the library personell shortly, to complete your registration.
+200    aEMAIL_BODY2bVami zadané registračné údaje#Vámi zadané registrační údaje#Your registration data
+200    aEMAIL_BODY3bCez IPAC sa zaregistroval nový používateľ s týmito registračnými údajmi#Přes IPAC se zaregistroval nový uživatel, jeho registrační údaje#A new user registered via IPAC with these registration data
+200    aEMAIL_BODY_PAYbDěkujeme za registraci. Registraci můžete dokončit zaplacením registračního poplatku online na stránce
+200    aEMAIL_TITLEbRegistrácia vzdialeného prístupu#Registrace vzdáleného přístupu#Remote access pre-registration
+200    aEMAIL_UNSUBSCRIBEbTáto správa bola zaslaná z online katalógu knižničného systému ARL.#Tato zpráva byla zaslána z online katalogu knihovního systému ARL.#This notice was send from online catalogue of library management system ARL.
+200    aERR_CITYbNázov mesta je nutné vyplniť#Název města je nutné vyplnit#City name is required
+200    aERR_DOUBLESAVEbZáznam už bol uložený#Záznam byl již uložen#The record was already saved before
+200    aERR_DTNARbZadajte dátum vo formáte DD.MM.RRRR#Zadejte datum ve formátu DD.MM.RRRR#Write date in form: DD.MM.YYYY
+200    aERR_EMAILbEmailovú adresu je nutné vyplniť#E-mailovou adresu je nutné vyplnit#E-mail address is required
+200    aERR_EMAIL_VALIDbZlý formát emailovej adresy#Špatný formát e-mailová adresy#Invalid email address
+200    aERR_EXT_AUTHbPre vyplnenie formulára 'Registrácia vzdialeného prístupu' použite tlačidlo BankID.#Pro vyplnění formuláře 'Registrace vzdáleného přístupu' použijte tlačítko BankID.#To fill out the 'Remote Access registration' form, use the BankID button.
+200    aERR_MAILbChyba pri odosielaní emailu. Preverte správnosť zadanej emailovej adresy, prípadne informujte správcu systému.#Chyba při odesílání e-mailu. Prověřte správnost zadané e-mailové adresy, případně informujte správce systému.#Error while sending e-mail. Check the entered e-mail address or contact the system administrator.
+200    aERR_NAMEbMeno je nutné vyplniť#Jméno je nutné vyplnit#Name is required
+200    aERR_PHONE_VALIDbNeplatné telefónne číslo pre kontakt, zadajte v medzinárodnom formáte.#Neplatné telefonní číslo pro kontakt, zadejte v mezinárodním formátu.#Invalid phone number for phone contact, enter in international format.
+200    aERR_MOBIL_VALIDbNeplatné telefónne číslo pre zasielanie SMS, zadajte v medzinárodnom formáte s českou alebo slovenskou predvoľbou.#Neplatné telefonní číslo pro zasílání SMS, zadejte v mezinárodním formátu s českou nebo slovenskou předvolbou.#Invalid phone number for sending SMS, enter in international format with Czech or Slovak prefix.
+200    aERR_SAVEbUloženie záznamu zlyhalo:#Uložení záznamu selhalo:#Record saving failed:
+200    aERR_STREETbNázov ulice a popisné číslo je nutné vyplniť#Název ulice a číslo popisné je nutné vyplnit#Street name and building number are required
+200    aERR_SURNAMEbPriezvisko je nutné vyplniť#Příjmení je nutné vyplnit#Last name is required
+200    aERR_TRANSFORMbChyba transformácie:#Chyba transformace:#Transformation error:
+200    aERR_VALIDATIONbKontrola formulára zistila tieto chyby#Kontrola formuláře zjistila tyto chyby#Form check found these errors
+200    aERR_ZIPbPSČ je nutné vyplniť#PSČ je nutné vyplnit#Zip code is required
+200    aERR_ZIP_VALIDbPSČ nie je správne zadané.#PSČ není správně zadáno.#ZIP code entered incorrectly.
+200    aFUNKCbFunkcia na pracovisku#Funkce na pracovišti#Post
+200    aHESLObPrístupové heslo#Přístupové heslo#Access password
+200    aCHOOSEbVyberťe#Vyberte#Select
+200    aKANCELARIAbKancelária#Kancelář#Office no.
+200    aKATCITbkategória používateľa#kategorie uživatele#reader category
+200    aKATCIT2bKategória používateľa#Kategorie uživatele#Reader category 
+200    aKEYWORDSbRegistrácia#Registrace#Registration
+200    aKONTAKTNIbKontaktná (prechodná) adresa#Kontaktní (přechodná) adresa#Contact (temporary) address
+200    aMAIL_SENTbEmail bol odoslaný - OK.#E-mail byl odeslán - OK.#E-mail sent - OK.
+200    aMAILBODYbĎakujeme za registráciu. Pre úplné dokončenie registrácie Vás bude kontaktovať pracovník knižnice.<br><strong>Vami zadané registračné údaje:</strong><br>#Děkujeme za registraci. <br><strong>Vámi zadané registrační údaje:</strong><br>#Thank you for your registration. You will be contacted by the library personell shortly, to complete your registration.<br /><strong>Your registration data:</strong><br />#Thank you for your registration. You will be contacted by the library personell shortly, to complete your registration.<br /><strong>Your registration data:</strong><br />
+200    aMENObMeno#Jméno#Name
+200    aMESTObMesto#Město#City/Town
+200    aMESTONARbMiesto narodenia#Místo narození#Place of birth
+200    aODBORbOdbor#Odbor#Branch
+200    aOSOBNIbOsobné údaje#Osobní údaje#Personal data
+200    aPAYKINDbSpôsob platieb#Způsob plateb#Payment method
+200    aPREREG_TO_CATALOGbRegistrácia užívateľa do online katalógu cez#Registrace uživatele do online katalogu přes#User registration to the online catalog via
+200    aPRIEZVISKObPriezvisko#Příjmení#Surname
+200    aPRIVACYbOdoslaním formulára súhlasíte so spracovaním osobných údajov podľa zákona č. 122/2013 Z. z.Zákon o ochrane osobných údajov.#Odesláním údajů souhlasíte se zpracováním Vašich osobních údajů podle zákona č. č. 101/2000 Sb. o ochraně osobních údajů.#By submitting this form you agree with the use of your personal data according to the Law on Personal Data Protection
+200    aPRIVACY2bo ochrane osobných údajov a tiež s ustanoveniami#a také s ustanoveními#and with
+200    aPRIVACY3bknižničného poriadku.#knihovního řádu.#library rules of conduct.
+200    aPRIVACYERRORbAby ste mohli odoslať formulár, musíte súhlasiť s poskytnutím osobných údajov.#Pro odeslání formuláře musíte souhlasit s poskytnutím osobních údajů.#To send the form you must agree with the use of your personal data
+200    aPSCbPSČ#PSČ#Post Code
+200    aPWDbHeslo#Heslo#Password
+200    aPWD_FAILEDbNové heslo a potvrdenie nového hesla nesúhlasí. Zadajte znovu.#Nesouhlasí nové heslo a potvrzení nového hesla. Zadejte znovu.#Passwords do not match, please type passwords again.
+200    aPWD_FORMATbHeslo musí mať minimálne 6 znakov.#Heslo musí mít minimálně 6 znaků.#Password must contain at least 6 characters.
+200    aPWD_CHARSbheslo obsahuje nepovolené znaky#heslo obsahuje nepovolené znaky#password contains invalid characters
+200    aPWD_SHORTbheslo je príliš krátke (použite aspoň 6 znakov)#heslo je příliš krátké (použijte alespoň 6 znaků)#The new password is too short (minimum 6 characters)
+200    aPWD2bHeslo (potvrdenie)#Heslo (potvrzení)#Password (check)
+200    aREPORT_OKbRegistrácia vzdialeného prístupu prebehla úspešne! Na úplné aktivovanie Vášho konta je nutné potvrdenie registrácie pracovníčkou knižnice.#Registrace vzdáleného přístupu proběhla úspěšně! Pro úplnou aktivaci Vašeho konta je třeba potvrzení registrace pracovníkem knihovny.#Remote access registration successfull! You need to visit the library personally for a complete activation of your account.
+200    aREPORT_OK_PAYbRegistrácia vzdialeného prístupu prebehla úspešne! Pre úplnú aktiváciu Vášho konta je potrebné online zaplatenie registračného poplatku na stránke:#Registrace vzdáleného přístupu proběhla úspěšně! Pro úplnou aktivaci Vašeho konta je třeba online zaplacení registračního poplatku na stránce:#Remote access registration successfull! To fully activate your account, you have to pay the registration fee online on the page:
+200    aREPORT_SAVEDbZáznam bol úspešne uložený#záznam úspěšně uložen#Record saved
+200    aREQFIELDbNevyplnili ste povinné pole#Nevyplnili jste povinné pole#Please fill in the mandatory field
+200    aREQFIELD_PWDbPole na potvrdenie hesla je povinné!#Pole pro potvrzení hesla je povinné!#Password validation field is mandatory.
+200    aREQUIRED_PWDbChýba heslo!#Chybí heslo!#Missing password!
+200    aSENDbOdoslať#Odeslat#Send
+200    aSETSENDbDoručovanie správ#Doručování zpráv#Message delivery
+200    aSTATbŠtát#Stát#Country
+200    aTELbTelefonický kontakt#Telefonní kontakt#Telephone contact
+200    aMOBILbKontakt pre SMS#Kontakt pro SMS#SMS Contact
+200    aTEL_FORMATbTelefónne číslo v medzinárodnom formáte.#Telefonní číslo v mezinárodním formátu.#Phone number in international format.
+200    aMOBIL_FORMATbTelefónne číslo pre zasielanie SMS v medzinárodnom formáte s českou alebo slovenskou predvoľbou.#Telefonní číslo pro zasílání SMS v mezinárodním formátu s českou nebo slovenskou předvolbou.#Telephone number for sending SMS in international format with Czech or Slovak prefix.
+200    aTERMS_BTNbSúhlasím s podmienkami#Souhlasím s podmínkami#Agree with the terms and conditions
+200    aTERMS_HTMLb
+200    aTERMS_TITLEbPodmienky pre registraciu#Podmínky pro registraci#Conditions for registration
+200    aMOBbMobil#Mobil#Cell Phone
+200    aTMPNAMEbVaše dočasné prihlasovacie meno:#Vaše dočasné číslo průkazu <b>(poznamenejte si)</b>:#Your temporary login name:
+200    aTRVALEbTrvalé bydlisko#Trvalé bydliště#Permanent residence
+200    aULICAbUlica, číslo domu#Ulice, číslo domu#Street, No.
+200    aULICAPBbUlica, číslo#Ulice, číslo#Street, No.
+200    aULICAZAMbUlica, číslo - Zamestnávateľ#Ulice, číslo - Zaměstnavatel#Street, No. - Employer
+200    aVEDHODbVedecké hodnosti#Vědecké hodnosti#Academic science degree
+200    aHEADINGb<div class="prereg_table">Pokyny k vyplnění:<br><ul><li><b>služba je určena těm, kteří <b class="text-danger">dosud nejsou zaregistrováni</b> jako čtenáři knihovny, ale potřebují si objednat či rezervovat dokument z fondu knihovny</b></li><li>po online registraci je nutná registrace v knihovně <b>do 14 kalendářních dní</b>, po této lhůtě bude online registrace automaticky zrušena</li><li>předvyplněné údaje budou ověřeny při registraci v knihovně na základě vašich dokladů</li><li>údaje (mimo hesla) vyplňujte s diakritikou</li><li>diakritika v hesle není povolena, minimální délka hesla je 4 znaky maximální 10</li><li>* takto označená pole jsou povinná</li><li>mobil a e-mail jsou využívány k odesílání informací z knihovny (vypršení výpůjční lhůty, výzva k vyzvednutí rezervovaných dokumentů a pod.)</li></ul><p>Důležité upozornění!<br>Odesláním údajů souhlasíte se zpracováním vašich osobních údajů v KVK v Liberci podle zákona 101/2000 Sb. a také s ustanoveními <a href="http://www.kvkli.cz/cz/o-knihovne/knihovni-rad.php">knihovního řádu</a>.</p></div>
 ###
 # @id UN_TABLES BASE_IPAC2_TX_PROJECT
 200    aKEYWORDSb#projekt#projekt#project
@@ -4781,6 +4915,7 @@
 200    aTRANSLATIONbPreklad mena súboru#Překlad jména souboru#File name traslation
 200    aTYPEbTyp zobrazenia#Typ zobrazení#Display type
 200    aVERbVerzia#Verze#Version
+200    aWATERMARKbGenerovanie vodoznaku#Generovaní vodoznaku#Creating a watermark
 200    aYESbáno#ano#yes
 ###
 # @id UN_TABLES BASE_IPAC2_TX_CONTAUTHOR
@@ -5085,6 +5220,7 @@
 200    aERRPAYMENTOBJbNebola založená transakcia platby.#Nebyla založena transakce platby v aRL.#The aRL payment transaction doesn't create.
 200    aERRPAYMENTTRXOBJbDo transakcie platby nebola vložená platba dlhu.#Do transakce platby nebyla vložena platba dluhu.#Does not insert pay-debt transaction to the aRL payment transaction.
 200    aERRPAYMINbPlatbu nemožno vykonať, minimálny limit platby je#Platbu nelze provést, minimální limit platby je#Payment does not allow by min limit
+200    aERRORPREHTTPPAYbDetekované duplicitné spracovanie požiadavky#Detekováno duplicitní zpracování požadavku#Duplicate request processing detected
 200    aFILTER_TITLEbZúžiť výber zobrazenia dát v tabuľke#Zůžit výběr zobrazení dat v tabulce#Narrow down the selection of data in the table
 200    aFILTERbFiltrovať#Filtrovat#Filter
 200    aFINANCESbStav finančného konta#Stav finančního konta#Financial account
@@ -5116,6 +5252,39 @@
 200    aSUMMARYbPlatby#Platby#Payments
 200    aTObDo#Do#To
 200    aYEARbrok#rok#year
+002    -- online registrace a prodlouzeni platnosti prukazu
+200    aREGISTR_PROLONGbPredĺženie registrácie#Prodloužení registrace#Registration Renewal
+200    aREGISTR_PROLONG_INFbAk máte nárok na bezplatné predĺženie registrácie alebo zľavu (napr. na základe karty ZTP alebo z iných dôvodov), požiadajte o predĺženie registrácie pri osobnej návšteve knižnice.#Máte-li nárok na bezplatné prodloužení registrace nebo slevu (například na základě průkazu ZTP nebo z jiných důvodů), požádejte o prodloužení průkazu při osobní návštěvě knihovny.#If you are entitled to a free registration prolong or a discount (for example, based on a ZTP card or for other reasons), please request an extension of your card when you visit the library in person.
+200    aREGISTR_PROLONG_INFUPDOCbAk máte nárok na bezplatné predĺženie registrácie alebo zľavu (napr. na základe karty ZTP alebo z iných dôvodov), nahrajte dokument potvrdzujúci nárok na zľavu a počkajte na potvrdenie knižnice.#Máte-li nárok na bezplatné prodloužení registrace nebo slevu (například na základě průkazu ZTP nebo z jiných důvodů), nahrejte dokument potvrzující nárok na slevu a vyčkejte na potvrzení knihovny.#If you are entitled to a free registration prolong or a discount (for example, based on a ZTP card or for other reasons), upload a document confirming your entitlement to the discount and wait for the library to confirm.
+200    aREGISTR_PROLONG_NObNie je potrebné predĺžiť registráciu, jej platnosť vyprší#Není třeba prodlužovat registraci, její platnost vyprší#There is no need to prolong the registration, it will expire
+200    aREGISTR_PROLONG_WAITbČaká sa na schválenie nároku na zľavu#Čeká se na schválení nároku na slevu#Pending approval of discount claim
+200    aREGISTR_PROLONG_ERRbPoplatok nie je možné určiť. Registráciu môžete predĺžiť len osobnou návštevou knižnice.#Nelze určit cenu poplatku. Registraci si můžete prodloužit pouze při osobní návštěvě knihovny.#The fee cannot be determined. You can only prolong your registration by visiting the library in person.
+200    aREGISTR_NEWbDokončiť registráciu#Dokončení registrace#Complete the registration
+200    aREGISTR_NEW_INFbAk máte nárok na bezplatnú registráciu alebo zľavu (napr. na základe karty ZTP alebo z iných dôvodov), požiadajte o dokončenie registrácie pri osobnej návšteve knižnice.#Máte-li nárok na bezplatnou registraci nebo slevu (například na základě průkazu ZTP nebo z jiných důvodů), požádejte o dokončení registrace při osobní návštěvě knihovny.#If you are entitled to a free registration or a discount (for example, based on a ZTP card or for other reasons), please request an extension of your card when you visit the library in person.
+200    aREGISTR_NEW_ERRbPoplatok nie je možné určiť. Registráciu môžete dokončiť len pri osobnej návšteve knižnice.#Nelze určit cenu poplatku. Registraci můžete dokončit pouze při osobní návštěvě knihovny.#The fee cannot be determined. You can only complete your registration by visiting the library in person.
+200    aREGISTR_SUBMITbDokončite registráciu a zaplaťte#Dokončit registraci a zaplatit#Complete the registration and pay
+200    aPROLONG_SUBMITbPredĺžte registráciu a zaplaťte#Prodloužit registraci a zaplatit#Prolong the registration and pay
+200    aREGISTR_SUBMIT_NOPAYbDokončite registráciu#Dokončit registraci#Complete the registration
+200    aPROLONG_SUBMIT_NOPAYbPredĺžte registráciu#Prodloužit registraci#Prolong the registration
+200    aREGONLINE_ERR_PARbIdentifikácia platby nebola nájdená.#Nenalezena identifikace platby.#The payment identification not found.
+200    aREGONLINE_ERR_PARBADbNepovolená identifikácia platby.#Nepovolená identifikace platby.#Invalid the payment identification.
+200    aREGONLINE_ERR_CISbIdentifikácia platby nebola nájdená v číselníku platieb.#Nenalezena identifikace platby v číselníku plateb.#The payment identification not found in the payment dial.
+200    aREGONLINE_ERR_OPbVybranú operáciu nie je možné vykonať.#Nelze provést zvolenou operaci.#The selected operation cannot be performed.
+200    aREGONLINE_DONEbonline registrácia dokončená#online registrace dokončena#the online registration completed
+200    aREGONLINE_NODONEbonline registrácia nebola dokončená#online registrace nebyla dokončena#the online registration was not completed
+200    aREGISTR_PROLONG_DONEbpredĺženie registrácie dokončené#prodloužení registrace dokončeno#the prolong registration completed
+200    aREGISTR_PROLONG_NODONEbpredĺženie registrácie nebolo dokončené#prodloužení registrace nebylo dokončeno#the prolong registration was not completed
+200    aREGISTR_UPLOADbNahrať doklad o zľave#Nahrát doklad o slevě#Upload discount document
+200    aEMAIL_ONLINEREG_TITLEbOnline registrácia#Online registrace#Online registration
+200    aEMAIL_ONLINEREG_BODYbCez IPAC sa zaregistroval nový používateľ a uhradil registračný poplatok#Přes IPAC se zaregistroval nový uživatel a uhradil registrační poplatek#A new user registered via IPAC and paid the registration fee
+200    aEMAIL_ONLINEREG_BODY_FREEbCez IPAC sa zaregistroval nový používateľ (bez poplatku)#Přes IPAC se zaregistroval nový uživatel (bez poplatku)#A new user registered via IPAC (no fee)
+200    aEMAIL_ONLINEREG_NAMEbMeno#Jméno#Name
+200    aEMAIL_ONLINEREG_DATEbDátum narodenia#Datum narození#Date of birth#Date of birth
+200    aEMAIL_ONLINEREG_PHONEbKontakt pre SMS#Kontakt pro SMS#SMS Contact
+200    aEMAIL_ONLINEREG_EMAILbEmail#E-mail#E-mail
+200    aEMAIL_ONLINEREG_STREETbUlica, číslo domu#Ulice, číslo domu#Street, No.
+200    aEMAIL_ONLINEREG_CITYbMesto#Město#City/Town
+200    aEMAIL_ONLINEREG_POSTCODEbPSČ#PSČ#Post Code
 ###
 # @id UN_TABLES BASE_ZF_MAIN
 200    a@b@
@@ -5332,6 +5501,13 @@
 200    anointerbnointer*
 200    astablebčíselník
 200    atranslatebpřeložit*
+###
+# @id UN_TABLES BASE_IPAC2_TX_CONTINFO
+200    aERRFILEbNeplatný identifikátor súboru#Neplatný identifikátor souboru#Invalid file identifier
+200    aERRRECbNebolo možné otvoriť záznam#Nebylo možné otevřít záznam#Could not open record
+200    aMETATEXTbZískat citaci ČSN ISO 690##Download citation CSN ISO 690
+200    aMETALINKbcitace_CSN_ISO_690_ASEP##citation_CSN_ISO_690_ASEP
+200    aCLIPBOARDbskopírované do schránky ✓#zkopírováno do schránky ✓#copied to clipboard ✓
 ###
 # @id UN_TABLES BASE_IPAC2_TX_CONTSET
 200    aADD_MAINbPridať riadok#Přidat řádek#Add row
@@ -5613,6 +5789,7 @@
 200    atypebtyp#typ#typecUT_CONTENT_TYPE
 200    auserbpoužívateľ#uživatel#user
 200    auserstatebprihlásený#přihlášen#logged incUT_CONTENT_USERSTATE
+200    aclassbtřída##class
 ###
 # @id UN_TABLES BASE_CONTENT_OP
 200    a'[bneobsahuje#neobsahuje#does not contain
@@ -6044,7 +6221,7 @@
 200    a463b463  1 |12001 |a%s|vVol. %s, no. %s (%s), pp. %s-%s|1010  |a%s|1011  |a%sc/prism:publicationNamec/prism:volumec/prism:issueIdentifierc/prism:coverDatec/prism:pageRange:::-:::1c/prism:pageRange:::-:::2c/prism:isbnc/prism:issn
 200    a608b608    |a%sc/atom:subtypeDescription
 200    a610b610    |a%s:::610    :::c/atom:authkeywords:::| :::c/atom:authkeywords
-200    a700b700  1 |a%s|b%s|3%s|p%s|X%s:::701  1 :::c/atom:authorc/atom:author[]/atom:surnamec/atom:author[]/atom:given-namec/atom:author[]/atom:authidc/atom:author[]/atom:afidc/atom:affiliation[./atom:afid=../atom:author[]/atom:afid]/atom:affilname
+200    a700b700  1 |a%s|b%s|3%s|p%s|X%s:::701  1 :::c/atom:authorc/atom:author[]/atom:surnamec/atom:author[]/atom:given-namec/atom:author[]/atom:authidc/atom:author[]/atom:afid[1]c/atom:affiliation[./atom:afid=../atom:author[]/atom:afid[1]]/atom:affilname
 200    a970b970    |bRBX
 200    aC46bC46    |a%sc/atom:citedby-count
 200    aC82bC82    |a%sc/atom:article-number
@@ -6071,7 +6248,7 @@
 200    a653b653    |a%s:::653    :::c/atom:authkeywords:::| :::c/atom:authkeywords
 200    a655b655    |a%sc/atom:subtypeDescription
 200    a773b773 08 |t%s|gVol. %s, no. %s (%s), pp. %s-%s|x%sc/prism:publicationNamec/prism:volumec/prism:issueIdentifierc/prism:coverDatec/prism:pageRange:::-:::1c/prism:pageRange:::-:::2c/prism:issn
-200    a100b100 1  |a%s, %s|7%s|u%s|X%s:::700 1  :::c/atom:authorc/atom:author[]/atom:surnamec/atom:author[]/atom:given-namec/atom:author[]/atom:authidc/atom:author[]/atom:afidc/atom:affiliation[./atom:afid=../atom:author[]/atom:afid]/atom:affilname
+200    a100b100 1  |a%s, %s|7%s|u%s|X%s:::700 1  :::c/atom:authorc/atom:author[]/atom:surnamec/atom:author[]/atom:given-namec/atom:author[]/atom:authidc/atom:author[]/atom:afid[1]c/atom:affiliation[./atom:afid=../atom:author[]/atom:afid[1]]/atom:affilname
 200    a970b970    |bRBX
 200    aC46bC46    |a%sc/atom:citedby-count
 200    aC82bC82    |a%sc/atom:article-number
@@ -6161,7 +6338,7 @@
 002    - UPRAVY A NASTAVENI 
 002      100$7 zmenit u kazde instituce @id_title = "SPU Nitra" podle instituce (co se ma zapsat zjistit z crepc OAI dat)
 002    -
-100    aconfd/OAI-PMH/GetRecord/records/metadata/rec_biblio
+100    aconfd/OAI-PMH/GetRecord/records/metadata/rec_bibliop&lt;=<,&gt;=>,&amp;=&
 200    a013b013    |a%s|cpatent:::013    :::c/biblio_identifier/local_numbers[@number_type="patent"]c/biblio_identifier/local_numbers[@number_type="patent"][]/number
 200    a013_1b013    |a%s|capplication:::013    :::c/biblio_identifier/local_numbers[@number_type="patent_application"]c/biblio_identifier/local_numbers[@number_type="patent_application"][]/number
 200    a020b020    |a%s|z%s|q%s:::020    :::c/biblio_identifier/int_standards[@is_type = "isbn"]c/biblio_identifier/int_standards[@is_type = "isbn" and @is_form != "old"][]/numberc/biblio_identifier/int_standards[@is_type = "isbn" and @is_form="old"][]/numberc/biblio_identifier/int_standards[@is_type = "isbn"][]/@is_form
@@ -6171,7 +6348,7 @@
 200    a035b035    |a%s|2CREPC2%sc/@id
 200    a041b041 0  |a%s|b%s|h%sc/title[@title_type = "title_proper"]/@langc/cross_lang[@lang_type ="language_of_resume"]/rec_language/@code_unic/cross_lang[@lang_type ="language_of_original_work"]/rec_language/@code_uni
 200    a044b044    |a%sc/cross_biblio_institution[@role_type = "publisher"]/location/rec_country/@alfa2
-200    a100b100 1  |a%s|A%s|d%s-|u%s|T%s|4%s|7%s|9%s:::700 1  :::c/cross_biblio_personc/cross_biblio_person[]/rec_person/lastnamec/cross_biblio_person[]/rec_person/firstnamec/cross_biblio_person[]/rec_person/periods[@birth_death="yes"]/period[@period_type="remain"]/date/year[@period_type="from"]c/cross_biblio_person[]/affiliation/rec_institution[@level = "1" or @level = "2" or @level = "3"]/institution_identifier/local_numbers[num_title = "crepc2"]/numberc/cross_biblio_person[]/affiliation/rec_institution[@level = "1" or @level = "2" or @level = "3"]/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/cross_biblio_person[]/@rolec/cross_biblio_person[]/rec_person/cross_person_database[@id_title = "SPU Nitra"]/@id_valuec/cross_biblio_person[]/@ratio
+200    a100b100 1  |a%s|A%s|d%s-|u%s|T%s|4%s|7%s|9%s:::700 1  :::c/cross_biblio_personc/cross_biblio_person[]/rec_person/lastnamec/cross_biblio_person[]/rec_person/firstnamec/cross_biblio_person[]/rec_person/periods[@birth_death="yes"]/period[@period_type="remain"]/date/year[@period_type="from"]c/cross_biblio_person[]/affiliation/rec_institution[@level = "1" or @level = "2" or @level = "3"]/institution_identifier/local_numbers[num_title = "crepc2"]/numberc/cross_biblio_person[]/affiliation/rec_institution[@level = "1" or @level = "2" or @level = "3"]/institution_name[@inst_type = "proper_name" or @inst_type = "free_institution"]c/cross_biblio_person[]/@rolec/cross_biblio_person[]/rec_person/cross_person_database[@id_title = "SPU Nitra"][1]/@id_valuec/cross_biblio_person[]/@ratio
 200    a242b242 00 |a%s|y%sc/title[@title_type = "avant_titre"]c/title[@title_type = "avant_titre"]/@lang
 200    a245b245 10 |a%s|b%s|c%s|h%sc/title[@title_type = "title_proper"]c/title[@title_type = "other_title_information"]c/statement_on_documentc/properties/medium
 200    a246b246 31 |a%s:::246 21 :::c/title[@title_type = "paralel_title_proper"]c/title[@title_type = "paralel_title_proper"]
@@ -6191,11 +6368,11 @@
 200    a976b976    |a%s|b%s|c%sc/cross_biblio_activity/rec_activity_crepc/categoryc/document_type/document_type_comboc/coded_information/rec_study_branch/@id
 200    a985b985    |r%sc/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]
 200    aC12bC12    |a%s|r%s|t%s|7%s:::C12    :::c/cross_biblio_projectc/cross_biblio_project[]/rec_project/@idc/cross_biblio_project[]/rec_project/numberc/cross_biblio_project[]/rec_project/grant_schemec/cross_biblio_project[]/rec_project/title[@title_type = "proper_name"]
-200    a977b977    |x%s|A%s:::977    :::c/cross_biblio_biblio[@bond_type = "response_to"]/rec_biblio/cross_biblio_databasec/cross_biblio_biblio[@bond_type = "response_to"]/rec_biblio/cross_biblio_database[]/database_idc/cross_biblio_biblio[@bond_type = "response_to"]/citation_category
+200    a977b977    |x%s|A%s:::977    :::c/cross_biblio_biblio[@bond_type = "response_to"]c/cross_biblio_biblio[@bond_type = "response_to"][]/rec_biblio/cross_biblio_database/database_idc/cross_biblio_biblio[@bond_type = "response_to"][]/citation_category
 002    --- monografie
 200    a773b773 0  |b%s|B%s|d%s|D%s|E%s|F%s|gS.%s|G%s|h%s s|t%s|z%s|X%s|Ymonoc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/rendition_order/number/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/rendition_order/textc/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/location/townc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/rec_institution/institution_name[@inst_type = "proper_name"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_institution[@role_type = "publisher"]/location/rec_country/country_description[@lang = "slo"]/country_namec/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/properties/range/pages_count/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "isbn"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/@id
 002    --- serial
-200    a773_1b773 0  |g%s|1%s|2%s|3%s|4%s|5%s|6%s|7%s|t%s|x%s|y%s|Yserc/cross_biblio_biblio[@source = "source"]/rec_issue/volume/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/volume/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/issue/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/issue/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/date/yearc/cross_biblio_biblio[@source = "source"]/range/@pages_abreviationc/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "issn" and @is_form="print"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "issn" and @is_form="electronic"]/number
+200    a773_1b773 0  |g%s|1%s|2%s|3%s|4%s|5%s|6%s|7%s|t%s|x%s|y%s|8%s|Yserc/cross_biblio_biblio[@source = "source"]/rec_issue/volume/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/volume/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/issue/titlec/cross_biblio_biblio[@source = "source"]/rec_issue/issue/number/latinc/cross_biblio_biblio[@source = "source"]/rec_issue/date/yearc/cross_biblio_biblio[@source = "source"]/range/@pages_abreviationc/cross_biblio_biblio[@source = "source"]/range/number/number_from/latinc/cross_biblio_biblio[@source = "source"]/range/number/number_to/latinc/cross_biblio_biblio[@source = "source"]/rec_biblio/title[@title_type = "title_proper"]c/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "issn" and @is_form="print"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_identifier/int_standards[@is_type = "issn" and @is_form="electronic"]/numberc/cross_biblio_biblio[@source = "source"]/rec_biblio/biblio_year[@type = "published" and @period_type = "simple"]/date/year[@period_type = "from"]
 002    --- identifikatory se vlozi ve filtru do 773$w
 200    aJK1bJK1    |a%s|X%s:::JK1    :::c/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_databasec/cross_biblio_biblio[@source = "source"]/rec_biblio/cross_biblio_database[]/database_idc/cross_biblio_biblio[@source = "source"]/rec_biblio/@id
 002     --- identifikator source, nelze vzit z JK1 je tam loop nad cross_biblio_database
@@ -6354,8 +6531,9 @@
 200    aC85bC85  1 |hflexibooks|b%s|v%s|d%s|d%s|d%s|d%s|u%s|p%sc/idc/loanc/issuuc/googlec/youtubec/vimeoc/urlc/price_loan
 ###
 # @id UN_TABLES BASE_IPAC2_XMLPARSE_FLEXIBOOKS_M21
+002    02.02.26 jk; zapojen filtr
 002    import a aktualizace zaznamu a anotaci z ebook flexibook v M21
-100    aconfd/output/produktpLF,TAB
+100    aconfd/output/produktfFILTER_FLEXIBOOKS_M21pLF,TAB
 200    a000b000    00000nam-a2200445-a 4500
 200    a020b020    |a%sc/isbn
 200    a020xb020    |a%s|qebookc/isbn_ebook
@@ -6421,8 +6599,6 @@
 200    a264_1b264  3 |b%sc/person[@role="publisher"]/keyNames
 200    a300b300    |a%sc/pages
 200    aF01bF01    |a%sc/lengthxpomocny tag filter prevede udaj v sec na HH:MM:SS do 300a
-200    a336b336    |atext|btxt|2rdacontent
-200    a338b338    |aonline zdroj|bcr|2rdacarrier
 200    a520b520 2  |a%s|cereadingc/annotation
 200    a521b521    |a%s|a%sc/ageLimit
 200    a655b655    |a%s:::655    :::c/subjectc/subject[]

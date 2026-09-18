@@ -1,6 +1,7 @@
 /**
  * @author Laco Clementis, Michal Namesny
  *
+ * 11.02.26 on; NMA 
  * 07.08.25 on; zmena defaultu
  * 23.07.25 on; moznost nastavit aktualni id v default textu - pouzito na CAV na poli DOI - rezervované DOI (datovy zaznam)
  * 04.02.25 on; jina hlaska pro povinne pole
@@ -122,13 +123,19 @@ epca.form.TextField = Ext.extend(Ext.form.TextField, {
 
 		// 23.07.25 on; moznost nastavit aktualni id v default textu - pouzito na CAV na poli DOI - rezervované DOI (datovy zaznam)
 		if (this.emptyText !== null) {
-			/*var str = JSON.stringify(marc, null, 4); // (Optional) beautiful indented output.
-			 console.log(str); // Logs output to dev tools console.
-			 alert(str); // Displays output using window.alert()*/
+			//var str = JSON.stringify(marc, null, 4); // (Optional) beautiful indented output.
+			// console.log(str); // Logs output to dev tools console.
+			// alert(str); // Displays output using window.alert()
+			//alert(this.csLastValue);
 			
 			// 07.08.25 on; aby se projevila zmena po ulozeni 
 			if (this.emptyText.indexOf('sysno') > 0) {
 			  this.emptyText = this.emptyText.strswap('sysno', 'asep.%ID%');
+			}
+
+			// 11.02.265 on; aby se projevila zmena po ulozeni i pro NMA (CAV) 
+			if ((this.csLastValue)&&(this.csLastValue.indexOf('sysno') > 0)) {
+			  this.csLastValue = this.csLastValue.strswap('sysno', 'asep.%ID%');
 			}
 
 			if (this.emptyText.indexOf('%ID%') > 0) {
@@ -137,6 +144,15 @@ epca.form.TextField = Ext.extend(Ext.form.TextField, {
 				} else {
 					// 07.08.25 on; zmena defaultu
 					this.emptyText = this.emptyText.strswap('asep.%ID%', 'sysno');
+				}
+			}
+			// 11.02.26 on; i pro NMA (CAV)
+			if ((this.csLastValue)&&(this.csLastValue.indexOf('%ID%') > 0)) {
+				if (this.ownerCt.ownerCt.ownerCt && this.ownerCt.ownerCt.ownerCt.ownerCt && this.ownerCt.ownerCt.ownerCt.ownerCt.recordId) {
+					this.csLastValue = this.csLastValue.strswap('%ID%', this.ownerCt.ownerCt.ownerCt.ownerCt.recordId);
+				} else {
+					// 07.08.25 on; zmena defaultu
+					this.csLastValue = this.csLastValue.strswap('asep.%ID%', 'sysno');
 				}
 			}
 		}

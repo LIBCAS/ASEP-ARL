@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-04-05 08:23:59">
+<Class name="util.rest.custREST">
+<Description><![CDATA[
+<pre>
+Rozcestnik zakaznikcych sluzeb pro ARL REST API
+</pre>]]></Description>
+<Super>%CSP.REST</Super>
+<TimeChanged>66935,30224.600386573</TimeChanged>
+<TimeCreated>66548,54788.2216599</TimeCreated>
+
+<Parameter name="HandleCorsRequest">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="CONTENTTYPE">
+<Default>application/json</Default>
+</Parameter>
+
+<Parameter name="CHARSET">
+<Default>utf-8</Default>
+</Parameter>
+
+<Parameter name="CONVERTINPUTSTREAM">
+<Default>1</Default>
+</Parameter>
+
+<XData name="UrlMap">
+<Description><![CDATA[
+<pre> POZOR
+predposledni cast cesty v "Forward" musi byt verze
+posledni cast cesty v "Forward" musi byt ictx
+</pre>]]></Description>
+<XMLNamespace>http://www.cosmotron.cz/urlmap</XMLNamespace>
+<Data><![CDATA[
+<Routes>
+<Map Prefix="/cav" Forward="util.rest.cust.v1.cav"/>
+</Routes>
+]]></Data>
+</XData>
+</Class>
+</Export>

@@ -1,5 +1,6 @@
 /**
  *
+ * 24.07.26 on; jazykove mutace pro tlacitko a emptyText
  * 06.08.25 on; moznost vynutit search engine
  * 23.01.25 on; ohraniceni formulare
  * 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
@@ -55,25 +56,24 @@ epca.Form.prototype = {
      * Formular skonvertovany do triedy i3.Marc
      */
     getFormRecord: function() {
-        var i,
-            record = {
-                100: {
-                    a: this.unFormat
-                },
-                200: {
-                    a: this.title
-                },
-                300: {
-                    a: this.targetDb
-                },
-                400: {
-                    a: this.createdBy
-                },
-                450: {
-                    a: Ext.util.JSON.encode(this.defaultValues || {})
-                },
-                500: []
-            };
+        var i, record = {
+            100: {
+                a: this.unFormat
+            },
+            200: {
+                a: this.title
+            },
+            300: {
+                a: this.targetDb
+            },
+            400: {
+                a: this.createdBy
+            },
+            450: {
+                a: Ext.util.JSON.encode(this.defaultValues || {})
+            },
+            500: []
+        };
         for (i = 0; i < this.content.length; i++) {
             record['500'].push({
                 a: Ext.util.JSON.encode(this.content[i]) //,
@@ -130,20 +130,11 @@ epca.Form.prototype = {
      * Vrati zoznam tagov, ktore obsahuje formular, kvoli aktualizacii nadpisov
      */
     getContentTags: function() {
-        var i,
-            j,
-            k,
-            l,
-            tag,
-            tag1,
-            contentTag,
-            codedItem,
-            retVal = [],
+        var i, j, k, l, tag, tag1, contentTag, codedItem, retVal = [],
             bTagFound;
         // zjisti, jestli tag uz neexistuje
         var findTag = function(retVal, psTag) {
-            var m,
-                o;
+            var m, o;
             for (m = 0; m < retVal.length; m++) {
                 o = retVal[m];
                 if (o.id === psTag) {
@@ -246,7 +237,7 @@ epca.Form.prototype = {
             formTablesdCache: this.formTablesdCache,
             // 16.05.15 on;
             formDFST: this.formDFST,
-            // 23.01.25 on; ohraniceni formulare 
+            // 23.01.25 on; ohraniceni formulare
             formHideBorder: this.formHideBorder
         };
     },
@@ -277,9 +268,7 @@ epca.Form.prototype = {
      * 09.12.11 on; predelane - donRenderHiddenTags -> dontShowHiddenTags
      */
     generate: function(dontShowHiddenTags) {
-        var i,
-            tagProperties,
-            retVal = epca.cloneObject(this.getProperties());
+        var i, tagProperties, retVal = epca.cloneObject(this.getProperties());
         Ext.apply(retVal, {
             xtype: 'epca.marc_fieldset',
             autoHeight: true,
@@ -309,10 +298,7 @@ epca.Form.prototype = {
      * @param {Object} dontShowHiddenFields ak true, nezobrazi pole s nastavenym parametrom hidden = true
      */
     getDesignedTag: function(item, dontShowHiddenFields) {
-        var i,
-            k,
-            designedTag,
-            o = epca.cloneObject(item.formProperties);
+        var i, k, designedTag, o = epca.cloneObject(item.formProperties);
         // 06.08.15 on; podpora kontejneru
         if (o.csContainer) {
             // kontejner
@@ -514,12 +500,8 @@ epca.Form.prototype = {
      * @param {Object} item
      */
     getDesignedField: function(item) {
-        var i,
-            designedField = epca.cloneObject(item.formProperties),
-            flds,
-            fld,
-            aList,
-            bCodedFieldFound = false,
+        var i, designedField = epca.cloneObject(item.formProperties),
+            flds, fld, aList, bCodedFieldFound = false,
             sHtmlCode;
         /*Ext.apply(designedField, {
         msgTarget : 'side',
@@ -541,6 +523,10 @@ epca.Form.prototype = {
         // 06.01.21 on; sirka musi byt jako cislo
         if (typeof designedField.width === 'string') {
             designedField.width = parseInt(designedField.width, 10);
+        }
+        // 24.07.26 on; jazykove mutace emptyText
+        if (designedField.emptyText) {
+            designedField.emptyText = designedField.emptyText.ls();
         }
         // kodovane podpolia
         if (designedField.xtype === 'epca.codeddata_combobox') {
@@ -644,8 +630,7 @@ epca.Form.prototype = {
                     if (i3.language === '2') {
                         // cz
                         sHtmlCode = designedField.html2;
-                    } else
-                    if (i3.language === '3') {
+                    } else if (i3.language === '3') {
                         // eng
                         sHtmlCode = designedField.html3;
                     } else {
@@ -659,7 +644,13 @@ epca.Form.prototype = {
                     designedField.html = sHtmlCode;
                     designedField.html2 = '';
                     designedField.html3 = '';
-                }
+                } else
+                    // 24.07.26 on; popisek tlacitka - mutace
+                    if (designedField.xtype === 'epca.button') {
+                        if (designedField.text) {
+                            designedField.text = designedField.text.ls();
+                        }
+                    }
         // kodovane vnorene podpolia
         if (designedField.codedItems) {
             designedField['items'] = [];
@@ -760,8 +751,7 @@ epca.Form.prototype = {
     csLoadFlexPopupRecord: function(selectedRecord) {
         // 10.02.17 on;
         function csWaitForSemafor(o) {
-            var prop,
-                v;
+            var prop, v;
             for (prop in o) {
                 if (o.hasOwnProperty(prop)) {
                     v = o[prop];
@@ -790,8 +780,7 @@ epca.Form.prototype = {
         }
         var marc = {},
             sClass = '',
-            cmpOwner,
-            bIsEmpty;
+            cmpOwner, bIsEmpty;
         if (selectedRecord) {
             sClass = selectedRecord.classn;
             // 20.05.16 on; zmena
@@ -801,7 +790,7 @@ epca.Form.prototype = {
         // 22.05.12 on; opravene PB v opakovatelnem poli
         // 21.05.12 on; pridane predani nazvu DB
         if (this.ownerCt) {
-            // 21.12.20 on; zmena, pokud neco zapise do pole a da enter, tak uz se pole netvari jako prazdne 
+            // 21.12.20 on; zmena, pokud neco zapise do pole a da enter, tak uz se pole netvari jako prazdne
             // 17.12.19 on; zapamatuju si, jestli se fieldset (aktualni pole) prazdny
             //bIsEmpty = i3.isEmptyString(this.getValue());
             bIsEmpty = !this.disabled;

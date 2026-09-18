@@ -26,6 +26,7 @@
 002           z dovodu pouzitia pre IPAC1 (epca formulare)
 002    -
 002    Historia zmien:
+002    30.04.26 jk; pridano EPCA_REP_STAT_OS
 002    12.03.24 tt; zkraceno Technologická agentura České republiky na Technologická agentura ČR
 002    04.03.24 tt; UN_EPCA_PUBLIST_STATS: pridan kvartil AIS
 002    27.02.24 tt; UN_TC34G: upravy ciselniku
@@ -5477,6 +5478,11 @@
 200    a3-001bDomácec0dTYP004
 200    a3-002bZahraničnéc0dTYP004
 200    a3-003bNeurčenéc0dTYP004
+###
+# @id UN_TABLES EPCA_REP_STAT_OS
+002    23.04.26 jk; statistika ohlasu spolecna
+200    a1bDo 2021c0dTYP004
+200    a2bDo 2022c0dTYP004
 ###
 # @id UN_TABLES EPCA_REP_STAT_PR
 002    31.10.22 tt; založena šablona pro výpis statistiky pro slovenské EPAC - RTF

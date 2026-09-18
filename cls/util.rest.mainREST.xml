@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2025.1.4 (Build 561U)" ts="2026-08-04 09:05:44">
+<Class name="util.rest.mainREST">
+<Description><![CDATA[
+<pre>
+Hlavni vstupni bod pro ARL REST API
+ - verze se zakladaji v podbaliccich, zde se do nich pouze presmeruje
+ https://cosmo2/wiki/index.php?title=Concepts/ARL_API_REST
+
+04.08.26 jk; google
+28.03.25 ln; podpora S3
+01.02.24 ln; pridana cesta a trida pro zakaznicke sluzby cav
+20.11.23 lp; vypujckove prikazy presunute z processREST do noveho balicku cirREST
+</pre>]]></Description>
+<Super>%CSP.REST</Super>
+<TimeChanged>67786,32696.2663084</TimeChanged>
+<TimeCreated>66548,54788.2216599</TimeCreated>
+
+<Parameter name="HandleCorsRequest">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="CONTENTTYPE">
+<Default>application/json</Default>
+</Parameter>
+
+<Parameter name="CHARSET">
+<Default>utf-8</Default>
+</Parameter>
+
+<Parameter name="CONVERTINPUTSTREAM">
+<Default>1</Default>
+</Parameter>
+
+<XData name="UrlMap">
+<Description><![CDATA[
+<pre>
+Pozor mapovani zalezi na poradi, bere se prvni ktere je splneno,
+nejmene presne je tedy potreba vkladat nakonec
+</pre>]]></Description>
+<XMLNamespace>http://www.cosmotron.cz/urlmap</XMLNamespace>
+<Data><![CDATA[
+<Routes>
+<Map Prefix="/v1/cust" Forward="util.rest.custREST"/>
+<Map Prefix="/v1/:ictx/record" Forward="util.rest.v1.recordREST"/>
+<Map Prefix="/v1/:ictx/list" Forward="util.rest.v1.listREST"/>
+<Map Prefix="/v1/:ictx/cir" Forward="util.rest.v1.cirREST"/>
+<Map Prefix="/v1/:ictx/mvs" Forward="util.rest.v1.mvsREST"/>
+<Map Prefix="/v1/:ictx/s3" Forward="util.rest.v1.s3REST"/>
+<Map Prefix="/v1/:ictx/google" Forward="util.rest.v1.googleREST"/>
+<Map Prefix="/v1/:ictx" Forward="util.rest.v1.processREST"/>
+</Routes>
+]]></Data>
+</XData>
+
+<Method name="OnPreDispatch">
+<Description><![CDATA[
+<pre>
+Spolecne kontroly pred zpracovanim
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[pUrl:%String,pMethod:%String,&pContinue:%Boolean]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  if ('..AcceptsContentType(..#CONTENTTYPEJSON)) {
+    s %response.Status=..#HTTP406NOTACCEPTABLE
+    s pContinue=0
+    s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST008#Accept 'application/json' only")
+    w err
+    q $$$OK
+  }
+  ;s %zarena=##class(base.arena).%New()
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

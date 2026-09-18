@@ -1,6 +1,11 @@
 /**
  * Ruzne uzivatelske metodu s tesnou vazbou na kod aplikace
  *
+ * 10.06.26 on; pri odeslani odmaze U96a pro SAV 
+ * 02.03.26 on; zmena generovani NMA
+ * 23.02.26 on; csOnExportRIVCheck upraveno
+ * 12.02.26 on; odznaci checkbox Exportovat do RIVu v jinych opakovani pole
+ * 11.02.26 on; funkce pro NMA
  * 24.10.25 on; nepridelovat DOI
  * 25.09.25 on; zruseny konstanty
  * 21.08.25 on; pokud jde o admina (datasteward/zpracovatel/superuser), vlozi "2"
@@ -227,6 +232,125 @@ if (i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) {
                 // timto vynutim zmenu emptyText
                 c.setValue('');
             }
+        },
+        // POZOR: pokud toto budu menit, tak zkontolovat metodu postSaveEx EpcaUnCat
+        // 11.02.26 on; export do rivu - data v asep
+        csOnRIVDataInASEPClick: function(checked, cmp) {
+            var sNMA = 'https://nma.eosc.cz/s/doi/10.57680/asep.%ID%';
+            var s, c = cmp.nextSibling().nextSibling().nextSibling();
+            // 02.03.26 on; bude se zapisovat do zaznamu
+            // pokud je nejaka hodnota vyplnena, nebudu nic menit
+            /*if (c.getValue()!=='') {
+            	return;
+            }
+            if (checked) {
+            	c.emptyText = c.csLastValue;
+            	// timto vynutim zmenu emptyText
+            	c.setValue('');
+            } else {
+            	// zapamatuje si aktualni emptyText
+            	c.csLastValue = c.emptyText;
+            	c.emptyText = '';
+            	// timto vynutim zmenu emptyText
+            	c.setValue('');
+            }*/
+            if (checked) {
+                // pokud je pole prazdne 
+                if (c.getValue() === '') {
+                    if (cmp.ownerCt.ownerCt.ownerCt && cmp.ownerCt.ownerCt.ownerCt.ownerCt && (cmp.ownerCt.ownerCt.ownerCt.ownerCt.recordId !== 'new')) {
+                        sNMA = sNMA.strswap('%ID%', cmp.ownerCt.ownerCt.ownerCt.ownerCt.recordId);
+                    } else {
+                        sNMA = sNMA.strswap('asep.%ID%', 'sysno');
+                    }
+                    c.setValue(sNMA);
+                }
+            } else {
+                c.setValue('');
+            }
+        },
+        // 11.02.26 on; export do rivu - jine uloziste
+        csOnRIVAnotherStorageClick: function(checked, cmp) {
+            var s, cmpNMA = cmp.nextSibling().nextSibling().nextSibling(),
+                cmpHandle, sValue;
+            cmpHandle = cmp.ownerCt.previousSibling().previousSibling().previousSibling().previousSibling().previousSibling().previousSibling().previousSibling().previousSibling().previousSibling().previousSibling();
+            cmpHandle = cmpHandle.items.items[0];
+            //console.log(cmpHandle.xtype + ' ' + cmpHandle.fieldLabel + ' ' + cmpHandle.getValue());
+            // 02.03.26 on; bude se zapisovat do zaznamu
+            /*if (checked) {
+            	sValue = cmpHandle.getValue();
+            	sValue = epca.Config.User.csGetNMAURLAnotherStorage(sValue);
+
+            	cmpNMA.emptyText = sValue;
+            	// timto vynutim zmenu emptyText
+            	cmpNMA.setValue('');
+            } else {
+            	cmpNMA.emptyText = '';
+            	// timto vynutim zmenu emptyText
+            	cmpNMA.setValue('');
+            }*/
+            if (checked) {
+                // pokud je nejaka hodnota vyplnena, nebudu nic menit
+                if (cmpNMA.getValue() !== '') {
+                    return;
+                }
+                sValue = cmpHandle.getValue();
+                sValue = epca.Config.User.csGetNMAURLAnotherStorage(sValue);
+                cmpNMA.setValue(sValue);
+            } else {
+                cmpNMA.setValue('');
+            }
+        },
+        // 11.02.26 on; vrati nma url 
+        csGetNMAURLAnotherStorage: function(psHandle) {
+            if (!psHandle) {
+                return '';
+            }
+            // DOI
+            if (psHandle.indexOf('doi.org') > 0) {
+                // https://doi.org/10.20387/bonares-2xtr-fk1s -> https://nma.eosc.cz/s/doi/10.20387/bonares-2xtr-fk1s
+                psHandle = psHandle.substr(psHandle.indexOf('doi.org'));
+                psHandle = psHandle.substr(psHandle.indexOf('/') + 1);
+                psHandle = 'https://nma.eosc.cz/s/doi/' + psHandle;
+                return psHandle;
+            }
+            // HANDLE
+            if (psHandle.indexOf('handle.net') > 0) {
+                // http://hdl.handle.net/20.500.12800/1-5971 -> https://nma.eosc.cz/s/handle/20.500.12800/1-5971
+                psHandle = psHandle.substr(psHandle.indexOf('handle.net'));
+                psHandle = psHandle.substr(psHandle.indexOf('/') + 1);
+                psHandle = 'https://nma.eosc.cz/s/handle/' + psHandle;
+                return psHandle;
+            }
+            return '';
+        },
+        // 23.02.26 on; upraveno
+        // 12.02.26 on; odznaci checkbox Exportovat do RIVu v jinych opakovani pole
+        csOnExportRIVCheck: function(checked, cmp) {
+            var cmpRIV, c;
+            // pouze pokud byl checkbox oznacen
+            if (!checked) {
+                return;
+            }
+            // nejprve sourozenci za mnou..
+            c = cmp.ownerCt;
+            while (c = c.nextSibling()) {
+                if (c.xtype === 'epca.marc_fieldset') {
+                    //console.log("Nalezen element:", c.xtype + ' ' + c.field);
+                    cmpRIV = c.items.items[3];
+                    //console.log("Nalezen element:", cmpRIV.xtype + ' ' + cmpRIV.field + ' ' + cmpRIV.checked);
+                    cmpRIV.setValue(false);
+                }
+            }
+            // .. potom sourozenci prede mnou
+            c = cmp.ownerCt;
+            while (c = c.previousSibling()) {
+                if (c.xtype === 'epca.marc_fieldset') {
+                    //console.log("Nalezen element:", c.xtype + ' ' + c.field);
+                    cmpRIV = c.items.items[3];
+                    //console.log("Nalezen element:", cmpRIV.xtype + ' ' + cmpRIV.field + ' ' + cmpRIV.checked);
+                    cmpRIV.setValue(false);
+                }
+            }
         }
         /**
          * Prevodni tabulka pro prebirani zaznamu z WOS/SCOPUS
@@ -421,6 +545,10 @@ if (i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) {
                     marcData['U95'] = {};
                 }
                 marcData['U95'][epca.form.Helper.c.sSubtagPrefix + 'c'] = '1';
+                // 10.06.26 on; pri odeslani odmaze U96a 
+                if (marcData['U96'] && marcData['U96'][epca.form.Helper.c.sSubtagPrefix + 'a']) {
+                    marcData['U96'][epca.form.Helper.c.sSubtagPrefix + 'a'] = '';
+                }
                 // individualni uzivatel - vedec
                 // pokud budou chyby zobrazit upozornění, pokud nebudou, tak záznam zmizí + hlaska
                 if (mainForm.csIsIndividualUser()) {

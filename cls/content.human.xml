@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-27 15:20:22">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-04-23 15:23:55">
 <Class name="content.human">
 <Description><![CDATA[
 <pre> Pomocne metody pro lidske zobrazeni dat contentServeru
 
+23.04.26 ln; osetren neexistujici uzivatel remotecont
+04.02.26 ln; metoda CON
 27.03.25 ln; podpora S3
 20.04.23 ln; metoda getRepo
 26.02.19 ln; metoda erase
@@ -11,12 +13,12 @@
 05.12.17 ln; sizeSI je nove sql procedura
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>67291,55146.323904134</TimeChanged>
+<TimeChanged>67683,55373.674656316</TimeChanged>
 <TimeCreated>62189,31328.82737</TimeCreated>
 
 <Method name="version">
 <ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[  q "4.8.14a - 22.05.2025"
+<Implementation><![CDATA[  q "5.0.15a - 04.08.2026"
 ]]></Implementation>
 </Method>
 
@@ -95,7 +97,7 @@ Defaultne diskova velikost, binary=1 binarni velikost
     s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")
   } else {
 	; 27.03.25 ln; podpora S3
-	; userRepo() nesmi v tomtoo pripade zaviset na inicializaci ipac
+	; userRepo() nesmi v tomto pripade zaviset na inicializaci ipac
     s callBack=$g(^IpacCallback("c","uploader",ictx))
     ; 18.09.24 ln; podpora dedeni z cav
     if (callBack="") && ($g(^arlINHERITipref($zcvt(ictx,"W")_"UnTablesd"))'="") {
@@ -267,6 +269,50 @@ Parametry: repos - carkou oddeleny seznam repozitaru
     w !!,"count=",count,", deleted=",deleted
   }
   w !!,"===================",!!,"total=",total
+]]></Implementation>
+</Method>
+
+<Method name="CON">
+<Description><![CDATA[
+<pre> Pridani pole CON do handle
+funguje i bez session jako rest sluzba pro vzdalene Arl
+
+23.04.26 ln; osetren neexistujici uzivatel remotecont 
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
+<Implementation><![CDATA[
+  s class=$$$HandleClass(handle)
+  s t001=$$$HandleT001(handle)
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  
+  ; 23.04.26 ln; osetren neexistujici uzivatel remotecont 
+  if ($$$GETSID="") && ##class(User.MARC).readX(.hu,ipref_"IsUser","remotecont","T") {
+    s loginInfo=##class(i2.ws.auth).createLoginInfo(.hu,0,.sErrNo,.sErrMsg)
+    s ^$$$I2G($$$cI2GNodeSession,"nosid","login")=loginInfo
+  }
+  
+  d ##class(content.api).selectRecAll(.output,class,t001)
+  q:'$d(output)
+  
+  s item="", seq=0
+  for { s item=$o(output(item)) q:item=""
+    s repo=output(item,"repository")
+    s key=output(item,"key")
+    s mode=##class(content.api).engineRead(repo,key,.array,,$zcvt(ipref,"L"))
+    continue:'mode
+    
+    s format=##class(content.zf).application($g(array("extension")))
+  
+    s line="CON    "_$c(31)_"i"_$c(31)_"n"_$g(array("origname"))_$c(31)_"N"_$g(array("translation"))_$c(31)_"c"_$g(array("description"))_$c(31)_"v"_$g(array("version"))_$c(31)_
+      "s"_$g(array("humansize"))_$c(31)_"f"_format_$c(31)_"a"_$c(31)_"b"_$g(array("count"))_$c(31)_"t"_$g(array("accession"))_$c(31)
+      ; 11.11.16 ln; do pole CON pridan repozitar a klic pro symboliky
+      _$c(31)_"r"_repo_$c(31)_"k"_key_$c(31)_"u"_$g(array("importer"))_$c(31)_"x"_$g(array("type"))
+    
+    d ##class(User.MARC).appendLineX(.handle,line)
+  }
+  
+  k:$$$GETSID="" ^$$$I2G($$$cI2GNodeSession,"nosid","login")
 ]]></Implementation>
 </Method>
 </Class>

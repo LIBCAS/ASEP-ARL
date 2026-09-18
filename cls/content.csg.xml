@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-03-28 14:14:55">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-07-28 14:46:41">
 <Class name="content.csg">
 <Description><![CDATA[
 <pre> Content Server Gateway brana
 
+28.07.26 ln; volani getFileUrl pro soubor z S3
+15.04.26 ln; vylouceni robotu
 28.03.25 ln; podpora S3
 09.06.23 ln; podpora transparentniho prihlaseni pres 7
 19.04.23 ln; login kategorie NOWATER
@@ -22,7 +24,7 @@
 </pre>]]></Description>
 <IncludeCode>I2</IncludeCode>
 <Super>%CSP.Page</Super>
-<TimeChanged>67292,51261.835292792</TimeChanged>
+<TimeChanged>67779,52986.519339398</TimeChanged>
 <TimeCreated>62185,35704.618863</TimeCreated>
 
 <Method name="OnPreHTTP">
@@ -76,6 +78,13 @@ Return <b>0</b> to prevent <method>OnPage</method> from being called.]]></Descri
     s bLogin=0
   } else {
     s bLogin='##class(i2.access).isLoggedIn()
+  }
+  
+  ; 15.04.26 ln; vylouceni robotu
+  if 'bLogin && ##class(i2.stat.utils).isBotIpStrict(%ipac2("ip")) {
+    s %response.Status="404 Not Found"
+    d %response.SetHeader("Status","404 Not Found")
+    q $$$OK
   }
   
   if version="" {
@@ -145,10 +154,9 @@ Return <b>0</b> to prevent <method>OnPage</method> from being called.]]></Descri
   }
   
   if $e(key,*)="k" {
+    ; 28.07.26 ln; volani getFileUrl pro soubor z S3
     ; 28.03.25 ln; podpora S3
-    s config=##class(util.rest.v1.s3REST).commonConfig(repo,key)
-    s config.origname=array("origname")
-    s url=##class(util.rest.v1.s3REST).getFile(config...)
+    s url=##class(util.rest.v1.s3REST).getFileUrl($$$IPREF,repo,key,array("origname"))
     s ret=##class(content.api).increment(repo,key)
     d ##class(content.stat).addRead(.array,ret)
     q url

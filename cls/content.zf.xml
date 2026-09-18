@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-20 10:56:08">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.6 (Build 809U)" ts="2026-05-19 10:31:09">
 <Class name="content.zf">
 <Description><![CDATA[
 <pre> zobrazovaci bloky pro contentServer
 
+19.05.26 ln; fmtRemote: cover nezobrazovet
 21.10.25 ln; odkaz na stranku continfo
 01.11.24 on; zmena lup na https
 20.03.24 on; doplnen prefix "ws1://"
@@ -41,7 +42,7 @@
 ...
 </pre>]]></Description>
 <IncludeCode>Common,%occCommon,I2</IncludeCode>
-<TimeChanged>67528,44652.84528839</TimeChanged>
+<TimeChanged>67709,37776.7199921</TimeChanged>
 <TimeCreated>62188,40801.56001</TimeCreated>
 
 <Method name="fmtContent">
@@ -337,6 +338,52 @@
   */
   
   d:seq ##class(rep.zf.tfHoldings).fmtTable(.result,.handle,"",.par)
+]]></Implementation>
+</Method>
+
+<Method name="fmtRemote">
+<Description><![CDATA[
+<pre> Tabulka souboru ze vzdaleneho ARL (zdroj typu R)
+ 
+19.05.26 ln; fmtRemote: cover nezobrazovet
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&result,&handle:%Binary,params:%String=""]]></FormalSpec>
+<Implementation><![CDATA[
+  s synergy=$$$I2getOp("SYNERGY") ; TODO bez inicializace vcetne .href
+  q:synergy=""
+  s all=##class(User.MARC).getTagX(.handle,"CON",-1)
+  q:all=""
+  d ##class(User.MARC).delTagX(.handle,"CON")
+  
+  ;s href=##class(i2.ui.synergy).href(synergy,##class(i2.dblink).recordIdX(.handle))
+  s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("synergy","extictx="_synergy_"&idx="_##class(i2.dblink).recordIdX(.handle))
+  s final=""
+  for i=1:1:$l(all,$c(10)) {
+    s line=$p(all,$c(10),i)
+    ; 19.05.26 ln; fmtRemote: cover nezobrazovet
+    continue:##class(User.MARC).getSubTagStr(line,"x")="cover"
+   
+    s origname=##class(User.MARC).getSubTagStr(.line,"n")
+    s link="<a rel=""nofollow"" href="""_href_""">"_origname_"</a>"
+    s line=##class(User.MARC).setSubTagStr(line,$c(31)_"n"_link)
+    s final=final_$c(10)_line
+  }
+  s final=$e(final,2,*)
+  d:final'="" ##class(User.MARC).setTagX(.handle,final)
+  
+  s par=""
+  d ##class(rep.zf.tfHoldings).fmtTablePar(.params,.handle,.par)  
+  /*
+  w !,"<pre>"
+  zw par
+  w !,"</pre>"
+  */
+  
+  
+  d ##class(util.index).enhanceTag(.handle,"CON")
+  
+  d ##class(rep.zf.tfHoldings).fmtTable(.result,.handle,"",.par)
 ]]></Implementation>
 </Method>
 

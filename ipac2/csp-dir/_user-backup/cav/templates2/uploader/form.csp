@@ -15,13 +15,14 @@
 </div>
 </div>
 
-<div class="row form-group calendar" id="fg-embargo#(node)#">
-    <csp:if condition=($g(data("463EMBARGO"))'="")>
+	<csp:if condition=($g(data("463EMBARGO"))'="")>
 <p class="form-text"><ipac:tx param="EMABARGO_1"/> #(data("463EMBARGO"))# <ipac:tx param="EMABARGO_2"/></p>&nbsp;
     </csp:if>
     <csp:if condition=($g(data("POZNEMBARGO"))'="")>
 <p class="form-text">#(data("POZNEMBARGO"))#</p>
     </csp:if>
+
+<div class="row form-group calendar" id="fg-embargo#(node)#">    
 <label for="dayfrom#(node)#" class="col-form-label">#(..tx("DTZ"))#:</label>
 <div class="half fv-row date">
 <input type="text" id="dayfrom#(node)#" class="form-control clearable" inputmode="numeric" data-format="dd.MM.yyyy" placeholder="DD.MM.YYYY" name="dayfrom" value="#(..v("dayfrom"))#"/>
@@ -68,6 +69,18 @@
 </div>
 </div>
 
+	<csp:if condition=((..v("accession")="O")||(..v("accession")="E")||(..v("accession")=""))>
+<div class="row form-group" id="fg-reqauthor#(node)#">
+<label for="reqauthor#(node)#" class="col-form-label"><ipac:tx param="REQAUTHOR"/>: <em>*</em></label>
+<div class="half fv-row">
+<select id="reqauthor#(node)#" name="reqauthor" class="form-control">
+    <ipac:loop1 param="UT_ASEP_ANO_NE" load selected="#(..v("reqauthor"))#">
+<option value="#(value1)#"#(selected1)#>#(text1)#</option>
+    </ipac:loop1>
+</select>
+</div>
+</div>
+	</csp:if>
 
 <div class="row form-group" id="fg-hodnoceni#(node)#">
 <label for="hodnoceni#(node)#" class="col-form-label"><ipac:tx param="HODNOCENI"/>:</label>

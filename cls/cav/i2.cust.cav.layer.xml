@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-05-22 12:44:13">
+<Class name="i2.cust.cav.layer">
+<Description>
+01.07.19 tt; zalozeno</Description>
+<Super>i2.data.layer</Super>
+<TimeChanged>67712,36970.568506494</TimeChanged>
+<TimeCreated>65195,44407.24228</TimeCreated>
+
+<Method name="title">
+<Description><![CDATA[
+<pre> Ziskani nadpisu pro zaznam
+
+22.05.26 jk; vymazat formatovaci znaky
+01.07.19 tt; pridana vyjimka kvuvi kapitole z knihy. Cteni 463/200a
+01.07.19 tt; zalozena metoda
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,pure:%Boolean=0]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+ 
+  ; 25.04.13 ln; korektni detekce autorit
+  s type=##class(User.MARC).recordDataFmtX(.handle,.subfmt)
+  
+  if $e(subfmt)'="A" { ; KATALOG    
+    if type="USMARC" {
+      s ret=##class(User.MARC).getTagX(.handle,"245a")
+      ; 05.12.17 ln; 245a neodstranovat interpunkci na zacatku
+      ; 15.03.15 ln; neodrezavat zavorky z title
+      s:'pure ret=$zstrip(ret,">WP",,")]")    
+    } else {
+      s ret=##class(User.MARC).getTagX(.handle,"200a")
+      ; 01.07.19 tt; pridana vyjimka kvuvi kapitole z knihy. Cteni 463/200a
+      s s970b=##class(User.MARC).getTagX(.handle,"970b")
+      s:(s970b="M") ret=##class(User.MARC).getTagX(.handle,"463/200a")
+      ; 22.05.26 jk; vymazat formatovaci znaky
+      d ##class(rep.epca.exportBase).symClearFormatInfoStr(.ret)
+    }
+  } else { ; AUTORITY   
+    if type="USMARC" {
+      s ret=""
+      ; 21.08.12 js; upravne vytvaranie hlavicky pre MARC21
+      ; vacsina autorit ma zobrazene len $a
+      s sT="a"
+      ; nacitame vsetky polia 1XX (spravne ma byt v zazname len jedno)
+      s t1XX=##class(User.MARC).getTagX(.handle,"1**")
+      if t1XX'=""
+      {
+        ; zistime si ake mame zahlavie
+        s tag=$e(t1XX,1,3)
+        ; pre zahlavie 100 vytvarame hlavicku $a_" "_$d
+        if tag="100" {
+          s ret=##class(User.MARC).getSubTagStr(t1XX,"a")_" "_##class(User.MARC).getSubTagStr(t1XX,"d")
+        }
+        ; pre zahlavie 110 vytvarame hlavicku $a_" "_$b
+        elseif tag="110" {
+          s ret=##class(User.MARC).getSubTagStr(t1XX,"a")_" "_##class(User.MARC).getSubTagStr(t1XX,"b")
+        }
+        ; pre zahlavie 190 vytvarame hlavicku $a_". "_$x_". "_$9
+        elseif tag="190" {
+          s ret=$replace(##class(User.MARC).getSubTagStr(t1XX,"a")_". "_##class(User.MARC).getSubTagStr(t1XX,"x")_". "_##class(User.MARC).getSubTagStr(t1XX,"9"),". . ",". ")
+        }
+        ; pre ostatne zahlavia su hlavicky z $a
+        else {
+          s ret=##class(User.MARC).getTagX(.handle,tag_sT)
+        }
+      }
+      
+    } else {
+      s ret=""
+      s line=##class(User.MARC).getTagX(.handle,"200")
+      if line'="" {
+        s ret=$$$getSubTagStr(line,"a")
+        s tmp=$$$getSubTagStr(line,"b")
+        if ret'="" {
+          s:tmp'="" ret=ret_", "_tmp
+        } else {
+          s ret=tmp
+        }       
+        s tmp=$$$getSubTagStr(line,"f")
+        if ret'="" {
+          s:tmp'="" ret=ret_", "_tmp
+        } else {
+          s ret=tmp
+        }
+      } else {
+        s line=##class(User.MARC).getTagX(.handle,"210")
+        s ret=$$$getSubTagStr(line,"a")
+        s tmp=$$$getSubTagStr(line,"b")
+        if ret'="" {
+          s:tmp'="" ret=ret_". "_tmp
+        } else {
+          s ret=tmp
+        }
+      }
+      
+      if ret="" {
+        s ret=##class(User.MARC).getTagX(.handle,"215a")
+        if ret="" {
+          s ret=##class(User.MARC).getTagX(.handle,"220a")
+          if ret="" {
+            s ret=##class(User.MARC).getTagX(.handle,"230a")
+            if ret="" {
+              s ret=##class(User.MARC).getTagX(.handle,"235a")
+              if ret="" {
+                s ret=##class(User.MARC).getTagX(.handle,"250a")
+                if ret="" {
+                  s ret=##class(User.MARC).getTagX(.handle,"280a")
+                  if ret="" {
+                    s ret=##class(User.MARC).getTagX(.handle,"285a")
+                    if ret="" {
+                      s line=##class(User.MARC).getTagX(.handle,"290")
+                      if line'="" {
+                        s ret=$replace($$$getSubTagStr(.line,"n")_". "_$$$getSubTagStr(.line,"a")_". "_$$$getSubTagStr(.line,"k"),". . ",". ")
+                      } else {
+                        s line=##class(User.MARC).getTagX(.handle,"240/200")
+                        if line'="" {
+                          s ret=$replace($$$getSubTagStr(.line,"a")_". "_$$$getSubTagStr(.line,"b")_". "_$$$getSubTagStr(.line,"d"),". . ",". ")
+                          s tmp=##class(User.MARC).getTagX(.handle,"240/230a")
+                          s:tmp'="" ret=ret_". "_tmp
+                        } else {
+                          s line=##class(User.MARC).getTagX(.handle,"245/200")
+                          s:line'="" ret=$replace($$$getSubTagStr(.line,"a")_". "_$$$getSubTagStr(.line,"b")_". "_$$$getSubTagStr(.line,"d"),". . ",". ")
+                          s tmp=##class(User.MARC).getTagX(.handle,"245/235a")
+                          s:tmp'="" ret=ret_". "_tmp
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      s ret=##class(User.Util).fixNsbNse(ret)
+    }     
+    s:'pure ret=$zstrip(ret,"<>WP",,")")
+  } ; konec AUTORITY   
+ 
+  ; 19.11.15 js; holdingy
+  if $e(subfmt)="H"
+  {
+    if ret="" {s ret=##class(User.MARC).getTagX(.handle,"T03a")}
+  }
+
+  q ret
+]]></Implementation>
+</Method>
+</Class>
+</Export>

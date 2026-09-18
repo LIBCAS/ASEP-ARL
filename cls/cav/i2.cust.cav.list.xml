@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-13 11:55:59">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-09-17 11:38:51">
 <Class name="i2.cust.cav.list">
 <Description><![CDATA[
 <pre>
+16.09.26 ln; zruseny stavy souboru 1 a 2
 13.11.25 ln; podpora druhu X a DMP
 09.07.21 kp; uprava metody getSubSite
 05.12.17 tt; odstraneny datove zaznamy pro schvalovani
@@ -12,7 +13,7 @@
 24.05.12 zalozena trida 
 </pre>]]></Description>
 <Super>content.list</Super>
-<TimeChanged>67522,42915.175749846</TimeChanged>
+<TimeChanged>67830,34081.38165372</TimeChanged>
 <TimeCreated>62600,49457.920423</TimeCreated>
 
 <Parameter name="Ictx">
@@ -75,6 +76,8 @@ ictx instituce</Description>
       ; 05.12.17 tt; odstraneny datove zaznamy pro schvalovani
       s dk=$$$getTagX(.handle,"970b")
       continue:(dk="DATA")||(dk="X")||(dk="DMP")
+      ; 16.09.26 ln; zruseny stavy souboru 1 a 2
+      continue:($g(array("reqauthor"))="false")&&((array("accession")="O")||(array("accession")="E"))
       
       s href=$$$BASEURL_##class(i2.html.tpl).getLinkURL("contser","idx="_idx_"&amp;status="_data("STATUS"))
       s title=##class(i2.data.layer).title(.handle)

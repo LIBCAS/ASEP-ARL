@@ -47,7 +47,7 @@ data-toolbar="#toolbar2"
 </td>
 <td class="category">#($s(..v("category")=1:..tx("REGISTERED"),1:..tx("UNREGISTERED")))#</td>
 <td class="actions">
-    <ipac:a op="#(data("PAGEID"))#" param="undelete=#(..v("id"))#" class="btn btn-light modal-show restore-modal-show" id="btn-restore-modal-show" data-modal-body="#(..tx("UNDELETE_REALLY"))# #(..v("surname"))# #(..v("name"))#?" data-modal-linkform="#(..tx("UNDELETE_YES"))#" data-modal-linkicon="icon-refresh" data-modal-name="#(..tx("UNDELETE_TITLE"))#" modal-centered="1" data-modal-size="modal-sm" title="#(..tx("UNDELETE_TITLE"))# #(..v("surname"))# #(..v("name"))#">
+    <ipac:a op="#(data("PAGEID"))#" param="undelete=#(..v("id"))#&fnonce=#(data("FNONCE_VALUE"))#" class="btn btn-light modal-show restore-modal-show" id="btn-restore-modal-show" data-modal-body="#(..tx("UNDELETE_REALLY"))# #(..v("surname"))# #(..v("name"))#?" data-modal-linkform="#(..tx("UNDELETE_YES"))#" data-modal-linkicon="icon-refresh" data-modal-name="#(..tx("UNDELETE_TITLE"))#" modal-centered="1" data-modal-size="modal-sm" title="#(..tx("UNDELETE_TITLE"))# #(..v("surname"))# #(..v("name"))#">
     <i class="icon-refresh" aria-hidden="true"></i>&nbsp;
     <ipac:tx param="UNDELETE"/></ipac:a>
 </td>

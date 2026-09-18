@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2025-02-24 09:08:14">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-01-07 10:33:22">
 <Class name="i2.cust.cav.usersAdmin">
-<Description>
+<Description><![CDATA[
+<pre> Sprava uzivatelu cav
+
+07.01.26 ln; ochrana proti CSRF, aktalni uzivatel do minichronologie
 31.01.25 dp; spolecne s ln pridani metody pro seznam smazanych uzivatelu (listDeletedUsers) a metodu pro obnoveni smazanych uzivatelu (undeleteUser)
 20.09.24 lp; moznost smazat i registrovane uzivatele
 24.06.24 tt; pridana podminka, ze uzivatel needituje sam sebe
-14.05.24 tt; doplneni i registrovani uzivatele</Description>
+14.05.24 tt; doplneni i registrovani uzivatele
+</pre>]]></Description>
 <Super>i2.ui.usersAdmin</Super>
-<TimeChanged>67239,49221.971232885</TimeChanged>
+<TimeChanged>67577,37813.998858142</TimeChanged>
 <TimeCreated>62873,54932.31749</TimeCreated>
 
 <Parameter name="Ictx">
@@ -22,6 +26,7 @@
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&data]]></FormalSpec>
 <Implementation><![CDATA[
+  s data("FNONCE_VALUE")=""
   s data("DELETE")=$$$GETREQVAR("delete")
   s data("UNDELETE")=$$$GETREQVAR("undelete")
   
@@ -87,17 +92,26 @@
   if ($$$GETREQVAR("_test")=1) {
      d ..testData(.data)
   }
+  
+  s data("FNONCE_VALUE")=##class(i2.base.forms).initFormNonce(..#PageID)
 ]]></Implementation>
 </Method>
 
 <Method name="deleteUser">
 <Description><![CDATA[
 <pre>Smazat uživatele - jako parametr prijde idx zaznamu na smazani
+
+07.01.26 ln; ochrana proti CSRF, aktalni uzivatel do minichronologie
 20.09.24 lp; moznost smazat i registrovane uzivatele
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&data]]></FormalSpec>
 <Implementation><![CDATA[
+  if '##class(i2.base.forms).checkFormNonce(..#PageID) {
+    s data("ERRORS")=data("ERRORS")_" "_..txg("FORM_CSRF_DETECTED")
+    q
+  }
+  
   q:'##class(User.MARC).readX(.handle,"CavIsUser",data("DELETE"))
   
   ; pokud se nepodari nacist, pokracujeme
@@ -129,13 +143,18 @@
     s t400=##class(User.MARC).setSubTagStr(t400,$c(31)_"d"_##class(User.Util).date())
     d ##class(User.MARC).setTagX(.handle,t400)
        
-    s sc=##class(User.MARC).writeX(.handle,1,,,3)
+    ; udaje do minichronology
+    s sUserT001=data("USER_ID")
+    s sChronology="3"_$c(10)_"ipac2_"_sUserT001_$c(10)_##class(i2.common).getIP()
+    s sc=##class(User.MARC).writeX(.handle,1,,,sChronology)
     if '$$$ISOK(sc) {
       s data("ERRORS")=data("ERRORS")_" "_"ERROR#CavIsUser/"_$$$HandleT001(handle)_"#"_##class(User.Util).status2str(sc)
     }
   } else { 
     s data("ERRORS")=data("ERRORS")_" "_..tx("RIGHTS_ERROR")
   }
+  
+  d ##class(i2.base.forms).clearFormNonce(..#PageID)
 ]]></Implementation>
 </Method>
 
@@ -143,10 +162,16 @@
 <Description><![CDATA[
 <pre>Obnovit uživatele - jako parametr prijde idx zaznamu na obnoveni
 
+07.01.26 ln; ochrana proti CSRF, aktalni uzivatel do minichronologie
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&data]]></FormalSpec>
 <Implementation><![CDATA[
+  if '##class(i2.base.forms).checkFormNonce(..#PageID) {
+    s data("ERRORS")=data("ERRORS")_" "_..txg("FORM_CSRF_DETECTED")
+    q
+  }
+  
   q:'##class(User.MARC).readX(.handle,"CavIsUser",data("UNDELETE"))
   
   s sT600b=$$$getTagX(.handle,"600b")  // ustav
@@ -168,10 +193,14 @@
   s t400=##class(User.MARC).setSubTagStr(t400,$c(31)_"d"_##class(User.Util).date())
   d ##class(User.MARC).setTagX(.handle,t400)
        
-  s sc=##class(User.MARC).writeX(.handle)
+  s sUserT001=data("USER_ID")
+  s sChronology="3"_$c(10)_"ipac2_"_sUserT001_$c(10)_##class(i2.common).getIP()
+  s sc=##class(User.MARC).writeX(.handle,1,,,sChronology)
   if '$$$ISOK(sc) {
     s data("ERRORS")=data("ERRORS")_" "_"ERROR#CavIsUser/"_$$$HandleT001(handle)_"#"_##class(User.Util).status2str(sc)
   }
+  
+  d ##class(i2.base.forms).clearFormNonce(..#PageID)
 ]]></Implementation>
 </Method>
 

@@ -50,7 +50,7 @@ data-show-print="true"
     <i class="icon-edit" aria-hidden="true"></i>&nbsp;
     <ipac:tx param="EDIT"/></ipac:sso>
     &nbsp;
-    <ipac:a op="#(data("PAGEID"))#" param="delete=#(..v("id"))#" class="btn btn-light modal-show" data-modal-body="#(..tx("DELETE_REALLY"))# #(..v("surname"))# #(..v("name"))#?" data-modal-linkform="#(..tx("DELETE_YES"))#" data-modal-linkicon="icon-remove" data-modal-name="#(..tx("DELETE_TITLE"))#" modal-centered="1" data-modal-size="modal-sm" title="#(..tx("DELETE_TITLE"))# #(..v("surname"))# #(..v("name"))#">
+    <ipac:a op="#(data("PAGEID"))#" param="delete=#(..v("id"))#&fnonce=#(data("FNONCE_VALUE"))#" class="btn btn-light modal-show" data-modal-body="#(..tx("DELETE_REALLY"))# #(..v("surname"))# #(..v("name"))#?" data-modal-linkform="#(..tx("DELETE_YES"))#" data-modal-linkicon="icon-remove" data-modal-name="#(..tx("DELETE_TITLE"))#" modal-centered="1" data-modal-size="modal-sm" title="#(..tx("DELETE_TITLE"))# #(..v("surname"))# #(..v("name"))#">
     <i class="icon-remove" aria-hidden="true"></i>&nbsp;
     <ipac:tx param="DELETE"/></ipac:a>
 </td>

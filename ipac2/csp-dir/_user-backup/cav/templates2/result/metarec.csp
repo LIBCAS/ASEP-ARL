@@ -1,0 +1,16 @@
+<csp:class SUPER="i2.base.tpl"/><ipac:stream off/><ipac:off><du>1</du></ipac:off>
+
+<script src="#(..cb(..script(1)_"cavrec.js"))#"></script>
+
+<style>
+a.copied { color: green; }
+.druhbg-data { background-color: #E8F0E8; }
+.druhc-data { color: #214116; }
+.druh-data .nav-item>.active { background-color: #214116; color: white; } 
+#result-body .druh-data .nav-tabs { margin-bottom: 0rem }
+.druh-data .tab-content { padding-top: .5rem; background-color: #ebedee; }
+.druh-data .tab-content table { background-color: white; border-spacing: 1.5px; border-collapse: separate; }
+.druh-data .tab-content th, .druh-data .tab-content td { padding: 5px; background-color: #ebedee; }
+
+.licpikto { height:24px; width:auto }
+</style>

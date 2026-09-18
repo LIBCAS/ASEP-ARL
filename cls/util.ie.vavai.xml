@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-10-02 10:19:55">
+<Class name="util.ie.vavai">
+<Description><![CDATA[
+<pre>
+Pristup k API https://www.isvavai.cz/ 
+- vyuzito pro Cav import zaznamu z CEP do autorit ASEP cs123465
+  https://cosmo2/wiki/index.php?title=CAV_API_CEP
+
+02.10.24 jk; vyhledavat i mezi dalsimi ucastniky
+09.04.24 jk; zalozeno
+</pre>]]></Description>
+<IncludeCode>Common</IncludeCode>
+<TimeChanged>67115,37179.8386589</TimeChanged>
+<TimeCreated>66940,49797.3317831</TimeCreated>
+
+<Method name="importCavCep">
+<Description><![CDATA[
+<pre>
+Import z db CEP - Centralni evidence projektu, zapojeny jako planovana uloha
+ class     autoritni trida CavUnAuth
+ ico       vhodne pro testovani jen pro jeden ustav, plni se z CAV_PRA 200g napr. "68081758"
+ rok       rok pro stahovani projektu, default je aktualni
+bTestOnly  jen vypisy do logu bez zmen
+
+Priklady testovacich spusteni
+d ##class(util.ie.vavai).importCavCep("CavUnAuth","2023","67985971",1)
+d ##class(util.ie.vavai).importCavCep("CavUnAuth","2024","61388971",1)
+Priklad test spusteni celeho importu pro rok 2024
+d ##class(util.ie.vavai).importCavCep("CavUnAuth","2024",,1)
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>class,rok="",ico="",bTestOnly=0</FormalSpec>
+<Implementation><![CDATA[
+  w !,"util.ie.vavai.import start at "_$zdt($h,3)
+  w !," class: "_class
+  w !," rok  : "_rok
+  w !," ico  : "_ico
+  w !," test : "_bTestOnly
+  w !
+   
+  ; zadani Cav
+  ; Chtěli bychom stahovat všechny dotazy za určité časové období. Dejme tomu 1x za měsíc (staré záznamy nás nezajímají).
+  ; Proto bychom chtěli jako limitaci použít IČO ústavu AV ČR - parametr "pd-org-ico" a "sp-rok-zahajeni-od" 
+  ; s parametrem aktuálního roku (tj. letos 2024, příští rok 2025 apod.) v modu "filtr-detail". 
+  ; Toto běžet jako loop přes IČO všech ústavů AV a následně se vždy podívat, jestli nepřibyly nějaké záznamy od minulého exportu.
+  ; Pokud ano, importovat je do ASEP.
+
+  s:rok="" rok=$p($zd($h,3),"-")
+  
+  s idUstav=""     ; ustavy pro ktere se bude v CEP vyhledavat
+  s icoUstavAll="" ; seznam ICO vsech ustavu, vyuzivaji podmetody
+  s untablesd=##class(User.Util).getClassPrefixParam(class)_"UnTablesd"
+  d ##class(User.MARC).readX(.hPra,untablesd,"CAV_PRA")
+  s c=0
+  do {
+    s s200=##class(User.MARC).getTagX(.hPra,"200",.c)
+    continue:s200=""
+    s icoU=##class(User.MARC).getSubTagStr(s200,"g")
+    continue:icoU=""
+
+    s ustav=##class(User.MARC).getSubTagStr(s200,"c") ; nazev ustavu
+    s:idUstav'="" idUstav=idUstav_$c(10)
+    s idUstav=idUstav_icoU_$c(31)_ustav
+    
+    s icoUstavAll(icoU)=##class(User.MARC).getSubTagStr(s200,"a")
+  } while c'=0
+
+  if ico'="" {
+    ; mame predano ICO, pouzijeme jen je
+    s idUstav=ico_$c(31)_ico
+  }
+  
+  s poskytovatel="" ; pole pro preklad kodu poskytovatele podle EPC_POSKYTOVATEL_CEP
+  d ..prepare(class,.poskytovatel)
+  
+  for i=1:1:$l(idUstav,$c(10)) {
+    s ust=$p(idUstav,$c(10),i)
+    s icoU=$p(ust,$c(31))
+    s ustav=$p(ust,$c(31),2)
+    k params
+    s params("pd-org-ico")=icoU
+    s params("sp-rok-zahajeni-od")=rok
+    ; 02.10.24 jk; vyhledavat i mezi dalsimi ucastniky
+    s params("pd-rozsah")=2   ; prijemce i dalsi ucastnik
+    w !!!,"************************************"
+    w !,ustav
+    w !,"params: ico:"_icoU_", rok:"_rok
+    w !,"************************************"
+
+    d ..importCavCepRun(class,.params,.icoUstavAll,.poskytovatel,.bBreak,bTestOnly)
+    q:bBreak
+    hang 5 ; pauza mezi ustavy
+  }
+  
+   w !!,"util.ie.vavai.import finished at "_$zdt($h,3),!
+]]></Implementation>
+</Method>
+
+<Method name="prepare">
+<Description><![CDATA[
+<pre>
+pripravne operace
+ poskytovatel  preklad zkratky poskytovatele podle EPC_POSKYTOVATEL_CEP
+               poskytovatel(200c)=200a
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[class,&poskytovatel]]></FormalSpec>
+<Implementation><![CDATA[
+  k poskytovatel s poskytovatel=""
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s untab=ipref_"UnTablesd"
+  
+  q:'##class(User.MARC).readX(.hP,untab,"EPC_POSKYTOVATEL_CEP")
+  s c=0
+  d {
+    s s200=##class(User.MARC).getTagX(.hP,"200",.c)
+    continue:s200=""
+    
+    s s200a=##class(User.MARC).getSubTagStr(s200,"a")
+    s s200c=##class(User.MARC).getSubTagStr(s200,"c")
+    continue:((s200a="")||(s200c=""))
+    
+    s poskytovatel(s200c)=s200a
+    
+  } while c'=0
+]]></Implementation>
+</Method>
+
+<Method name="importCavCepRun">
+<Description><![CDATA[
+<pre>
+Import Cav dotaz a strankovani pres jeden dotaz (ustav a rok)
+ icoUstavAll    pole icoUstavAll(ico)=zkratka
+ poskytovatel   ciselnik pro preklad zkratek pokytovatelu EPC_POSKYTOVATEL_CEP
+                poskytovatel(200c)=200a
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[class,&params,&icoUstavAll,&poskytovatel,&bBreak=0,bTestOnly]]></FormalSpec>
+<Implementation><![CDATA[
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s recPerPage=25  ; pres den ma API napevno nastaveno na 1
+  s bBreak=0
+  #dim req As %Net.HttpRequest
+  #dim iterator As %Iterator.Array
+  s req=..getHttpRequestCep()
+
+  s page=0
+  for i=1:1 {
+    s page=page+1
+    s bOKgcp=..getDataCep(ipref,.params,req,.obj,page,recPerPage)
+    if 'bOKgcp || '$isobject(obj) {
+      ; pri chybe ukoncime cely import at nepretezujeme API, maji nejake sledovani zateze
+      s bBreak=1
+    }
+    
+    if obj.hlavicka.kod="317" {
+      w !,"empty result"
+      q
+    }
+    
+    w:i=1 !,"number of pages: "_obj.hlavicka.%Get("pocet-stran")
+    w:i=1 !,"rec per page: "_obj.hlavicka.%Get("limit")
+    w !,"page: "_page
+    w !,"find records: "_obj.hlavicka.%Get("pocet-vysledku")
+    
+    if $ISOBJECT(obj.data) {
+      s iterator=obj.data.%GetIterator()
+      while iterator.%GetNext(.key, .value) {
+        s projektId=..obj2HandleCep(.handle,class,.value,.icoUstavAll,.poskytovatel)
+        continue:projektId=""  ; bez cisla projektu nejsme schopni dohledat/deduplikovat
+
+        // Test only
+        //if (projektId'="EH22_008/0004624")&&(projektId'="GA24-10013S") { continue }
+        //w !!,value.%ToJSON(),!!
+        
+        s idRec=##class(User.MARC).getIDByIndex(class,"proj",$zcvt(projektId,"l"))
+        s t001Rec=""
+        s:idRec t001Rec=##class(User.MARC).getT001(idRec)
+        d ..synchCavDbAuth(class,.handle,t001Rec,bTestOnly)
+      }
+    }
+    
+    q:page>=obj.hlavicka.%Get("pocet-stran")
+    hang 2 ; pauza mezi strankami
+  }
+  
+  ; pro poradek procistime FormData pro dalsi dotaz
+  s par=""
+  for {
+    s par=$o(params(par))
+    q:par=""
+    d req.DeleteFormData(par)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="getToken">
+<Description><![CDATA[
+<pre>
+Vraci token pro autorizaci do API nebo prazdny pokud neni zapsan
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s token=""
+  s confT001="CREDENTIALS_"_$zcvt(ipref,"u")
+  s token=##class(User.Util).sXlate(confT001,"isvavai_api_token","SN",ipref,"b",,"CmSecurity")
+  q token
+]]></Implementation>
+</Method>
+
+<Method name="getHttpRequestCep">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Net.HttpRequest</ReturnType>
+<Implementation><![CDATA[
+  s server="api.isvavai.cz"
+  s source="/api.php"
+  
+  s req=##class(%Net.HttpRequest).%New()
+  s req.Server=server
+  s req.ContentCharset="UTF-8"
+  s req.Https=1
+  s req.SSLConfiguration="https"
+    
+  q req
+]]></Implementation>
+</Method>
+
+<Method name="getDataCep">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,&params,req:%Net.HttpRequest,obj:%DynamicObject,page,recPerPage]]></FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+  ; musi se plnit znovu pred kazdym provolanim
+  s token=..getToken(ipref)
+  d req.SetHeader("token",token)
+  d req.InsertFormData("token",token)
+  d req.InsertFormData("oblast","cep")
+  d req.InsertFormData("rezim","filtr-detail")
+  d req.InsertFormData("format","json")
+  d req.InsertFormData("limit",recPerPage)
+  d req.InsertFormData("page",1)
+  d req.InsertFormData("finance",1)
+  d req.InsertFormData("strana",page)
+  s par=""
+  for {
+    ; doplnime selekcni parametry
+    s par=$o(params(par),1,val)
+    q:par=""
+    d req.InsertFormData(par,val)   ; napr. req.InsertFormData("pd-org-ico","68081758")
+  }
+  
+  s sc=req.Post("/api.php")
+  if $$$ISERR(sc) {
+    w !,"ERROR getDataCep Net.HttpRequest API VAVAI http post:"_##class(User.Util).status2str(sc)
+    q 0
+  }
+  
+  if ((req.HttpResponse.StatusCode'="200") ) {
+    w !,"ERROR getDataCep %Net.HttpRequest API VAVAI http status code: "_req.HttpResponse.StatusCode_" "_req.HttpResponse.StatusLine
+    q 0
+  }
+  
+  s streamHttp=req.HttpResponse.Data
+  s response=streamHttp.Read(streamHttp.Size)
+  
+  s obj=##class(%DynamicAbstractObject).%FromJSON(response)
+  if '$isobject(obj) {
+    w !,"ERROR getDataCep %Net.HttpRequest API VAVAI unexpected no JSON response"
+    q 0
+  }
+    
+  s hlavicka=obj.hlavicka  ; %DynamicObject
+  if '$isobject(hlavicka) {
+    w !,"ERROR getDataCep %Net.HttpRequest API VAVAI unexpected response, no find object 'hlavicka'"
+    q 0
+  }
+  
+  if (hlavicka.kod'="200") && (hlavicka.kod'="317") {
+    //d $system.OBJ.Dump(hlavicka)
+    w !,"ERROR getDataCep %Net.HttpRequest API VAVAI response"
+    w !," kod:            "_hlavicka.kod
+    w !," zprava:         "_hlavicka.zprava
+    w !," pocet-vysledku: "_hlavicka.%Get("pocet-vysledku")
+    w !," limit:          "_hlavicka.limit
+    w !," pocet-stran:    "_hlavicka.%Get("pocet-stran")
+    w !," strana:         "_hlavicka.strana
+    w !," finance:        "_hlavicka.finance
+    w !," verze:          "_hlavicka.verze
+    q 0
+  }
+  
+  q 1
+]]></Implementation>
+</Method>
+
+<Method name="obj2HandleCep">
+<Description><![CDATA[
+<pre>
+Pripraveno pro Cav autority UNIMARC
+ handle         vytvoreny autoritni zaznam projektu z CEP
+ class          autoritni trida
+ rec            JSON objekt projektu z CEP
+ icoUstavAll    pole icoUstavAll(ico)=zkratka
+ poskytovatel   ciselnik pro preklad zkratek pokytovatelu EPC_POSKYTOVATEL_CEP
+                poskytovatel(200c)=200a
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,class,rec:%DynamicObject,&icoUstavAll,&poskytovatel]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  
+  s ret=""
+  d ##class(User.MARC).newX(.handle,class,"new")
+  
+  if ##class(User.MARC).readX(.handleVzor,##class(User.Util).getClassPrefixParam(class)_"UnTablesd","GEN_VAVAI_REC")
+  {   
+    ; prvotni naplneni handlu dle vzoru
+    s nC=##class(User.MARC).recordLineCountX(.handleVzor) ; ziskani poctu radku v zaznamu 
+    f i=1:1:nC 
+    { ; pres vsechny radky zaznamu pujdeme po jednom radku a budeme nahrazovat
+      s lsLine=##class(User.MARC).getLineX(.handleVzor,i) continue:lsLine="" 
+      s sTag=$e(lsLine,1,3)                               ; ziskani tagu
+      continue:((sTag="002")||(sTag="999"))               ; 002 do zaznamu nezapisujeme
+      s:(sTag="005") lsLine=##class(User.MARC).genT005(1) ; vygenerujeme novou 005
+      
+      ; musime provest nahrazeni v handlu
+      s lsLine=$replace(lsLine,"%DATEYYYYMMDD%",$ZDATE($horolog,8))
+      s lsLine=$replace(lsLine,"%DATEDD.MM.YYYY%",($e($ZDATE($horolog,8),7,8)_"."_$e($ZDATE($horolog,8),5,6)_"."_$e($ZDATE($horolog,8),1,4)))
+      s lsLine=$replace(lsLine,"%DATEYYMMDD% ",$e($ZDATE($horolog,8),3,8))    
+      s lsLine=$$$strswap(lsLine,$c(31)_$c(31),$c(31))
+
+      d ##class(User.MARC).appendLineX(.handle,lsLine) ; zapsani radku do autority
+    }    
+    d ##class(User.MARC).recordDelEmptyST(.handle)     ; odmazani prazdnych subtagu
+  }  
+  
+  s lname=##class(User.Util).objectName2lname(class)
+  s recJson=rec.%ToJSON()
+
+  s ret=rec.kod
+  s s230a=$replace(rec.nazev,$c(160),$c(32)) ; nazev projektu, uprava znaku pro mezeru
+  s s230b=rec.%Get("program-kod")            ; program (prefix)
+  s s230h=rec.kod                            ; cislo projektu
+  s s230="230    "
+  s:s230a'="" s230=s230_$c(31)_"a"_s230a
+  s:s230b'="" s230=s230_$c(31)_"b"_s230b
+  s:s230h'="" s230=s230_$c(31)_"h"_s230h
+  d:$l(s230)>7 ##class(User.MARC).setTagX(.handle,s230)
+
+  s s430="430    "
+  s s430a=$replace(rec.%Get("nazev-anglicky"),"  "," ")
+  s:s430a'="" s430=s430_$c(31)_"a"_s430a_$c(31)_"8eng"
+  d:$l(s430)>7 ##class(User.MARC).setTagX(.handle,s430)
+ 
+  ; cav: neprebirat, nepracujeme s tim a je to slozitejsi
+  //s sC26="C26    "
+  //s sC26z=rec.%Get("vedni-obor-hlavni")
+  //s:sC26z'="" sC26=sC26_$c(31)_"z"_sC26z
+  //d:$l(sC26)>7 ##class(User.MARC).setTagX(.handle,sC26)
+
+  s sC28a=rec.poskytovatel
+  if sC28a'="" {
+    s sC28="C28    "
+    if $d(poskytovatel(sC28a)) { s sC28a=poskytovatel(sC28a) }
+    s:sC28a'="" sC28=sC28_$c(31)_"a"_sC28a
+    s sC28=sC28_$c(31)_"cCZ"  ; zeme projektu natvrdo
+    d ##class(User.MARC).setTagX(.handle,sC28)
+  }
+
+  s sC29="C29    "
+  s sC29a=$p(rec.%Get("datum-zahajeni"),".",3)      ; rok zahajeni
+  s sC29b=$p(rec.%Get("datum-ukonceni"),".",3)      ; rok ukonceni
+  //s sC29o=rec.%Get("vedni-obor-hlavni")           ; cav: nevyplnovat, stare pole
+  //s sC29v=rec.%Get("vedni-obor-vedlejsi")         ; cav: nevyplnovat
+  //s sC29v1=rec.%Get("vedni-obor-vedlejsi-dalsi")  ; cav: nevyplnovat
+  s:sC29a'="" sC29=sC29_$c(31)_"a"_sC29a
+  s:sC29b'="" sC29=sC29_$c(31)_"b"_sC29b
+  //s:sC29o'="" sC29=sC29_$c(31)_"o"_sC29o          ; cav: nevyplnovat, stare pole
+  //s:sC29v'="" sC29=sC29_$c(31)_"v"_sC29v          ; cav: nevyplnovat
+  //s:sC29v1'="" sC29=sC29_$c(31)_"v1"_sC29v1       ; cav: nevyplnovat
+  d:$l(sC29)>7 ##class(User.MARC).setTagX(.handle,sC29)
+  
+  s sC31All=""
+  s sC35All=""
+  if $ISOBJECT(rec.prijemci) {
+    s it1=rec.prijemci.%GetIterator()
+    while it1.%GetNext(.key1,.val1) {
+      s icoP=""
+      s idxRecP=""   ; link na prijemce C31$3
+      if $e(val1.id,1,4)="ico:" {
+        ; vybirame jen ustavy Cav z CAV_PRA ostatni ignorujeme
+        s icoP=$replace(val1.id,"ico:","")
+        if (icoP'="") && $d(icoUstavAll(icoP)) {
+          s idRecP=##class(User.MARC).getIDByIndex(class,"ico",icoP)
+          if idRecP {
+            s t001RecP=##class(User.MARC).getT001(idRecP)
+            s idxRecP=lname_"*"_t001RecP
+          }
+        }
+      }
+      continue:idxRecP=""
+      
+      s sC31="C31    "
+      s:idxRecP'="" sC31=sC31_$c(31)_"3"_idxRecP
+      s:val1.nazev'="" sC31=sC31_$c(31)_"a"_val1.nazev
+      s:icoP'="" sC31=sC31_$c(31)_"d"_icoP
+      if $l(sC31)>7 {
+        s:$l(sC31All)>7 sC31All=sC31All_$c(10)
+        s sC31All=sC31All_sC31
+      }
+      
+      if $ISOBJECT(val1.resitele) {
+        s it2=val1.resitele.%GetIterator()
+        while it2.%GetNext(.key2,.val2) {          
+          s idxRecR=""   ; link na resitele C35$3
+          s rivId=val2.vedidk
+          s orcId=val2.orcid
+          s scopusId=val2.scopusid
+          //s researcherId=val2.researcherid  ; nepouzivame, nenasel jsem v datech 035
+          ; dohledani autora
+          ; - musi se najit podle jmena, prijmeni a ustavu 
+          ; -- pokud se najde jeden je to OK, ale muze byt vice stejneho jmena, pouziji se identifikatory, nebo se nakonec vezme posledni nalezeny
+          ; -- pokud se nenajde, link se nedoplni (jeden autor muze v case menit ustavy, to pak ma pro kazdy ustav jiny aut. zaznam ale nas zajima jen ten spojeny se zpracovavanym ustavem)
+          s aupra=$zcvt(val2.prijmeni_" "_val2.jmeno_"  "_icoUstavAll(icoP),"l")
+          s idRecR=0
+          s node=""
+          for {
+            s node=##class(User.MARC).getIDByIndex(class,"aupra",aupra,node)
+            q:node=0
+            
+            s idRecR=node
+            s idRecRbyID=0
+            if (rivId'="")  { s idRecRbyID=##class(User.MARC).getIDByIndex(class,"ida","rivid "_rivId) }
+            if (idRecR="") && (orcId'="")  { s idRecRbyID=##class(User.MARC).getIDByIndex(class,"ida","orcid "_orcId) }
+            if (idRecR="") && (scopusId'="") { s idRecRbyID=##class(User.MARC).getIDByIndex(class,"ida","scopus "_scopusId) }
+            if idRecR=idRecRbyID { q }  ; mame overeno i podle identifikatoru
+          }
+          if idRecR {
+            s t001RecR=##class(User.MARC).getT001(idRecR)
+            s idxRecR=lname_"*"_t001RecR
+          } 
+
+          s sC35="C35    "
+          s:idxRecR'="" sC35=sC35_$c(31)_"3"_idxRecR
+          s:val2.prijmeni'="" sC35=sC35_$c(31)_"a"_val2.prijmeni
+          s:val2.jmeno'="" sC35=sC35_$c(31)_"b"_val2.jmeno
+          
+          if $l(sC35)>7 {
+            s:$l(sC35All)>7 sC35All=sC35All_$c(10)
+            s sC35All=sC35All_sC35
+          }
+        }
+      }
+    }
+  }
+  
+  ; obdobne projdeme i "dalsi-prijemci"
+  if $ISOBJECT(rec.%Get("dalsi-prijemci")) {
+    s it1=rec.%Get("dalsi-prijemci").%GetIterator()
+    while it1.%GetNext(.key1,.val1) {
+      s idxRecP=""   ; link na prijemce C31$3
+      if $e(val1.id,1,4)="ico:" {
+        ; vybirame jen ustavy Cav z CAV_PRA ostatni ignorujeme
+        s icoP=$replace(val1.id,"ico:","")
+        if (icoP'="") && $d(icoUstavAll(icoP)) {
+          s idRecP=##class(User.MARC).getIDByIndex(class,"ico",icoP)
+          if idRecP {
+            s t001RecP=##class(User.MARC).getT001(idRecP)
+            s idxRecP=lname_"*"_t001RecP
+          }
+        }
+      }
+      continue:idxRecP=""
+      
+      s sC31="C31    "
+      s:idxRecP'="" sC31=sC31_$c(31)_"3"_idxRecP
+      s:val1.nazev'="" sC31=sC31_$c(31)_"a"_val1.nazev
+      s:icoP'="" sC31=sC31_$c(31)_"d"_icoP
+      if $l(sC31)>7 {
+        s:$l(sC31All)>7 sC31All=sC31All_$c(10)
+        s sC31All=sC31All_sC31
+      }
+      
+      if $ISOBJECT(val1.resitele) {
+        s it2=val1.resitele.%GetIterator()
+        while it2.%GetNext(.key2,.val2) {
+          s idxRecR=""   ; link na resitele C35$3
+          s rivId=val2.vedidk
+          s orcId=val2.orcid
+          s scopusId=val2.scopusid
+          //s researcherId=val2.researcherid  ; nepouzivame, nenasel jsem v datech 035
+          
+          ; dohledani autora
+          ; - musi se najit podle jmena, prijmeni a ustavu 
+          ; -- pokud se najde jeden je to OK, ale muze byt vice stejneho jmena, pouziji se identifikatory, nebo se nakonec vezme posledni nalezeny
+          ; -- pokud se nenajde, link se nedoplni (jeden autor muze v case menit ustavy, to pak ma pro kazdy ustav jiny aut. zaznam ale nas zajima jen ten spojeny se zpracovavanym ustavem)
+          s aupra=$zcvt(val2.prijmeni_" "_val2.jmeno_"  "_icoUstavAll(icoP),"l")
+          s idRecR=0
+          s node=""
+          for {
+            s node=##class(User.MARC).getIDByIndex(class,"aupra",aupra,node)
+            q:node=0
+            
+            s idRecR=node
+            s idRecRbyID=0
+            if (rivId'="")  { s idRecRbyID=##class(User.MARC).getIDByIndex(class,"ida","rivid "_rivId) }
+            if (idRecR="") && (orcId'="")  { s idRecRbyID=##class(User.MARC).getIDByIndex(class,"ida","orcid "_orcId) }
+            if (idRecR="") && (scopusId'="") { s idRecRbyID=##class(User.MARC).getIDByIndex(class,"ida","scopus "_scopusId) }
+            if idRecR=idRecRbyID { q }  ; mame overeno i podle identifikatoru
+          }
+          if idRecR {
+            s t001RecR=##class(User.MARC).getT001(idRecR)
+            s idxRecR=lname_"*"_t001RecR
+          } 
+
+          s sC35="C35    "
+          s:idxRecR'="" sC35=sC35_$c(31)_"3"_idxRecR
+          s:val2.prijmeni'="" sC35=sC35_$c(31)_"a"_val2.prijmeni
+          s:val2.jmeno'="" sC35=sC35_$c(31)_"b"_val2.jmeno
+          
+          if $l(sC35)>7 {
+            s:$l(sC35All)>7 sC35All=sC35All_$c(10)
+            s sC35All=sC35All_sC35
+          }
+        }
+      }
+    }
+  }
+  
+  d:sC31All'="" ##class(User.MARC).setTagX(.handle,sC31All)
+  d:sC35All'="" ##class(User.MARC).setTagX(.handle,sC35All)
+
+  ; cav: neprebirat
+  //s sC47="C47    "
+  //s sC47d=rec.%Get("vedni-obor-vedlejsi")
+  //s:sC47d'="" sC47=sC47_$c(31)_"d"_sC47d
+  //s:$l(sC47)>7 sC47=sC47_$c(10)_"C47    "
+  //s sC47d=rec.%Get("vedni-obor-vedlejsi-dalsi")
+  //s:sC47d'="" sC47=sC47_$c(31)_"d"_sC47d
+  //d:$l(sC47)>7 ##class(User.MARC).setTagX(.handle,sC47)
+
+
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="synchCavDbAuth">
+<Description><![CDATA[
+<pre>
+Synchronizace zmeny autoritniho zaznamu projektu do db autorit
+ handleN    zaznam projektu ziskany z vavai CEP
+ t001Rec    t001 projektu nalezeneho v lokalni db autorit, je prazdne pokud se nenasel
+ bTestOnly  "1" pouze vypisy bez zmen
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[class,&handleN,t001Rec,bTestOnly]]></FormalSpec>
+<Implementation><![CDATA[
+  s s230a=##class(User.MARC).getTagX(.handleN,"230a")  ; nazev projektu
+  s s230h=##class(User.MARC).getTagX(.handleN,"230h")  ; id projektu
+
+  w !!,"-----------------------------------------------------------------------------------------------"
+  w !,"Project ID: "_s230h
+  w !,s230a
+  
+  if (t001Rec'="") && (##class(User.MARC).readX(.handle,class,t001Rec)) {
+    w !,"update local record t001="_t001Rec
+    if bTestOnly { w !," test only, without saving changes" }
+      
+    s bHandleChange=0
+    
+    /* POKUS O VYUZITI HANDLE MERGE - moc to nefungovalo 
+    ; priprava handlu pro porovnani a merge, vlozime do nej jen tagy co se plni v obj2HandleCep
+    m h2m=handle
+    s s230=##class(User.MARC).getTagX(.handleN,"230")
+    s s430=##class(User.MARC).getTagX(.handleN,"430")
+    s sC28=##class(User.MARC).getTagX(.handleN,"C28")
+    s sC29=##class(User.MARC).getTagX(.handleN,"C29")
+    s sC31=##class(User.MARC).getTagX(.handleN,"C31",-1)
+    s sC35=##class(User.MARC).getTagX(.handleN,"C35",-1)
+    s sC47=##class(User.MARC).getTagX(.handleN,"C47")
+    d ##class(User.MARC).delTagX(.h2m,"230") d ##class(User.MARC).setTagX(.h2m,s230)
+    d ##class(User.MARC).delTagX(.h2m,"430") d ##class(User.MARC).setTagX(.h2m,s430)
+    d ##class(User.MARC).delTagX(.h2m,"C28") d ##class(User.MARC).setTagX(.h2m,sC28)
+    d ##class(User.MARC).delTagX(.h2m,"C29") d ##class(User.MARC).setTagX(.h2m,sC29)
+    d ##class(User.MARC).delTagX(.h2m,"C31") d ##class(User.MARC).setTagX(.h2m,sC31)
+    d ##class(User.MARC).delTagX(.h2m,"C35") d ##class(User.MARC).setTagX(.h2m,sC35)
+    ;d ##class(User.MARC).delTagX(.h2m,"C47") d ##class(User.MARC).setTagX(.h2m,sC47)
+    d ##class(util.compare).MARCcompare(.h2m,.handle,.changes,0)
+    ; ze zmen vyhodime vsechny delete zmeny
+    m tmp=changes k changes s changes=""
+    s nd=""
+    for {
+      s nd=$o(tmp(nd))
+      q:nd=""
+      continue:$p(nd,",")="D"
+      
+      s changes(nd)=""
+    }
+    s err=##class(util.compare).merge(.handle,.changes,.outH)
+    if err'="" {
+      w !," ERROR update record: "_err
+    }
+    d ..writeHandleOutput(.h2m,"Vavai CEP record: ")
+    d ..writeHandleOutput(.handle,"ASEP updated record: ")
+    */
+          
+      
+    ; ukladame jen to co se ziskava v obj2HandleCep, je potreba to tedy udrzovat mezi sebou synchronizovane
+
+    ; nejdrive bez opakovani poli, podpole se mohou opakovat ale zalezi na poradi
+    s changes("230")="a,b,h"
+    s changes("430")="a"
+    s changes("C28")="a"
+    s changes("C29")="a,b"
+    s nd1=""
+    for {
+      s nd1=$o(changes(nd1))
+      q:nd1=""
+      
+      s bTagChange=0
+      s tag=##class(User.MARC).getTagX(.handleN,nd1)
+      s tagDb=##class(User.MARC).getTagX(.handle,nd1)
+      s tagDbOrig=tagDb
+      
+      s str=$g(changes(nd1))
+      for i=1:1:$l(str,",") {
+        s subTagName=$p(str,",",i)
+        continue:subTagName=""
+        
+        s val=##class(User.MARC).getSubTagStr(tag,subTagName,-1)       ; takto umime zpracovat vice opakovani jednoho podpole
+        s valDb=##class(User.MARC).getSubTagStr(tagDb,subTagName,-1)   ; takto umime zpracovat vice opakovani jednoho podpole
+        
+        if (val'="") && (val'=valDb) {
+          s tagDb=##class(User.MARC).setSubTagStr(tagDb,val,nd1_"    "_$c(31)_subTagName)
+          d ##class(User.MARC).setTagX(.handle,tagDb)
+          s (bTagChange,bHandleChange)=1
+        }
+        
+      }
+      
+      if bTagChange {
+        w !,"    "_$replace(tagDbOrig,$c(31),"$$")
+        w !," -> "_$replace(tagDb,$c(31),"$$"),!,"    ---"
+        
+      }      
+    } 
+    
+    ; C31 - jednoduche porovnani celych retezcu
+    s sC31All=##class(User.MARC).getTagX(.handleN,"C31",-1)
+    s sC31AllDb=##class(User.MARC).getTagX(.handle,"C31",-1)
+    if (sC31All'=sC31AllDb) && ($l(sC31All)>=$l(sC31AllDb)) && ($l(sC31All,$c(10))>=$l(sC31AllDb,$c(10))) {
+      ; pokud je tam nejaka zmena a pocet opakovani poli je stejny nebo vetsi, a nezkratila se celkova delka tak se aktualizuje
+      ; - je to jen priblizne
+      d ##class(User.MARC).setTagX(.handle,sC31All)
+      w !,"    "_$replace($replace(sC31AllDb,$c(31),"$$"),$c(10),$c(13,10)_"    ")
+      w !," -> "_$replace($replace(sC31All,$c(31),"$$"),$c(10),$c(13,10)_"    "),!,"    ---"
+      s bHandleChange=1
+    }
+    
+    ; C35 - jednoduche porovnani celych retezcu
+    s sC35All=##class(User.MARC).getTagX(.handleN,"C35",-1)
+    s sC35AllDb=##class(User.MARC).getTagX(.handle,"C35",-1)
+    if (sC35All'=sC35AllDb) && ($l(sC35All)>=$l(sC35AllDb)) && ($l(sC35All,$c(10))>=$l(sC35AllDb,$c(10))) {
+      ; pokud je tam nejaka zmena a pocet opakovani poli je stejny nebo vetsi, a nezkratila se celkova delka tak se aktualizuje
+      ; - je to jen priblizne
+      d ##class(User.MARC).setTagX(.handle,sC35All)
+      w !,"    "_$replace($replace(sC35AllDb,$c(31),"$$"),$c(10),$c(13,10)_"    ")
+      w !," -> "_$replace($replace(sC35All,$c(31),"$$"),$c(10),$c(13,10)_"    "),!,"    ---"
+      s bHandleChange=1
+    }
+    
+    ; cav: neprebirat
+    ; C47 - dve opakovani pole, resime v nich je jedno opakovani $$d
+    /*s sC47=##class(User.MARC).getTagX(.handleN,"C47",-1)
+    if sC47'="" {
+      s sC47d1=##class(User.MARC).getSubTagStr($p(sC47,$c(10),1),"d")      ; $$d z prvniho opak. C47
+      s sC47d2=##class(User.MARC).getSubTagStr($p(sC47,$c(10),2),"d")      ; $$d ze druheho opak. C47
+      s sC47Db=##class(User.MARC).getTagX(.handle,"C47",-1)
+      s sC47d1Db=##class(User.MARC).getSubTagStr($p(sC47Db,$c(10),1),"d")  ; $$d z prvniho opak. C47
+      s sC47d2Db=##class(User.MARC).getSubTagStr($p(sC47Db,$c(10),2),"d")  ; $$d ze druheho opak. C47
+      s sC47new=""
+      ; kontrola prvniho opakovani
+      if (sC47d1'="")&&(sC47d1'=sC47d1Db) { 
+        s sC47new=##class(User.MARC).setSubTagStr($p(sC47Db,$c(10),1),sC47d1,"C47    "_$c(31)_"d") 
+      }
+      elseif sC47Db'="" { 
+        s sC47new=$p(sC47Db,$c(10),1) ; vratit prvni opakovani C47 bez zmeny
+      } 
+      ; kontrola druheho opakovani
+      if (sC47d2'="")&&(sC47d2'=sC47d2Db) {
+        s:sC47new'="" sC47new=sC47new_$c(10)
+        s sC47new=sC47new_##class(User.MARC).setSubTagStr($p(sC47Db,$c(10),2),sC47d2,"C47    "_$c(31)_"d")
+      }
+      elseif $p(sC47Db,$c(10),2)'="" {
+        s:sC47new'="" sC47new=sC47new_$c(10)
+        s sC47new=sC47new_$p(sC47Db,$c(10),2) ; vratit druhe opakovani C47 bez zmeny
+      }
+      ; zapsani zmen
+      if (sC47Db'=sC47new) {
+        d ##class(User.MARC).setTagX(.handle,sC47new)
+        w !,"    "_$replace($replace(sC47Db,$c(31),"$$"),$c(10),$c(13,10)_"    ")
+        w !," -> "_$replace($replace(sC47new,$c(31),"$$"),$c(10),$c(13,10)_"    "),!,"    ---"
+        s bHandleChange=1
+      } 
+    }*/
+
+
+
+    if bHandleChange {
+      //d ..writeHandleOutput(.handle,"Update record: ")  ; jen pro pripadnou kontrolu celeho zaznamu, zmeny se vypisuji coz by melo stacit
+      if bTestOnly { 
+        w !," test only, without saving changes" 
+      }
+      else {
+        d ##class(User.MARC).sortLinesX(.handle)
+        s sChronMode=3_$c(10)_"arl"_$c(10)_" Import projektů z db VaVaI CEP do autorit ASEP"_" - ##class(util.ie.vavai).importCavCep()"
+        s sc=##class(User.MARC).writeX(.handle,,,,sChronMode)
+        if $$$ISERR(sc) {
+          w !,"ERROR insert new record, msg="_##class(User.Util).status2str(sc)
+        }
+        else {
+          w !," - successfully, record "_$$$HandleClass(handle)_"/"_$$$HandleT001(handle)
+        }
+      }
+    }
+    else {
+      w !," no changes"
+    }    
+  }
+  else {
+    w !,"insert new record"
+    d ..writeHandleOutput(.handleN,"New record: ")  ; vypsat cely bovy zaznam
+    if bTestOnly { 
+      w !," test only, without saving changes" 
+    }
+    else {
+      d ##class(User.MARC).sortLinesX(.handleN)
+      s sChronMode=3_$c(10)_"arl"_$c(10)_" Import projektů z db VaVaI CEP do autorit ASEP"_" - ##class(util.ie.vavai).importCavCep()"
+      s sc=##class(User.MARC).writeX(.handleN,,,,sChronMode)
+      if $$$ISERR(sc) {
+        w !,"ERROR insert new record, msg="_##class(User.Util).status2str(sc)
+      }
+      else {
+        w !," - successfully, record "_$$$HandleClass(handleN)_"/"_$$$HandleT001(handleN)
+      }
+    }
+  }
+]]></Implementation>
+</Method>
+
+<Method name="testCep">
+<Description><![CDATA[
+<pre>
+d ##class(util.ie.vavai).testCep("Cav")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref</FormalSpec>
+<Implementation><![CDATA[
+  w !,"util.ie.vavai.testCep start at "_$zdt($h,3)
+  w !," ipref: "_ipref
+  w !
+
+  s class=ipref_"UnAuth"
+  
+  s icoUstavAll="" ; seznam ICO vsech ustavu, vyuzivaji podmetody
+  s untablesd=##class(User.Util).getClassPrefixParam(class)_"UnTablesd"
+  d ##class(User.MARC).readX(.hPra,untablesd,"CAV_PRA")
+  s c=0
+  do {
+    s s200=##class(User.MARC).getTagX(.hPra,"200",.c)
+    continue:s200=""
+    s icoU=##class(User.MARC).getSubTagStr(s200,"g")
+    continue:icoU=""
+    
+    s icoUstavAll(icoU)=##class(User.MARC).getSubTagStr(s200,"a")
+  } while c'=0
+
+  s poskytovatel="" ; pole pro preklad kodu poskytovatele podle EPC_POSKYTOVATEL_CEP
+  d ..prepare(class,.poskytovatel)
+    
+  s recPerPage=1, page=1
+  s req=..getHttpRequestCep()
+  //s params("fp-poskytovatel")="AV0"          ; min. jedno selekni kriterium
+  //s params("pr-kod-fix")="EH22_008/0004624"    ; CavUnAuth t001=0466793  pole 230h
+  //s params("pr-kod-fix")="GA24-10662S"         ; CavUnAuth t001=0465905
+  //s params("pr-kod-fix")="LL2402"              ; CavUnAuth t001=0471297
+  //s params("pr-kod-fix")="GA24-12229S"         ; CavUnAuth t001=0465897
+  //s params("pr-kod-fix")="SS07020400"          ; CavUnAuth t001=0468598   autor Konvickova nalezeny jiny podle RIVid mel by to byt ok
+  //s params("pr-kod-fix")="GA24-13058S"
+  s params("pr-kod-fix")="GA24-10000S"  ; ustav jako dalsi ucastnik
+  
+    
+  s bOKgcp=..getDataCep(ipref,.params,req,.obj,page,recPerPage)
+  
+  if bOKgcp { 
+    w ! zw obj.%ToJSON() 
+    if $ISOBJECT(obj.data) {
+      s iterator=obj.data.%GetIterator()
+      while iterator.%GetNext(.key, .value) {
+        s projektId=..obj2HandleCep(.handle,class,.value,.icoUstavAll,.poskytovatel)
+        
+        continue:projektId=""  ; bez cisla projektu nejsme schopni dohledat/deduplikovat
+
+        s idRec=##class(User.MARC).getIDByIndex(class,"proj",$zcvt(projektId,"l"))
+        s t001Rec=""
+        s:idRec t001Rec=##class(User.MARC).getT001(idRec)
+        d ..synchCavDbAuth(class,.handle,t001Rec,1)
+
+      }
+    }
+  }
+  
+  w !,"util.ie.vavai.testCep finished at "_$zdt($h,3),!
+]]></Implementation>
+</Method>
+
+<Method name="writeHandleOutput">
+<Description><![CDATA[
+<pre> Vypis handlu na vystup
+
+22.02.24 tt; zalozeno
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,pText=""]]></FormalSpec>
+<Implementation><![CDATA[
+  d ##class(User.MARC).sortLinesX(.handle)
+  
+  w !,"----------------------------------------------" 
+  w !,pText_$g(handle("class"))_"*"_$g(handle("t001"))
+
+  for j=1:1:10
+  { ; jdeme pres 10 uzlu recordu, to by melo stacit
+    continue:($g(handle("Rec",j))="")
+    for i=1:1:$l(handle("Rec",j),$c(10))
+    { ; vypis jednotlivych tagu
+      s line=$p(handle("Rec",j),$c(10),i)
+      w !,$$$strswap(line,$c(31),"$$")
+    }
+  }
+]]></Implementation>
+</Method>
+</Class>
+</Export>

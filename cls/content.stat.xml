@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2017.2.2 (Build 867_4U)" ts="2022-04-22 12:44:08">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.6 (Build 809U)" ts="2026-01-29 15:03:38">
 <Class name="content.stat">
 <Description><![CDATA[
 <pre> Persistentni trida pro statistiky content serveru
 
+28.01.26 ln; filtrace robotu
 11.04.22 ln; neuspesny import pres globalku muze mit nedefinovany uzel ictx
 08.02.22 ln; pridany klasicke indexy k bitmapovym
 12.11.19 ln; nepouzivat callBack pro page404
@@ -21,7 +22,7 @@
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
 <Super>%Persistent,%XML.Adaptor</Super>
-<TimeChanged>66221,45737.18198</TimeChanged>
+<TimeChanged>67599,54210.5573068</TimeChanged>
 <TimeCreated>62714,47687.938325</TimeCreated>
 <Inheritance>right</Inheritance>
 
@@ -296,6 +297,20 @@ WHERE FOR SOME %ELEMENT(Chronology) (%KEY='extension' AND %VALUE %STARTSWITH 't'
 <Properties>RecKind</Properties>
 </Index>
 
+<Property name="IsBot">
+<Type>%Boolean</Type>
+<InitialExpression>0</InitialExpression>
+</Property>
+
+<Index name="IsBot">
+<Properties>IsBot</Properties>
+</Index>
+
+<Index name="IsBotBit">
+<Type>bitmap</Type>
+<Properties>IsBot</Properties>
+</Index>
+
 <Method name="addEdit">
 <Description><![CDATA[
 <pre> Prida do statistik operaci "edit".
@@ -424,6 +439,7 @@ Vlozeni nove operace do statistik content serveru
  operation  operace edit,upload,delete,read,status a dalsi uzivatelske
  succes     uspesnost operace
 
+28.01.26 ln; filtrace robotu
 11.04.22 ln; neuspesny import pres globalku muze mit nedefinovany uzel ictx
 12.11.19 ln; nepouzivat callBack pro page404
 28.02.19 ln; podpora security uzivatelu
@@ -449,7 +465,10 @@ Vlozeni nove operace do statistik content serveru
     s stat.Category=##class(i2.access).getLogin100k()
     s stat.Login=##class(i2.access).isLoggedIn()
     s stat.Intranet=##class(i2.access).getLoginIntranet() 
-    s stat.IP=##class(i2.common).getIP()   
+    s ip=##class(i2.common).getIP()
+    s stat.IP=ip
+    ; 28.01.26 ln; filtrace robotu
+    s:'stat.Login&&'stat.Intranet stat.IsBot=##class(i2.stat.utils).isBotIpStrict(ip)
   } 
   ; 11.04.22 ln; neuspesny import pres globalku muze mit nedefinovany uzel ictx
   elseif ($g(array("importer"))'="") && $d(array("ictx")) {
@@ -571,17 +590,12 @@ Vlozeni nove operace do statistik content serveru
     ORDER BY ID
        
   )
+  
   &sql(OPEN C1)
-  &sql(FETCH C1)
- 
-  While (SQLCODE = 0) 
-  {
-    ;w !,cid
+  for { &sql(FETCH C1) q:SQLCODE
     s obj=##class(content.stat).%OpenId(cid)
     continue:'$isobject(obj)
     s st=writer.RootObject(obj)
-    
-    &sql(FETCH C1)
   }
   &sql(CLOSE C1)
  
@@ -597,6 +611,7 @@ Vlozeni nove operace do statistik content serveru
 <FormalSpec>test=1</FormalSpec>
 <Implementation><![CDATA[
   s count=0, fixed=0, saved=0
+  s sums=""
 
   &sql(DECLARE FIX1 CURSOR FOR
     SELECT ID
@@ -606,9 +621,7 @@ Vlozeni nove operace do statistik content serveru
   )
   
   &sql(OPEN FIX1)
-  &sql(FETCH FIX1)
-  While (SQLCODE = 0)  
-  {
+  for { &sql(FETCH FIX1) q:SQLCODE
 	s count=count+1
     ;w !,"id=",id
     s obj=##class(content.stat).%OpenId(id)
@@ -637,25 +650,71 @@ Vlozeni nove operace do statistik content serveru
     if 'test && (obj.%Save()) {
         s saved=saved+1
       }    
-    
-    &sql(FETCH FIX1)
   }
   &sql(CLOSE FIX1)
   
   w !
   zw sums
-  w !,"count=",count,", fixet=",fixed,", saved=",saved
+  w !,"count=",count,", fixed=",fixed,", saved=",saved
+]]></Implementation>
+</Method>
+
+<Method name="fixBot">
+<Description><![CDATA[
+<pre> Aktualizace oznaceni robotu v statistice contentSrveru (minuly a letosni rok)
+
+d ##class(content.stat).fixBot()
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>test=1</FormalSpec>
+<Implementation><![CDATA[
+  s count=0, fixed=0, saved=0
+  w !
+  s year=$e($zd($h,8),1,4)-1
+
+  &sql(DECLARE FIX2 CURSOR FOR
+    SELECT ID
+    INTO :id
+    FROM content.stat
+    WHERE YEAR(Stamp) >= :year
+  )
+  
+  &sql(OPEN FIX2)
+  for { &sql(FETCH FIX2) q:SQLCODE
+	s count=count+1
+	w:'(count#100000) "."
+	w:'(count#2000000) " "
+    s obj=##class(content.stat).%OpenId(id)
+    continue:'$isobject(obj)
+    
+    if obj.Intranet || obj.Login {
+      s curr=0 
+    } else {
+      s curr=##class(i2.stat.utils).isBotIpStrict(obj.IP)
+    }
+    
+    if obj.IsBot'=curr {
+      s fixed=fixed+1
+      s obj.IsBot=curr
+      if 'test && (obj.%Save()) {
+        s saved=saved+1
+      }
+    }    
+  }
+  &sql(CLOSE FIX2)
+  
+  w !!,"count=",count,", fixed=",fixed,", saved=",saved
 ]]></Implementation>
 </Method>
 
 <Storage name="Default">
-<Type>%Library.CacheStorage</Type>
+<Type>%Storage.Persistent</Type>
 <DataLocation>^content.statD</DataLocation>
 <DefaultData>statDefaultData</DefaultData>
 <IdLocation>^content.statD</IdLocation>
 <IndexLocation>^content.statI</IndexLocation>
 <StreamLocation>^content.statS</StreamLocation>
-<ExtentSize>100000</ExtentSize>
+<ExtentSize>5068645</ExtentSize>
 <Data name="statDefaultData">
 <Value name="1">
 <Value>%%CLASSNAME</Value>
@@ -723,28 +782,222 @@ Vlozeni nove operace do statistik content serveru
 <Value name="22">
 <Value>RecKind</Value>
 </Value>
+<Value name="23">
+<Value>IsBot</Value>
+</Value>
 </Data>
-<Property name="CKey"/>
-<Property name="Category"/>
-<Property name="Chronology"/>
-<Property name="FileName"/>
-<Property name="IP"/>
-<Property name="Ictx"/>
-<Property name="Idx"/>
-<Property name="Intranet"/>
-<Property name="Login"/>
-<Property name="LoginContext"/>
-<Property name="Operation"/>
-<Property name="RecClass"/>
-<Property name="RecKind"/>
-<Property name="RecT001"/>
-<Property name="Repo"/>
-<Property name="Result"/>
-<Property name="Stamp"/>
-<Property name="Status"/>
-<Property name="UserVal1"/>
-<Property name="UserVal2"/>
-<Property name="UserVal3"/>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+<AverageFieldSize>2</AverageFieldSize>
+</Property>
+<Property name="%%ID">
+<Selectivity>1</Selectivity>
+<AverageFieldSize>5.97</AverageFieldSize>
+</Property>
+<Property name="CKey">
+<Selectivity>0.0020%</Selectivity>
+<OutlierSelectivity>.008433:38378284033</OutlierSelectivity>
+<AverageFieldSize>6.96</AverageFieldSize>
+</Property>
+<Property name="Category">
+<Selectivity>1.0317%</Selectivity>
+<OutlierSelectivity>.828229:</OutlierSelectivity>
+<AverageFieldSize>2.17</AverageFieldSize>
+</Property>
+<Property name="Chronology">
+<Selectivity>0.0186%</Selectivity>
+<OutlierSelectivity>.988608:</OutlierSelectivity>
+<AverageFieldSize>2.4</AverageFieldSize>
+</Property>
+<Property name="FileName">
+<Selectivity>0.0015%</Selectivity>
+<OutlierSelectivity>.008433:"d4-2017_web.pdf"</OutlierSelectivity>
+<AverageFieldSize>23.34</AverageFieldSize>
+</Property>
+<Property name="IP">
+<Selectivity>0.0044%</Selectivity>
+<OutlierSelectivity>.035212:</OutlierSelectivity>
+<AverageFieldSize>14.61</AverageFieldSize>
+</Property>
+<Property name="Ictx">
+<Selectivity>4.5487%</Selectivity>
+<OutlierSelectivity>.59062:"umb"</OutlierSelectivity>
+<AverageFieldSize>5.05</AverageFieldSize>
+</Property>
+<Property name="Idx">
+<Selectivity>0.0470%</Selectivity>
+<OutlierSelectivity>.793017:</OutlierSelectivity>
+<AverageFieldSize>5.91</AverageFieldSize>
+</Property>
+<Property name="Intranet">
+<Selectivity>8.9658%</Selectivity>
+<OutlierSelectivity>.820684:0</OutlierSelectivity>
+<AverageFieldSize>2.14</AverageFieldSize>
+</Property>
+<Property name="IsBot">
+<Selectivity>33.3333%</Selectivity>
+<AverageFieldSize>2.37</AverageFieldSize>
+</Property>
+<Property name="Login">
+<Selectivity>10.3492%</Selectivity>
+<OutlierSelectivity>.793017:0</OutlierSelectivity>
+<AverageFieldSize>2.17</AverageFieldSize>
+</Property>
+<Property name="LoginContext">
+<Selectivity>0.1971%</Selectivity>
+<OutlierSelectivity>.802486:</OutlierSelectivity>
+<AverageFieldSize>7.71</AverageFieldSize>
+</Property>
+<Property name="Operation">
+<Selectivity>3.2771%</Selectivity>
+<OutlierSelectivity>.868916:"read"</OutlierSelectivity>
+<AverageFieldSize>6.22</AverageFieldSize>
+</Property>
+<Property name="RecClass">
+<Selectivity>3.1491%</Selectivity>
+<OutlierSelectivity>.59062:"UmbUnCat"</OutlierSelectivity>
+<AverageFieldSize>10.4</AverageFieldSize>
+</Property>
+<Property name="RecKind">
+<Selectivity>0.2646%</Selectivity>
+<OutlierSelectivity>.265868:"AMG"</OutlierSelectivity>
+<AverageFieldSize>4.26</AverageFieldSize>
+</Property>
+<Property name="RecT001">
+<Selectivity>0.0030%</Selectivity>
+<OutlierSelectivity>.008433:"0012862"</OutlierSelectivity>
+<AverageFieldSize>9.05</AverageFieldSize>
+</Property>
+<Property name="Repo">
+<Selectivity>5.1173%</Selectivity>
+<OutlierSelectivity>.59062:"umbrepo"</OutlierSelectivity>
+<AverageFieldSize>9.03</AverageFieldSize>
+</Property>
+<Property name="Result">
+<Selectivity>0.1997%</Selectivity>
+<OutlierSelectivity>.996005:1</OutlierSelectivity>
+<AverageFieldSize>3</AverageFieldSize>
+</Property>
+<Property name="Stamp">
+<Selectivity>0.0012%</Selectivity>
+<OutlierSelectivity>.001036:"2024-11-05 10:55:13"</OutlierSelectivity>
+<AverageFieldSize>21</AverageFieldSize>
+</Property>
+<Property name="Status">
+<Selectivity>4.6457%</Selectivity>
+<OutlierSelectivity>.814174:1</OutlierSelectivity>
+<AverageFieldSize>2.89</AverageFieldSize>
+</Property>
+<Property name="UserVal1">
+<Selectivity>0.0292%</Selectivity>
+<OutlierSelectivity>.980766:</OutlierSelectivity>
+<AverageFieldSize>2.1</AverageFieldSize>
+</Property>
+<Property name="UserVal2">
+<Selectivity>0.6429%</Selectivity>
+<OutlierSelectivity>.980766:</OutlierSelectivity>
+<AverageFieldSize>2.02</AverageFieldSize>
+</Property>
+<Property name="UserVal3">
+<Selectivity>100.0000%</Selectivity>
+<AverageFieldSize>2</AverageFieldSize>
+</Property>
+<SQLMap name="$stat">
+<BlockCount>-952</BlockCount>
+</SQLMap>
+<SQLMap name="CKey">
+<BlockCount>-34576</BlockCount>
+</SQLMap>
+<SQLMap name="Category">
+<BlockCount>-24332</BlockCount>
+</SQLMap>
+<SQLMap name="FileName">
+<BlockCount>-40016</BlockCount>
+</SQLMap>
+<SQLMap name="IDKEY">
+<BlockCount>-426516</BlockCount>
+</SQLMap>
+<SQLMap name="Ictx">
+<BlockCount>-26904</BlockCount>
+</SQLMap>
+<SQLMap name="IctxBit">
+<BlockCount>-3781</BlockCount>
+</SQLMap>
+<SQLMap name="Idx">
+<BlockCount>-26980</BlockCount>
+</SQLMap>
+<SQLMap name="Intranet">
+<BlockCount>-26860</BlockCount>
+</SQLMap>
+<SQLMap name="IntranetBit">
+<BlockCount>-1680</BlockCount>
+</SQLMap>
+<SQLMap name="IsBot">
+<BlockCount>-20360</BlockCount>
+</SQLMap>
+<SQLMap name="IsBotBit">
+<BlockCount>-821</BlockCount>
+</SQLMap>
+<SQLMap name="Login">
+<BlockCount>-26864</BlockCount>
+</SQLMap>
+<SQLMap name="LoginBit">
+<BlockCount>-2880</BlockCount>
+</SQLMap>
+<SQLMap name="LoginContext">
+<BlockCount>-26968</BlockCount>
+</SQLMap>
+<SQLMap name="Operation">
+<BlockCount>-26936</BlockCount>
+</SQLMap>
+<SQLMap name="OperationBit">
+<BlockCount>-2607</BlockCount>
+</SQLMap>
+<SQLMap name="RecClass">
+<BlockCount>-27000</BlockCount>
+</SQLMap>
+<SQLMap name="RecClassBit">
+<BlockCount>-2102</BlockCount>
+</SQLMap>
+<SQLMap name="RecKind">
+<BlockCount>-26956</BlockCount>
+</SQLMap>
+<SQLMap name="RecKindBit">
+<BlockCount>-2797</BlockCount>
+</SQLMap>
+<SQLMap name="RecT001">
+<BlockCount>-30188</BlockCount>
+</SQLMap>
+<SQLMap name="Repo">
+<BlockCount>-26936</BlockCount>
+</SQLMap>
+<SQLMap name="RepoBit">
+<BlockCount>-3133</BlockCount>
+</SQLMap>
+<SQLMap name="Result">
+<BlockCount>-26864</BlockCount>
+</SQLMap>
+<SQLMap name="ResultBit">
+<BlockCount>-784</BlockCount>
+</SQLMap>
+<SQLMap name="Stamp">
+<BlockCount>-46472</BlockCount>
+</SQLMap>
+<SQLMap name="Status">
+<BlockCount>-26864</BlockCount>
+</SQLMap>
+<SQLMap name="StatusBit">
+<BlockCount>-1184</BlockCount>
+</SQLMap>
+<SQLMap name="UserVal1">
+<BlockCount>-26912</BlockCount>
+</SQLMap>
+<SQLMap name="UserVal2">
+<BlockCount>-26900</BlockCount>
+</SQLMap>
+<SQLMap name="UserVal3">
+<BlockCount>-26896</BlockCount>
+</SQLMap>
 </Storage>
 </Class>
 </Export>

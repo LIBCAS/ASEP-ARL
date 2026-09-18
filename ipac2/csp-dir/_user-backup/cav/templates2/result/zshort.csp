@@ -2,10 +2,10 @@
 
   <ipac:loop param="RECORDS">
 
-<li data-idx="#(item)#" #($s(..v("itemtype")'="":"itemscope=""itemscope"" itemtype="""_..v("itemtype")_"""",1:""))# id="item-#($REPLACE(item,"*",""))#" class="list-group-item result-item #(oddeven)# zf-short #($p(item,"*",1))# #($s(..v("showstars")=1:"rating",1:""))#">
+<li data-idx="#(item)#" #($s(..v("itemtype")'="":"itemscope=""itemscope"" itemtype="""_..v("itemtype")_"""",1:""))# id="item-#($REPLACE(item,"*",""))#" class="list-group-item result-item #(oddeven)# zf-short druh-#(..v("druh"))# #($p(item,"*",1))# #($s(..v("showstars")=1:"rating",1:""))#">
   <csp:if condition=(..v("error")'="")>#(..v("error"))#</li>#[ continue ]#</csp:if>
 
-<div class="li-row row">
+<div class="li-row row druhbg-#(..v("druh"))#">
 
 <div class="col-lg-3 col-md-4">
 <csp:if condition=(data("PAGEID")="mydoc")>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.3 (Build 517U)" ts="2024-07-19 14:57:12">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-04-29 11:43:00">
 <Class name="i2.cust.cav.upSendEmail">
 <Description><![CDATA[
 <pre> Stranka rozesle emaily na zadost uzivatele pri schvalovani zaznamu
 
+17.04.26 ln; metoda sendMailVkladatel presunuta do i2.cust.cav.upSendEmail
 19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
 20.03.24 tt; pridano generovani zaznamu na spravne misto, aby se po ulozeni bylo spravne i metadata content serveru
 09.10.19 jk; zmenena trida pro praci s emaily
@@ -30,7 +31,7 @@
 02.11.11 tt; zalozena stranka pro rozesilani emailu pri schvalovani zaznamu
 </pre>]]></Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>67040,53814.95887925</TimeChanged>
+<TimeChanged>67689,40617.116460084</TimeChanged>
 <TimeCreated>62049,40650.340959</TimeCreated>
 
 <Parameter name="PageID">
@@ -514,6 +515,84 @@ data("tokens",$r(1000000))=`mailadr`</Description>
   //////////////////////////////////
   q sRet
 ]]></Implementation>
+</Method>
+
+<Method name="sendMailVkladatel">
+<Description><![CDATA[
+<pre> Metoda pro rozeslání email vkladateli, pokud zpracovatel vystavil jeho datový záznam
+Parametry: handle  - aktualni zpracovavany handle - jen puvodni verze pred vystaveni - pro jistotu kvuli 999e
+
+https://arl2.library.sk/wiki_arl/index.php/CAV/nab%C3%ADdka_2021#1.4._upozorn.C4.9Bn.C3.AD_na_nov.C3.A9_z.C3.A1znamy_ke_kontrole_v_myASEP_a_e-mailem_.28e-mail_pro_vkladatele_-_zpracovatel_bude_mit_.22chytry_link.22.29_27
+19.11.21 tt; provedeny zmeny v emailu
+17.11.21 tt; zalozena metoda pro rozeslani emailu pri vystaveni dataveho zaznamu
+</pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,pDataVkladatel999e=""]]></FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$$$DbClassIpref      ; Ipref (instalacni prefix)
+   s err="",sEmail=""
+   s sT001=$$$HandleT001(handle)              ; ziskani t001
+
+   s sIDUser=pDataVkladatel999e
+   s sHandle=$$$getTagX(.handle,"C60a") 
+   s:(sHandle'="") sHandle="<a href="""_sHandle_""" target=""_blank"" title=""Handle link"">"_sHandle_"<span></span></a>"
+   s:(sHandle="") sHandle="(SYSNO _"_sT001_")"
+   q:(sIDUser="") ""
+
+   if ##class(User.MARC).readLX(.handleU,sIDUser)
+   { ; pokud se poradi nacist uzivatele, pokracuji
+     ; 23.05.14 lp; ze zaznamu ctenare nacist vsechny mailove adresy z opakovatelneho 100e
+     s s100=$$$getTagX(.handleU,"100")
+     s sEmail=##class(User.MARC).getSubTagStr(s100,"e",-1)  ; email
+     s sEmail=$tr(sEmail,$c(10),",")
+     if (sEmail="")
+     { ; pokud se nepodarilo nacist email, pokusim se ho dotahnout z autority
+       s sIDAuth=$$$getTagX(.handleU,"620a") 
+       if ##class(User.MARC).readLX(.handleA,sIDAuth)
+       { ; nacteme autoritu
+         s sEmail=$$$getTagX(.handleA,"C01f")  ; email            
+       }
+     }        
+   }
+ 
+  
+   s ictx=$zcvt(ipref,"L")
+   s lang=+##class(User.Util).getServerLanguage(ipref)
+   d ##class(i2.init).batchinit(ictx,lang)
+   
+   s bHtml=1 ; nastaveno napevno, puvodne to bylo v konfiguraci I2_EMAILS
+   s sSEP=$s(bHtml:"<br/>",1:$$$CRLF)
+   
+   for i=1:1:$l(sEmail,$c(10))
+   { ; po jednotlive emailu budeme odesilat
+      s sEmail1=$p(sEmail,$c(10),i)                       ; ziskame jeden email
+      continue:(sEmail1="")
+      
+      s sMailBody=""
+        
+      s sMailBody=sMailBody_sSEP_"Vážený vkladateli,"_sSEP_"správce dat Vašeho pracoviště formálně prohlédl datový záznam "_sHandle_" a povolil jeho zveřejnění v online katalogu repozitáře ASEP."_sSEP
+      s sMailBody=sMailBody_sSEP_"Se srdečným pozdravem"_sSEP_"Tým Repozitáře ASEP"_sSEP_sSEP_sSEP_sSEP
+
+      s sMailBody=sMailBody_sSEP_"Dear Depositor,"_sSEP_"your institutional ASEP administrator has formally reviewed the "_sHandle_" data record and approved its publication in the ASEP online repository catalog."_sSEP
+      s sMailBody=sMailBody_sSEP_"Kind regards"_sSEP_"ASEP Repository team"
+      
+      s err=""
+      d ##class(util.emailgw).send($$$IPREF,sMailBody,,.err,"repozitar","Datový záznam - zveřejněn/Data record - published",$$$GETLANGUAGE,,sEmail1,,,,,"cp1250")
+      
+    }   
+    
+    q err
+]]></Implementation>
+</Method>
+
+<Method name="sendMailKnavCheck">
+<Description><![CDATA[
+<pre> Odeslani mailu pri predani zaznamu ke kontrole od zpracovatele
+handle zaznamu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle]]></FormalSpec>
 </Method>
 </Class>
 </Export>

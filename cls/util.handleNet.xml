@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-04-17 13:41:24">
+<Class name="util.handleNet">
+<Description><![CDATA[
+<pre>
+Trida pro praci s handle.net
+
+Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV/handle_net
+
+17.04.26 ln; metoda sendMailVkladatel presunuta do i2.cust.cav.upSendEmail
+26.02.25 jk; prepsano pro DUI frontu, puvodni metody zatim ponechany
+16.09.22 tt; doplněna funkčnost restored - pro zaznamy vracene z chronologie
+18.11.21 tt; CAV - pokud je datovy zaznam vystaven, provedeme rozeslani emailu - nastavime si vkladatele, jako priznak 
+                   handle link musi byt aktivni, proto tady dana vyjimka               
+24.02.2020 mj; zamena $zf(-1  
+30.11.16 jk; podpora Linuxu
+27.01.15 tt; createHandleNet: pridana vyjimka pro CAV, aby link handlu odkazoval na anglickou verzi
+15.01.15 jk; uprava cteni logu a promazavani globalu ChangeLog
+23.12.14 tt; createHandleNet: pro cav vypusteno vypisovani linku v logu handle.net
+26.11.13 jk; upravena navratova hodnota
+02.08.13 ln; odstraneny public promenne gsIctx, gnLanguage
+02.01.13 jk; upraveny write texty
+03.12.12 jk; zalozeno
+</pre>]]></Description>
+<IncludeCode>Common</IncludeCode>
+<TimeChanged>67677,49112.311193252</TimeChanged>
+<TimeCreated>62794,45624.635326</TimeCreated>
+
+<Method name="batchFiles">
+<Description><![CDATA[
+<pre>
+Otevre soubory, ktery zpracovava davka hdl-genericbatch.bat
+ ipref        prefix instituce
+ hprefix      prefix handle.net
+ batchFile    soubor davky vcetne cesty
+ logFile      log soubor davky vcetne cestye
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[ipref,hprefix,&batchFile,&logFile]]></FormalSpec>
+<Implementation><![CDATA[
+  s num=$i(^$$$MarcTempG)
+  s zh=$zh
+  s fileName=ipref_"_handleNet_"_$j_"_"_zh_num_".txt"
+  s logName= ipref_"_handleNet_"_$j_"_"_zh_num_"_log.txt"
+  s path=##class(util.common).getArlDir("LOG",ipref)
+  
+  s batchFile=path_$$$PathSepp_fileName
+  s logFile=path_$$$PathSepp_logName
+]]></Implementation>
+</Method>
+
+<Method name="process">
+<Description><![CDATA[
+<pre>
+Plneni DUI fronty
+Zapojeno v CavUnEpca.allowSaveEx() a allowDeleteExX().
+Pokud neexistuje tag C60, prida do nej link na handle.net vlozi zpracovani do DUI fronty
+ handle  zaznam pro ktery se generuje C60
+ hprefix handle.net prefix instituce napr. cav=11104
+ length  delka handle net cisla ( '= prefixuje se nulami]
+ state   "create" vytvoreni noveho handle
+         "modify" modify - zmena URL na spolecnou stranku ipacu
+         "restored" - obnoveni zaznamu z chronologie - vygeneruje link ho handle.net jako create, ale je to modify, protoze zaznam tam jiz existuje
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,length=0,state]]></FormalSpec>
+<Implementation><![CDATA[
+  s class=$$$HandleClass(handle)
+  s t001=$$$HandleT001(handle)
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s idx=##class(User.Util).objectName2lname(class)_"*"_t001
+  s cmt001="CREDENTIALS_"_$zcvt(ipref,"u")
+  s hprefix=##class(User.Util).sXlate(cmt001,"handlenet","SN",ipref,"b",,"CmSecurity")    ; handle.net prefix instituce  
+  s C60=$$$getTagX(.handle,"C60")
+  
+  s list=""  ; listbuild format: stamp,idx,pocetZpracovani,cislo_handlenet,stav
+  
+  if state="create" {
+    q:C60'=""  
+  
+    ; nove handle.net cislo
+    s num=$i(^$$$ChangeLogG($$$ChangeLogCounters,"handleNet",ipref))
+    s:length>0 num=$tr($j(num,length)," ",0)  ; prefix nulami
+  
+    s C60="C60    "_$c(31)_"ahttps://hdl.handle.net/"_hprefix_"/"_num 
+    d $$$setTagX(.handle,C60)
+  }
+  elseif ((state="modify")||(state="restored")) {
+    q:C60=""
+    s C60a=$$$getSubTagStr(C60,"a")
+    s num=$p(C60a,"/",$l(C60a,"/"))
+    q:num=""
+  }
+  ; nemame zadne datove uloziste, vse si vlozime do DUI
+  s $li(list,1)=""     ; volna pozice pro stamp zpracovani v DUI
+  s $li(list,2)=idx
+  s $li(list,3)=""     ; volna pozice pro pocet zpracovani
+  s $li(list,4)=num    ; cislo handlenet
+  s $li(list,5)=state  ; stav zaznamu -prikaz pro handlenet
+  d ##class(User.ChangeLog).handlenetDuiEnqueue(list)
+]]></Implementation>
+</Method>
+
+<Method name="duiProcess">
+<Description><![CDATA[
+<pre>
+Plneni DUI fronty
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>id,list</FormalSpec>
+<Implementation><![CDATA[
+  s prg=" util.handleNet.duiProcess "
+  w !,prg_"execute id="_id
+  
+  s ret=""        ; do DUI nevracet chybu, pri chybe se zapise znovu s casovou znackou
+  q:id="" ret
+  q:list="" ret
+  q:'$lv(list) ret
+  
+  s bDone=0
+  try {                   ; abychom neshodili DUI
+    s err=""
+    s idx=$li(list,2)
+    s num=$li(list,4)
+    s state=$li(list,5)
+    s class=##class(User.Util).lname2objectName($p(idx,"*"))
+    s ipref=##class(User.Util).getClassPrefixParam(class)
+    
+    s ictx=$zcvt(ipref,"l")
+    s language=+##class(User.Util).getServerLanguage(ipref)
+    d ##class(i2.init).batchinit(ictx,language)
+    s sBaseURL=##class(i2.html.tpl).getBaseURL()
+    ; linku na detail zaznamu v ipacu 
+    s hlink=sBaseURL_##class(i2.html.tpl).getRecordURL(idx)
+    s hlink=##class(User.Util).strswap(hlink,"&amp;","&")
+    k %ipac2 ; pokusime se hned po sobe uklidit, jsme totiz v DUI, deinicializace
+
+    s cmt001="CREDENTIALS_"_$zcvt(ipref,"u")
+    s key="handlenet"
+    if ##class(User.Util).sXlate(cmt001,key,"SE",ipref,,,"CmSecurity")="@noexist@" {
+      s err="  ERRHANDLENET002 no exists config "_cmt001_"/"_key
+      w !,err q
+    }
+    
+    s hprefix=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"b",,"CmSecurity")    ; handle.net prefix instituce
+    s auth1=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"c",,"CmSecurity")      ; prvni cast auth retezce
+    s auth2=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"d",,"CmSecurity")      ; druha cast auth retezce
+    s path=##class(util.common).getArlDir("HANDLENET",ipref)
+    s auth=auth1_$c(10)_path_$$$PathSepp_auth2                                     ; autorizacni retezec do batch souboru ("AUTHENTICATE PUBKEY: ..."
+    s hadm=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"e",,"CmSecurity")       ; autorizace k zaznamu do prikazu CREATE, napr. ("100 HS_ADMIN 86400 1110 ADMIN ...")
+    s hurl=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"f",,"CmSecurity")       ; prvni cast url do prikazu CREATE,napr. ("1 URL 86400 1110 UTF8")
+    s urldel=##class(User.Util).sXlate(cmt001,key,"SN",ipref,"g",,"CmSecurity")     ; url na stranku smazane zaznamy, bez base URL
+    
+    if (auth1="")||(auth2="")||(hadm="")||(hurl="")||(urldel="") {
+      s err="  ERRHANDLENET003 empty subtags "_cmt001_"/"_key
+      w !,err q
+    }
+    if path="" {
+      s err="  ERRHANDLENET004 no exists ARLDIR HANDLENET path"
+      w !,err q
+    }
+    
+    d ..batchFiles(ipref,hprefix,.batchFile,.logFile)
+    s file=##class(%File).%New(batchFile)
+    s sc=file.Open("WASN") 
+    if $$$ISERR(sc) {
+      s err="  ERRHANDLENET005 no open batch file "_batchFile_", "_##class(User.Util).status2str(sc)
+      w !,err q
+    }
+    
+    w !,"  operation="_state_",idx="_idx_",num="_num
+    
+    ; zapis do souboru
+    d file.WriteLine(auth)
+    d file.WriteLine()
+   
+    if ((state="create")||(state="restored")) {      
+      ; vyjimka pro CAV, aby link handlu odkazoval na anglickou verzi
+      if (ictx="cav") {
+        s hlink=$$$strswap(hlink,"/sk/","/cs/")  
+        if ##class(User.MARC).readLX(.handleCav,idx) {
+          s sTC99d=$$$getTagX(.handleCav,"C99d")
+          if (sTC99d="DFLT_DATA") {  
+            ; pokud je datovy zaznam vystaven, provedeme rozeslani emailu - nastavime si vkladatele, jako priznak 
+            ; handle link musi byt aktivni, proto tady dana vyjimka
+            s sDataVkladatel999e=$$$getTagX(.handleCav,"999e")
+            if sDataVkladatel999e'="" {
+              s errM=##class(i2.cust.cav.upSendEmail).sendMailVkladatel(.handleCav,sDataVkladatel999e)
+              if errM'="" {
+                s err="  ERRHANDLENET006 CAV error send email "_errM
+                w !,err  ; jen info, zpracovani probehne
+              }
+            }           
+          }        
+        }
+      }
+      
+      if hlink="" {
+        s err="  ERRHANDLENET007 empty hlink"
+        w !,err q
+      }
+       
+      ; pro cav vypusteno vypisovani linku v logu handle.net
+      w:(ictx'="cav") !,"  hlink="_hlink
+        
+      if (state="create") {
+        d file.WriteLine("CREATE "_hprefix_"/"_num)
+        d file.WriteLine(hadm)
+        d file.WriteLine(hurl_" "_hlink)
+        w !,"  operation CREATE added to batch"
+      }
+      elseif (state="restored") {
+        d file.WriteLine("MODIFY "_hprefix_"/"_num)
+        d file.WriteLine(hurl_" "_hlink)
+        w !,"  operation MODIFY (restored) added to batch"
+      }
+    }
+    elseif (state="modify") {
+      d file.WriteLine("MODIFY "_hprefix_"/"_num)
+      s url=sBaseURL_urldel
+      d file.WriteLine(hurl_" "_url)
+      w:(ictx'="cav") !,"  hlink="_url
+      w !,"  operation MODIFY added to batch"
+    }
+    else {
+      s err="  ERRHANDLENET008 no find operation 'create' or 'modify', no added the record to batch file"
+      w !,err q
+    }
+    
+    d file.Close()
+    
+    ; spustit davku hdl-genericbatch.bat <batchfile> [<LogFile>]
+    if ##class(User.Util).isWindows() { s cmd=path_$$$PathSepp_"hdl-genericbatch.bat"_" "_batchFile_" "_logFile }
+    else { s cmd=path_$$$PathSepp_"hdl-genericbatch"_" "_batchFile_" "_logFile }
+    
+    w !,"  running handle.net batch: ",!,cmd
+    s code=##class(deploy.common).executeOs(cmd)
+    w !,"  code:",code
+  
+    if (code'=0) {
+      s err="  ERRHANDLENET009 batch file running error, return code:"_code
+      w !,err q  ; zustava v DUI
+    }
+
+    if ('##class(%File).Exists(logFile)) {
+      s err="  ERRHANDLENET010 no exist output log file "_logFile
+      w !,err q  ; zustava v DUI
+    }
+
+    ; zda se byt vse ok, precteme log soubor
+    w !,"  batch run successfully, checking the log file "_logFile
+    s bDone=..readLogFileDui(logFile,ipref)
+      
+    w !,"  done successfully"  
+  }
+  catch exp {
+    s err="  ERRHANDLENET001#exception:"_exp.Name_exp.Location_", "_$SYSTEM.Status.Error(exp.Code,exp.Data)
+    w !,err 
+  }
+  
+  if 'bDone {
+    ; neuspesne provolani
+    s stamp=$zdt(##class(User.Util).dateHdtAdd($h,(3600*4)),3,1)   ; dalsi pokus za 4 hodiny, z DUI se nevyhazuje
+    s $li(list)=stamp
+    s $li(list,3)=$li(list,3)+1  ; cycle
+    s newId=##class(User.ChangeLog).handlenetDuiEnqueue(list)
+    w !,"  unprocessed, inserted back to dui new id="_newId
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="readLogFileDui">
+<Description><![CDATA[
+<pre>
+Pomocna metoda, cte log soubour z davky hdl-genericbatch.bat ktera byla spustena pro jeden zaznam z DUI.
+- vypisuje informace co se povedlo/nepovedlo
+Navrat
+"1" ok, "0" chyba, popis je v logu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>logFile,ipref</FormalSpec>
+<Implementation><![CDATA[
+  s ret=0
+  
+  ; nacist vystupni soubor do global streamu
+  s fileStream=##class(%FileCharacterStream).%New()
+  s fileStream.Filename=logFile  
+  s fileStream.RemoveOnClose=0  ; soubor nemazat !!!
+  While 'fileStream.AtEnd
+  {
+    s line=fileStream.ReadLine()
+    continue:$e(line,1,3)'="==>"
+    
+    s result=$e(line,4,10)
+    s hnum=$p($p(line,": ",2),"/",2)
+    s state=$p($p(line,": ",2),":",1)
+    
+    if result="SUCCESS" {
+      ; handlenet byl uspesne vytvoren/zmenen        
+      if state="create" { w !,"  record handlenet="_hnum_" succesfully created" } 
+      elseif state="modify values" { w !,"  record handlenet="_hnum_" succesfully modified" }
+      s ret=1   
+    }
+    else {
+      w !,"  ERROR: record handle.net="_hnum_" "_state_" , detail: "_line
+    } 
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="duiProcessTest">
+<Description>
+pred volanim upravit
+d ##class(util.handleNet).duiProcessTest()</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s id=1
+  s val=""
+  s $li(val,1)=""        ; volna pozice pro stamp zpracovani v DUI
+  s $li(val,2)="cbvk_us_cat*0083186"
+  s $li(val,3)=""        ; volna pozice pro pocet zpracovani
+  s $li(val,4)=10        ; cislo handlenet
+  s $li(val,5)="create"  ; stav zaznamu - prikaz pro handlenet
+  
+  d ##class(util.handleNet).duiProcess(id,val)
+]]></Implementation>
+</Method>
+
+<Method name="addHandleNet">
+<Description><![CDATA[
+<pre>
+NEPOUZIVA SE, BEZI PRES DUI handleNet.process()
+
+Plneni globalu pro nocni planovanou ulohu. Zapojeno v CavUnEpca.allowSaveEx() a allowDeleteExX().
+Pokud neexistuje tag C60, prida do nej link na handle.net a poznaci zaznam a cislo handle net
+do ChangeLogG globalu pro nocni davku.
+Zapojeno v CavUnEpca.allowSaveEx()
+ handle  zaznam pro ktery se generuje C60
+ hprefix handle.net prefix instituce napr. cav=11104
+ length  delka handle net cisla ( '= prefixuje se nulami]
+ state   "create" vytvoreni noveho handle
+         "modify" modify - zmena URL na spolecnou stranku ipacu
+         "restored" - obnoveni zaznamu z chronologie - vygeneruje link do handle.net, operace je modify, protoze zaznam tam jiz existuje
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,hprefix,length=0,state]]></FormalSpec>
+<Implementation><![CDATA[
+  s class=$$$HandleClass(handle)
+  s t001=$$$HandleT001(handle)
+  s ipref=##class(User.Util).getClassPrefixParam(class)
+  s idx=##class(User.Util).objectName2lname(class)_"*"_t001
+  s C60=$$$getTagX(.handle,"C60")
+  
+  if state="create" {
+    q:C60'=""  
+  
+    ; nove handle.net cislo
+    s num=$i(^$$$ChangeLogG($$$ChangeLogCounters,"handleNet",ipref))
+    s:length>0 num=$tr($j(num,length)," ",0)  ; prefix nulami
+  
+    s C60="C60    "_$c(31)_"ahttps://hdl.handle.net/"_hprefix_"/"_num 
+    d $$$setTagX(.handle,C60)
+    ; poznacit pro vygenerovani na handle serveru v nocni planovane uloze
+    s ^$$$ChangeLogG("handleNet",ipref,num)=idx
+    s ^$$$ChangeLogG("handleNet",ipref,num,state)=$zdt($h,3,1,2)
+  }
+  elseif ((state="modify")||(state="restored")) {
+    q:C60=""
+    s C60a=$$$getSubTagStr(C60,"a")
+    s num=$p(C60a,"/",$l(C60a,"/"))
+    q:num=""
+    ; poznacit pro vygenerovani na handle serveru v nocni planovane uloze
+    s ^$$$ChangeLogG("handleNet",ipref,num)=idx
+    s ^$$$ChangeLogG("handleNet",ipref,num,state)=$zdt($h,3,1,2)
+  }
+]]></Implementation>
+</Method>
+
+<Method name="createHandleNet">
+<Description><![CDATA[
+<pre> 
+NEPOUZIVA SE, BEZI PRES DUI handleNet.duiProcess()
+
+Metoda, ktera se spousti jako planovana. Prochazi global ChangeLogG("handleNet",ipref) 
+se zaznamy obsahujici v C60 handle net link. 
+"create"  tyto zaznamy zatim nejsou registrovane na handle serveru, link v C60 je tedy nefunkcni
+"modify"  zaznam je prave mazan, v handle.net se presmeruje jeho url na spolecnou ipac stranku urlModif
+"restored" - obnoveni zaznamu z chronologie - vygeneruje link ho handle.net jako create, ale je to modify, protoze zaznam tam jiz existuje
+Link v C60 zacne fungovat.
+
+Dokumentace: https://cosmo2/wiki/index.php/Cust:CAV/handle_net  
+
+ ipref      prefix instituce
+ hprefix    handle.net prefix instituce
+ auth       autorizacni retezec do batch souboru ("AUTHENTICATE PUBKEY: ..."
+ hadm       autorizace k zaznamu do prikazu CREATE, napr. ("100 HS_ADMIN 86400 1110 ADMIN ...")
+ hurl       prvni cast url do prikazu CREATE,napr. ("1 URL 86400 1110 UTF8")
+ urlModif   cav - url na stranku smazane zaznamy, bez base URL
+
+Navrat:
+"1" ok, "0" chyba
+
+30.11.16 jk; podpora Linuxu
+27.01.15 tt; pridana vyjimka pro CAV, aby link handlu odkazoval na anglickou verzi
+23.12.14 tt; pro cav vypusteno vypisovani linku v logu handle.net
+26.11.13 jk; upravena navratova hodnota
+<\pre> ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref,hprefix,auth,hadm,hurl,urlModif</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  w !,"Planovana uloha spustena ##class(util.handleNet).createHandleNet()"_
+      " - vytvoreni a modifikace handle.net"
+  // zakomentovano - predavaji se prihlasovaci udaje
+  //w !,"Params:"
+  //w !," ipref="_ipref
+  //w !," hprefix="_hprefix,!
+  //w !," auth="_auth
+  //w !," hadm="_hadm,!
+  //w !," hurl="_hurl
+  //w !," urlModif="_urlModif,!
+ 
+  ; simulace prostredi IPACu
+  s ictx=$zcvt(ipref,"l")
+  s language=+##class(User.Util).getServerLanguage(ipref)
+  d ##class(i2.init).batchinit(ictx,language)
+  s sBaseURL=##class(i2.html.tpl).getBaseURL() 
+   
+  d ..batchFiles(ipref,hprefix,.batchFile,.logFile)
+  s file=##class(%File).%New(batchFile)
+  s sc=file.Open("WASN") 
+  if $$$ISERR(sc) {
+    w !,"error: chyba pri otevirani batch souboru,"_##class(User.Util).status2str(sc)
+    q 0
+  }
+  
+  s num="", todel="", bRec=0, idx="", bErr=0
+  f i=1:1  
+  { ; cyklus pres zaznamy
+    s num=$o(^$$$ChangeLogG("handleNet",ipref,num),1,idx)
+    q:((num=""))
+            
+    ; vypiseme autorizaci
+    if i=1 { d file.WriteLine(auth) }
+    
+    ; cyklus pres operace jednoho zaznamu (zaznam muze byt napr. vystaveny i smazany v jedne davce)
+    s operation=""
+    f {
+      s operation=$o(^$$$ChangeLogG("handleNet",ipref,num,operation))
+      q:((operation=""))
+      w !,"operation="_operation_",idx="_idx_",num="_num
+      
+      d file.WriteLine()
+      if ((operation="create")||(operation="restored")) {
+        ; linku na detail zaznamu v ipacu 
+        s hlink=sBaseURL_##class(i2.html.tpl).getRecordURL(idx)
+        s hlink=##class(User.Util).strswap(hlink,"&amp;","&")
+        
+        if (ictx="cav")
+        { ; 27.01.15 tt; pridana vyjimka pro CAV, aby link handlu odkazoval na anglickou verzi
+          s hlink=$$$strswap(hlink,"/sk/","/cs/")  
+          if ##class(User.MARC).readLX(.handleCav,idx)
+          {
+            s sTC99d=$$$getTagX(.handleCav,"C99d")
+            if (sTC99d="DFLT_DATA")
+            {  ; 18.11.21 tt; CAV - pokud je datovy zaznam vystaven, provedeme rozeslani emailu - nastavime si vkladatele, jako priznak 
+               ;                    handle link musi byt aktivni, proto tady dana vyjimka
+               s sDataVkladatel999e=$$$getTagX(.handleCav,"999e")
+               s:(sDataVkladatel999e'="") sError=##class(i2.cust.cav.upSendEmail).sendMailVkladatel(.handleCav,sDataVkladatel999e)
+               w:(sError'="") !,"error: neprobehlo rozeslani emailu vkladateli: "_sError
+            }           
+          }        
+        }
+        if hlink="" {
+          w !,"error: empty hlink"
+          continue
+        }
+        ; 23.12.14 tt; pro cav vypusteno vypisovani linku v logu handle.net
+        w:(ictx'="cav") !,"hlink="_hlink
+        
+        if (operation="create")
+        {
+            d file.WriteLine("CREATE "_hprefix_"/"_num)
+            d file.WriteLine(hadm)
+            d file.WriteLine(hurl_" "_hlink)
+            w !,"operace create pridana do batch davky pro tvorbu handle.net"
+        }
+        elseif (operation="restored")
+        { ; 16.09.22 tt; pridana operace restored pro obnovene zaznamy z chronologie - editujem existujici zaznam, proto MODIFY
+          d file.WriteLine("MODIFY "_hprefix_"/"_num)
+          d file.WriteLine(hurl_" "_hlink)
+           w !,"operace modify pridana do batch davky pro tvorbu handle.net - restored"
+        }
+        s bRec=1       
+      } 
+      elseif (operation="modify") {
+        d file.WriteLine("MODIFY "_hprefix_"/"_num)
+        s url=sBaseURL_urlModif
+        d file.WriteLine(hurl_" "_url)
+        s bRec=1
+        w:(ictx'="cav") !,"hlink="_url
+        w !,"operace modify pridana do batch davky pro tvorbu handle.net"
+      }
+    }
+    s:'bRec bErr=1  ; priznak ze se nekde neco nepovedlo, popis je v logu
+    w:'bRec !,"error: zaznam NEBYL pridan do batch davky pro tvorbu handle.net, nenalezena operace create nebo modify"
+    w !,"------------------------------------------------------------"
+  }
+  
+  d file.Close()
+  
+  if 'bRec {
+    d ##class(%File).Delete(batchFile)
+    w !,"nenalezen zadny zaznam pro tvorbu handle.net"
+    w !,"KONEC"
+    q:bErr 0
+    q 1
+  }
+  
+  ; spustit davku hdl-genericbatch.bat <batchfile> [<LogFile>]
+  s path=##class(util.common).getArlDir("HANDLENET",ipref)
+  
+  ; 30.11.16 jk; podpora Linuxu
+  if ##class(User.Util).isWindows() {
+    s cmd=path_$$$PathSepp_"hdl-genericbatch.bat"_" "_batchFile_" "_logFile
+  }
+  else {
+    s cmd=path_$$$PathSepp_"hdl-genericbatch"_" "_batchFile_" "_logFile
+  }
+  
+  w !,"Spusteni handle.net davky:",!,cmd
+  ;24.02.2020 mj; zamena $zf(-1  
+  s code=##class(deploy.common).executeOs(cmd)
+  w !,"code:",code
+  
+  if (code'=0)
+  {
+    w !,"error: chyba pri spusteni prikazu: "_cmd_", code:"_code
+    q 0
+  }
+
+  if ('##class(%File).Exists(logFile))
+  {
+    w !,"error: nenalezen vystupni log soubor "_logFile
+    q 0
+  }
+
+  ; zda se byt vse ok, precteme log soubor
+  w !,"davka probehla, kontrola log souboru "_logFile
+  s ret1=..readLogFile(logFile,ipref)
+  
+  q ('bErr && ret1)   ; pokud se neco nepovedlo, vraci se 0, jinak 1
+]]></Implementation>
+</Method>
+
+<Method name="readLogFile">
+<Description><![CDATA[
+<pre>
+NEPOUZIVA SE, BEZI PRES DUI handleNet.duiProcess()
+
+Pomocna metoda, cte log soubour z davky hdl-genericbatch.bat
+- vypisuje informace co se povedlo/nepovedlo
+- uspesne vytvorene/zmenene zaznamy vymaze z globalu ChangeLog
+Navrat
+"1" ok, "0" chyba, popis je v logu
+
+15.01.15 jk; uprava cteni logu a promazavani globalu ChangeLog
+02.01.13 jk; upraveny write texty
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>logFile,ipref</FormalSpec>
+<Implementation><![CDATA[
+  s ret=1
+  
+  ; nacist vystupni soubor do global streamu
+  s fileStream=##class(%FileCharacterStream).%New()
+  s fileStream.Filename=logFile  
+  s fileStream.RemoveOnClose=0  ; soubor nemazat !!!
+  While 'fileStream.AtEnd
+  {
+    s line=fileStream.ReadLine()
+    continue:$e(line,1,3)'="==>"
+    
+    s state=$e(line,4,10)
+    s hnum=$p($p(line,": ",2),"/",2)
+    s operation=$p($p(line,": ",2),":",1)
+    
+    if state="SUCCESS" {
+      ; handlenet byl uspesne vytvoren/zmenen, vymazeme jej z globalu
+      if '$d(^$$$ChangeLogG("handleNet",ipref,hnum)) {
+        s ret=0
+        w !,"error: nenalezen zaznam handle.net="_hnum_" v seznamu ^ChangeLog(""handleNet"","""_ipref_""","""_hnum_""")"
+        w !,"line:"_line
+      } else {
+        s idx=$g(^$$$ChangeLogG("handleNet",ipref,hnum))
+        
+        if operation="create" {
+          k ^$$$ChangeLogG("handleNet",ipref,hnum,"create")
+          w !,"zaznam idx="_idx_" handlenet="_hnum_" byl uspesne vytvoren"
+          w !," operace create byla vymazana ze seznamu ^ChangeLog(""handleNet"","""_ipref_""","""_hnum_""")"
+        } elseif operation="modify values" {
+          k ^$$$ChangeLogG("handleNet",ipref,hnum,"modify")
+          w !,"zaznam idx="_idx_" handlenet="_hnum_" byl uspesne zmenen"
+          w !," operace modify byla vymazana ze seznamu ^ChangeLog(""handleNet"","""_ipref_""","""_hnum_""")"
+        }    
+
+        if ($d(^$$$ChangeLogG("handleNet",ipref,hnum))<=1) {
+          ; nejsou zadne dalsi operace, vymazat cely uzel zaznamu
+          k ^$$$ChangeLogG("handleNet",ipref,hnum)
+          w !," zaznam byl vymazan ze seznamu"
+        } else {
+          w !," zaznam zustava v seznamu, existuje pro nej dalsi operace"
+        }       
+      }
+    }
+    elseif(state="FAILURE") {
+      ; chyba pri vytvareni handle.net zaznamu
+      s idx=""
+      s ret=0
+      
+      if '$d(^$$$ChangeLogG("handleNet",ipref,hnum)) {
+        w !,"error: nenalezen zaznam handle.net="_hnum_" v seznamu ^ChangeLog(""handleNet"","""_ipref_""","""_hnum_""")"
+        w !,"line:"_line
+      } 
+      else {
+        if $f(line,"HANDLE ALREADY EXISTS"){
+          ; vymazat operaci a pripadne i cely zaznam
+          k ^$$$ChangeLogG("handleNet",ipref,hnum,"create")
+          w !,"error: handle.net zaznam idx="_idx_", handle.net="_hnum_" jiz v handlenet serveru existuje, operace create byla vymazana ze seznamu"
+          if ($d(^$$$ChangeLogG("handleNet",ipref,hnum))<=1) {
+            ; nejsou zadne dalsi operace, vymazat cely uzel zaznamu
+            k ^$$$ChangeLogG("handleNet",ipref,hnum)
+            w !," zaznam byl vymazan ze seznamu"
+           } else {
+            w !," zaznam zustava v seznamu, existuje pro nej dalsi operace"
+          } 
+         }
+        else {
+          s idx=$g(^$$$ChangeLogG("handleNet",ipref,hnum))
+          w !,"error: handle.net zaznam idx="_idx_", handle.net="_hnum_" se nepodarilo "
+          w:operation="create" "vytvorit, detail: "_line
+          w:operation="modify values" "zmenit, detail: "_line
+          w !,"Zaznam idx="_idx_" zustava v seznamu ^ChangeLog(""handleNet"","""_ipref_""","""_hnum_""")" 
+        }
+      }
+    }
+    else {
+      s ret=0
+      w !,"error: neznamy stav v logu, neosetreno, line="_line
+    }   
+  }
+  
+  q ret
+]]></Implementation>
+</Method>
+
+<Method name="testCreateHandleNet">
+<Description><![CDATA[
+<pre>
+NEPOUZIVA SE, BEZI PRES DUI handleNet.duiProcess()
+
+Priklad provolani Cav.
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s ipref="Cav"
+  s hprefix="11104"
+  s path=##class(util.common).getArlDir("HANDLENET",ipref)
+  s auth="AUTHENTICATE PUBKEY:300:0.NA/11104"_$c(10)_path_$$$PathSepp_"admpriv.bin|111.knav.04"
+  s hadm="100 HS_ADMIN 86400 1110 ADMIN 200:110011111111:0.NA/11104"
+  s hurl="1 URL 86400 1110 UTF8"
+  s urldel="i2.entry.cls?ictx=cav&language=2&op=cavdeletedrecord"
+  d ..createHandleNet(ipref,hprefix,auth,hadm,hurl,urldel)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

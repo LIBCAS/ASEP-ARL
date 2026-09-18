@@ -1,0 +1,1019 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-07-28 14:47:04">
+<Class name="util.rest.v1.s3REST">
+<Description><![CDATA[
+<pre> Rest sluzba pro nahravani souboru do S3 (zatim s uploaderemu Uppy)
+
+28.07.26 ln; vycleneni klicu do CREDENTIALS
+</pre>]]></Description>
+<Super>util.rest.superREST</Super>
+<TimeChanged>67779,52804.05356238</TimeChanged>
+<TimeCreated>67121,39647.802054805</TimeCreated>
+
+<Parameter name="HandleCorsRequest">
+<Default>1</Default>
+</Parameter>
+
+<Parameter name="CONTENTTYPE">
+<Default>application/json</Default>
+</Parameter>
+
+<Parameter name="CHARSET">
+<Default>utf-8</Default>
+</Parameter>
+
+<Parameter name="CONVERTINPUTSTREAM">
+<Default>1</Default>
+</Parameter>
+
+<XData name="UrlMap">
+<XMLNamespace>http://www.cosmotron.cz/urlmap</XMLNamespace>
+<Data><![CDATA[
+<Routes>
+<Route Url="/upload" Method="POST" Call="s3UploadUrlPOST"/>
+<Route Url="/multipart" Method="POST" Call="s3MultipartPOST"/>
+<Route Url="/list" Method="POST" Call="s3ListPOST"/>
+<Route Url="/sign" Method="POST" Call="s3SignPOST"/>
+<Route Url="/abort" Method="POST" Call="s3AbortPOST"/>
+<Route Url="/complete" Method="POST" Call="s3CompletePOST"/>
+<Route Url="/success" Method="PUT" Call="s3SuccessPUT"/>
+<Route Url="/download/:repo/:key" Method="GET" Call="s3DownloadUrlGET"/>
+<Route Url="/title/:t001" Method="GET" Call="s3TitleGET"/>
+</Routes>
+]]></Data>
+</XData>
+
+<Method name="s3TitleGET">
+<Description><![CDATA[
+<pre> Získání informací o záznamu ke kterému se nahrává soubor
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,t001:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  s cmJson=""
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  ; TODO logovani ci hlaska prava:"_cmdApiGrp_"|"_userName_"|"_service
+  q:cmdApiGrp="" $$$OK
+   
+  s err=##class(util.rest.v1.utils).openLogFile(.env,cmdApiGrp,service,.lsLogFile)
+  q:err'="" $$$OK
+  
+  try {
+    w !,"Params:"
+    w !," ictx:     "_ictx   
+    w !,"user:     "_userName 
+    
+    s class=ipref_"UnEpca"
+    if '##class(User.MARC).readX(.handle,class,t001,"T") {
+      s err="ERR_REST003#No record found by T001 "_t001
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP404NOTFOUND,lsLogFile,err)
+      q 
+    }
+    s title=##class(User.MARC).getTagX(.handle,"Tbca")
+    s title=##class(rep.zf.tf).stripHtmlTags(title)
+    s title=##class(User.Util).HTMLfixup($p(title,"\n",1))
+    
+    s files=[]
+    ; ziskame vsechny data k zaznamu v output
+    d ##class(content.api).selectRecAll(.output,class,t001)
+    
+    ; prochazime postupne cyklem vsech polozek k zaznamu
+    s item=""      ; jedna polozka k zaznamu
+    for { s item=$o(output(item)) q:item=""
+      s repo=output(item,"repository")   ; ziskame repository
+      s key=output(item,"key")           ; klice
+  
+      d ##class(content.api).getBatch(.array,repo,key)
+      s nazev=$g(array("origname"))
+      continue:(nazev="")               ; pokud nemame nazev, preskocime
+      
+      d files.%Push(nazev)
+    }
+    
+    s cm = {
+      "class": (class),
+      "t001": (t001),
+      "title": (title),
+      "files": (files)
+    }    
+    s cmJson=cm.%ToJSON()
+    w !,"RESPONSE:",!,cmJson
+   
+    d ##class(util.rest.v1.utils).closeLogFile(.env,lsLogFile)
+  } catch exp {
+    k %ipac2("ictx")
+    if $zcvt(lsLogFile,"L")=$zcvt($IO,"L") {
+      s err=exp.Name_exp.Location_", "_$SYSTEM.Status.Error(exp.Code,exp.Data)   
+      w !,"ERROR:",!,err
+      d ##class(util.rest.v1.utils).closeLogFile(.env,lsLogFile)
+    }   
+  }
+  
+  w cmJson
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="commonConfig">
+<Description><![CDATA[
+<pre> spolecna konfigurace pro python funkce (knihovna boto3)
+
+28.07.26 ln; vycleneni klicu do CREDENTIALS
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref,repo:%String,key:%String</FormalSpec>
+<ReturnType>%DynamicObject</ReturnType>
+<Implementation><![CDATA[
+  s server=##class(User.Util).sXlate("CREDENTIALS_"_$zcvt(ipref,"u"),"s3_access","SN",ipref,"b",,"CmSecurity")
+  s access=##class(User.Util).sXlate("CREDENTIALS_"_$zcvt(ipref,"u"),"s3_access","SN",ipref,"c",,"CmSecurity")
+  s secret=##class(User.Util).sXlate("CREDENTIALS_"_$zcvt(ipref,"u"),"s3_access","SN",ipref,"d",,"CmSecurity")
+    
+  s config = {
+    "accessKey": (access),
+    "secretKey": (secret),
+    "endpoint": ("https://"_server),
+    "bucket": (repo_"-"_$zcvt($namespace,"L")),
+    "key": (key)
+  }
+  
+  q config
+]]></Implementation>
+</Method>
+
+<Method name="s3UploadUrlPOST">
+<Description><![CDATA[
+<pre> Ziskani upload url, volano napr z uppy uploaderu
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  s cmJson=""
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  ; TODO logovani ci hlaska prava:"_cmdApiGrp_"|"_userName_"|"_service
+  q:cmdApiGrp="" $$$OK
+   
+  s err=##class(util.rest.v1.utils).openLogFile(.env,cmdApiGrp,service,.lsLogFile)
+  q:err'="" $$$OK
+  
+  try {
+    w !,"Params:"
+    w !," ictx:     "_ictx   
+    w !,"user:     "_userName 
+    
+    ; nacteni vstupnich parametru z request body
+    if '##class(util.rest.v1.utils).getObjFromReqBody(.obj) {
+      s err="ERR_REST001#Request body JSON required"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP400BADREQUEST,lsLogFile,err)
+      q
+    } 
+    s objJson=obj.%ToJSON()
+    w !," REQ body: "_objJson   
+    
+    s repo=##class(content.human).getRepo(ictx)
+    w !,"repo:     "_repo
+    
+    s arl=obj.arl
+    s class=arl.class, t001=arl.t001
+    if ##class(User.Util).getClassPrefixParam(class)'=ipref {
+      s err="ERR_REST003#No record found in class "_class
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP404NOTFOUND,lsLogFile,err)
+      q
+    }
+    if t001="" {
+      s err="ERR_REST003#t001 required"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP404NOTFOUND,lsLogFile,err)
+      q
+    }
+    
+    ;s runtime("class")=class
+    ;s runtime("t001")=t001
+    
+    s itr=obj.arl.%GetIterator()
+    while itr.%GetNext(.node,.val) {
+      s runtime(node)=val
+    }
+    
+    s runtime("origname")=obj.name
+    s runtime("extension")=obj.extension
+    s runtime("size")=obj.size
+    s mime=obj.type
+    s runtime("ctype")=mime
+    s type=arl.type
+    s:type="" type="content"
+    s runtime("type")=type
+    s userT001=$p(##class(util.sec.security).securityGet(userName,"r"),"*",2)
+    s runtime("user")=userT001
+    w !,"user2: "_userT001
+  
+    s %ipac2("ictx")=ictx ; TODO
+    if '##class(content.api).engineUpload(repo,.array,.runtime) {
+      d ##class(content.stat).addUpload(.array,0)
+      s err="ERR_CONT001#engineUpload error"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP403FORBIDDEN,lsLogFile,err)
+      q
+    }
+    
+    s objC=##class(content.metadata).%New(repo)
+    s st=objC.%Save()
+    if 'st {
+	  s err="ERR_CONT002#key"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP409CONFLICT,lsLogFile,err)
+	  q
+    }    
+    
+    s key=objC.CKey_"k"
+    s array("key")=key
+    s array("ver")="s3 import"
+    ;s array("bigdata")="true"
+    s:'$d(array("status")) array("status")=""
+    s array("dayimport")=$zd($h,8)  
+    s:$g(array("importer"))="" array("importer")=userT001
+    s array("supervisor")=$g(array("supervisor"))
+    ; TODO array("supervisor"), array("status"), array("accession")
+    s crank=$e($o(^content.metadataI("CRank",class,t001,""),-1),2,*)
+    s array("crank")=##class(content.order).getRanks(crank)
+    
+    d ##class(content.engine).set(.array,objC)
+    k %ipac2("ictx")
+    s objC.Version=0
+    ;d $system.OBJ.Dump(objC)
+    
+    if 'objC.%Save() {
+      d ##class(content.metadata).%DeleteId(objC.%Id())
+      s err="ERR_CONT002#save"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP409CONFLICT,lsLogFile,err)
+	  q
+    }
+  
+    s config=..commonConfig(ipref,repo,key)
+    s config.contentType=mime
+    s url=..putFile(config...)
+  
+    s cm = {
+      "method": "PUT",
+      "url": (url),
+      "repo": (repo),
+      "key": (key),
+      "log": (lsLogFile)
+    }
+    s cmJson=cm.%ToJSON()
+    w !,"RESPONSE:",!,cmJson
+   
+    d ##class(util.rest.v1.utils).closeLogFile(.env,lsLogFile)
+  } catch exp {
+    k %ipac2("ictx")
+    if $zcvt(lsLogFile,"L")=$zcvt($IO,"L") {
+      s err=exp.Name_exp.Location_", "_$SYSTEM.Status.Error(exp.Code,exp.Data)   
+      w !,"ERROR:",!,err
+      d ##class(util.rest.v1.utils).closeLogFile(.env,lsLogFile)
+    }   
+  }
+  
+  w cmJson
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="s3MultipartPOST">
+<Description><![CDATA[
+<pre> Získání uploadId pro multipart upload do S3
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  s cmJson=""
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+   
+  s err=##class(util.rest.v1.utils).openLogFile(.env,cmdApiGrp,service,.lsLogFile)
+  q:err'="" $$$OK
+  
+  try {
+    w !,"Params:"
+    w !," ictx:     "_ictx   
+    w !,"user:     "_userName 
+    
+    ; nacteni vstupnich parametru z request body
+    if '##class(util.rest.v1.utils).getObjFromReqBody(.obj) {
+      s err="ERR_REST001#Request body JSON required"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP400BADREQUEST,lsLogFile,err)
+      q
+    } 
+    s objJson=obj.%ToJSON()
+    w !," REQ body: "_objJson   
+    
+    s repo=##class(content.human).getRepo(ictx)
+    w !,"repo:     "_repo
+    
+    s arl=obj.arl
+    s class=arl.class, t001=arl.t001
+    if ##class(User.Util).getClassPrefixParam(class)'=ipref {
+      s err="ERR_REST003#No record found in class "_class
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP404NOTFOUND,lsLogFile,err)
+      q
+    }
+    if t001="" {
+      s err="ERR_REST003#t001 required"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP404NOTFOUND,lsLogFile,err)
+      q
+    }
+    
+    ;s runtime("class")=class
+    ;s runtime("t001")=t001
+    
+    s itr=obj.arl.%GetIterator()
+    while itr.%GetNext(.node,.val) {
+      s runtime(node)=val
+    }
+    
+    s runtime("origname")=obj.name
+    s runtime("extension")=obj.extension
+    s runtime("size")=obj.size
+    s mime=obj.type
+    s runtime("ctype")=mime
+    s type=arl.type
+    s:type="" type="content"
+    s runtime("type")=type
+    s userT001=$p(##class(util.sec.security).securityGet(userName,"r"),"*",2)
+    s runtime("user")=userT001
+    w !,"user2: "_userT001
+  
+    s %ipac2("ictx")=ictx ; TODO
+    if '##class(content.api).engineUpload(repo,.array,.runtime) {
+      d ##class(content.stat).addUpload(.array,0)
+      s err="ERR_CONT001#engineUpload error"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP403FORBIDDEN,lsLogFile,err)
+      q
+    }
+    
+    s objC=##class(content.metadata).%New(repo)
+    s st=objC.%Save()
+    if 'st {
+	  s err="ERR_CONT002#key"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP409CONFLICT,lsLogFile,err)
+	  q
+    }    
+    
+    s key=objC.CKey_"k"
+    s array("key")=key
+    s array("ver")="s3 import"
+    ;s array("bigdata")="true"
+    s:'$d(array("status")) array("status")=""
+    s array("dayimport")=$zd($h,8)  
+    s:$g(array("importer"))="" array("importer")=userT001
+    s array("supervisor")=$g(array("supervisor"))
+    ; TODO array("supervisor"), array("status"), array("accession")
+    s crank=$e($o(^content.metadataI("CRank",class,t001,""),-1),2,*)
+    s array("crank")=##class(content.order).getRanks(crank)
+    
+    d ##class(content.engine).set(.array,objC)
+    k %ipac2("ictx")
+    s objC.Version=0
+    ;d $system.OBJ.Dump(objC)
+    
+    if 'objC.%Save() {
+      d ##class(content.metadata).%DeleteId(objC.%Id())
+      s err="ERR_CONT002#save"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP409CONFLICT,lsLogFile,err)
+	  q
+    }
+  
+    s config=..commonConfig(ipref,repo,key)
+    s config.contentType=mime
+    s uploadId=..multiFile(config...)
+  
+    s cm = {
+      "uploadId": (uploadId),
+      "repo": (repo),
+      "key": (key),
+      "log": (lsLogFile)
+    }
+    s cmJson=cm.%ToJSON()
+    w !,"RESPONSE:",!,cmJson
+   
+    d ##class(util.rest.v1.utils).closeLogFile(.env,lsLogFile)
+  } catch exp {
+    k %ipac2("ictx")
+    if $zcvt(lsLogFile,"L")=$zcvt($IO,"L") {
+      s err=exp.Name_exp.Location_", "_$SYSTEM.Status.Error(exp.Code,exp.Data)   
+      w !,"ERROR:",!,err
+      d ##class(util.rest.v1.utils).closeLogFile(.env,lsLogFile)
+    }   
+  }
+  
+  w cmJson
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="s3ListPOST">
+<Description><![CDATA[
+<pre> Získání přehledu úspěšně nahraných částí souboru 
+(např. pro navázání přerušeného uploadu)
+d ##class(util.rest.v1.s3REST).s3ListPOST("cav")
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  /*s ipref="Cav", repo="crepo1", key="57984269805k", uploadId="2~ZIFi5zN0s4yB6xuY109AJaQBjllbNl7"
+  
+  s config=..commonConfig(ipref,repo,key)
+  s config.uploadId=uploadId
+  s parts=..listFile(config...)  
+  s json={}.%FromJSON(parts)
+  w:$isobject(json.Parts) 1
+  b*/
+  
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  
+  s ret="[]"
+  s res=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:res'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+  
+  if '##class(util.rest.v1.utils).getObjFromReqBody(.obj) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST001#Request body JSON required")
+    q $$$OK
+  }
+  s repo=obj.repo
+  s key=obj.key
+  
+  s config=..commonConfig(ipref,repo,key)
+  s config.uploadId=obj.uploadId
+      
+  s parts=..listFile(config...)
+  s json={}.%FromJSON(parts)
+  s:$isobject(json.Parts) ret=json.Parts.%ToJSON()
+  w ret
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="s3SignPOST">
+<Description><![CDATA[
+<pre> Ziskani url pro upload části souboru (multipart upload)
+
+<pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+  
+  if '##class(util.rest.v1.utils).getObjFromReqBody(.obj) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST001#Request body JSON required")
+    q $$$OK
+  }
+  ;s obj = {"repo":"crepo1","key":"123132k","uploadId":"2~KJ5NaHlmlo2LxZ2UDPPxUrI8qt_C5_Y","partNumber":1}
+  
+  s repo=obj.repo
+  s key=obj.key
+  
+  s config=..commonConfig(ipref,repo,key)
+  s config.uploadId=obj.uploadId
+  s config.partNumber=obj.partNumber 
+  
+  s url=..signFile(config...)
+  
+  s cm = {
+    "url": (url) ; _"&content-type="_##class(i2.html.base).encode("image/jpeg")
+  }
+  w cm.%ToJSON()
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="s3AbortPOST">
+<Description><![CDATA[
+<pre> Zrušení upload části souboru
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+  
+  if '##class(util.rest.v1.utils).getObjFromReqBody(.obj) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST001#Request body JSON required")
+    q $$$OK
+  }
+  ;s obj = {"repo":"crepo1","key":"123132k","uploadId":"2~KJ5NaHlmlo2LxZ2UDPPxUrI8qt_C5_Y","partNumber":1}
+  
+  s repo=obj.repo
+  s key=obj.key
+  
+  s config=..commonConfig(ipref,repo,key)
+  s config.uploadId=obj.uploadId
+  
+  s:obj.uploadId x=..abortFile(config...)
+  
+  s objCont=##class(content.engine).open(repo,key,0)
+  d ##class(content.metadata).%DeleteId(objCont.%Id())
+  
+  s cm = {
+    "status": "ok"
+  }
+  w cm.%ToJSON()
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="s3CompletePOST">
+<Description><![CDATA[
+<pre> Dokončení upload části souboru v S3
+
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+  
+  if '##class(util.rest.v1.utils).getObjFromReqBody(.obj) {
+    s %response.Status = ..#HTTP400BADREQUEST
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST001#Request body JSON required")
+    q $$$OK
+  }
+  ;s obj = {"repo":"crepo1","key":"123132k","uploadId":"2~TeQF2FnPZMDPa4AGhMquw6QCcNdXawZ","parts":{"DisplayName": "ASEP ARL S3 RT#1367763", "ID": "asep_arl$asep_arl_test"}}
+  
+  s repo=obj.repo
+  s key=obj.key
+  
+  s config=..commonConfig(ipref,repo,key)
+  s config.uploadId=obj.uploadId
+  s config.parts=obj.parts.%ToJSON()
+  
+  s location=..completeFile(config...)
+  
+  s cm = {
+    "location": (location)
+  }
+  w cm.%ToJSON()
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="s3SuccessPUT">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  s cmJson=""
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+   
+  s err=##class(util.rest.v1.utils).openLogFile(.env,cmdApiGrp,service,.lsLogFile)
+  q:err'="" $$$OK
+  
+  try {
+    w !,"Params:"
+    w !," ictx:     "_ictx   
+    w !,"user:     "_userName
+    
+    ; nacteni vstupnich parametru z request body
+    if '##class(util.rest.v1.utils).getObjFromReqBody(.obj) {
+      s err="ERR_REST001#Request body JSON required"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP400BADREQUEST,lsLogFile,err)
+      q
+    } 
+    s objJson=obj.%ToJSON()
+    w !," REQ body: "_objJson
+    
+    s repo=obj.repo
+    s key=obj.key
+    if (repo="") || (key="") {
+      s err="ERR_REST002#repo and key required"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP400BADREQUEST,lsLogFile,err)
+      q
+    }
+    
+    if '##class(content.engine).get(.runtime,repo,key,0,,1) || ($g(runtime("ver"))'="s3 import") {
+      s err="ERR_CONT003#version"  ; TODO
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP403FORBIDDEN,lsLogFile,err)
+      q
+    }
+    
+    s userT001=$p(##class(util.sec.security).securityGet(userName,"r"),"*",2)
+    s runtime("user")=userT001
+    w !,"user2: "_userT001
+  
+    s %ipac2("ictx")=ictx ; TODO
+    if '##class(content.api).engineUpload(repo,.array,.runtime) {
+      d ##class(content.stat).addUpload(.array,0)
+      s err="ERR_CONT001#engineUpload error"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP403FORBIDDEN,lsLogFile,err)
+      q
+    }
+    d ##class(content.stat).addUpload(.array,1)
+    k %ipac2("ictx") 
+
+    #dim objC as content.metadata
+    s objC=##class(content.engine).open(repo,key,0)
+    d objC.Array.SetAt(1,"ver")
+    
+    s objC.Version=""
+    ;d $system.OBJ.Dump(objC)
+    if 'objC.%Save() {
+      s err="ERR_CONT002#save"
+      d ##class(util.rest.v1.utils).errResponse(.env,..#HTTP400BADREQUEST,lsLogFile,err)
+	  q
+    }
+    
+    s cm = {
+      "status": "OK",
+      "repo": (repo),
+      "key": (key),
+      "log": (lsLogFile)
+    }
+    s cmJson=cm.%ToJSON()
+    w !,"RESPONSE:",!,cmJson
+   
+    d ##class(util.rest.v1.utils).closeLogFile(.env,lsLogFile)
+    
+  } catch exp {
+    k %ipac2("ictx")
+    if $zcvt(lsLogFile,"L")=$zcvt($IO,"L") {
+      s err=exp.Name_exp.Location_", "_$SYSTEM.Status.Error(exp.Code,exp.Data)   
+      w !,"ERROR:",!,err
+      d ##class(util.rest.v1.utils).closeLogFile(.env,lsLogFile)
+    }   
+  }
+  
+  w cmJson
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="getFileUrl">
+<Description><![CDATA[
+<pre> ziskani url pro stazeni souboru, volat jen z Ipacu
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ipref,repo,key,origname</FormalSpec>
+<Implementation><![CDATA[
+  s config=##class(util.rest.v1.s3REST).commonConfig(ipref,repo,key)
+  s config.origname=origname
+  s url=##class(util.rest.v1.s3REST).getFile(config...)
+  
+  q url
+]]></Implementation>
+</Method>
+
+<Method name="localDownload">
+<Description>
+d ##class(util.rest.v1.s3REST).localDownload("cav","crepo1","70240290740k")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,repo:%String,key:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s config=..commonConfig($zcvt(ictx,"W"),repo,key)
+  d ##class(content.api).getBatch(.array,repo,key)
+  s config.origname=array("origname")
+  s url=..getFile(config...)
+  
+  q url
+]]></Implementation>
+</Method>
+
+<Method name="s3DownloadUrlGET">
+<Description><![CDATA[
+<pre> Ziskani downloud url pro soubor
+
+d ##class(util.rest.v1.s3REST).s3DownloadUrlGET("cav","crepo1","123132k")
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ictx:%String,repo:%String,key:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  s ipref=$zcvt(ictx,"W")
+  s service=$$$methodname
+  s cmJson=""
+  
+  s ret=##class(util.rest.v1.utils).checkToken(ictx,.userName) 
+  d ##class(util.rest.v1.utils).prepare(ictx,userName,.env)
+  q:ret'="" $$$OK
+ 
+  ; kontrola prav na sluzbu
+  s cmdApiGrp=##class(util.rest.v1.utils).checkRights(.env,userName,$$$methodname,"w")
+  q:cmdApiGrp="" $$$OK
+  
+  s userT001=$p(##class(util.sec.security).securityGet(userName,"r"),"*",2)
+  s runtime("user")=userT001
+  
+  s %ipac2("ictx")=ictx ; TODO
+  if '##class(content.api).engineRead(repo,key,.array,.runtime) {
+    d:$d(array) ##class(content.stat).addRead(.array,0)
+    s %response.Status = ..#HTTP403FORBIDDEN
+    w ##class(util.rest.v1.utils).err2Json(.env,"ERR_CONT001#engineRead error")
+    q $$$OK
+  }  
+  s ret=##class(content.api).increment(repo,key)
+  d ##class(content.stat).addRead(.array,ret)
+  k %ipac2("ictx")
+  
+  s config=..commonConfig(ipref,repo,key)
+  s config.origname=array("origname")
+  
+  s url=..getFile(config...)
+  
+  s cm = {
+    "method": "GET",
+    "url": (url)
+  }
+  w cm.%ToJSON()
+  
+  q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="putFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessKey,secretKey,endpoint,bucket,key,contentType</FormalSpec>
+<Language>python</Language>
+<Implementation><![CDATA[
+from boto3 import Session
+
+ses = Session(aws_access_key_id=accessKey,
+              aws_secret_access_key=secretKey)
+
+client = ses.client(service_name='s3', endpoint_url=endpoint, verify=False)
+url = client.generate_presigned_url(
+    ClientMethod='put_object',
+    Params={
+        'Bucket': bucket,
+        'Key': key,
+        'ContentType': contentType
+    },
+    ExpiresIn=600
+)
+
+#print(url)
+
+return url
+]]></Implementation>
+</Method>
+
+<Method name="test">
+<Description>
+d ##class(util.rest.v1.s3REST).test()</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  s ipref="Cav", repo="crepo1", key="123132k"
+  s mime="image/jpeg"
+  
+  s config=..commonConfig(ipref,repo,key)
+  s config.contentType=mime
+  s uploadId=..multiFile(config...)
+  b
+  d config.%Remove("contentType")
+  s config.uploadId=uploadId
+  s ret=..listFile(config...)
+  b
+]]></Implementation>
+</Method>
+
+<Method name="multiFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessKey,secretKey,endpoint,bucket,key,contentType</FormalSpec>
+<Language>python</Language>
+<Implementation><![CDATA[
+from boto3 import Session
+
+ses = Session(aws_access_key_id=accessKey,
+              aws_secret_access_key=secretKey)
+
+client = ses.client(service_name='s3', endpoint_url=endpoint, verify=False)
+response = client.create_multipart_upload(
+        Bucket = bucket,
+        Key = key,
+        ContentType = contentType
+)
+
+#print(response)
+
+return response["UploadId"]
+]]></Implementation>
+</Method>
+
+<Method name="listFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessKey,secretKey,endpoint,bucket,key,uploadId</FormalSpec>
+<Language>python</Language>
+<Implementation><![CDATA[
+from boto3 import Session
+import json
+import datetime
+
+def json_default(value):
+    if isinstance(value, datetime.date):
+        return dict(year=value.year, month=value.month, day=value.day)
+    else:
+        return value.__dict__
+
+ses = Session(aws_access_key_id=accessKey,
+              aws_secret_access_key=secretKey)
+
+client = ses.client(service_name='s3', endpoint_url=endpoint, verify=False)
+response = client.list_parts(
+        Bucket = bucket,
+        Key = key,
+        UploadId = uploadId,
+        MaxParts=100
+)
+
+#print(response)
+
+return json.dumps(response,default=json_default)
+#return json.dumps(response["Parts"])
+#return json.dumps(response["Owner"])
+]]></Implementation>
+</Method>
+
+<Method name="signFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessKey,secretKey,endpoint,bucket,key,uploadId,partNumber</FormalSpec>
+<Language>python</Language>
+<Implementation><![CDATA[
+from boto3 import Session
+
+ses = Session(aws_access_key_id=accessKey,
+              aws_secret_access_key=secretKey)
+
+client = ses.client(service_name='s3', endpoint_url=endpoint, verify=False)
+url = client.generate_presigned_url(
+    ClientMethod='upload_part',
+    Params={
+        'Bucket': bucket,
+        'Key': key,
+        'UploadId': uploadId,
+        'PartNumber': partNumber
+    },
+    ExpiresIn=600
+)
+
+#print(url)
+
+return url
+]]></Implementation>
+</Method>
+
+<Method name="abortFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessKey,secretKey,endpoint,bucket,key,uploadId</FormalSpec>
+<Language>python</Language>
+<Implementation><![CDATA[
+from boto3 import Session
+
+ses = Session(aws_access_key_id=accessKey,
+              aws_secret_access_key=secretKey)
+
+client = ses.client(service_name='s3', endpoint_url=endpoint, verify=False)
+response = client.abort_multipart_upload(
+        Bucket = bucket,
+        Key = key,
+        UploadId = uploadId
+)
+
+#print(response)
+
+return ""
+]]></Implementation>
+</Method>
+
+<Method name="completeFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessKey,secretKey,endpoint,bucket,key,uploadId,parts</FormalSpec>
+<Language>python</Language>
+<Implementation><![CDATA[
+from boto3 import Session
+import json
+
+#print (parts)
+#print (json.loads(parts))
+#print (tuple(json.loads(parts).items()))
+
+ses = Session(aws_access_key_id=accessKey,
+              aws_secret_access_key=secretKey)
+
+client = ses.client(service_name='s3', endpoint_url=endpoint, verify=False)
+response = client.complete_multipart_upload(
+        Bucket = bucket,
+        Key = key,
+        UploadId = uploadId,
+        MultipartUpload={"Parts": json.loads(parts)}
+)
+
+#print(response)
+
+return response["Location"]
+]]></Implementation>
+</Method>
+
+<Method name="getFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>accessKey,secretKey,endpoint,bucket,key,origname</FormalSpec>
+<Language>python</Language>
+<Implementation><![CDATA[
+from boto3 import Session
+
+ses = Session(aws_access_key_id=accessKey,
+              aws_secret_access_key=secretKey)
+
+client = ses.client(service_name='s3', endpoint_url=endpoint, verify=False)
+url = client.generate_presigned_url(
+    ClientMethod='get_object',
+    Params={
+        'Bucket': bucket,
+        'Key': key, 
+        'ResponseContentDisposition': 'inline; filename=' + origname
+    },
+    ExpiresIn=600
+)
+
+#print(url)
+
+return url
+]]></Implementation>
+</Method>
+</Class>
+</Export>

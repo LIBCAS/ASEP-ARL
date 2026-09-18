@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-25 15:32:08">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-09-17 11:00:31">
 <Class name="User.CavS">
 <Description><![CDATA[
 <pre>
+08.09.26 ln; C52 pro pristupne biblio soubory bez schvalovani podle reqauthor
+22.07.26 mk; v zfContent pre DATA zruseny Komentar
+20.07.26 ln; presun metod verzovani do CavS2
+22.05.26 jk; vymazat formatovaci znaky
+29.04.26 mk; pridana konverzia autorit z csv convAut
+27.02.26 ln; zpracovatel zverejneneho datoveho zaznamu muze editovat
+17.12.25 ln; autorovi umozneno smazat soubor vracenemu zaznamu
 17.10.25 jk; v Cav formulari je moznost zakazat prideleni DOI
 26.09.25 ln; schvalovani autor->zprac->super
 12.09.25 ln; podpora druhu X a DMP
@@ -41,7 +48,7 @@ Uzivatelske funkce a vystupy pro Cav (CavS)]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
 <ProcedureBlock>1</ProcedureBlock>
 <Super>%Library.RegisteredObject</Super>
-<TimeChanged>67534,38178.000043914</TimeChanged>
+<TimeChanged>67830,39543.123225601</TimeChanged>
 <TimeCreated>59592,28773.586903</TimeCreated>
 
 <Method name="classNameX">
@@ -1515,6 +1522,7 @@ Volani 200     $a@##class(User.CavS).RecNeodIpac(.result,.handle,"")
 1.  Autor by měl mít možnost mazat neodeslaný dataset
 2.  Zpracovatele, by měli mít možnost mazat neodeslany dataset
 
+17.12.25 ln; autorovi umozneno smazat soubor vracenemu zaznamu
 10.05.17 tt; metoda zalozena
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
@@ -1568,8 +1576,8 @@ Volani 200     $a@##class(User.CavS).RecNeodIpac(.result,.handle,"")
   if (sRT969f="N")
   {
     q:((sUT600b=sRTC26e)&&(sUT600a="")) "1"          ; pokud mam zpracovatele, pridam priznak
-    if (sRTU95a'=1)
-    {
+    if (sRTU95a'=1) || (sRTU95c="0")
+    { ; 17.12.25 ln; autorovi umozneno smazat soubor vracenemu zaznamu
       q:($p(sRT999e,"*",2)=pIdUser) "1"        ; pridame priznak i kdyz je vlastnik zaznamu
     }
   }
@@ -2035,8 +2043,9 @@ Metoda pro pregenerovani tagu C52
 !!! zmeny i do d ##class(i2.cust.cav.approvalAuthor).genC52
 
  s sy="##class(User.CavS).generateC52(.handle)"
- d ^X("l @"_sy)
+ d ^X("ls C52")
 
+08.09.26 ln; C52 pro pristupne biblio soubory bez schvalovani podle reqauthor
 06.11.24 ln; C52n ignorovat jako zmenu
 22.11.23 tt; doplnena smlouva
 28.01.20 tt; provedena uprava, aby se do C52 vzdy pri zmene generovalo podpole n
@@ -2056,6 +2065,7 @@ Metoda pro pregenerovani tagu C52
   s sTC52="C52    " ; inicializujeme C52
   s sT001=$$$HandleT001(handle)                ; ziskame si T001 zaznamu
   s sClass=$$$HandleClass(handle)              ; ziskame tridu zaznamu
+  s t969f=$$$getTagX(.handle,"969f")
 
   ; ziskame vsechny data k zaznamu v output
   d ##class(content.api).selectRecAll(.output,sClass,sT001)
@@ -2073,6 +2083,9 @@ Metoda pro pregenerovani tagu C52
     s status=array("status")
     continue:status<=maxstatus  ; status je ten nejvyssi mezi vsemi soubory
     
+    ; 08.09.26 ln; C52 pro pristupne biblio soubory bez schvalovani podle reqauthor
+    s:(status<4)&&($g(array("reqauthor"))="false")&&(t969f="")&&((array("accession")="O")||(array("accession")="E")) status=4
+        
     s maxstatus=status
     s sSTb=$c(31)_"b"_array("accession")                     ; nacteme si postupne data
     s sSTa=$c(31)_"a"_status
@@ -2117,7 +2130,7 @@ Metoda pro pregenerovani tagu C52
 <Description>
 Metoda pro pregenerovani tagu C52m. Navrat je tag.
 
-
+08.09.26 ln; C52 pro pristupne biblio soubory bez schvalovani podle reqauthor
 01.03.19 tt; pridan priznak pro smlouvu - specialni typ
 24.03.15 tt; uprava logiky
 13.03.15 tt; zalozena metoda pro pregenerovani C52m </Description>
@@ -2147,7 +2160,11 @@ Metoda pro pregenerovani tagu C52m. Navrat je tag.
     ; nacteme delsi pomocna data k jednomu zaznamu
     d ##class(content.api).getBatch(.array,repo,key)         ; ziskame informace z array    
     
-    s sSTm=sSTm_" "_array("status")_array("accession")
+    s status=array("status")
+    ; 08.09.26 ln; C52 pro pristupne biblio soubory bez schvalovani podle reqauthor
+    s:(status<4)&&($g(array("reqauthor"))="false")&&((array("accession")="O")||(array("accession")="E")) status=4
+    
+    s sSTm=sSTm_" "_status_array("accession")
     s:($g(array("nusl"),"")="true") sSTm=sSTm_"n"
     s:($g(array("recenze"),"")="true") sSTm=sSTm_"r"
     s:($g(array("hodnoceni"),"")="true") sSTm=sSTm_"h"   
@@ -2172,6 +2189,7 @@ Parametry:
 
 Dokumentace: https://cosmo2/wiki/index.php/Cav-full_text_upload_25#Zobrazov.C3.A1n.C3.AD_soubor.C5.AF_v_zobrazovac.C3.ADch_form.C3.A1tech
 
+22.07.26 mk; v zfContent pre DATA zruseny Komentar
 12.09.25 ln; podpora druhu X a DMP
 20.09.23 tt; pridan 1. parametr v parametrech - pro zobrazovani souboru v ruznych kontextech
 11.11.16 tt; pridana volba u zobrazeni velkych dat
@@ -2200,7 +2218,9 @@ Dokumentace: https://cosmo2/wiki/index.php/Cav-full_text_upload_25#Zobrazov.C3.A
   ; 01.11.17 tt; pridan u dat sloupec pristup
   if (sT970b="DATA")
   { ; 11.11.16 tt; pridana volba u zobrazeni velkych dat
-    d:(sPar1="DATA")||(sPar1="") ##class(content.zf).fmtContent(.result, .handle,"T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CON1 TP=\s M=key-extension M=symb-##class(i2.cust.cav.archivelist).zfTabSymb T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 CL=-30 T=CONa TP=0995 CL=-20")
+    ; 22.07.26 mk v zfContent pre DATA zruseny Komentar
+    ;d:(sPar1="DATA")||(sPar1="") ##class(content.zf).fmtContent(.result, .handle,"T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CON1 TP=\s M=key-extension M=symb-##class(i2.cust.cav.archivelist).zfTabSymb T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONc TP=0994 CL=-30 T=CONa TP=0995 CL=-20")
+    d:(sPar1="DATA")||(sPar1="") ##class(content.zf).fmtContent(.result, .handle,"T=CONi TP=\s CL=-5 T=CONn TP=0991 T=CON1 TP=\s M=key-extension M=symb-##class(i2.cust.cav.archivelist).zfTabSymb T=CONb TP=0992 CL=-7 T=CONs TP=0993 CL=-7 T=CONa TP=0995 CL=-20")
   }
   elseif (sT970b="X") || (sT970b="DMP")
   { ; 12.09.25 ln; podpora druhu X a DMP
@@ -4026,6 +4046,7 @@ d ##class(User.CavS).fixMetadata()
 <Description><![CDATA[
 <pre>Vytvori Export Array pro dublin core OpenAIRE
 
+22.05.26 jk; vymazat formatovaci znaky
 29.10.15 tt; upraven export projektu o 230b
 08.09.15 tt; upraven export OpenAire
 04.09.15 tt; zmeny podle zadani
@@ -4044,6 +4065,8 @@ d ##class(User.CavS).fixMetadata()
   
   //d ##class(i2.export).createExpArrNode(.pole,.handle,"title","200#a")
   s sT200a=$$$getTagX(.handle,"200a")
+  ; 22.05.26 jk; vymazat formatovaci znaky
+  d ##class(rep.epca.exportBase).symClearFormatInfoStr(.sT200a)
   s:(sT200a'="") pole("title",1)=sT200a
   
   /// autori
@@ -4206,6 +4229,8 @@ d ##class(User.CavS).fixMetadata()
     s sT610=$$$getTagXC(.handle,"610",.c) ; vsetky citacie
     continue:((sT610="")&&(c'=0))
     s sT610a=$$$getSubTagStr(sT610,"a")
+    ; 22.05.26 jk; vymazat formatovaci znaky
+    d ##class(rep.epca.exportBase).symClearFormatInfoStr(.sT610a)
     if (sT610a'="")
     { ; pokud mame vyplnene data, muzeme provadet akce 
       s pole("subject",sPocet)=sT610a
@@ -4392,6 +4417,8 @@ Parametry - aktualne zpracovavany handle
                     c  - kopie datasetu
                     
 
+20.07.26 ln; presun metod verzovani do CavS2
+27.02.26 ln; zpracovatel zverejneneho datoveho zaznamu muze editovat
 26.09.25 ln; schvalovani autor->zprac->super
 01.12.22 tt; pridana funcnost vytvoreni kopie datasetu 
 19.05.22 tt; pridáno mošnost pro super -k
@@ -4480,8 +4507,9 @@ Parametry - aktualne zpracovavany handle
           s:(('sRC26RIV)) bRet=bRet_"k"
           s:((sRC26Rok>=sAktRokSb)&&(sRC26RIV)) bRet=bRet_"k"          
         }
+        ; 27.02.26 ln; zpracovatel zverejneneho datoveho zaznamu muze editovat
         ; 26.09.25 ln; schvalovani autor->zprac->super
-        if ($f(pRole,"c")&&($f(sC99d,"DATA")))&&(sU95c=1)
+        if ($f(pRole,"c")&&($f(sC99d,"DATA")))&&((sU95c=1)||(sR969f=""))
         { ; pokud mame zpracovatele k zaznamu - zpracovatel daneho ustavu, muze
           s bRet=bRet_"wo" 
           ; zpracovatel muze mazat jakykoli zaznam v aktualnim roku sberu pokud neni vystaveny v ipacu
@@ -4495,7 +4523,8 @@ Parametry - aktualne zpracovavany handle
         /// pro autora, zpracovatele a super, pokud mame zaznam s posledni verzi, muzeme udelat kopii
         if (($f(pRole,"s")||$f(pRole,"h")||$f(pRole,"c"))&&($f(sC99d,"DATA"))&&(sR969f'="N")&&(sR969f'="D"))
         { ; pridana role pro kopie zaznamu
-          s sKodVerze=##class(User.CavUnEpca).versionDataGetLastVersion(.handleR,"1")
+          ; 20.07.26 ln; presun metod verzovani do CavS2
+          s sKodVerze=##class(User.CavS2).versionDataGetLastVersion(.handleR,"1")
           if (sKodVerze="")
           { // bud nam vrati posledni verze nase id, nebo nic, pokud verze nejsou
             s bRet=bRet_"c" 
@@ -6820,6 +6849,299 @@ Navrat:
    }
  }
  q ret
+]]></Implementation>
+</Method>
+
+<Method name="convAut">
+<Description><![CDATA[
+29.04.26 mk nova konverzia autorov z csv<br>
+            riadkoveho formatu, zo suboru do suboru<br>  ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>inf:%String,outf:%String=""</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ ; parametre
+ ; vstupny subor
+ ; vystupny subor
+ ; d ##class(CavS).convAut("cavaut.csv","cavaut.txt")
+ s OU=$IO
+ ; kontrola parametru
+ if inf="" q "Input file name empty !"
+ s ext=$p(inf,".",2) s:ext'="" ext="."_ext
+ if outf="" s outf=$p(inf,".",1)_"_00"_ext
+ 
+ ; otevrit vstupni soubor
+ open inf:(/READ:/IOTABLE="CP1250"):0
+ s te=$test
+ if 'te q "failed to open the input file ('"_inf_"')!!"
+ use inf:/POSITION=0 use OU
+ ; disable <ENDOFFILE> error
+ d $ZU(68,40,1)
+
+ ; otevrit vystupni soubor
+ d SetPDefIO^%NLS("CP1250",3)
+
+ open outf:("NWS":/CREATE):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+ 
+
+ s odd=$c(13)_$c(10)
+ s kod=0
+ s li="",brk=""
+ s x200="",xC06=""
+ s zaznam=""
+ 
+ for nLine=1:1 q:brk  d
+ . use inf read li if $zeof'=0 s brk=1
+ . ; nacitany 1 riadok
+ . s li=##class(Util).strswap(li,$c(34),"")
+ . ;uprava jedneho riadku
+ . if (li'="") d  ; spracovat jeden zaznam
+ . . s zaznam=""
+ . . s priezvisko=$p(li,";",2)  ; priezvisko B
+ . . s meno=$p(li,";",3)  ; meno C
+ . . s email=$p(li,";",4)  ; email D 
+ . . s orcid=$p(li,";",6)  ; orcid F
+ . . s polei=$p(li,";",9)  ; I
+ . . s polej=$p(li,";",10)  ; J
+ . . s polel=$p(li,";",12)  ; L
+ . . ; zapis zaznamu
+ . . ;;;;
+ . . ; vyskladanie zaznamu holdingu
+ . . s x200=""
+ . . if priezvisko'="" s x200=x200_$c(31)_"a"_priezvisko
+ . . if meno'="" s x200=x200_$c(31)_"b"_meno
+ . . s xC06=""
+ . . if polel'="" s xC06=xC06_$c(31)_"d"_polel
+ . . if polei'="" s xC06=xC06_$c(31)_"i"_polei
+ . . if polej'="" s xC06=xC06_$c(31)_"j"_polej
+ . . ;;;
+ . . s kod=kod+1
+ . . s kod2=##class(Util).leadingZero(kod,7)
+ . . s zaznam=zaznam_odd_"# @id CavUnAuth c"_kod2 
+ . . s zaznam=zaznam_odd_"000    00000nx   22001813  45"
+ . . s zaznam=zaznam_odd_"100    "_$c(31)_"a"_##class(Util).date()_"aczeyłłłł    ba"
+ . . s zaznam=zaznam_odd_"150    "_$c(31)_"ay"
+ . . s zaznam=zaznam_odd_"152    "_$c(31)_"aAACR2" 
+ . . if orcid'="" s zaznam=zaznam_odd_"035    "_$c(31)_"a"_orcid_$c(31)_"2ORCID"
+ . . s zaznam=zaznam_odd_"200  1 "_x200
+ . . s zaznam=zaznam_odd_"801  0 "_$c(31)_"aCZ"_$c(31)_"bCAV"_$c(31)_"c"_##class(Util).date()
+ . . s zaznam=zaznam_odd_"969    "_$c(31)_"fACTV"
+ . . if email'="" s zaznam=zaznam_odd_"C01    "_$c(31)_"f"_email
+ . . if xC06'="" s zaznam=zaznam_odd_"C06    "_xC06
+ . . s x99d="arl-"_##class(Util).date()
+ . . s zaznam=zaznam_odd_"C99    "_$c(31)_"dDFLT_UN_AUTH_200"
+ . . s zaznam=zaznam_odd_"999    "_$c(31)_"a1"_$c(31)_"bCAV"_$c(31)_"cCAV"_$c(31)_"d"_x99d
+ . . s zaznam=zaznam_odd_"###" 
+ . . if li'="" use outf w zaznam use OU
+ . . s zaznam=""
+ . . s li=""
+ . q:$zeof'=0
+
+ close inf close outf use OU
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+ q ""
+]]></Implementation>
+</Method>
+
+<Method name="actAut">
+<Description><![CDATA[
+29.04.26 mk nova konverzia autorov z csv<br>
+            riadkoveho formatu, zo suboru do suboru<br>  ]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>inf:%String,outf:%String=""</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+ ; parametre
+ ; vstupny subor
+ ; vystupny subor
+ ; d ##class(CavS).convAut("cavaut.csv","cavaut.txt")
+ s OU=$IO
+ ; kontrola parametru
+ if inf="" q "Input file name empty !"
+ s ext=$p(inf,".",2) s:ext'="" ext="."_ext
+ if outf="" s outf=$p(inf,".",1)_"_00"_ext
+ 
+ ; otevrit vstupni soubor
+ open inf:(/READ:/IOTABLE="CP1250"):0
+ s te=$test
+ if 'te q "failed to open the input file ('"_inf_"')!!"
+ use inf:/POSITION=0 use OU
+ ; disable <ENDOFFILE> error
+ d $ZU(68,40,1)
+
+ ; otevrit vystupni soubor
+ d SetPDefIO^%NLS("CP1250",3)
+
+ open outf:("NWS":/CREATE):0
+ s te=$test
+ if 'te q "failed to open the output file ('"_outf_"')!!"
+ 
+
+ s odd=$c(13)_$c(10)
+ s kod=0
+ s li="",brk=""
+ s x200="",xC06=""
+ s zaznam=""
+ 
+ for nLine=1:1
+ {
+   use inf read li if $zeof'=0 q
+   ; nacitany 1 riadok
+   s li=##class(Util).strswap(li,$c(34),"")
+   ;uprava jedneho riadku
+   if (li'="")
+   {                                    
+     s zaznam=$p(li,";",1)
+     use outf w !,"----- Autorita: "_zaznam use OU
+     s priezvisko=$p(li,";",2)  ; priezvisko B
+     s meno=$p(li,";",3)  ; meno C
+     s email=$p(li,";",4)  ; email D
+     s rivid=$p(li,";",5)  ; rivid E
+     s orcid=$p(li,";",6)  ; orcid F
+     s scopus=$p(li,";",7)  ; scopus G
+     s wos=$p(li,";",8)  ; wos H
+     s polei=$p(li,";",9)  ; I
+     s polej=$p(li,";",10)  ; J
+     s polel=$p(li,";",12)  ; L
+     if ##class(User.MARC).readX(.ahandle,"CavUnAuth",zaznam)
+     {
+       w !,zaznam
+       use outf w !,"OK: existuje v CavUnAuth" use OU
+       merge newhandle=ahandle
+       s tag200=$$$getTagX(.ahandle,"200")
+       s priezvisko1=$$$getSubTagStr(tag200,"a")
+       s meno1=$$$getSubTagStr(tag200,"b")
+       s tagC01=$$$getTagX(.ahandle,"C01")
+       s email1=$$$getSubTagStr(tagC01,"f")
+       s tag035=$$$getTagXC(.ahandle,"035",-1)
+       s rividtagnum=$p(..getTagBySubtagValueX(.ahandle,"035","2","RIVID"),"#",1)
+       s rividtag=$p(..getTagBySubtagValueX(.ahandle,"035","2","RIVID"),"#",2,99)
+       s rivid1=$$$getSubTagStr(rividtag,"a")
+       s orcidtagnum=$p(..getTagBySubtagValueX(.ahandle,"035","2","ORCID"),"#",1)
+       s orcidtag=$p(..getTagBySubtagValueX(.ahandle,"035","2","ORCID"),"#",2,99)
+       s orcid1=$$$getSubTagStr(orcidtag,"a")
+       s scopustagnum=$p(..getTagBySubtagValueX(.ahandle,"035","2","SCOPUS"),"#",1)
+       s scopustag=$p(..getTagBySubtagValueX(.ahandle,"035","2","SCOPUS"),"#",2,99)
+       s scopus1=$$$getSubTagStr(scopustag,"a")
+       s wostagnum=$p(..getTagBySubtagValueX(.ahandle,"035","2","WOS"),"#",1)
+       s wostag=$p(..getTagBySubtagValueX(.ahandle,"035","2","WOS"),"#",2,99)
+       s wos1=$$$getSubTagStr(wostag,"a")
+       s tagC06=$$$getTagX(.ahandle,"C06")
+       s polei1=$$$getSubTagStr(tagC06,"i")
+       s polej1=$$$getSubTagStr(tagC06,"j")
+       ;
+       if priezvisko'="", priezvisko1'="", priezvisko'=priezvisko1 use outf w !,"DIFF: 200a: "_priezvisko1_", EXCEL: "_priezvisko use OU
+       if priezvisko'="", priezvisko1=""
+       {
+         s tag200=##class(User.MARC).setSubTagStr(tag200,$c(31)_"a"_priezvisko)
+         use outf w !,"WRITE: 200a: "_priezvisko use OU
+       }
+       if meno'="", meno1'="", meno'=meno1 use outf w !,"DIFF: 200b: "_priezvisko1_", EXCEL: "_priezvisko use OU
+       if meno'="", meno1=""
+       {
+         s tag200=##class(User.MARC).setSubTagStr(tag200,$c(31)_"b"_meno)
+         use outf w !,"WRITE: 200b: "_priezvisko use OU
+       }
+       if email'="", email1'="", email'=email1 use outf w !,"DIFF: C01f: "_email1_", EXCEL: "_email use OU
+       if email'="", email1=""
+       {
+         if tagC01="" s tagC01="C01    "
+         s tagC01=##class(User.MARC).setSubTagStr(tagC01,$c(31)_"f"_email)
+         use outf w !,"WRITE: C01f: "_email use OU
+       }
+       if rivid'="", rivid1'="", rivid'=rivid1 use outf w !,"DIFF: 035a(RIVID): "_rivid1_", EXCEL: "_rivid use OU
+       if rivid'="", rivid1=""
+       {
+         if $p(tag035,$c(10),rividtagnum)="" s $p(tag035,$c(10),rividtagnum)="035    "_$c(31)_"2RIVID"
+         s $p(tag035,$c(10),rividtagnum)=##class(User.MARC).setSubTagStr($p(tag035,$c(10),rividtagnum),$c(31)_"a"_rivid)
+         use outf w !,"WRITE: 035a(RIVID): "_rivid use OU
+       }
+       if orcid'="", orcid1'="", orcid'=orcid1 use outf w !,"DIFF: 035a(ORCID): "_orcid1_", EXCEL: "_orcid use OU
+       if orcid'="", orcid1=""
+       {
+         if $p(tag035,$c(10),orcidtagnum)="" s $p(tag035,$c(10),orcidtagnum)="035    "_$c(31)_"2ORCID"
+         s $p(tag035,$c(10),orcidtagnum)=##class(User.MARC).setSubTagStr($p(tag035,$c(10),orcidtagnum),$c(31)_"a"_orcid)
+         use outf w !,"WRITE: 035a(ORCID): "_orcid use OU
+       }
+       if scopus'="", scopus1'="", scopus'=scopus1 use outf w !,"DIFF: 035a(SCOPUS): "_scopus1_", EXCEL: "_scopus use OU
+       if scopus'="", scopus1=""
+       {
+         if $p(tag035,$c(10),scopustagnum)="" s $p(tag035,$c(10),scopustagnum)="035    "_$c(31)_"2SCOPUS"
+         s $p(tag035,$c(10),scopustagnum)=##class(User.MARC).setSubTagStr($p(tag035,$c(10),scopustagnum),$c(31)_"a"_scopus)
+         use outf w !,"WRITE: 035a(SCOPUS): "_scopus use OU
+       }
+       if wos'="", wos1'="", wos'=wos1 use outf w !,"DIFF: 035a(WOS): "_wos1_", EXCEL: "_wos use OU
+       if wos'="", wos1=""
+       {
+         if $p(tag035,$c(10),wostagnum)="" s $p(tag035,$c(10),wostagnum)="035    "_$c(31)_"2WOS"
+         s $p(tag035,$c(10),wostagnum)=##class(User.MARC).setSubTagStr($p(tag035,$c(10),wostagnum),$c(31)_"a"_wos)
+         use outf w !,"WRITE: 035a(WOS): "_wos use OU
+       }
+       if polei'="", polei1'="", polei'=polei1 use outf w !,"DIFF: C06i: "_polei1_", EXCEL: "_polei use OU
+       if polei'="", polei1=""
+       {
+         if tagC06="" s tagC06="C06    "
+         s tagC06=##class(User.MARC).setSubTagStr(tagC06,$c(31)_"i"_polei)
+         use outf w !,"WRITE: C06i: "_polei use OU
+       }
+       if polej'="", polej1'="", polej'=polej1 use outf w !,"DIFF: C06j: "_polej1_", EXCEL: "_polej use OU
+       if polej'="", polej1=""
+       {
+         if tagC06="" s tagC06="C06    "
+         s tagC06=##class(User.MARC).setSubTagStr(tagC06,$c(31)_"j"_polej)
+         use outf w !,"WRITE: C06j: "_polej use OU
+       }
+       d:(tag200'="") ##class(User.MARC).setTagX(.ahandle,tag200)
+       d:(tagC01'="") ##class(User.MARC).setTagX(.ahandle,tagC01)
+       d:(tag035'="") ##class(User.MARC).setTagX(.ahandle,tag035)
+       d:(tagC06'="") ##class(User.MARC).setTagX(.ahandle,tagC06)
+       s st=##class(User.MARC).writeX(.ahandle,,,,1)  ; zapiseme zmeneny zaznam
+       if $$$ISERR(st) 
+       {
+         w !,"ERR: zápis T001:"_zaznam
+         continue 
+       }
+       else
+       {
+         w !,"OK: zápis T001:"_zaznam
+       }
+     }
+     else
+     {
+       use outf w "ERR: neexistuje v CavUnAuth" use OU
+     }
+   }
+ }
+
+ close inf close outf use OU
+ ; enable <ENDOFFILE> error
+ d $ZU(68,40,0)
+ q ""
+]]></Implementation>
+</Method>
+
+<Method name="getTagBySubtagValueX">
+<Description>
+26.05.26 rn; metóda založená - vráti poradie a pole podľa hodnoty podpoľa</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle:%Binary,TagNum:%String,SubtagNum:%String,STVal:%String]]></FormalSpec>
+<Implementation><![CDATA[
+ s ret=""
+ s tags=##class(MARC).getTagX(.handle,TagNum,-1)
+ for x=1:1:$l(tags,$c(10))
+ {
+   q:(ret'="")
+   s xtags=$p(tags,$c(10),x)
+   s xtagsST=##class(MARC).getSubTagStr(xtags,SubtagNum)
+   if (xtagsST=STVal)
+   {
+     s ret=xtags     
+   }
+ }
+ q x_"#"_ret
 ]]></Implementation>
 </Method>
 

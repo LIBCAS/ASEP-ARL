@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-10-24 14:43:59">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2023.1.6 (Build 809U)" ts="2026-07-31 14:23:31">
 <Class name="content.uploader">
 <Description><![CDATA[
 <pre> uploader souboru pro contentServer
 
+31.07.26 ln; docUploaded predan array
+29.04.26 ln; metode runtime pridany parametry repo a key
+14.04.26 ln; url parametr back
 24.10.25 ln; restore pro taby
 15.01.25 ln; metoda success
 09.08.23 ln; potlaceni moznych vypisu indexace pri zapisu C52
@@ -35,7 +38,7 @@
 01.11.11 tt; zmena v linku napovedy
 </pre>]]></Description>
 <Super>i2.ui.page</Super>
-<TimeChanged>67502,52977.245943636</TimeChanged>
+<TimeChanged>67782,42358.5633267</TimeChanged>
 <TimeCreated>62186,26198.687005</TimeCreated>
 
 <Parameter name="PageID">
@@ -66,12 +69,14 @@ pretty URL</Description>
 <Description><![CDATA[
 <pre> Zde muze provest akce pred vyhreslenim hlavicek stranky
 a vysledek vratit napr pres data("REPORTS")
+
+14.04.26 ln; url parametr back
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&data]]></FormalSpec>
 <Implementation><![CDATA[
   ; url parametry pro obnoveni stavu stranky
-  s data("RESTORE")=##class(i2.base.request).restore("idx,status,iset,disprec")
+  s data("RESTORE")=##class(i2.base.request).restore("idx,status,iset,disprec,back")
   ; multiupload
   s data("MULTI")=$$$GETREQVAR("multi")=1
 ]]></Implementation>
@@ -234,9 +239,11 @@ umoznuje modifikovat chybove hlasky
 <Description><![CDATA[
 <pre> Generovani runtime (promenlivych, neulozenych) dat do pole runtime
 parametry: class a t001 zaznamu
+
+29.04.26 ln; metode runtime pridany parametry repo a key
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&runtime,class,t001]]></FormalSpec>
+<FormalSpec><![CDATA[&runtime,class,t001,repo,key]]></FormalSpec>
 <Implementation><![CDATA[  ; s user=##class(i2.access).getLoginId()
 ]]></Implementation>
 </Method>
@@ -447,6 +454,9 @@ parametry: t001 uzivatele, idx zaznamu
 <Method name="success">
 <Description><![CDATA[
 <pre> Volano po uspesnem uploadu
+
+31.07.26 ln; docUploaded predan array
+14.04.26 ln; url parametr back
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[idx:%String,&array,&data]]></FormalSpec>
@@ -464,6 +474,12 @@ parametry: t001 uzivatele, idx zaznamu
         w:'rest !,"ERROR: (C52) write failed - "_$System.Status.GetErrorText(sc)
       }
     }
+  }
+  
+  if $g(array("back"))="pay" 
+  { ; 31.07.26 ln; docUploaded predan array
+    ; 14.04.26 ln; url parametr back
+    d ##class(i2.ui.pay).docUploaded(.array)
   }
 ]]></Implementation>
 </Method>

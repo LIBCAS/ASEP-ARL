@@ -2,6 +2,7 @@
 002    Tento subor obsahuje zakladne nastavenia IPAC - spolocne
 002    pre vsetky instalacie.
 002    ---
+002    17.07.26 jk; do BASE_IPAC2_WS_COMMANDS pridan xui
 002    18.12.24 jk; BASE_IPAC2_FLD pro externi zdroje vyhledavani pres linky ZF a cislo indexu
 002    04.04.24 jk; do BASE_IPAC2_FLD a BASE_IPAC2_SORT zapojen Clarivate MEDLINE
 002    15.08.23 jk; do BASE_IPAC2_SERVER_THOMSON a BASE_IPAC2_SERVER_THOMSON_AUTH pridana autentizace username password, vypnut curl
@@ -224,6 +225,7 @@
 # @id UnTablesd BASE_IPAC2_WS_COMMANDS
 002    Sluzby WS definovane pre vsetky servery ("builtin" prikazy)
 002    viz. tiez: https://cosmo2/wiki/index.php?title=arlint:I2:ws_internal
+002    17.07.26 jk; pridan xui
 002    14.06.23 jk; pridan getShibboleth
 002    23.01.23 jk; pridan xnotifysim
 002    21.01.21 jk; pridan xnotify
@@ -317,6 +319,7 @@
 200    axrefresh      b##class(i2.ws.cmdX).xrefresh            cCMD_WS_X n
 200    axnotify       b##class(i2.ws.cmdX).xnotify             cCMD_WS_X n
 200    axnotifysim    b##class(i2.ws.cmdX).xnotifysim          cCMD_WS_X ntest odeslani notifikace
+200    axui           b##class(i2.ws.cmdX).xui                 cCMD_WS_X nreindexace ulozeneho savelistu
 200    agetbasetype   b##class(i2.ws.cmdX).getbasetype         cCMD_WS_X nziskani base type tridy
 200    agetindexes    b##class(i2.ws.cmdX).getindexes          cCMD_WS_X nseznam naplnenych indexu tridy
 002    dalsi

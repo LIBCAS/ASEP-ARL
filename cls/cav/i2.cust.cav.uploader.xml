@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-20 10:19:04">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-08-14 14:31:49">
 <Class name="i2.cust.cav.uploader">
 <Description><![CDATA[
 <pre>
+14.08.26 ln; pridano runtime 969f
+29.04.26 ln; pristupne biblio soubory bez schvalovani podle reqauthor
 24.10.25 ln; client pridan do restore
 16.10.25 ln; pridano runtime 970b
 27.03.25 ln; podpora S3
@@ -30,7 +32,7 @@
 23.05.12 tt; drobna uprava sablony
 </pre>]]></Description>
 <Super>content.uploader</Super>
-<TimeChanged>67529,37059.100922916</TimeChanged>
+<TimeChanged>67796,52297.509820678</TimeChanged>
 <TimeCreated>62425,31868.699855</TimeCreated>
 
 <Parameter name="Ictx">
@@ -318,13 +320,15 @@ parametry: t001 uzivatele
 <pre> Generovani runtime (promenlivych, neulozenych) dat do pole runtime
 parametry: class a t001 zaznamu
 
+14.08.26 ln; pridano runtime 969f
+29.04.26 ln; pristupne biblio soubory bez schvalovani podle reqauthor
 16.10.25 ln; pridano runtime 970b
 27.03.25 ln; podpora S3 
 27.04.22 tt; dano osetreni na status - uzivatel nejakym zpusobem dokazal rozhodit funkcnost tak, ze status byl 2
 08.11.16 tt; upravy kvuli velkym datum
 </pre>]]></Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&runtime,class,t001]]></FormalSpec>
+<FormalSpec><![CDATA[&runtime,class,t001,repo,key]]></FormalSpec>
 <Implementation><![CDATA[
   ; 27.03.25 ln; podpora S3 
   s user=$g(runtime("user"))
@@ -341,6 +345,8 @@ parametry: class a t001 zaznamu
   if ##class(User.MARC).readX(.handle,class,t001)
   {
     s t969f=$$$getTagX(.handle,"969f")
+    ; 14.08.26 ln; pridano runtime 969f
+    s runtime("969f")=t969f
     s t970b=$$$getTagX(.handle,"970b")
     ; 16.10.25 ln; pridano runtime 970b
     s runtime("970b")=t970b
@@ -359,6 +365,13 @@ parametry: class a t001 zaznamu
     elseif (t970b="X") || (t970b="DMP") {
       s:t970b="X" runtime("continfo")=1
       s:t969f="" runtime("status")="4"
+    } elseif t969f="" 
+    { ; 29.04.26 ln; pristupne biblio soubory bez schvalovani podle reqauthor
+      s obj=##class(content.engine).open(repo,key)
+      if $isobject(obj) && (obj.Array.GetAt("reqauthor")="false") {
+        s acc=obj.Array.GetAt("accession")
+        s:(acc="O")||(acc="E") runtime("status")="4"
+      }
     }
   }
 ]]></Implementation>

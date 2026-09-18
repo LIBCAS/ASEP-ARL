@@ -1,6 +1,7 @@
 ﻿/**
  * @author Michal Namesny
  *
+ * 03.09.26 on; zapojeno i pro ciselnik s - tlacitkem
  * 04.02.25 on; jina hlaska pro povinne pole
  * 23.11.22 on; csCBParams - jazykova mutace
  * 18.11.22 on; oprava csCBParams
@@ -116,8 +117,8 @@ epca.form.CodedDataComboBox = Ext.extend(Ext.form.ComboBox, {
           }
           if (this.ownerCt) {
             if ((this.ownerCt.xtype === 'epca.repeatable_encapsulation') && (this.ownerCt.ownerCt)) {
-              // odporovat zatim budu pouze neopakovatelny ciselnik, vcetne tech cilovych subtagu
-              ///this.ownerCt.ownerCt.setMarc(marc);
+              // 03.09.26 on; zapojeno i pro ciselnik s - tlacitkem
+              this.ownerCt.ownerCt.setMarc(marc);
             }
             else {
               this.ownerCt.csSetValues(marc);

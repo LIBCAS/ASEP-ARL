@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-20 09:48:33">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-07-16 14:11:43">
 <Class name="i2.cust.cav.detail">
 <Description><![CDATA[
 <pre>
 
+16.07.26 ln; nezverejny zaznam zobrazit superuzivateli a jeho zpracovateli
 17.09.25 ln; podpora tombstone page
 16.09.25 ln; handlenet permalink vede na prvni zobrazovak
 19.04.16 tt; nastaveni desiderat na 969f = N nebo D
 11.10.12 tt; zalozena metoda pro zobrazovani informaci v panelu u vyhledavani
 </pre>]]></Description>
 <Super>i2.ui.detail</Super>
-<TimeChanged>67529,35309.302593446</TimeChanged>
+<TimeChanged>67767,51098.005239259</TimeChanged>
 <TimeCreated>62741,48621.093776</TimeCreated>
 
 <Parameter name="Ictx">
@@ -57,8 +58,15 @@ standardne ..tx("NORIGHTS") nebo ..tx("NOREC")
   s line=##class(User.MARC).getTagX(.handle,"969")_$c(31)
   ; 19.04.16 tt; nastaveni desiderat na 969f = N nebo D
   ; desidereata
-  if ($f(line,$c(31)_"fD"_$c(31)) || $f(line,$c(31)_"fN"_$c(31))) {
-    q ..tx("NOREC") 
+  if ($f(line,$c(31)_"fD"_$c(31)) || $f(line,$c(31)_"fN"_$c(31))) 
+  { ; 16.07.26 ln; nezverejny zaznam zobrazit superuzivateli a jeho zpracovateli
+    s logCats=##class(i2.access).getLoginCateg()
+    q:$f(logCats,"I3UG_SU") ""
+    if $f(logCats,"I3UG_ZP") && (##class(User.MARC).getIdxValLX("cav_is_user*"_##class(i2.access).getLoginId(),"pra")=##class(User.MARC).getIdxValLX("cav_is_user*"_##class(i2.access).getLoginId(),"pra"))
+    { ; c - zpracovatel k zaznamu - 2 rec=user  $$$addIDX("dez",sC26e,"bx") = $$$addIDX("pra",sT600b,"b")
+      q "" 
+    }
+    q ..tx("NOREC")
   }
   
   q ""

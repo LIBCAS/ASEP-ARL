@@ -23,3 +23,5 @@
 <ipac:link rel="prerender" op="result" param="iset=#(data("ISET"))#&pg=#(..v("page"))#" restore="iset,guide"/>
     </csp:if>
   </ipac:loop>
+
+<ipac:tpl version="metarec" page="result" /> 

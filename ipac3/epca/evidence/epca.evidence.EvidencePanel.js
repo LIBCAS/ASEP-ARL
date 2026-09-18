@@ -1,6 +1,10 @@
 ﻿/**
  * @author Michal Namesny
  *
+ * 02.09.26 on; moznost doplnit do zaznamu roli z URL (CAV)
+ * 18.08.26 on; moznost doplnit do zaznamu link na autoritu (CAV)
+ * 10.06.26 on; navrat k oprave pro SAV
+ * 06.03.26 on; trim ve vyhledavani
  * 02.12.25 on; uprava podminky pro vymaz bib. zaznamu
  * 26.11.25 on; povolen vymaz i pro bibliograficke zaznamy
  * 25.11.25 on; pokud je autor zaznamu aktualne prihlaseny steward, zpracovatel nebo superuser, neni komu zaznam vracet
@@ -93,7 +97,7 @@
  * 30.08.11 on; doplnena moznost zadat kod zaznamu pro otevreni v editoru
  * 20.07.11 on; moznost predat nazev formulare v URL
  */
-/*global Ext,i3,epca,document,window,Blob,replacejscssfile,setTimeout,alert,getActCss,location */
+/*global Ext,i3,epca,document,window,Blob,replacejscssfile,setTimeout,alert,getActCss,location,console */
 
 Ext.ns('epca.evidence');
 
@@ -450,11 +454,11 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				if (i3.isEmptyString(epca.Config.User.csCheckRightsToRecord)) {
 					return;
 				}
-
+				
 				if (i3.isEmptyString(pTab.recordId)) {
 					return;
 				}
-
+				
 				// 11.04.17 on; zuniverzalneno
 				// 18.11.15 on; pro cav se bude volat kontrola kvality
 				// 19.12.14 on; nefunguje zjisteni opravneni pro konkretni zaznam
@@ -476,6 +480,17 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				if (!Ext.isDefined(pTab) || (pTab === null)) {
 					return;
 				}
+
+				// 02.09.26 on; nebudu kontrolovat formulare U, je to kvuli CAV, kde se z URL doplnuji do zaznamu
+				//              napr. link na autoritu, role, kategorie (100k). A prave 100k=1 je problem, protoze se podle ln uz i tou kontrolou odesilaji maily
+				//              musel bych ta pole pridat do zaznamu az po kontrole, coz je problem, takze zatim takto
+				if (pTab.form.unFormat === 'U') {
+					if (console) {
+						console.log('uzivatel - nekontrolovat prava');
+					}
+					return;
+				}
+				
 				var newMarc = this.getForm(pTab).getMarc(epca.cloneObject(pTab.marcToSet));
 				this.mergeMarc(pTab.marcCloneToSet, newMarc);
 
@@ -491,6 +506,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 				i3.WS.update({
 					operation : 'check',
 					success : function() {
+						 //
 					},
 					failure : function(errorMsg) {
 						i3.displayError(epca.L10n.evidenceOpenRecordError + '<br>' + errorMsg);
@@ -1693,6 +1709,36 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 						fmt : 'LINEMARC',
 						t001 : sRecordId,
 						success : function(selectedRecord) {
+							// 18.08.26 on; moznost doplnit do zaznamu link na autoritu (CAV)
+							var sAuthIdx = this.csGetAuthLinkFromUrl();
+							if (sAuthIdx !== '') {
+		 				      var t620 = selectedRecord.getTag('620');
+		 				      if (t620 === '') {
+		 				      	t620 = '620    ';
+		 				      }
+		 				      t620 = selectedRecord.setSubTagStr(t620, 'a', sAuthIdx);
+							  selectedRecord.setTag(t620);
+							}
+							
+							// 02.09.26 on; moznost doplnit do zaznamu roli (CAV)
+							var sRole = this.csGetRoleFromUrl();
+							if (sRole !== '') {
+		 				      var t600 = selectedRecord.getTag('600');
+		 				      if (t600 === '') {
+		 				      	t600 = '600    ';
+		 				      }
+		 				      t600 = selectedRecord.setSubTagStr(t600, 'r', sRole);
+							  selectedRecord.setTag(t600);
+							  
+							  // pokud je vyplnena role, nastavi se uzivatel jako registrovany
+		 				      var t100 = selectedRecord.getTag('100');
+		 				      if (t100 === '') {
+		 				      	t100 = '100    ';
+		 				      }
+		 				      t100 = selectedRecord.setSubTagStr(t100, 'k', '1');
+							  selectedRecord.setTag(t100);
+							}
+
 							// 22.11.22 on; moznost vytvorit kopii zaznamu (bez filtru)
 							if (sRecordCopy === '1') {
 								this.csCopyRecord0(undefined, selectedRecord, true, this.csGetFormType());
@@ -2282,7 +2328,22 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		}
 		return sRecordCopy;
 	},
-
+	// 18.08.26 on; zjisti, jestli byl predany parametr auth - vlozeni odkazu do zaznamu uzivatele (pro CAV)
+	csGetAuthLinkFromUrl : function() {
+		var sAuth = this.getURLParam('auth');
+		if (!sAuth) {
+			sAuth = '';
+		}
+		return sAuth;
+	},
+	// 02.09.26 on; zjisti, jestli byl predany parametr role - vlozeni role do zaznamu uzivatele (pro CAV)
+	csGetRoleFromUrl : function() {
+		var sRole = this.getURLParam('role');
+		if (!sRole) {
+			sRole = '';
+		}
+		return sRole;
+	},
 	/**
 	 * odstrani logicke db
 	 */
@@ -2595,9 +2656,10 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			searchMode : pbSearch, //                   search mode 0: scan,1: search, 2: browse,3: ascii
 			wannaMarcRes : true, //                     request result in MARC
 
+			// 03.09.26 on; v callback ponechat pouze prvni parametr (zaznam), na treti pozici potrebuju typ formulare  
 			// 06.12.24 on; pridam typ formulare
-			//callback : this.csLoadMarcRec,
-			callback : this.csLoadMarcRec.createDelegate(this, [null, sFormType], true),
+			//callback : this.csLoadMarcRec.createDelegate(this, [null, sFormType], true),
+			callback : this.csLoadMarcRec.createDelegate(this, [null, sFormType], 1),
 			idxlistStoreId : sFldlist, // indexy
 			displayFmtPnl : sDFlist, // zobrazovaky
 			displayFmt : sShortDF, // zkraceny ZF
@@ -5084,7 +5146,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		if (!cmp) {
 			cmp = Ext.getCmp('mainsearch_term');
 		}
-		var sValue = cmp.getValue();
+		// 06.03.26 on; trim
+		var sValue = cmp.getValue().trim();
 		if (sValue === '') {
 			return;
 		}
@@ -5261,7 +5324,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	 * Funkce pro import zaznamu z WOS/SCOPUS
 	 */
 	csImportWosScopus : function(psParams) {
-		var sDbList, aDbList, flds, fld, i, aFldList, sFldList, aDFList, sDFList, aSDFList, sSDFList, sFormId, aDBOptions, sDBOptions;
+		var sDbList, aDbList, flds, fld, i, aFldList, sFldList, aDFList, sDFList, aSDFList, sSDFList, aDBOptions, sDBOptions, aDfltForms, sDfltForms;
 
 		var fpwin = i3.ui.FlexPop.getWin();
 		var fppar = {};
@@ -5316,8 +5379,16 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			aDBOptions.push(fld);
 		}
 
+		// 02.09.26 on; podpora pro ruzne formulare pro ruzne DB
 		// ID prebiraciho formulare
-		sFormId = psParams.piece(',', 6);
+		//sFormId = psParams.piece(',', 6);
+		aDfltForms = [];
+		sDfltForms = psParams.piece(',', 6);
+		flds = sDfltForms.split('|');
+		for ( i = 0; i < flds.length; i++) {
+			fld = flds[i];
+			aDfltForms.push(fld);
+		}
 
 		Ext.applyIf(fppar, {
 			// trieda na ktorej spustit search
@@ -5328,14 +5399,18 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			//initTerm : '',
 			searchMode : '1', //                   search mode 0: scan,1: search, 2: browse,3: ascii
 			wannaMarcRes : true, //                     request result in MARC
-			callback : this.csShowWosScopusRec.createDelegate(this, [sFormId], true), // pridam nazev prebiraciho formulare
+			// 02.09.26 on; formular se nebude predavat, vraci ho callback
+			//callback : this.csShowWosScopusRec.createDelegate(this, [sFormId], true), // pridam nazev prebiraciho formulare
+			callback : this.csShowWosScopusRec, // pridam nazev prebiraciho formulare
 			idxlistStoreId : aFldList, // indexy
 			displayFmtPnl : aDFList, // zobrazovaky
 			displayFmt : aSDFList, // zkraceny ZF
 			scope : this,
 			dbOptions : aDBOptions,
 			// 13.06.24 on; moznost nastavit popisek zobrazovaciho formatu
-			csDisplayFormatText : epca.Config.User.DisplayFormatText
+			csDisplayFormatText : epca.Config.User.DisplayFormatText,
+			// 02.09.26 on; defaltni formulare
+			dfltForms : aDfltForms
 		});
 
 		// Otvorit flexpop so search/browse
@@ -5344,25 +5419,27 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	/**
 	 * Nacitanie zaznamu z WOS/SCOPUS do popup formulara.
 	 *
-	 * @param {Object} oRec
+	 * @param {Object} poRec
 	 *
 	 */
-	csShowWosScopusRec : function(poRec, psFormID) {
-		if (i3.isEmptyString(psFormID)) {
+	csShowWosScopusRec : function(poRec, poParams) {
+		// 03.09.26 on; zapojeno predani poParams s dfltForm 
+		poParams = poParams || {};
+		if (i3.isEmptyString(poParams.dfltForm)) {
 			i3.alert('Form ID is empty in configuration (parameter ShowWosScopusBtn)!');
 			return;
 		}
 
 		// 01.11.16 on; nakonec neni zapojeno otevreni prebiraciho formulare jako popup okno,
 		//              ale formular se otevre jako klasicky, puvodni kod tu necham, kdyby to nekdo chtel zapojit jako popup
-		//epca.WsForm.getForm(psFormID, 'B', this, this.csShowWosScopusRec2.createDelegate(this, [poRec], true));
+		//epca.WsForm.getForm(poParams.dfltForm, 'B', this, this.csShowWosScopusRec2.createDelegate(this, [poRec], true));
 
 		// zapise prebiraci defaultni formular do C99d
 		var tC99 = poRec.getTag('C99');
 		if (tC99 === '') {
 			tC99 = 'C99    ';
 		}
-		tC99 = poRec.setSubTagStr(tC99, 'd', psFormID);
+		tC99 = poRec.setSubTagStr(tC99, 'd', poParams.dfltForm);
 		poRec.setTag(tC99);
 		// pole 001
 		poRec.t001 = 'new';
@@ -6040,7 +6117,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	 * 21.08.25 on;
 	 */
 	csReturnForCorrection : function() {
-		var activTab = this.getTabPanelForms().getActiveTab(), record, prop, nScrollTop;
+		var activTab = this.getTabPanelForms().getActiveTab(), record, prop /*, nScrollTop*/;
 
 		// jen pro adminy
 		if (!this.csIsProcessorUser() && !this.csIsSuperUser() && !this.csIsDataSteward()) {
@@ -6075,11 +6152,16 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			}
 
 			prop = epca.form.Helper.c.sSubtagPrefix + 'c';
+			// 10.06.26 on; pro SAV nastavi vzdy "0"
 			// 21.08.25 on; pokud jde o superusera nastavi "1", zbytek (datasteward/zpracovatel) "0"
-			if (this.csIsSuperUser()) {
-				newMarc['U95'][prop] = '1';
-			} else {
+			if (i3.ictx.toLowerCase() === epca.evidence.c.sIctxSav) {
 				newMarc['U95'][prop] = '0';
+			} else {
+				if (this.csIsSuperUser()) {
+					newMarc['U95'][prop] = '1';
+				} else {
+					newMarc['U95'][prop] = '0';
+				}
 			}
 
 			record = epca.convertToMarc(newMarc);
@@ -6098,12 +6180,12 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		}
 
 		// zapamatuje si pozici scrollbaru
-		var c = activTab.getFormMainFieldset();
+		/*var c = activTab.getFormMainFieldset();
 		if (c && c.ownerCt) {
 			nScrollTop = activTab.getFormMainFieldset().ownerCt.body.dom.scrollTop;
 		} else {
 			nScrollTop = 0;
-		}
+		}*/
 
 		i3.WS.update({
 			operation : 'update',
@@ -6163,9 +6245,10 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		if (!Ext.isDefined(activTab) || activTab === null) {
 			return false;
 		}
+		// 10.06.26 on; doplnena SAV
 		// 24.09.25 on; nesmi jit o novy zaznam
 		// zatim pouze pro adminy cav a pro formulare "E"
-		if (!this.csIsNewRecord(activTab.recordId) && (activTab.form.unFormat === 'E') && (i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) && (this.csIsSuperUser() || this.csIsDataSteward() || this.csIsProcessorUser())) {
+		if (!this.csIsNewRecord(activTab.recordId) && (activTab.form.unFormat === 'E') && ((i3.ictx.toLowerCase() === epca.evidence.c.sIctxCav) || (i3.ictx.toLowerCase() === epca.evidence.c.sIctxSav)) && (this.csIsSuperUser() || this.csIsDataSteward() || this.csIsProcessorUser())) {
 			// 25.09.25 on; nesmi byt prazdne pole 969f
 			var newMarc = this.getForm(activTab).getMarc(epca.cloneObject(activTab.marcToSet));
 			this.mergeMarc(activTab.marcCloneToSet, newMarc);
@@ -6213,7 +6296,8 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 			// super uzivatel muze mazat vsechny odeslane zaznamy
 			if (this.csIsSuperUser()) {
 				return true;
-			} else
+			} 
+			
 			// 02.12.25 on; zpracovatel/admin může mazat všechny odeslané záznamy aktuálního roku sběru (bez ohledu na označení do RIV) + záznamy jiných roků, které nejsou označené do RIV
 			if (this.csIsProcessorUser()) {
 				// pouze bibliograficke zaznamy
@@ -6281,7 +6365,7 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 	 *
 	 */
 	csDeleteRecordCAV0 : function(activTab, linrec) {
-		var record, nScrollTop;
+		var record/*, nScrollTop*/;
 
 		i3.msgOn(epca.L10n.txDeletingRecord, undefined, undefined, epca.evidence.c.sFormMsgId);
 		try {
@@ -6332,12 +6416,12 @@ epca.evidence.EvidencePanel = Ext.extend(Ext.Panel, {
 		}
 
 		// zapamatuje si pozici scrollbaru
-		var c = activTab.getFormMainFieldset();
+		/*var c = activTab.getFormMainFieldset();
 		if (c && c.ownerCt) {
 			nScrollTop = activTab.getFormMainFieldset().ownerCt.body.dom.scrollTop;
 		} else {
 			nScrollTop = 0;
-		}
+		}*/
 
 		i3.WS.update({
 			operation : 'update',

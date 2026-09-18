@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2022.1.1 (Build 374U)" ts="2024-03-19 09:15:21">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-04-30 10:52:50">
 <Class name="content.util">
 <Description><![CDATA[
 <pre> X() prikazy pro spravu content a image serveru
 
+09.04.26 ln; runtime a upload simulace i pro zaznam bez souboru
 19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 03.04.23 ln; udrzeni terminalovej session pri simulaci
 15.07.15 ln; pridana moznost vypsat runtime metadata
 </pre>]]></Description>
 <IncludeCode>Common,I2</IncludeCode>
-<TimeChanged>66918,33063.0611331</TimeChanged>
+<TimeChanged>67690,39119.300956409</TimeChanged>
 <TimeCreated>63426,33322.32534</TimeCreated>
 
 <Method name="help">
@@ -18,7 +19,7 @@
   w !,"cont                                    -- help"
   w !,"cont l|la [<prefix>]                    -- list matadata on active select"
   w !,"cont r|u|e|d|s|c|runtime [<ipadrr>] [<user001>] -- simulation of operation"
-  w !,"     read, upload, edit, delete, state, change, runtime metadata"
+  w !,"     read, upload, edit, delete, state, change, run, runtime"
   w !,"cont chro [<statid>|<key>]              -- vypis chronologie zmen"
   w !,"cont okx [update|force|delete|reset]          -- okcz / oksk"
   w !,"cont export <repo> [<file>] [<from>] [<to>] -- export (all) metadata in xml"
@@ -47,7 +48,7 @@
     d ..list(params,1)
   }
   elseif (param1="r") || (param1="u") || (param1="e") || (param1="d")
-      || (param1="s") || (param1="c") || (param1="runtime") {
+      || (param1="s") || (param1="c") || (param1="run")  || (param1="runtime") {
     d ..simulation(param1,params)
   }
   elseif param1="chro" {
@@ -133,6 +134,7 @@
 <Description><![CDATA[
 <pre> Simulace operace contentServeru
 
+09.04.26 ln; runtime a upload simulace i pro zaznam bez souboru
 19.03.24 ln; call vraci ktere pravidlo se aplikovalo
 03.04.23 ln; udrzeni terminalovej session pri simulaci
 15.07.15 ln; pridana moznost vypsat runtime metadata
@@ -188,9 +190,30 @@
     
     s t001=##class(User.MARC).getT001(id)    
     w !,class_" "_t001
-    ; 19.03.24 ln; call vraci ktere pravidlo se aplikovalo
-    s runtime("SIMUL")=1
+      
+    ; 09.04.26 ln; runtime a upload simulace i pro zaznam bez souboru
+    if operation="runtime" {
+      ; 15.07.15 ln; pridana moznost vypsat runtime metadata
+      d ##class(content.engine).runtime(.runtime)
+      s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")  
+      d:callBack'="" $ZOBJCLASSMETHOD(callBack,"runtime",.runtime,class,t001,"","")
+      w !
+      zw runtime
+    }
+    elseif operation="u" {
+      s runtime("class")=class
+      s runtime("t001")=t001
+      s runtime("origname")="simulace"
+      s runtime("extension")="txt"
+      s runtime("size")=10000
+      ;s runtime("ctype")=arrtmp("ctype")
+      ;s runtime("type")=arrtmp("type")
+      s runtime("SIMUL")=1
+                
+      w ": ",##class(content.api).engineUpload(ictx_"repo",.array,.runtime)
+    }
     
+    s runtime("SIMUL")=1
     k output
     d ##class(content.api).selectRecAll(.output,class,t001)    
     
@@ -201,6 +224,7 @@
       s repo=$g(output(item,"repository"))
       w !,"  "_item_": "_repo_", "_key
       
+      ; 19.03.24 ln; call vraci ktere pravidlo se aplikovalo
       if operation="r" {
         w ": ",##class(content.api).engineRead(repo,key,.array,.runtime)
       }
@@ -232,12 +256,11 @@
       elseif operation="c" {
         w ": ",##class(content.api).engineChange(repo,key,.array,.runtime)
       }
-      elseif operation="runtime" {
-        ; 15.07.15 ln; pridana moznost vypsat runtime metadata
+      elseif operation="run" {
         k runtime
         d ##class(content.engine).runtime(.runtime)
         s callBack=##class(i2.init).getCallBack($$$GETICTX,"uploader")  
-        d:callBack'="" $ZOBJCLASSMETHOD(callBack,"runtime",.runtime,class,t001)
+        d:callBack'="" $ZOBJCLASSMETHOD(callBack,"runtime",.runtime,class,t001,repo,key)
         w !
         zw runtime
       }

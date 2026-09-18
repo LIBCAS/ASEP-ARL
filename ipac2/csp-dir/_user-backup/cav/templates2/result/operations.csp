@@ -192,6 +192,10 @@
     <csp:if condition=($g(data("RECORDS",node,"VyslPUBMED"))'="")>
 <li class="cavpubmed nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"VyslPUBMEDT")))#" href="#($g(data("RECORDS",node,"VyslPUBMEDLink")))#"><i class="icon-pubmed" aria-hidden="true"></i>&nbsp;#($g(data("RECORDS",node,"VyslPUBMEDPT")))#</a></li>
     </csp:if>
+    
+    <csp:if condition=($g(data("RECORDS",node,"VyslNMA"))'="")>
+<li class="cavnma nav-item"><a class="nav-link" rel="external" target="_blank" title="#($g(data("RECORDS",node,"VyslPUBMEDT")))#" href="#($g(data("RECORDS",node,"VyslNMA")))#"><i class="icon-nma" aria-hidden="true"></i>&nbsp;#($g(data("RECORDS",node,"VyslNMAT")))#</a></li>
+    </csp:if>
 
  <csp:if condition=($g(data("CITACEPRO","IPAC_OPERATIONS"))=1)>
     <csp:if condition=($e($zcvt(data("RECORDS",node,"basetype"),"L"),1)="c")>

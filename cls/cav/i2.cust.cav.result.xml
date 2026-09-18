@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-10-16 14:08:50">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-09-02 11:52:34">
 <Class name="i2.cust.cav.result">
 <Description><![CDATA[
 <pre>
+01.09.26 ln; pridan druh
+19.03.26 ln; pridan link do NMA
+27.02.26 ln; dataset lze nahrat jen u neodeslanych zaznamu
 16.10.25 ln; podpora druhu X a DMP
 22.07.25 dk; přidán formulář 'DFLT_DATA_U'
 19.07.24 ln; dusledne pouzity makra GETICTX a IPREF
@@ -40,7 +43,7 @@
 11.10.12 tt; zalozena metoda pro zobrazovani informaci v panelu u vyhledavani
 </pre>]]></Description>
 <Super>i2.ui.result</Super>
-<TimeChanged>67494,50920.016451228</TimeChanged>
+<TimeChanged>67815,42746.425069085</TimeChanged>
 <TimeCreated>62741,48621.550522</TimeCreated>
 
 <Parameter name="Ictx">
@@ -48,6 +51,44 @@
 ictx instituce</Description>
 <Default>cav</Default>
 </Parameter>
+
+<Method name="preHTTP">
+<Description><![CDATA[
+<pre> Vola se pri OnPreHTTP metode CSP
+vraci retezec pri chybe
+
+08.01.24 ln; prefetch detekovan podle hlavicky
+24.10.23 ln; prefetch fix
+</pre>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s ret=##class(i2.ui.menu).accessPage(..#PageID)
+  q:ret'="" ret
+  
+  ; 08.01.24 ln; prefetch detekovan podle hlavicky
+  if $g(%request.CgiEnvs("HTTP_PURPOSE"))="prefetch" {
+    q "prefetch"
+  }
+  
+  if ($$$GETREQVAR("type")="zf") {
+    $$$SETREQVAR("st","ajax")
+  }  
+  
+  if ($$$GETREQVAR("feed")="rss") {
+    d %response.SetHeader("Access-Control-Allow-Methods","*")
+    d %response.SetHeader("Access-Control-Allow-Origin","*")
+    s %response.ContentType="application/xml"
+    s %response.CharSet="UTF-8" 
+    if ($$$GETREQVAR("guide")="news") {
+        d %response.SetHeader("Content-Disposition","attachment; filename=""news-rss.xml""")
+    } else {
+        d %response.SetHeader("Content-Disposition","attachment; filename="""_..#PageID_"-rss.xml""")
+    }
+  }
+  q ""
+]]></Implementation>
+</Method>
 
 <Method name="userData">
 <Description><![CDATA[
@@ -61,13 +102,21 @@ slouzi pro odchylky
 </Method>
 
 <Method name="SetUserData">
+<Description><![CDATA[
+<pre> Doplneni data("RECORDS") pro kazdy zaznam
+stadardne se to dela v metode recordUser
+
+01.09.26 ln; pridan druh
+19.03.26 ln; pridan link do NMA
+27.02.26 ln; dataset lze nahrat jen u neodeslanych zaznamu
+</pre>]]></Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec><![CDATA[&data]]></FormalSpec>
 <Implementation><![CDATA[
  s sId=""
  s sCount=0
  s brk="X"
- s userId="",IsLog="",sUT100b=""
+ s userId="",IsLog="",sUT100b="", sRole=""
  s IsLog=##class(i2.access).isLoggedIn()
  s userId=##class(i2.access).getLoginId()  ; ziskame id uzivatele 
  
@@ -132,7 +181,9 @@ slouzi pro odchylky
        s x=##class(User.MARC).readX(.handle,$$$IPREF_"UnEpca",$p(data("RECORDS",sId),"*",2),"T")
        if x=1
        { 
-         s sRT970b=$$$getTagX(.handle,"970b")  
+         s sRT970b=$$$getTagX(.handle,"970b")
+         ; 01.09.26 ln; pridan druh
+         s data("RECORDS",sId,"druh")=$zcvt(sRT970b,"L")
          s sRT969f=$$$getTagX(.handle,"969f")  
          s sRTC99d=$$$getTagX(.handle,"C99d")  
          
@@ -191,6 +242,10 @@ slouzi pro odchylky
          s data("RECORDS",sId,"VyslPUBMEDPT")="PUBMED"
          s data("RECORDS",sId,"VyslPUBMEDLink")=sPUBMEDLink
          
+         ; 19.03.26 ln; pridan link do NMA
+         s data("RECORDS",sId,"VyslNMA")=..getNMAlink(.handle,"url")
+         s data("RECORDS",sId,"VyslNMAT")="NMA"
+         
          ; 11.08.15 tt; upravena funcnost kvuli funkcnosti novych formularu - blok operaci u záznamu
          s data("RECORDS",sId,"ZContLSprava")=0
          s data("RECORDS",sId,"ZContLUpload")=0
@@ -242,7 +297,7 @@ slouzi pro odchylky
            
            
            /// 30.11.22 tt; zapracovani zobrazeni verzi
-           s sVerze=##class(User.CavUnEpca).versionDataGetAll(.handle,.verze)
+           s sVerze=##class(util.ie.datacite).versionDataGetAll(.handle,.verze)
            if (sVerze'="")
            {
              s data("RECORDS",sId,"DataVersionsCount")=$l(sVerze,"#")
@@ -357,7 +412,10 @@ slouzi pro odchylky
            {
              s:(($l(sCSprava)>20)&&(data("RECORDS",sId,"ZRecDel")=1)) data("RECORDS",sId,"ZContLSprava")=1
            }
-           s:(($l(sCUpload)>20)&&(data("RECORDS",sId,"ZRecEdit")=1)) data("RECORDS",sId,"ZContLUpload")=1         
+           if (sRT969f="D")||(sRT969f="N")||$f(sRole,"s")
+           { ; 27.02.26 ln; dataset lze nahrat jen u neodeslanych zaznamu 
+             s:(($l(sCUpload)>20)&&(data("RECORDS",sId,"ZRecEdit")=1)) data("RECORDS",sId,"ZContLUpload")=1
+           }
            
            if ((data("RECORDS",sId,"DataCopyVersion")=0)&&(sRT969f=""))  
            { ; pokud nemuzeme pridat novou verzi, nemuzeme ani editovat u vystavenych zaznamu
@@ -484,41 +542,21 @@ implementovat pouze v zakaznicke tride i2.cust.xxx.result
 ]]></Implementation>
 </Method>
 
-<Method name="preHTTP">
-<Description><![CDATA[
-<pre> Vola se pri OnPreHTTP metode CSP
-vraci retezec pri chybe
-
-08.01.24 ln; prefetch detekovan podle hlavicky
-24.10.23 ln; prefetch fix
-</pre>]]></Description>
+<Method name="getNMAlink">
 <ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&handle,params=""]]></FormalSpec>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
-  s ret=##class(i2.ui.menu).accessPage(..#PageID)
-  q:ret'="" ret
+  q:##class(User.MARC).getTagX(.handle,"C26b")'=1 ""
   
-  ; 08.01.24 ln; prefetch detekovan podle hlavicky
-  if $g(%request.CgiEnvs("HTTP_PURPOSE"))="prefetch" {
-    q "prefetch"
-  }
+  s url=##class(User.MARC).getTagX(.handle,"C26q")
+  q:url="" ""
+  q:params="url" url
   
-  if ($$$GETREQVAR("type")="zf") {
-    $$$SETREQVAR("st","ajax")
-  }  
+  s title="NMA link", text="NMA"
+  s ret="<a href="""_url_""" target=""_blank"" rel=""external"" title="""_title_"""><span class=""icon-pubmed"" aria-hidden=""true""></span> "_text_"<span></span></a>"
   
-  if ($$$GETREQVAR("feed")="rss") {
-    d %response.SetHeader("Access-Control-Allow-Methods","*")
-    d %response.SetHeader("Access-Control-Allow-Origin","*")
-    s %response.ContentType="application/xml"
-    s %response.CharSet="UTF-8" 
-    if ($$$GETREQVAR("guide")="news") {
-        d %response.SetHeader("Content-Disposition","attachment; filename=""news-rss.xml""")
-    } else {
-        d %response.SetHeader("Content-Disposition","attachment; filename="""_..#PageID_"-rss.xml""")
-    }
-  }
-  q ""
+  q ret
 ]]></Implementation>
 </Method>
 </Class>

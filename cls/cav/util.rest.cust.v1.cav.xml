@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2025-11-26 12:27:36">
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Red Hat Enterprise Linux 8 for x86-64) 2023.1.6 (Build 809U)" ts="2026-09-17 11:40:43">
 <Class name="util.rest.cust.v1.cav">
 <Description><![CDATA[
 <pre> Sluzby REST API pro cav
 
+16.09.26 ln; OpenAIRE a NMA
+08.04.26 ln; vsechny cav sluzby vraci intranet
+18.02.26 ln; osetren neexistujici ciselnik oddeleni
+06.01.26 ln; ochrana pred SQL injection
+09.12.25 ln; vsichni aktivni autori i variantni jmena
 20.11.25 ln; zprovoznena bibliometrie pro analytika
 25.08.25 ln; oprava druhDokumentu je pouze J
 14.04.25 ln; nededuplikovat autory shodnych jmen a ruznych t001
@@ -18,7 +23,7 @@
 26.09.24 ln; generovani tokenu pro export (wkhtmltopdf)
 </pre>]]></Description>
 <Super>util.rest.superREST</Super>
-<TimeChanged>67535,44821.137470515</TimeChanged>
+<TimeChanged>67829,49948.95946215</TimeChanged>
 <TimeCreated>66858,37156.8890089</TimeCreated>
 
 <Parameter name="HandleCorsRequest">
@@ -85,8 +90,10 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/config/test
   }
   
   d ##class(User.MARC).delTagX(.handle,"005"_$c(10)_"999")
-  s recJson=##class(util.rest.v1.utils).handle2Json(.handle,$g(%request.Data("fmt",1),"simple"))
-  w recJson
+  s recJson=##class(util.rest.v1.utils).handle2Json(.handle,$g(%request.Data("fmt",1),"simple"),.cm)
+  s cm.intranet=##class(util.sec.security).isInternalIP(##class(i2.common).getIP(),$zcvt(ictx,"W"))
+  w cm.%ToJSON()
+  
   q $$$OK
 ]]></Implementation>
 </Method>
@@ -169,14 +176,16 @@ d ##class(util.rest.cust.v1.cav).authorsGET("uivt-o")
           s link=##class(User.MARC).getSubTagStr(variline,"3")
           if (varijm_varipr'="") && ##class(User.MARC).readLX(.vhandle,link) {
             continue:(active=2)&&'$d(^$$$MarcIndexG("CavUnAuth",$g(vhandle("id"),0),"ds"," actv"))
+            continue:(active=1)&&(##class(User.MARC).getIdxVal("CavUnAuth",$g(vhandle("id"),0),"zaact")="")
             s array(varijm_varipr_$p(link,"*",2))={ "name" : (varijm_", "_varipr), "lname" : (link), "ida" : (..ida(.vhandle)) }
           }
         }
       }
     } 
     elseif index="zaact" {
-      s id=##class(User.MARC).recordIdX(.handle)
-      continue:##class(User.MARC).getIdxVal("CavUnAuth",id,"zmain")'="" ; bez variant
+      ; 09.12.25 ln; vsichni aktivni autori i variantni jmena
+      ;s id=##class(User.MARC).recordIdX(.handle)
+      ;continue:##class(User.MARC).getIdxVal("CavUnAuth",id,"zmain")'="" ; bez variant
     }
     continue:(active=2)&&'$d(^$$$MarcIndexG("CavUnAuth",$g(handle("id"),0),"ds"," actv"))
     ; 14.04.25 ln; nededuplikovat autory shodnych jmen a ruznych t001
@@ -193,6 +202,7 @@ d ##class(util.rest.cust.v1.cav).authorsGET("uivt-o")
   s cm.search=search
   s cm.ustav=ustav
   s cm.authors=autori
+  s cm.intranet=##class(util.sec.security).isInternalIP(##class(i2.common).getIP(),$zcvt(ictx,"W"))
   d cm.%ToJSON()
   
   q $$$OK
@@ -246,7 +256,8 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
     q $$$OK
   }
   s ustav=json.ustav
-  if ustav="" {
+  if (##class(User.Util).sXlate("CAV_PRA",$zcvt(ustav,"U"),"N",ipref)="") && (ustav'="all")
+  {
     s %response.Status = ..#HTTP400BADREQUEST
     s err=##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#ustav required")
     w err
@@ -291,7 +302,7 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
   s cm.pqf=..pqf(json,t001,ipref)  
   s ret=..search(cm,facets,export)
   s:'ret cm.records=[]
-    
+  s cm.intranet=##class(util.sec.security).isInternalIP(##class(i2.common).getIP(),$zcvt(ictx,"W"))
   d cm.%ToJSON()
   
   q $$$OK
@@ -332,7 +343,8 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
     q $$$OK
   }
   s ustav=json.ustav
-  if ustav="" {
+  if ##class(User.Util).sXlate("CAV_PRA",$zcvt(ustav,"U"),"N",ipref)="" 
+  { ; 06.01.26 ln; ochrana pred SQL injection
     s %response.Status = ..#HTTP400BADREQUEST
     w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST002#ustav required")
     q $$$OK
@@ -408,7 +420,12 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
   elseif cm.filter'="multi" {
     s sql=..sql(cm,json)
   } else {
-    d ##class(User.MARC).readX(.hy,"CavUnTablesd",cm.cisY)
+    if '##class(User.MARC).readX(.hy,"CavUnTablesd",cm.cisY)
+    { ; 18.02.26 ln; osetren neexistujici ciselnik oddeleni
+      s %response.Status = ..#HTTP400BADREQUEST
+      w ##class(util.rest.v1.utils).err2Json(.env,"ERR_REST003#"_cm.cisY)
+      q $$$OK
+    }
     s all=##class(User.MARC).getTagX(.hy,"200",-1)
     s sql=""
     for i=1:1:$l(all,$c(10)) {
@@ -532,7 +549,7 @@ https://asep.lib.cas.cz/arl/apitest/v1/cust/cav/page/1
   s cm.rows=seq  ;rset.%ROWCOUNT
   s cm.columns=cols
   s cm.table=arr
-    
+  s cm.intranet=##class(util.sec.security).isInternalIP(##class(i2.common).getIP(),$zcvt(ictx,"W"))  
   d cm.%ToJSON()
   
   q $$$OK
@@ -781,7 +798,9 @@ w ##class(util.rest.cust.v1.cav).search(cm)
       "WOS": (##class(User.CavUnEpca).getWOSlink(.handle,"url")),
       "PUBMED": (##class(User.CavUnEpca).getPUBMEDlink(.handle,"url")),
       "DOI": (doi),
-      "RIV": (##class(User.CavUnEpca).getRIVlink(.handle,"url"))      
+      "RIV": (##class(User.CavUnEpca).getRIVlink(.handle,"url")),
+      "OpenAIRE": (##class(User.CavUnEpca).getOPENAIRElink(.handle,"url")),
+      "NMA": (##class(i2.cust.cav.result).getNMAlink(.handle,"url"))
      })
     } 
     elseif class="CavUnAuth" {
