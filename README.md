@@ -32,7 +32,10 @@ Tento Github repozitář obsahuje pouze části vyvinuté v open source režimu.
 ### Kontakt
 
 - Dotazy, podpora: [arl@knav.cz](mailto:arl@knav.cz)   
-- Zřízení instance repozitáře, konzultace: [nrp.repozitare@eosc.cz](mailto:nrp.repozitare@eosc.cz), v kopii [arl@knav.cz](mailto:arl@knav.cz) 
+- Zřízení instance repozitáře, konzultace: [nrp.repozitare@eosc.cz](mailto:nrp.repozitare@eosc.cz), v kopii [arl@knav.cz](mailto:arl@knav.cz)
+
+Tento výstup byl vytvořen s finanční podporou iniciativy EOSC CZ prostřednictvím projektu Národní repozitářová platforma pro výzkumná data (CZ.02.01.01/00/23_014/0008787), financovaného z Operačního programu Jan Amos Komenský (OP JAK) Ministerstva školství, mládeže a tělovýchovy České republiky (MŠMT).
+
 
 # EN
 
@@ -70,3 +73,6 @@ This Github repository contains only the open source parts of the whole project.
 
 - Questions & support: [arl@lib.cas.cz](mailto:arl@lib.cas.cz)  
 - Interested in getting your own ASEP instance? [nrp.repozitare@eosc.cz](mailto:nrp.repozitare@eosc.cz), also CC [arl@lib.cas.cz](mailto:arl@lib.cas.cz) 
+
+
+This output was developed with financial contributions from the EOSC CZ initiative through the National Repository Platform for Research Data project (CZ.02.01.01/00/23_014/0008787), funded by the Programme Johannes Amos Comenius (P JAC) of the Ministry of Education, Youth and Sports of the Czech Republic (MEYS).
